@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{535A2622-FEBE-42DE-9038-3D8CB7323DF6}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Source\FIToolkit.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Tests\FIToolkitTests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="FIToolkit">
+        <MSBuild Projects="Source\FIToolkit.dproj"/>
+    </Target>
+    <Target Name="FIToolkit:Clean">
+        <MSBuild Projects="Source\FIToolkit.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FIToolkit:Make">
+        <MSBuild Projects="Source\FIToolkit.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FIToolkitTests">
+        <MSBuild Projects="Tests\FIToolkitTests.dproj"/>
+    </Target>
+    <Target Name="FIToolkitTests:Clean">
+        <MSBuild Projects="Tests\FIToolkitTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FIToolkitTests:Make">
+        <MSBuild Projects="Tests\FIToolkitTests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="FIToolkit;FIToolkitTests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="FIToolkit:Clean;FIToolkitTests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="FIToolkit:Make;FIToolkitTests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
