@@ -82,6 +82,17 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="Main.pas"/>
+        <DCCReference Include="Exceptions.pas"/>
+        <DCCReference Include="Config\Config.Manager.pas"/>
+        <DCCReference Include="Config\Config.Consts.pas"/>
+        <DCCReference Include="Config\Config.FixInsight.pas"/>
+        <DCCReference Include="Config\Config.Exceptions.pas"/>
+        <DCCReference Include="LaunchParams\LaunchParams.Consts.pas"/>
+        <DCCReference Include="Logger\Logger.Consts.pas"/>
+        <DCCReference Include="Reports\Builder\Reports.Builder.Consts.pas"/>
+        <DCCReference Include="Reports\Parser\Reports.Parser.Consts.pas"/>
+        <DCCReference Include="Runner\Runner.Consts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
