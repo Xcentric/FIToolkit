@@ -42,8 +42,8 @@
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>FIToolkit</SanitizedProjectName>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_ExeOutput>..\Bin\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -83,11 +83,12 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Main.pas"/>
-        <DCCReference Include="Exceptions.pas"/>
-        <DCCReference Include="Config\Config.Manager.pas"/>
+        <DCCReference Include="Base\Base.Consts.pas"/>
+        <DCCReference Include="Base\Base.Exceptions.pas"/>
         <DCCReference Include="Config\Config.Consts.pas"/>
-        <DCCReference Include="Config\Config.FixInsight.pas"/>
         <DCCReference Include="Config\Config.Exceptions.pas"/>
+        <DCCReference Include="Config\Config.FixInsight.pas"/>
+        <DCCReference Include="Config\Config.Manager.pas"/>
         <DCCReference Include="LaunchParams\LaunchParams.Consts.pas"/>
         <DCCReference Include="Logger\Logger.Consts.pas"/>
         <DCCReference Include="Reports\Builder\Reports.Builder.Consts.pas"/>

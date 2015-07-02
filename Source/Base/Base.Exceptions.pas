@@ -1,28 +1,31 @@
-unit Exceptions;
+unit Base.Exceptions;
 
 interface
 
 uses
   System.SysUtils, System.Generics.Collections;
 
-const
-
-  SDefaultErrMsg = 'UNEXPECTED ERROR';
-
 type
-
-  TExceptionMessage = type String;
 
   ECustomException = class abstract (Exception)
     protected
-      function GetDefaultMessage : TExceptionMessage; virtual;
+      function GetDefaultMessage : String; virtual;
     public
-      constructor Create(const Msg : TExceptionMessage = SDefaultErrMsg);
+      constructor Create;
   end;
 
   ECustomExceptionClass = class of ECustomException;
 
-  TExceptionMessageMap = class (TDictionary<ECustomExceptionClass, TExceptionMessage>)
+  procedure RegisterExceptionMessage(AnExceptionClass : ECustomExceptionClass; const Msg : String);
+
+implementation
+
+uses
+  Base.Consts;
+
+type
+
+  TExceptionMessageMap = class (TDictionary<ECustomExceptionClass, String>)
     strict private
       class var FStaticInstance : TExceptionMessageMap;
     private
@@ -32,31 +35,27 @@ type
       class property StaticInstance : TExceptionMessageMap read GetStaticInstance;
   end;
 
-  function GlobalExceptionsMap : TExceptionMessageMap;
+{ Utils }
 
-implementation
-
-function GlobalExceptionsMap : TExceptionMessageMap;
+procedure RegisterExceptionMessage(AnExceptionClass : ECustomExceptionClass; const Msg : String);
 begin
-  Result := TExceptionMessageMap.StaticInstance;
+  TExceptionMessageMap.StaticInstance.Add(AnExceptionClass, Msg);
 end;
 
 { ECustomException }
 
-constructor ECustomException.Create(const Msg : TExceptionMessage);
+constructor ECustomException.Create;
 begin
-  if Msg = SDefaultErrMsg then
-    inherited Create(GetDefaultMessage)
-  else
-    inherited Create(Msg);
+  inherited Create(GetDefaultMessage);
 end;
 
-function ECustomException.GetDefaultMessage : TExceptionMessage;
+function ECustomException.GetDefaultMessage : String;
 begin
-  if GlobalExceptionsMap.ContainsKey(Self.ClassType) then
-    Result := GlobalExceptionsMap.Items[Self.ClassType]
-  else
-    Result := SDefaultErrMsg;
+  with TExceptionMessageMap.StaticInstance do
+    if ContainsKey(ECustomExceptionClass(ClassType)) then
+      Result := Items[ECustomExceptionClass(ClassType)]
+    else
+      Result := SDefaultErrMsg;
 end;
 
 { TExceptionMessageMap }

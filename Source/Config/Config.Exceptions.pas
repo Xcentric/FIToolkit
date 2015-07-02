@@ -3,7 +3,7 @@ unit Config.Exceptions;
 interface
 
 uses
-  Exceptions;
+  Base.Exceptions;
 
 type
 
@@ -19,7 +19,7 @@ uses
   Config.Consts;
 
 initialization
-  GlobalExceptionsMap.Add(EEmptyOutputFileName, SEmptyOutputFileName);
-  GlobalExceptionsMap.Add(ENonExistentOutputDirectory, SNonExistentOutputDirectory);
+  RegisterExceptionMessage(EEmptyOutputFileName, SEmptyOutputFileName);
+  RegisterExceptionMessage(ENonExistentOutputDirectory, SNonExistentOutputDirectory);
 
 end.

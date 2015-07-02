@@ -4,12 +4,14 @@ program FIToolkit;
 
 uses
   System.SysUtils,
+  System.Types,
   Main in 'Main.pas',
-  Exceptions in 'Exceptions.pas',
-  Config.Manager in 'Config\Config.Manager.pas',
+  Base.Consts in 'Base\Base.Consts.pas',
+  Base.Exceptions in 'Base\Base.Exceptions.pas',
   Config.Consts in 'Config\Config.Consts.pas',
-  Config.FixInsight in 'Config\Config.FixInsight.pas',
   Config.Exceptions in 'Config\Config.Exceptions.pas',
+  Config.FixInsight in 'Config\Config.FixInsight.pas',
+  Config.Manager in 'Config\Config.Manager.pas',
   LaunchParams.Consts in 'LaunchParams\LaunchParams.Consts.pas',
   Logger.Consts in 'Logger\Logger.Consts.pas',
   Reports.Builder.Consts in 'Reports\Builder\Reports.Builder.Consts.pas',
@@ -18,9 +20,18 @@ uses
 
 {$R *.res}
 
+var
+  sFullExePath : TFileName;
+  aLaunchParams : TStringDynArray;
+  i : Integer;
 begin
   try
-    { TODO -oUser -cConsole Main : Insert code here }
+    sFullExePath := ParamStr(0);
+    SetLength(aLaunchParams, ParamCount - 1);
+    for i := 0 to High(aLaunchParams) do
+      aLaunchParams[i] := ParamStr(i + 1);
+
+    RunApplication(sFullExePath, aLaunchParams);
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
