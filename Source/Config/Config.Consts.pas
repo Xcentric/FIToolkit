@@ -1,13 +1,29 @@
-unit Config.Consts;
+п»їunit Config.Consts;
 
 interface
+
+const
+
+  { FixInsight command line parameters. Do not localize! }
+
+  STR_FIPARAM_PREFIX = '--';
+  STR_FIPARAM_VALUE_DELIM = '=';
+  STR_FIPARAM_VALUES_DELIM = ';';
+
+  STR_FIPARAM_DEFINES  = STR_FIPARAM_PREFIX + 'defines'  + STR_FIPARAM_VALUE_DELIM;
+  STR_FIPARAM_OUTPUT   = STR_FIPARAM_PREFIX + 'output'   + STR_FIPARAM_VALUE_DELIM;
+  STR_FIPARAM_PROJECT  = STR_FIPARAM_PREFIX + 'project'  + STR_FIPARAM_VALUE_DELIM;
+  STR_FIPARAM_SETTINGS = STR_FIPARAM_PREFIX + 'settings' + STR_FIPARAM_VALUE_DELIM;
+  STR_FIPARAM_XML      = STR_FIPARAM_PREFIX + 'xml';
 
 resourcestring
 
   { Exceptions }
 
-  SEmptyOutputFileName = 'Пустое имя выходного файла';
-  SNonExistentOutputDirectory = 'Директории выходного файла не существует';
+  SFIOEmptyOutputFileName = 'РџСѓСЃС‚РѕРµ РёРјСЏ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°';
+  SFIOOutputDirectoryNotFound = 'Р”РёСЂРµРєС‚РѕСЂРёРё РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+  SFIOProjectFileNotFound = 'Р¤Р°Р№Р» РїСЂРѕРµРєС‚Р° РЅРµ РЅР°Р№РґРµРЅ';
+  SFIOSettingsFileNotFound = 'Р¤Р°Р№Р» РЅР°СЃС‚СЂРѕРµРє FixInsight РЅРµ РЅР°Р№РґРµРЅ';
 
 implementation
 

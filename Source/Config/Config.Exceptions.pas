@@ -9,9 +9,14 @@ type
 
   EConfigException = class abstract (ECustomException);
 
-  EEmptyOutputFileName = class (EConfigException);
+  { FixInsight Options Exceptions }
 
-  ENonExistentOutputDirectory = class (EConfigException);
+  EFixInsightOptionsException = class abstract (EConfigException);
+
+  EFIOEmptyOutputFileName = class (EFixInsightOptionsException);
+  EFIOOutputDirectoryNotFound = class (EFixInsightOptionsException);
+  EFIOProjectFileNotFound = class (EFixInsightOptionsException);
+  EFIOSettingsFileNotFound = class (EFixInsightOptionsException);
 
 implementation
 
@@ -19,7 +24,9 @@ uses
   Config.Consts;
 
 initialization
-  RegisterExceptionMessage(EEmptyOutputFileName, SEmptyOutputFileName);
-  RegisterExceptionMessage(ENonExistentOutputDirectory, SNonExistentOutputDirectory);
+  RegisterExceptionMessage(EFIOEmptyOutputFileName, SFIOEmptyOutputFileName);
+  RegisterExceptionMessage(EFIOOutputDirectoryNotFound, SFIOOutputDirectoryNotFound);
+  RegisterExceptionMessage(EFIOProjectFileNotFound, SFIOProjectFileNotFound);
+  RegisterExceptionMessage(EFIOSettingsFileNotFound, SFIOSettingsFileNotFound);
 
 end.
