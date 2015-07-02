@@ -7,14 +7,16 @@ uses
 
 type
 
+  ECustomExceptionClass = class of ECustomException;
+
   ECustomException = class abstract (Exception)
+    private
+      function GetClassType : ECustomExceptionClass;
     protected
       function GetDefaultMessage : String; virtual;
     public
       constructor Create;
   end;
-
-  ECustomExceptionClass = class of ECustomException;
 
   procedure RegisterExceptionMessage(AnExceptionClass : ECustomExceptionClass; const Msg : String);
 
@@ -49,11 +51,16 @@ begin
   inherited Create(GetDefaultMessage);
 end;
 
+function ECustomException.GetClassType : ECustomExceptionClass;
+begin
+  Pointer(Result) := PPointer(Self)^;
+end;
+
 function ECustomException.GetDefaultMessage : String;
 begin
   with TExceptionMessageMap.StaticInstance do
-    if ContainsKey(ECustomExceptionClass(ClassType)) then
-      Result := Items[ECustomExceptionClass(ClassType)]
+    if ContainsKey(GetClassType) then
+      Result := Items[GetClassType]
     else
       Result := SDefaultErrMsg;
 end;

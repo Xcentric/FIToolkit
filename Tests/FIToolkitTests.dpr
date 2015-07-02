@@ -15,11 +15,17 @@ program FIToolkitTests;
 {$ENDIF}
 
 uses
-  DUnitTestRunner;
+  DUnitTestRunner,
+  Test_Base.Exceptions in 'Test_Base.Exceptions.pas',
+  Base.Exceptions in '..\Source\Base\Base.Exceptions.pas',
+  Test_Config.FixInsight in 'Test_Config.FixInsight.pas',
+  Config.FixInsight in '..\Source\Config\Config.FixInsight.pas',
+  Base.Consts in '..\Source\Base\Base.Consts.pas',
+  Config.Exceptions in '..\Source\Config\Config.Exceptions.pas',
+  Config.Consts in '..\Source\Config\Config.Consts.pas';
 
 {$R *.RES}
 
 begin
   DUnitTestRunner.RunRegisteredTests;
 end.
-

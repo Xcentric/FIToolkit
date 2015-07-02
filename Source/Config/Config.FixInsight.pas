@@ -16,6 +16,7 @@ type
       FOutputFormat : TFixInsightOutputFormat;
       FProjectFileName : TFileName;
       FSettingsFileName : TFileName;
+      FValidate : Boolean;
     private
       function  FormatCompilerDefines : String;
       function  FormatOutputFileName : String;
@@ -31,13 +32,14 @@ type
       procedure ValidateProjectFileName(const Value : TFileName);
       procedure ValidateSettingsFileName(const Value : TFileName);
     public
-      function  FormatParamStr(Validate : Boolean) : String;
+      function  ToString : String; override;
 
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
+      property Validate : Boolean read FValidate write FValidate;
   end;
 
 implementation
@@ -83,9 +85,9 @@ begin
   end;
 end;
 
-function TFixInsightOptions.FormatParamStr(Validate : Boolean) : String;
+function TFixInsightOptions.ToString : String;
 begin
-  if Validate then
+  if FValidate then
   begin
     ValidateOutputFileName(FOutputFileName);
     ValidateProjectFileName(FProjectFileName);
@@ -110,7 +112,9 @@ procedure TFixInsightOptions.SetOutputFileName(const Value : TFileName);
 begin
   if FOutputFileName <> Value then
   begin
-    ValidateOutputFileName(Value);
+    if FValidate then
+      ValidateOutputFileName(Value);
+
     FOutputFileName := Value;
   end;
 end;
@@ -119,7 +123,9 @@ procedure TFixInsightOptions.SetProjectFileName(const Value : TFileName);
 begin
   if FProjectFileName <> Value then
   begin
-    ValidateProjectFileName(Value);
+    if FValidate then
+      ValidateProjectFileName(Value);
+
     FProjectFileName := Value;
   end;
 end;
@@ -128,7 +134,9 @@ procedure TFixInsightOptions.SetSettingsFileName(const Value : TFileName);
 begin
   if FSettingsFileName <> Value then
   begin
-    ValidateSettingsFileName(Value);
+    if FValidate then
+      ValidateSettingsFileName(Value);
+
     FSettingsFileName := Value;
   end;
 end;
@@ -145,7 +153,7 @@ end;
 procedure TFixInsightOptions.ValidateProjectFileName(const Value : TFileName);
 begin
   if not TFile.Exists(Value) then
-    EFIOProjectFileNotFound.Create;
+    raise EFIOProjectFileNotFound.Create;
 end;
 
 procedure TFixInsightOptions.ValidateSettingsFileName(const Value : TFileName);
