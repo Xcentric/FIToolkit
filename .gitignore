@@ -58,6 +58,7 @@ __history/
 
 # Third-party tools
 dunit.ini
+TestInsightSettings.ini
 *.cbk
 *.gex
 *.orig
