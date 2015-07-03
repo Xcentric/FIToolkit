@@ -18,6 +18,8 @@ type
       procedure AfterConstruction; override;
       procedure Load;
       procedure Save;
+
+      property Config : TMemIniFile read FConfig;
   end;
 
 implementation
