@@ -26,6 +26,12 @@ resourcestring
   SFIOProjectFileNotFound = 'Файл проекта не найден';
   SFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден';
 
+  SCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден';
+  SCDInputFileNotFound = 'Входной файл не найден';
+  SCDInvalidOutputFileName = 'Неверное имя выходного файла';
+  SCDOutputDirectoryNotFound = 'Выходная директория не найдена';
+  SCDTempDirectoryNotFound = 'Директория для временных файлов не найдена';
+
 implementation
 
 end.

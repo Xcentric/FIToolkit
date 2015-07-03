@@ -23,10 +23,14 @@ uses
   Base.Consts in '..\Source\Base\Base.Consts.pas',
   Base.Exceptions in '..\Source\Base\Base.Exceptions.pas',
   Config.Consts in '..\Source\Config\Config.Consts.pas',
+  Config.Data in '..\Source\Config\Config.Data.pas',
   Config.Exceptions in '..\Source\Config\Config.Exceptions.pas',
   Config.FixInsight in '..\Source\Config\Config.FixInsight.pas',
+  Config.Types in '..\Source\Config\Config.Types.pas',
   Test_Base.Exceptions in 'Test_Base.Exceptions.pas',
-  Test_Config.FixInsight in 'Test_Config.FixInsight.pas';
+  Test_Config.Data in 'Test_Config.Data.pas',
+  Test_Config.FixInsight in 'Test_Config.FixInsight.pas',
+  TestConsts in 'TestConsts.pas';
 
 {$R *.RES}
 

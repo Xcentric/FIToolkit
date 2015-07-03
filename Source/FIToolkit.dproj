@@ -86,9 +86,11 @@
         <DCCReference Include="Base\Base.Consts.pas"/>
         <DCCReference Include="Base\Base.Exceptions.pas"/>
         <DCCReference Include="Config\Config.Consts.pas"/>
+        <DCCReference Include="Config\Config.Data.pas"/>
         <DCCReference Include="Config\Config.Exceptions.pas"/>
         <DCCReference Include="Config\Config.FixInsight.pas"/>
         <DCCReference Include="Config\Config.Manager.pas"/>
+        <DCCReference Include="Config\Config.Types.pas"/>
         <DCCReference Include="LaunchParams\LaunchParams.Consts.pas"/>
         <DCCReference Include="Logger\Logger.Consts.pas"/>
         <DCCReference Include="Reports\Builder\Reports.Builder.Consts.pas"/>

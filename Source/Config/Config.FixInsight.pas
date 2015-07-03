@@ -3,11 +3,10 @@ unit Config.FixInsight;
 interface
 
 uses
-  System.SysUtils, System.Types;
+  System.SysUtils, System.Types,
+  Config.Types;
 
 type
-
-  TFixInsightOutputFormat = (fiofPlainText, fiofXML);
 
   TFixInsightOptions = class sealed
     strict private

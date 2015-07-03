@@ -12,7 +12,7 @@ unit Test_Config.FixInsight;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Types, Config.FixInsight;
+  TestFramework, System.SysUtils, System.Types, TestConsts, Config.FixInsight;
 
 type
   // Test methods for class TFixInsightOptions
@@ -20,11 +20,6 @@ type
   TestTFixInsightOptions = class(TTestCase)
   strict private
     FFixInsightOptions: TFixInsightOptions;
-  private
-    const
-      STR_INVALID_FILENAME = '~non_existent~!@#$%^&*()<>?.file';
-      STR_NON_EXISTENT_DIR = 'Y:\~non_existent~!@#$%^&*()<>/\?.folder\';
-      STR_NON_EXISTENT_FILE = STR_NON_EXISTENT_DIR + STR_INVALID_FILENAME;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -37,7 +32,7 @@ type
 implementation
 
 uses
-  Config.Exceptions, Config.Consts;
+  Config.Exceptions, Config.Types, Config.Consts;
 
 procedure TestTFixInsightOptions.SetUp;
 begin
