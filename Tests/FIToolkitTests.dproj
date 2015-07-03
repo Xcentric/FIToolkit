@@ -90,8 +90,8 @@
         <DCCReference Include="..\Source\Config\Config.FixInsight.pas"/>
         <DCCReference Include="..\Source\Config\Config.Types.pas"/>
         <DCCReference Include="Test_Base.Exceptions.pas"/>
-        <DCCReference Include="Test_Config.FixInsight.pas"/>
         <DCCReference Include="Test_Config.Data.pas"/>
+        <DCCReference Include="Test_Config.FixInsight.pas"/>
         <DCCReference Include="TestConsts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

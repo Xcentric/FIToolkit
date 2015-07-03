@@ -85,6 +85,7 @@
         <DCCReference Include="Main.pas"/>
         <DCCReference Include="Base\Base.Consts.pas"/>
         <DCCReference Include="Base\Base.Exceptions.pas"/>
+        <DCCReference Include="Config\Config.ConfigFile.pas"/>
         <DCCReference Include="Config\Config.Consts.pas"/>
         <DCCReference Include="Config\Config.Data.pas"/>
         <DCCReference Include="Config\Config.Exceptions.pas"/>

@@ -11,7 +11,7 @@ program FIToolkitTests;
 }
 
 {$IFDEF CONSOLE_TESTRUNNER}
-{$APPTYPE CONSOLE}
+  {$APPTYPE CONSOLE}
 {$ENDIF}
 
 uses
@@ -32,8 +32,6 @@ uses
   Test_Config.FixInsight in 'Test_Config.FixInsight.pas',
   TestConsts in 'TestConsts.pas';
 
-{$R *.RES}
-
   {$IFDEF USE_TESTINSIGHT}
   function IsTestInsightRunning : Boolean;
     var
@@ -44,6 +42,8 @@ uses
     Result := not TIClient.HasError;
   end;
   {$ENDIF}
+
+{$R *.RES}
 
 begin
   {$IFDEF USE_TESTINSIGHT}

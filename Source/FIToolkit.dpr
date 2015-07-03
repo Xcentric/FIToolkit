@@ -8,6 +8,7 @@ uses
   Main in 'Main.pas',
   Base.Consts in 'Base\Base.Consts.pas',
   Base.Exceptions in 'Base\Base.Exceptions.pas',
+  Config.ConfigFile in 'Config\Config.ConfigFile.pas',
   Config.Consts in 'Config\Config.Consts.pas',
   Config.Data in 'Config\Config.Data.pas',
   Config.Exceptions in 'Config\Config.Exceptions.pas',

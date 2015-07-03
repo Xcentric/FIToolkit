@@ -35,6 +35,7 @@ type
       destructor Destroy; override;
 
       property FixInsightExe : TFileName read FFixInsightExe write SetFixInsightExe;
+      property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
       property InputFileName : TFileName read FInputFileName write SetInputFileName;
       property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
       property OutputFileName : String read FOutputFileName write SetOutputFileName;
