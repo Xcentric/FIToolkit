@@ -20,11 +20,16 @@ type
   TestTFixInsightOptions = class(TTestCase)
   strict private
     FFixInsightOptions: TFixInsightOptions;
+  private
+    const
+      STR_NON_EXISTENT_FILE = 'Y:\~non_existent!@#$%^&*(:)?.folder\~non_existent!@#$%^&*(:)?.file';
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
     procedure TestToString;
+    procedure TestValidationWithInvalidProps;
+    procedure TestValidationWithValidProps;
   end;
 
 implementation
@@ -44,20 +49,19 @@ begin
 end;
 
 procedure TestTFixInsightOptions.TestToString;
-const
-  STR_DEFINE1 = 'DEFINE1';
-  STR_DEFINE2 = 'DEFINE2';
-  STR_NON_EXISTENT_FILE = 'Y:\~non_existent!@#$%^&*(:)?.folder\~non_existent!@#$%^&*(:)?.file';
-  STR_EXPECTED_RESULT =
-    STR_FIPARAM_PROJECT + STR_NON_EXISTENT_FILE + ' ' +
-    STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
-    STR_FIPARAM_OUTPUT + STR_NON_EXISTENT_FILE + ' ' +
-    STR_FIPARAM_SETTINGS + STR_NON_EXISTENT_FILE + ' ' +
-    STR_FIPARAM_XML;
-var
-  Defines : TStringDynArray;
-  ReturnValue : String;
-  bWasException : Boolean;
+  const
+    STR_DEFINE1 = 'DEFINE1';
+    STR_DEFINE2 = 'DEFINE2';
+    STR_EXPECTED_RESULT =
+      STR_FIPARAM_PROJECT + STR_NON_EXISTENT_FILE + ' ' +
+      STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
+      STR_FIPARAM_OUTPUT + STR_NON_EXISTENT_FILE + ' ' +
+      STR_FIPARAM_SETTINGS + STR_NON_EXISTENT_FILE + ' ' +
+      STR_FIPARAM_XML;
+  var
+    Defines : TStringDynArray;
+    ReturnValue : String;
+    bWasException : Boolean;
 begin
   SetLength(Defines, 2);
   Defines[0] := STR_DEFINE1;
@@ -76,12 +80,12 @@ begin
   { Check string format }
 
   ReturnValue := FFixInsightOptions.ToString;
-  CheckTrue(ReturnValue = STR_EXPECTED_RESULT, 'ReturnValue = STR_EXPECTED_RESULT');
+  CheckEquals(ReturnValue, STR_EXPECTED_RESULT, 'ReturnValue = STR_EXPECTED_RESULT');
 
-  { Check validation - common }
+  { Check validation within method call }
 
-  bWasException := False;
   FFixInsightOptions.Validate := True;
+  bWasException := False;
   try
     ReturnValue := FFixInsightOptions.ToString;
   except
@@ -92,17 +96,13 @@ begin
     end;
   end;
   CheckTrue(bWasException, 'ToString::bWasException');
+end;
 
-  { Check validation - valid params }
-
-  with FFixInsightOptions do
-  begin
-    Validate := True;
-    SettingsFileName := EmptyStr;
-    ProjectFileName := ParamStr(0);
-    OutputFileName := ParamStr(0);
-    SettingsFileName := ParamStr(0);
-  end;
+procedure TestTFixInsightOptions.TestValidationWithInvalidProps;
+  var
+    bWasException : Boolean;
+begin
+  FFixInsightOptions.Validate := True;
 
   { Check validation - invalid project file name }
 
@@ -122,6 +122,7 @@ begin
 
   bWasException := False;
   try
+    FFixInsightOptions.OutputFileName := ParamStr(0);
     FFixInsightOptions.OutputFileName := EmptyStr;
   except
     on E:Exception do
@@ -132,7 +133,7 @@ begin
   end;
   CheckTrue(bWasException, 'OutputFileName::bWasException');
 
-  { Check validation - invalid output file name }
+  { Check validation - nonexistent output directory }
 
   bWasException := False;
   try
@@ -159,6 +160,28 @@ begin
     end;
   end;
   CheckTrue(bWasException, 'SettingsFileName::bWasException');
+end;
+
+procedure TestTFixInsightOptions.TestValidationWithValidProps;
+  var
+    bWasException : Boolean;
+begin
+  bWasException := False;
+  try
+    with FFixInsightOptions do
+    begin
+      Validate := True;
+      CompilerDefines := nil;
+      OutputFileName := ParamStr(0);
+      OutputFormat := fiofPlainText;
+      ProjectFileName := ParamStr(0);
+      SettingsFileName := ParamStr(0);
+      SettingsFileName := EmptyStr;
+    end;
+  except
+    bWasException := True;
+  end;
+  CheckFalse(bWasException, 'TestValidationWithValidProps::bWasException');
 end;
 
 initialization
