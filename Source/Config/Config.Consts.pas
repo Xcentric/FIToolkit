@@ -21,6 +21,7 @@ resourcestring
   { Exceptions }
 
   SFIOEmptyOutputFileName = 'Пустое имя выходного файла';
+  SFIOInvalidOutputFileName = 'Имя выходного файла содержит недопустимые символы';
   SFIOOutputDirectoryNotFound = 'Директории выходного файла не существует';
   SFIOProjectFileNotFound = 'Файл проекта не найден';
   SFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден';

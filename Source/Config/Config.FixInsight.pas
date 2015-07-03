@@ -148,6 +148,9 @@ begin
 
   if not TDirectory.Exists(ExtractFilePath(Value)) then
     raise EFIOOutputDirectoryNotFound.Create;
+
+  if not TPath.HasValidFileNameChars(ExtractFileName(Value), False) then
+    raise EFIOInvalidOutputFileName.Create;
 end;
 
 procedure TFixInsightOptions.ValidateProjectFileName(const Value : TFileName);

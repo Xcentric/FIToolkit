@@ -14,6 +14,7 @@ type
   EFixInsightOptionsException = class abstract (EConfigException);
 
   EFIOEmptyOutputFileName = class (EFixInsightOptionsException);
+  EFIOInvalidOutputFileName = class (EFixInsightOptionsException);
   EFIOOutputDirectoryNotFound = class (EFixInsightOptionsException);
   EFIOProjectFileNotFound = class (EFixInsightOptionsException);
   EFIOSettingsFileNotFound = class (EFixInsightOptionsException);
@@ -25,6 +26,7 @@ uses
 
 initialization
   RegisterExceptionMessage(EFIOEmptyOutputFileName, SFIOEmptyOutputFileName);
+  RegisterExceptionMessage(EFIOInvalidOutputFileName, SFIOInvalidOutputFileName);
   RegisterExceptionMessage(EFIOOutputDirectoryNotFound, SFIOOutputDirectoryNotFound);
   RegisterExceptionMessage(EFIOProjectFileNotFound, SFIOProjectFileNotFound);
   RegisterExceptionMessage(EFIOSettingsFileNotFound, SFIOSettingsFileNotFound);

@@ -22,7 +22,9 @@ type
     FFixInsightOptions: TFixInsightOptions;
   private
     const
-      STR_NON_EXISTENT_FILE = 'Y:\~non_existent!@#$%^&*(:)?.folder\~non_existent!@#$%^&*(:)?.file';
+      STR_INVALID_FILENAME = '~non_existent~!@#$%^&*()<>?.file';
+      STR_NON_EXISTENT_DIR = 'Y:\~non_existent~!@#$%^&*()<>/\?.folder\';
+      STR_NON_EXISTENT_FILE = STR_NON_EXISTENT_DIR + STR_INVALID_FILENAME;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -137,12 +139,26 @@ begin
 
   bWasException := False;
   try
-    FFixInsightOptions.OutputFileName := STR_NON_EXISTENT_FILE;
+    FFixInsightOptions.OutputFileName := STR_NON_EXISTENT_DIR + ExtractFileName(ParamStr(0));
   except
     on E:Exception do
     begin
       bWasException := True;
       CheckTrue(E.InheritsFrom(EFIOOutputDirectoryNotFound), 'E.InheritsFrom(EFIOOutputDirectoryNotFound)');
+    end;
+  end;
+  CheckTrue(bWasException, 'OutputFileName::bWasException');
+
+  { Check validation - invalid output file name }
+
+  bWasException := False;
+  try
+    FFixInsightOptions.OutputFileName := ExtractFilePath(ParamStr(0)) + STR_INVALID_FILENAME;
+  except
+    on E:Exception do
+    begin
+      bWasException := True;
+      CheckTrue(E.InheritsFrom(EFIOInvalidOutputFileName), 'E.InheritsFrom(EFIOInvalidOutputFileName)');
     end;
   end;
   CheckTrue(bWasException, 'OutputFileName::bWasException');
