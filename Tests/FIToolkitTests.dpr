@@ -27,9 +27,11 @@ uses
   FIToolkit.Config.Exceptions in '..\Source\Config\FIToolkit.Config.Exceptions.pas',
   FIToolkit.Config.FixInsight in '..\Source\Config\FIToolkit.Config.FixInsight.pas',
   FIToolkit.Config.Types in '..\Source\Config\FIToolkit.Config.Types.pas',
+  FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   Test_FIToolkit.Base.Exceptions in 'Test_FIToolkit.Base.Exceptions.pas',
   Test_FIToolkit.Config.Data in 'Test_FIToolkit.Config.Data.pas',
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
+  Test_FIToolkit.Utils in 'Test_FIToolkit.Utils.pas',
   TestConsts in 'TestConsts.pas';
 
   {$IFDEF USE_TESTINSIGHT}
