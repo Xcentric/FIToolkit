@@ -15,6 +15,7 @@ uses
   Config.FixInsight in 'Config\Config.FixInsight.pas',
   Config.Manager in 'Config\Config.Manager.pas',
   Config.Types in 'Config\Config.Types.pas',
+  FIToolkit.Utils in 'FIToolkit.Utils.pas',
   LaunchParams.Consts in 'LaunchParams\LaunchParams.Consts.pas',
   Logger.Consts in 'Logger\Logger.Consts.pas',
   Reports.Builder.Consts in 'Reports\Builder\Reports.Builder.Consts.pas',

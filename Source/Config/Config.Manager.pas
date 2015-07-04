@@ -15,7 +15,7 @@ type
     protected
       procedure FillDataFromFile;
     public
-      constructor Create(const ConfigFileName : TFileName);
+      constructor Create(const ConfigFileName : TFileName; GenerateConfig, Validate : Boolean);
       destructor Destroy; override;
 
       property ConfigData : TConfigData read FConfigData;
@@ -25,15 +25,15 @@ implementation
 
 { TConfigManager }
 
-constructor TConfigManager.Create(const ConfigFileName : TFileName);
+constructor TConfigManager.Create(const ConfigFileName : TFileName; GenerateConfig, Validate : Boolean);
 begin
   inherited Create;
 
   FConfigData := TConfigData.Create;
-  FConfigData.Validate := True;
-  FConfigData.FixInsightOptions.Validate := True;
+  FConfigData.Validate := Validate;
+  FConfigData.FixInsightOptions.Validate := Validate;
 
-  FConfigFile := TConfigFile.Create(ConfigFileName);
+  FConfigFile := TConfigFile.Create(ConfigFileName, GenerateConfig);
 end;
 
 destructor TConfigManager.Destroy;

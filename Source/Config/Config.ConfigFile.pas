@@ -3,7 +3,7 @@ unit Config.ConfigFile;
 interface
 
 uses
-  System.IniFiles, System.Classes, System.SysUtils, System.IOUtils;
+  System.IniFiles, System.Classes, System.SysUtils;
 
 type
 
@@ -11,18 +11,25 @@ type
     strict private
       FConfig : TMemIniFile;
       FConfigFile : TFileStream;
+    private
+      function  GetHasFile : Boolean;
     public
-      constructor Create(const FileName : TFileName);
+      constructor Create(const FileName : TFileName; Writable : Boolean);
       destructor Destroy; override;
 
       procedure AfterConstruction; override;
-      procedure Load;
-      procedure Save;
+      function  Load : Boolean;
+      function  Save : Boolean;
 
       property Config : TMemIniFile read FConfig;
+      property HasFile : Boolean read GetHasFile;
   end;
 
 implementation
+
+uses
+  System.IOUtils,
+  FIToolkit.Utils;
 
 type
 
@@ -69,17 +76,19 @@ procedure TConfigFile.AfterConstruction;
 begin
   inherited AfterConstruction;
 
-  Load;
+  if HasFile then
+    Load;
 end;
 
-constructor TConfigFile.Create(const FileName : TFileName);
+constructor TConfigFile.Create(const FileName : TFileName; Writable : Boolean);
 begin
   inherited Create;
 
-  if TFile.Exists(FileName) then
-    FConfigFile := TFile.OpenRead(FileName)
-  else
-    FConfigFile := TFile.Create(FileName);
+  if TFile.Exists(FileName) or Writable then
+    FConfigFile := TFile.Open(FileName,
+      Iff.Get<TFileMode>(Writable, TFileMode.fmOpenOrCreate, TFileMode.fmOpen),
+      Iff.Get<TFileAccess>(Writable, TFileAccess.faReadWrite, TFileAccess.faRead),
+      TFileShare.fsRead);
 
   FConfig := TMemIniFile.Create(EmptyStr);
 end;
@@ -92,14 +101,25 @@ begin
   inherited Destroy;
 end;
 
-procedure TConfigFile.Load;
+function TConfigFile.GetHasFile : Boolean;
 begin
-  FConfig.LoadFromStream(FConfigFile);
+  Result := Assigned(FConfigFile);
 end;
 
-procedure TConfigFile.Save;
+function TConfigFile.Load : Boolean;
 begin
-  FConfig.SaveToStream(FConfigFile);
+  Result := HasFile;
+
+  if Result then
+    FConfig.LoadFromStream(FConfigFile);
+end;
+
+function TConfigFile.Save : Boolean;
+begin
+  Result := HasFile;
+
+  if Result then
+    FConfig.SaveToStream(FConfigFile);
 end;
 
 end.
