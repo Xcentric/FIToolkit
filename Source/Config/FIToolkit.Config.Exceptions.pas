@@ -1,9 +1,9 @@
-unit Config.Exceptions;
+unit FIToolkit.Config.Exceptions;
 
 interface
 
 uses
-  Base.Exceptions;
+  FIToolkit.Base.Exceptions;
 
 type
 
@@ -32,7 +32,7 @@ type
 implementation
 
 uses
-  Config.Consts;
+  FIToolkit.Config.Consts;
 
 initialization
   RegisterExceptionMessage(EFIOEmptyOutputFileName, SFIOEmptyOutputFileName);

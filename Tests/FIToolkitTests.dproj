@@ -82,16 +82,16 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\Source\Base\Base.Consts.pas"/>
-        <DCCReference Include="..\Source\Base\Base.Exceptions.pas"/>
-        <DCCReference Include="..\Source\Config\Config.Consts.pas"/>
-        <DCCReference Include="..\Source\Config\Config.Data.pas"/>
-        <DCCReference Include="..\Source\Config\Config.Exceptions.pas"/>
-        <DCCReference Include="..\Source\Config\Config.FixInsight.pas"/>
-        <DCCReference Include="..\Source\Config\Config.Types.pas"/>
-        <DCCReference Include="Test_Base.Exceptions.pas"/>
-        <DCCReference Include="Test_Config.Data.pas"/>
-        <DCCReference Include="Test_Config.FixInsight.pas"/>
+        <DCCReference Include="..\Source\Base\FIToolkit.Base.Consts.pas"/>
+        <DCCReference Include="..\Source\Base\FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Consts.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Data.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.FixInsight.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
+        <DCCReference Include="Test_FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.Data.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="TestConsts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

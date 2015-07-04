@@ -1,4 +1,4 @@
-unit Test_Config.FixInsight;
+unit Test_FIToolkit.Config.FixInsight;
 {
 
   Delphi DUnit Test Case
@@ -12,7 +12,8 @@ unit Test_Config.FixInsight;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Types, TestConsts, Config.FixInsight;
+  TestFramework,
+  FIToolkit.Config.FixInsight;
 
 type
   // Test methods for class TFixInsightOptions
@@ -32,7 +33,9 @@ type
 implementation
 
 uses
-  Config.Exceptions, Config.Types, Config.Consts;
+  System.SysUtils, System.Types,
+  TestConsts,
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Types, FIToolkit.Config.Consts;
 
 procedure TestTFixInsightOptions.SetUp;
 begin
@@ -41,8 +44,7 @@ end;
 
 procedure TestTFixInsightOptions.TearDown;
 begin
-  FFixInsightOptions.Free;
-  FFixInsightOptions := nil;
+  FreeAndNil(FFixInsightOptions);
 end;
 
 procedure TestTFixInsightOptions.TestToString;

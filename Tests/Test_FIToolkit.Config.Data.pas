@@ -1,4 +1,4 @@
-unit Test_Config.Data;
+unit Test_FIToolkit.Config.Data;
 {
 
   Delphi DUnit Test Case
@@ -12,7 +12,8 @@ unit Test_Config.Data;
 interface
 
 uses
-  TestFramework, Config.FixInsight, Config.Data, System.SysUtils;
+  TestFramework,
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Data;
 
 type
   // Test methods for class TConfigData
@@ -31,7 +32,9 @@ type
 implementation
 
 uses
-  TestConsts, Config.Exceptions;
+  System.SysUtils,
+  TestConsts,
+  FIToolkit.Config.Exceptions;
 
 procedure TestTConfigData.SetUp;
 begin
@@ -40,8 +43,7 @@ end;
 
 procedure TestTConfigData.TearDown;
 begin
-  FConfigData.Free;
-  FConfigData := nil;
+  FreeAndNil(FConfigData);
 end;
 
 procedure TestTConfigData.TestInvalidData;

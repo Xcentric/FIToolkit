@@ -1,10 +1,10 @@
-unit Config.Manager;
+unit FIToolkit.Config.Manager;
 
 interface
 
 uses
   System.SysUtils,
-  Config.Data, Config.ConfigFile;
+  FIToolkit.Config.Data, FIToolkit.Config.ConfigFile;
 
 type
 

@@ -1,10 +1,10 @@
-unit Config.FixInsight;
+unit FIToolkit.Config.FixInsight;
 
 interface
 
 uses
   System.SysUtils, System.Types,
-  Config.Types;
+  FIToolkit.Config.Types;
 
 type
 
@@ -45,7 +45,7 @@ implementation
 
 uses
   System.IOUtils,
-  Config.Exceptions, Config.Consts;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Consts;
 
 { TFixInsightOptions }
 

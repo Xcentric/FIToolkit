@@ -1,4 +1,4 @@
-unit Base.Exceptions;
+unit FIToolkit.Base.Exceptions;
 
 interface
 
@@ -23,7 +23,7 @@ type
 implementation
 
 uses
-  Base.Consts;
+  FIToolkit.Base.Consts;
 
 type
 

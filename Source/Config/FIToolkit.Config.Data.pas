@@ -1,10 +1,10 @@
-unit Config.Data;
+unit FIToolkit.Config.Data;
 
 interface
 
 uses
   System.SysUtils,
-  Config.FixInsight;
+  FIToolkit.Config.FixInsight;
 
 type
 
@@ -47,7 +47,7 @@ implementation
 
 uses
   System.IOUtils,
-  Config.Exceptions, Config.Consts;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Consts;
 
 { TConfigData }
 

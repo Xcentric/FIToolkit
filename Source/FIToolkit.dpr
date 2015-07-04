@@ -5,22 +5,22 @@ program FIToolkit;
 uses
   System.SysUtils,
   System.Types,
-  Main in 'Main.pas',
-  Base.Consts in 'Base\Base.Consts.pas',
-  Base.Exceptions in 'Base\Base.Exceptions.pas',
-  Config.ConfigFile in 'Config\Config.ConfigFile.pas',
-  Config.Consts in 'Config\Config.Consts.pas',
-  Config.Data in 'Config\Config.Data.pas',
-  Config.Exceptions in 'Config\Config.Exceptions.pas',
-  Config.FixInsight in 'Config\Config.FixInsight.pas',
-  Config.Manager in 'Config\Config.Manager.pas',
-  Config.Types in 'Config\Config.Types.pas',
-  FIToolkit.Utils in 'FIToolkit.Utils.pas',
-  LaunchParams.Consts in 'LaunchParams\LaunchParams.Consts.pas',
-  Logger.Consts in 'Logger\Logger.Consts.pas',
-  Reports.Builder.Consts in 'Reports\Builder\Reports.Builder.Consts.pas',
-  Reports.Parser.Consts in 'Reports\Parser\Reports.Parser.Consts.pas',
-  Runner.Consts in 'Runner\Runner.Consts.pas';
+  FIToolkit.Base.Consts in 'Base\FIToolkit.Base.Consts.pas',
+  FIToolkit.Base.Exceptions in 'Base\FIToolkit.Base.Exceptions.pas',
+  FIToolkit.Config.ConfigFile in 'Config\FIToolkit.Config.ConfigFile.pas',
+  FIToolkit.Config.Consts in 'Config\FIToolkit.Config.Consts.pas',
+  FIToolkit.Config.Data in 'Config\FIToolkit.Config.Data.pas',
+  FIToolkit.Config.Exceptions in 'Config\FIToolkit.Config.Exceptions.pas',
+  FIToolkit.Config.FixInsight in 'Config\FIToolkit.Config.FixInsight.pas',
+  FIToolkit.Config.Manager in 'Config\FIToolkit.Config.Manager.pas',
+  FIToolkit.Config.Types in 'Config\FIToolkit.Config.Types.pas',
+  FIToolkit.LaunchParams.Consts in 'LaunchParams\FIToolkit.LaunchParams.Consts.pas',
+  FIToolkit.Logger.Consts in 'Logger\FIToolkit.Logger.Consts.pas',
+  FIToolkit.Main in 'FIToolkit.Main.pas',
+  FIToolkit.Reports.Builder.Consts in 'Reports\Builder\FIToolkit.Reports.Builder.Consts.pas',
+  FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
+  FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas',
+  FIToolkit.Utils in 'FIToolkit.Utils.pas';
 
 {$R *.res}
 
