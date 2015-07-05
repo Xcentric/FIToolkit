@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.Data, FIToolkit.Config.ConfigFile;
+  FIToolkit.Config.Data, FIToolkit.Config.Storage;
 
 type
 

@@ -84,12 +84,12 @@
         </DelphiCompile>
         <DCCReference Include="Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Exceptions.pas"/>
-        <DCCReference Include="Config\FIToolkit.Config.ConfigFile.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Consts.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Data.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Exceptions.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Manager.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="LaunchParams\FIToolkit.LaunchParams.Consts.pas"/>
         <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>
