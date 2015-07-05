@@ -26,13 +26,17 @@ uses
   FIToolkit.Config.Data in '..\Source\Config\FIToolkit.Config.Data.pas',
   FIToolkit.Config.Exceptions in '..\Source\Config\FIToolkit.Config.Exceptions.pas',
   FIToolkit.Config.FixInsight in '..\Source\Config\FIToolkit.Config.FixInsight.pas',
+  FIToolkit.Config.Storage in '..\Source\Config\FIToolkit.Config.Storage.pas',
   FIToolkit.Config.Types in '..\Source\Config\FIToolkit.Config.Types.pas',
   FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   Test_FIToolkit.Base.Exceptions in 'Test_FIToolkit.Base.Exceptions.pas',
   Test_FIToolkit.Config.Data in 'Test_FIToolkit.Config.Data.pas',
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
+  Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
   Test_FIToolkit.Utils in 'Test_FIToolkit.Utils.pas',
   TestConsts in 'TestConsts.pas';
+
+{$R *.RES}
 
   {$IFDEF USE_TESTINSIGHT}
   function IsTestInsightRunning : Boolean;
@@ -44,8 +48,6 @@ uses
     Result := not TIClient.HasError;
   end;
   {$ENDIF}
-
-{$R *.RES}
 
 begin
   {$IFDEF USE_TESTINSIGHT}
