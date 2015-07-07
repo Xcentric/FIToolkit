@@ -53,12 +53,12 @@ function TFixInsightOptions.FormatCompilerDefines : String;
   var
     S : String;
 begin
-  Result := EmptyStr;
+  Result := String.Empty;
 
   if Length(FCompilerDefines) > 0 then
   begin
     for S in FCompilerDefines do
-      if Result = EmptyStr then
+      if String.IsNullOrEmpty(Result) then
         Result := S
       else
         Result := Concat(Result, STR_FIPARAM_VALUES_DELIM, S);
@@ -76,11 +76,11 @@ function TFixInsightOptions.FormatOutputFormat : String;
 begin
   case FOutputFormat of
     fiofPlainText:
-      Result := EmptyStr;
+      Result := String.Empty;
     fiofXML:
       Result := STR_FIPARAM_XML;
   else
-    Result := EmptyStr;
+    Result := String.Empty;
   end;
 end;
 
@@ -142,7 +142,7 @@ end;
 
 procedure TFixInsightOptions.ValidateOutputFileName(const Value : TFileName);
 begin
-  if Value = EmptyStr then
+  if String.IsNullOrWhiteSpace(Value) then
     raise EFIOEmptyOutputFileName.Create;
 
   if not TDirectory.Exists(ExtractFilePath(Value)) then
@@ -160,7 +160,7 @@ end;
 
 procedure TFixInsightOptions.ValidateSettingsFileName(const Value : TFileName);
 begin
-  if (Value <> EmptyStr) and not TFile.Exists(Value) then
+  if not String.IsNullOrEmpty(Value) and not TFile.Exists(Value) then
     raise EFIOSettingsFileNotFound.Create;
 end;
 

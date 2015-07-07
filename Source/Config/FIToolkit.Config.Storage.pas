@@ -90,7 +90,7 @@ begin
       Iff.Get<TFileAccess>(Writable, TFileAccess.faReadWrite, TFileAccess.faRead),
       TFileShare.fsRead);
 
-  FConfig := TMemIniFile.Create(EmptyStr);
+  FConfig := TMemIniFile.Create(String.Empty);
 end;
 
 destructor TConfigFile.Destroy;

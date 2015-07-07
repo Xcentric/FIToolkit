@@ -122,7 +122,7 @@ begin
   bWasException := False;
   try
     FFixInsightOptions.OutputFileName := ParamStr(0);
-    FFixInsightOptions.OutputFileName := EmptyStr;
+    FFixInsightOptions.OutputFileName := String.Empty;
   except
     on E:Exception do
     begin
@@ -189,7 +189,7 @@ begin
       OutputFormat := fiofPlainText;
       ProjectFileName := ParamStr(0);
       SettingsFileName := ParamStr(0);
-      SettingsFileName := EmptyStr;
+      SettingsFileName := String.Empty;
     end;
   except
     bWasException := True;
