@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.FixInsight;
+  FIToolkit.Config.Types, FIToolkit.Config.FixInsight;
 
 type
 
@@ -34,12 +34,19 @@ type
       constructor Create;
       destructor Destroy; override;
 
+      [FIToolkitParam]
       property FixInsightExe : TFileName read FFixInsightExe write SetFixInsightExe;
+      [FixInsightParam]
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
+      [FIToolkitParam]
       property InputFileName : TFileName read FInputFileName write SetInputFileName;
+      [FIToolkitParam]
       property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
+      [FIToolkitParam]
       property OutputFileName : String read FOutputFileName write SetOutputFileName;
+      [FIToolkitParam]
       property TempDirectory : String read FTempDirectory write SetTempDirectory;
+
       property Validate : Boolean read FValidate write FValidate;
   end;
 
