@@ -15,7 +15,7 @@ program FIToolkitTests;
 {$ENDIF}
 
 uses
-  {$IFDEF USE_TESTINSIGHT}
+  {$IFDEF TESTINSIGHT}
   TestInsight.DUnit,
   TestInsight.Client,
   {$ENDIF}
@@ -38,7 +38,7 @@ uses
 
 {$R *.RES}
 
-  {$IFDEF USE_TESTINSIGHT}
+  {$IFDEF TESTINSIGHT}
   function IsTestInsightRunning : Boolean;
     var
       TIClient : ITestInsightClient;
@@ -50,7 +50,7 @@ uses
   {$ENDIF}
 
 begin
-  {$IFDEF USE_TESTINSIGHT}
+  {$IFDEF TESTINSIGHT}
   if IsTestInsightRunning then
     TestInsight.DUnit.RunRegisteredTests
   else

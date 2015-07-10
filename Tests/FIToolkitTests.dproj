@@ -43,7 +43,7 @@
         <SanitizedProjectName>FIToolkitTests</SanitizedProjectName>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <DCC_UnitSearchPath>$(BDS)\Source\DUnit\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_Define>_CONSOLE_TESTRUNNER;TESTINSIGHT;USE_TESTINSIGHT;$(DCC_Define)</DCC_Define>
+        <DCC_Define>_CONSOLE_TESTRUNNER;TESTINSIGHT;$(DCC_Define)</DCC_Define>
         <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>..\Bin\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
@@ -94,9 +94,9 @@
         <DCCReference Include="Test_FIToolkit.Base.Exceptions.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Data.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
-        <DCCReference Include="TestConsts.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="Test_FIToolkit.Utils.pas"/>
+        <DCCReference Include="TestConsts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
