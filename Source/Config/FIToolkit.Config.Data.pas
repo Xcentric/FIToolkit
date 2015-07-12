@@ -36,7 +36,7 @@ type
 
       [FIToolkitParam]
       property FixInsightExe : TFileName read FFixInsightExe write SetFixInsightExe;
-      [FixInsightParam]
+      [FIToolkitParam]
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
       [FIToolkitParam]
       property InputFileName : TFileName read FInputFileName write SetInputFileName;

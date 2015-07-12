@@ -33,11 +33,17 @@ type
     public
       function  ToString : String; override;
 
+      [FixInsightParam]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
+      [FixInsightParam]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
+      [FixInsightParam]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
+      [FixInsightParam]
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
+      [FixInsightParam]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
+
       property Validate : Boolean read FValidate write FValidate;
   end;
 
