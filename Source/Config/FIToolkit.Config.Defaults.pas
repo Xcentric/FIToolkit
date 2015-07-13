@@ -3,7 +3,7 @@ unit FIToolkit.Config.Defaults;
 interface
 
 uses
-  System.SysUtils, System.Rtti,
+  System.SysUtils, System.Types, System.Rtti,
   FIToolkit.Config.Types;
 
 type
@@ -35,14 +35,20 @@ type
 
   function GetDefaultValue(DefValAttribute : TDefaultValueAttribute) : TValue;
 
+type
+
   { Actual default value attribute classes }
 
-  //TODO: define descedants
+   DefaultCompilerDefines = class (TDefaultValueAttribute<TStringDynArray>);
+   DefaultOutputFormat = class (TDefaultValueAttribute<TFixInsightOutputFormat>);
+   DefaultOutputFileName = class (TDefaultValueAttribute<TFileName>);
+   DefaultSettingFileName = class (TDefaultValueAttribute<TFileName>);
 
 implementation
 
 uses
-  System.Generics.Collections;
+  System.Generics.Collections,
+  FIToolkit.Config.Consts;
 
 type
 
@@ -71,7 +77,10 @@ procedure RegisterDefaults;
 begin
   with TDefaultsMap.StaticInstance do
   begin
-    //TODO: fill value map with consts
+    Add(DefaultCompilerDefines, nil); //TODO: copy a const array
+    Add(DefaultOutputFileName, DEF_STR_OUTPUT_FILENAME);
+    Add(DefaultOutputFormat, TValue.From<TFixInsightOutputFormat>(DEF_ENUM_OUTPUT_FORMAT));
+    Add(DefaultSettingFileName, DEF_STR_SETTINGS_FILENAME);
   end;
 end;
 

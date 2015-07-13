@@ -2,6 +2,9 @@
 
 interface
 
+uses
+  FIToolkit.Config.Types;
+
 const
 
   { FixInsight command line parameters. Do not localize! }
@@ -15,6 +18,13 @@ const
   STR_FIPARAM_PROJECT  = STR_FIPARAM_PREFIX + 'project'  + STR_FIPARAM_VALUE_DELIM;
   STR_FIPARAM_SETTINGS = STR_FIPARAM_PREFIX + 'settings' + STR_FIPARAM_VALUE_DELIM;
   STR_FIPARAM_XML      = STR_FIPARAM_PREFIX + 'xml';
+
+  { Default config values }
+
+  DEF_ARR_COMPILER_DEFINES : array [0..0] of String = ('_FIXINSIGHT_');
+  DEF_ENUM_OUTPUT_FORMAT = fiofXML;
+  DEF_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
+  DEF_STR_SETTINGS_FILENAME = 'Default.ficfg';
 
 resourcestring
 
