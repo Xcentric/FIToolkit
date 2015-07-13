@@ -4,6 +4,8 @@ interface
 
 type
 
+  TDefaultValueType = (dvtUndefined, dvtStored, dvtEvaluable);
+
   TFixInsightOutputFormat = (fiofPlainText, fiofXML);
 
   TConfigAttribute = class abstract (TCustomAttribute);

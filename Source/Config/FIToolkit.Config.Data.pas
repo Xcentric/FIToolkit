@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.Types, FIToolkit.Config.FixInsight;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults;
 
 type
 

@@ -9,6 +9,7 @@ uses
   FIToolkit.Base.Exceptions in 'Base\FIToolkit.Base.Exceptions.pas',
   FIToolkit.Config.Consts in 'Config\FIToolkit.Config.Consts.pas',
   FIToolkit.Config.Data in 'Config\FIToolkit.Config.Data.pas',
+  FIToolkit.Config.Defaults in 'Config\FIToolkit.Config.Defaults.pas',
   FIToolkit.Config.Exceptions in 'Config\FIToolkit.Config.Exceptions.pas',
   FIToolkit.Config.FixInsight in 'Config\FIToolkit.Config.FixInsight.pas',
   FIToolkit.Config.Manager in 'Config\FIToolkit.Config.Manager.pas',
