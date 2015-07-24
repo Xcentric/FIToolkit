@@ -16,6 +16,7 @@ type
       type
         TFilterPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
     private
+      function  FilterConfig(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
       procedure GenerateFullConfig;
       procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPredicate);
       procedure WriteObjectToConfig(const Instance : TObject; Filter : TFilterPredicate);
@@ -34,7 +35,7 @@ implementation
 
 uses
   System.TypInfo,
-  FIToolkit.Config.Types, FIToolkit.Config.FixInsight;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Types;
 
 { TConfigManager }
 
@@ -64,20 +65,8 @@ begin
   FConfigFile.Load;
   ReadObjectFromConfig(FConfigData,
     function (const Instance : TObject; const Prop : TRttiProperty) : Boolean
-      var
-        Attr : TCustomAttribute;
     begin
-      Result := False;
-
-      if Prop.IsWritable then
-        for Attr in Prop.GetAttributes do
-        begin
-          Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
-                    ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
-
-          if Result then
-            Break;
-        end;
+      Result := Prop.IsWritable and FilterConfig(Instance, Prop);
     end
   );
 end;
@@ -86,23 +75,27 @@ procedure TConfigManager.FillFileFromData;
 begin
   WriteObjectToConfig(FConfigData,
     function (const Instance : TObject; const Prop : TRttiProperty) : Boolean
-      var
-        Attr : TCustomAttribute;
     begin
-      Result := False;
-
-      if Prop.IsReadable then
-        for Attr in Prop.GetAttributes do
-        begin
-          Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
-                    ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
-
-          if Result then
-            Break;
-        end;
+      Result := Prop.IsReadable and FilterConfig(Instance, Prop);
     end
   );
   FConfigFile.Save;
+end;
+
+function TConfigManager.FilterConfig(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
+  var
+    Attr : TCustomAttribute;
+begin
+  Result := False;
+
+  for Attr in Prop.GetAttributes do
+  begin
+    Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
+              ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
+
+    if Result then
+      Break;
+  end;
 end;
 
 procedure TConfigManager.GenerateFullConfig;
@@ -132,6 +125,7 @@ begin
           Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name, 0))
         else
           case Prop.PropertyType.TypeKind of
+            //TODO: not sure if this will work for AnsiString
             tkString, tkLString, tkWString, tkUString:
               //TODO: third patameter must be a routine for getting the default value (parameterized?)
               Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name, String.Empty));

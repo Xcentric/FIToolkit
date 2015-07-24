@@ -24,6 +24,7 @@ uses
   FIToolkit.Base.Exceptions in '..\Source\Base\FIToolkit.Base.Exceptions.pas',
   FIToolkit.Config.Consts in '..\Source\Config\FIToolkit.Config.Consts.pas',
   FIToolkit.Config.Data in '..\Source\Config\FIToolkit.Config.Data.pas',
+  FIToolkit.Config.Defaults in '..\Source\Config\FIToolkit.Config.Defaults.pas',
   FIToolkit.Config.Exceptions in '..\Source\Config\FIToolkit.Config.Exceptions.pas',
   FIToolkit.Config.FixInsight in '..\Source\Config\FIToolkit.Config.FixInsight.pas',
   FIToolkit.Config.Storage in '..\Source\Config\FIToolkit.Config.Storage.pas',

@@ -3,7 +3,7 @@ unit FIToolkit.Base.Exceptions;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections;
+  System.SysUtils;
 
 type
 
@@ -15,7 +15,7 @@ type
     protected
       function GetDefaultMessage : String; virtual;
     public
-      constructor Create;
+      constructor Create; overload;
   end;
 
   procedure RegisterExceptionMessage(AnExceptionClass : ECustomExceptionClass; const Msg : String);
@@ -23,6 +23,7 @@ type
 implementation
 
 uses
+  System.Generics.Collections,
   FIToolkit.Base.Consts;
 
 type
@@ -31,7 +32,7 @@ type
     strict private
       class var FStaticInstance : TExceptionMessageMap;
     private
-      class procedure FreeStaticInstance;
+      class procedure FreeStaticInstance; static;
       class function  GetStaticInstance : TExceptionMessageMap; static;
     public
       class property StaticInstance : TExceptionMessageMap read GetStaticInstance;
@@ -59,8 +60,8 @@ end;
 function ECustomException.GetDefaultMessage : String;
 begin
   with TExceptionMessageMap.StaticInstance do
-    if ContainsKey(GetClassType) then
-      Result := Items[GetClassType]
+    if ContainsKey(Self.GetClassType) then
+      Result := Items[Self.GetClassType]
     else
       Result := SDefaultErrMsg;
 end;
