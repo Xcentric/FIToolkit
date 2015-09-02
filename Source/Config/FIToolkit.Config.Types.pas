@@ -4,7 +4,7 @@ interface
 
 type
 
-  TDefaultValueType = (dvtUndefined, dvtStored, dvtEvaluable);
+  TDefaultValueKind = (dvkUndefined, dvkData, dvkCalculated);
 
   TFixInsightOutputFormat = (fiofPlainText, fiofXML);
 

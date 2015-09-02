@@ -3,52 +3,38 @@ unit FIToolkit.Config.Defaults;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Rtti,
+  System.Rtti,
   FIToolkit.Config.Types;
 
 type
-
-  { Base classes }
 
   TDefaultValueAttributeClass = class of TDefaultValueAttribute;
 
   TDefaultValueAttribute = class abstract (TCustomAttribute)
     strict private
-      FValueType : TDefaultValueType;
+      FValue : TValue;
+      FValueKind : TDefaultValueKind;
     private
       function GetClassType : TDefaultValueAttributeClass;
+      function GetValue : TValue;
+    protected
+      function CalculateValue : TValue; virtual;
     public
-      constructor Create(AValueType : TDefaultValueType);
-
-      property ValueType : TDefaultValueType read FValueType;
-  end;
-
-  TDefaultValueAttribute<T> = class abstract (TDefaultValueAttribute)
-    strict private
-      FValue : T;
-    public
-      constructor Create(const AValue : T); overload;
+      constructor Create(AValue : TValue); overload;
       constructor Create; overload;
 
-      property Value : T read FValue;
+      property Value : TValue read GetValue;
+      property ValueKind : TDefaultValueKind read FValueKind;
   end;
 
-  function GetDefaultValue(DefValAttribute : TDefaultValueAttribute) : TValue;
+  DefaultValue = class (TDefaultValueAttribute);
 
-type
-
-  { Actual default value attribute classes }
-
-   DefaultCompilerDefines = class (TDefaultValueAttribute<TStringDynArray>);
-   DefaultOutputFormat = class (TDefaultValueAttribute<TFixInsightOutputFormat>);
-   DefaultOutputFileName = class (TDefaultValueAttribute<TFileName>);
-   DefaultSettingFileName = class (TDefaultValueAttribute<TFileName>);
+  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
 
 implementation
 
 uses
-  System.Generics.Collections,
-  FIToolkit.Config.Consts;
+  System.SysUtils, System.Generics.Collections;
 
 type
 
@@ -56,7 +42,7 @@ type
     strict private
       class var FStaticInstance : TDefaultsMap;
     private
-      class procedure FreeStaticInstance;
+      class procedure FreeStaticInstance; static;
       class function  GetStaticInstance : TDefaultsMap; static;
     public
       class property StaticInstance : TDefaultsMap read GetStaticInstance;
@@ -64,24 +50,9 @@ type
 
 { Utils }
 
-function GetDefaultValue(DefValAttribute : TDefaultValueAttribute) : TValue;
+procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
 begin
-  with TDefaultsMap.StaticInstance do
-    if ContainsKey(DefValAttribute.GetClassType) then
-      Result := Items[DefValAttribute.GetClassType]
-    else
-      Result := TValue.Empty;
-end;
-
-procedure RegisterDefaults;
-begin
-  with TDefaultsMap.StaticInstance do
-  begin
-    Add(DefaultCompilerDefines, nil); //TODO: copy a const array
-    Add(DefaultOutputFileName, DEF_STR_OUTPUT_FILENAME);
-    Add(DefaultOutputFormat, TValue.From<TFixInsightOutputFormat>(DEF_ENUM_OUTPUT_FORMAT));
-    Add(DefaultSettingFileName, DEF_STR_SETTINGS_FILENAME);
-  end;
+  TDefaultsMap.StaticInstance.Add(DefValAttribClass, Value);
 end;
 
 { TDefaultsMap }
@@ -101,11 +72,29 @@ end;
 
 { TDefaultValueAttribute }
 
-constructor TDefaultValueAttribute.Create(AValueType : TDefaultValueType);
+constructor TDefaultValueAttribute.Create(AValue : TValue);
 begin
   inherited Create;
 
-  FValueType := AValueType;
+  FValue := AValue;
+  FValueKind := dvkData;
+end;
+
+constructor TDefaultValueAttribute.Create;
+begin
+  inherited Create;
+
+  FValue := TValue.Empty;
+  FValueKind := dvkCalculated;
+end;
+
+function TDefaultValueAttribute.CalculateValue : TValue;
+begin
+  with TDefaultsMap.StaticInstance do
+    if ContainsKey(Self.GetClassType) then
+      Result := Items[Self.GetClassType]
+    else
+      Result := TValue.Empty;
 end;
 
 function TDefaultValueAttribute.GetClassType : TDefaultValueAttributeClass;
@@ -113,22 +102,22 @@ begin
   Pointer(Result) := PPointer(Self)^;
 end;
 
-{ TDefaultValueAttribute<T> }
-
-constructor TDefaultValueAttribute<T>.Create(const AValue : T);
+function TDefaultValueAttribute.GetValue : TValue;
 begin
-  inherited Create(dvtStored);
+  Result := TValue.Empty;
 
-  FValue := AValue;
-end;
-
-constructor TDefaultValueAttribute<T>.Create;
-begin
-  inherited Create(dvtEvaluable);
+  case ValueKind of
+    dvkData:
+      Result := FValue;
+    dvkCalculated:
+      Result := CalculateValue;
+  else
+    Assert(False, 'Unhandled default value kind while getting value.');
+  end;
 end;
 
 initialization
-  RegisterDefaults;
+  TDefaultsMap.GetStaticInstance;
 
 finalization
   TDefaultsMap.FreeStaticInstance;
