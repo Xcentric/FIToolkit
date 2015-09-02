@@ -3,7 +3,7 @@ unit FIToolkit.Config.Storage;
 interface
 
 uses
-  System.IniFiles, System.Classes, System.SysUtils;
+  System.Classes, System.SysUtils, System.IniFiles;
 
 type
 

@@ -181,7 +181,7 @@ var
 begin
   ReturnValue := FConfigFile.Load;
 
-  CheckTrue(ReturnValue, 'TestLoad::CheckTrue');
+  CheckTrue(ReturnValue, 'TestLoad::ReturnValue');
   CheckEquals(FConfigFile.Config.ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), INT_INI_VALUE, 'TestLoad::ReadInteger');
 end;
 

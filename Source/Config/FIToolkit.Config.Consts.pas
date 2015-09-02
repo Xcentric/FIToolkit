@@ -19,7 +19,7 @@ const
   STR_FIPARAM_SETTINGS = STR_FIPARAM_PREFIX + 'settings' + STR_FIPARAM_VALUE_DELIM;
   STR_FIPARAM_XML      = STR_FIPARAM_PREFIX + 'xml';
 
-  { Default config values }
+  { Default config values. Do not localize! }
 
   DEF_ARR_COMPILER_DEFINES : array [0..0] of String = ('_FIXINSIGHT_');
   DEF_ENUM_OUTPUT_FORMAT = fiofXML;
@@ -30,17 +30,17 @@ resourcestring
 
   { Exceptions }
 
-  SFIOEmptyOutputFileName = 'Пустое имя выходного файла';
-  SFIOInvalidOutputFileName = 'Имя выходного файла содержит недопустимые символы';
-  SFIOOutputDirectoryNotFound = 'Директории выходного файла не существует';
-  SFIOProjectFileNotFound = 'Файл проекта не найден';
-  SFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден';
+  SFIOEmptyOutputFileName = 'Пустое имя выходного файла.';
+  SFIOInvalidOutputFileName = 'Имя выходного файла содержит недопустимые символы.';
+  SFIOOutputDirectoryNotFound = 'Директории выходного файла не существует.';
+  SFIOProjectFileNotFound = 'Файл проекта не найден.';
+  SFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден.';
 
-  SCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден';
-  SCDInputFileNotFound = 'Входной файл не найден';
-  SCDInvalidOutputFileName = 'Неверное имя выходного файла';
-  SCDOutputDirectoryNotFound = 'Выходная директория не найдена';
-  SCDTempDirectoryNotFound = 'Директория для временных файлов не найдена';
+  SCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден.';
+  SCDInputFileNotFound = 'Входной файл не найден.';
+  SCDInvalidOutputFileName = 'Неверное имя выходного файла.';
+  SCDOutputDirectoryNotFound = 'Выходная директория не найдена.';
+  SCDTempDirectoryNotFound = 'Директория для временных файлов не найдена.';
 
 implementation
 
