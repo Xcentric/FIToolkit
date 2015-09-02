@@ -14,12 +14,12 @@ type
       FConfigFile : TConfigFile;
     private
       type
-        TFilterPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
+        TFilterPropPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
     private
-      function  FilterConfig(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
-      procedure GenerateFullConfig;
-      procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPredicate);
-      procedure WriteObjectToConfig(const Instance : TObject; Filter : TFilterPredicate);
+      function  FilterConfigProp(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
+      procedure GenerateDefaultConfig;
+      procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
+      procedure WriteObjectToConfig(const Instance : TObject; Filter : TFilterPropPredicate);
     protected
       procedure FillDataFromFile;
       procedure FillFileFromData;
@@ -48,8 +48,9 @@ begin
   FConfigData.FixInsightOptions.Validate := Validate;
 
   FConfigFile := TConfigFile.Create(ConfigFileName, GenerateConfig);
+
   if GenerateConfig then
-    GenerateFullConfig;
+    GenerateDefaultConfig;
 end;
 
 destructor TConfigManager.Destroy;
@@ -66,7 +67,7 @@ begin
   ReadObjectFromConfig(FConfigData,
     function (const Instance : TObject; const Prop : TRttiProperty) : Boolean
     begin
-      Result := Prop.IsWritable and FilterConfig(Instance, Prop);
+      Result := Prop.IsWritable and FilterConfigProp(Instance, Prop);
     end
   );
 end;
@@ -76,13 +77,13 @@ begin
   WriteObjectToConfig(FConfigData,
     function (const Instance : TObject; const Prop : TRttiProperty) : Boolean
     begin
-      Result := Prop.IsReadable and FilterConfig(Instance, Prop);
+      Result := Prop.IsReadable and FilterConfigProp(Instance, Prop);
     end
   );
   FConfigFile.Save;
 end;
 
-function TConfigManager.FilterConfig(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
+function TConfigManager.FilterConfigProp(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
   var
     Attr : TCustomAttribute;
 begin
@@ -98,13 +99,13 @@ begin
   end;
 end;
 
-procedure TConfigManager.GenerateFullConfig;
+procedure TConfigManager.GenerateDefaultConfig;
 begin
   SetDefaults;
   FillFileFromData;
 end;
 
-procedure TConfigManager.ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPredicate);
+procedure TConfigManager.ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
   var
     Ctx : TRttiContext;
     InstanceType : TRttiInstanceType;
@@ -125,7 +126,6 @@ begin
           Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name, 0))
         else
           case Prop.PropertyType.TypeKind of
-            //TODO: not sure if this will work for AnsiString
             tkString, tkLString, tkWString, tkUString:
               //TODO: third patameter must be a routine for getting the default value (parameterized?)
               Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name, String.Empty));
@@ -143,7 +143,7 @@ begin
 
 end;
 
-procedure TConfigManager.WriteObjectToConfig(const Instance : TObject; Filter : TFilterPredicate);
+procedure TConfigManager.WriteObjectToConfig(const Instance : TObject; Filter : TFilterPropPredicate);
   var
     Ctx : TRttiContext;
     InstanceType : TRttiInstanceType;
