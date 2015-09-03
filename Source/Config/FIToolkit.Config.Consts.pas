@@ -26,6 +26,8 @@ const
   DEF_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
   DEF_STR_SETTINGS_FILENAME = 'Default.ficfg';
 
+  DEF_STR_FINAL_REPORT_FILENAME = 'FIToolkitReport.html';
+
 resourcestring
 
   { Exceptions }

@@ -4,9 +4,13 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults, FIToolkit.Config.Consts;
 
 type
+
+  DefaultOutputDirectory = class (TDefaultValueAttribute<String>);
+  DefaultOutputFileName = class (TDefaultValueAttribute<String>);
+  DefaultTempDirectory = class (TDefaultValueAttribute<String>);
 
   TConfigData = class
     strict private
@@ -40,11 +44,11 @@ type
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
       [FIToolkitParam]
       property InputFileName : TFileName read FInputFileName write SetInputFileName;
-      [FIToolkitParam]
+      [FIToolkitParam, DefaultOutputDirectory]
       property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
-      [FIToolkitParam]
+      [FIToolkitParam, DefaultOutputFileName(DEF_STR_FINAL_REPORT_FILENAME)]
       property OutputFileName : String read FOutputFileName write SetOutputFileName;
-      [FIToolkitParam]
+      [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read FTempDirectory write SetTempDirectory;
 
       property Validate : Boolean read FValidate write FValidate;
@@ -53,8 +57,8 @@ type
 implementation
 
 uses
-  System.IOUtils,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Consts;
+  System.IOUtils, System.Rtti,
+  FIToolkit.Config.Exceptions;
 
 { TConfigData }
 
@@ -156,5 +160,19 @@ begin
   if not TDirectory.Exists(Value) then
     raise ECDTempDirectoryNotFound.Create;
 end;
+
+initialization
+  RegisterDefaultValue(DefaultOutputDirectory,
+    function : TValue
+    begin
+      Result := IncludeTrailingPathDelimiter(TPath.GetTempPath);
+    end
+  );
+  RegisterDefaultValue(DefaultTempDirectory,
+    function : TValue
+    begin
+      Result := IncludeTrailingPathDelimiter(TPath.GetTempPath);
+    end
+  );
 
 end.
