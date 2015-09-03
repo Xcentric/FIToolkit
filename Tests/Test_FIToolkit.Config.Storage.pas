@@ -28,7 +28,6 @@ type
       INT_INI_VALUE = 777;
   private
     function  CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
-    function  GetCurrTestMethodAddr : Pointer;
     function  GetTestIniFileName : TFileName;
   public
     procedure SetUp; override;
@@ -41,6 +40,9 @@ type
   end;
 
 implementation
+
+uses
+  TestUtils;
 
 function TestTConfigFile.CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
   var
@@ -63,14 +65,6 @@ begin
 
     Result := TConfigFile.Create(sFileName, False);
   end;
-end;
-
-function TestTConfigFile.GetCurrTestMethodAddr : Pointer;
-begin
-  if Assigned(fMethod) then
-    Result := TMethod(fMethod).Code
-  else
-    Result := nil;
 end;
 
 function TestTConfigFile.GetTestIniFileName : TFileName;

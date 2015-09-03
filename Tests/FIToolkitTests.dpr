@@ -32,10 +32,12 @@ uses
   FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   Test_FIToolkit.Base.Exceptions in 'Test_FIToolkit.Base.Exceptions.pas',
   Test_FIToolkit.Config.Data in 'Test_FIToolkit.Config.Data.pas',
+  Test_FIToolkit.Config.Defaults in 'Test_FIToolkit.Config.Defaults.pas',
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
   Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
   Test_FIToolkit.Utils in 'Test_FIToolkit.Utils.pas',
-  TestConsts in 'TestConsts.pas';
+  TestConsts in 'TestConsts.pas',
+  TestUtils in 'TestUtils.pas';
 
 {$R *.RES}
 
