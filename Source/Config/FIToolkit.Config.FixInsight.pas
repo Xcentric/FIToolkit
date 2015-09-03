@@ -183,6 +183,7 @@ initialization
     begin
       SetLength(StrArr, Length(DEF_ARR_COMPILER_DEFINES));
       Move(DEF_ARR_COMPILER_DEFINES[0], StrArr[0], Length(DEF_ARR_COMPILER_DEFINES) * SizeOf(String));
+      Result := TValue.From<TStringDynArray>(StrArr);
     end
   );
 
