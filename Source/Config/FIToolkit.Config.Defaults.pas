@@ -3,7 +3,7 @@ unit FIToolkit.Config.Defaults;
 interface
 
 uses
-  System.Generics.Collections, System.Rtti,
+  System.SysUtils, System.Rtti, System.Generics.Collections,
   FIToolkit.Config.Types;
 
 type
@@ -18,9 +18,9 @@ type
       function GetValue : TValue;
     strict protected
       FValue : TValue;
-    protected
-      constructor Create(AValueKind : TDefaultValueKind);
 
+      constructor Create(AValueKind : TDefaultValueKind);
+    protected
       function CalculateValue : TValue; virtual;
     public
       property Value : TValue read GetValue;
@@ -53,18 +53,29 @@ type
       class property StaticInstance : TDefaultsMap read GetStaticInstance;
   end;
 
-  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
+  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue); overload;
+  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Evaluator : TFunc<TValue>); overload;
+  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
+    Evaluator : TFunc<TDefaultValueAttributeClass, TValue>); overload;
 
 implementation
-
-uses
-  System.SysUtils;
 
 { Utils }
 
 procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
 begin
   TDefaultsMap.StaticInstance.AddValue(DefValAttribClass, Value);
+end;
+
+procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Evaluator : TFunc<TValue>);
+begin
+  RegisterDefaultValue(DefValAttribClass, Evaluator);
+end;
+
+procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
+  Evaluator : TFunc<TDefaultValueAttributeClass, TValue>);
+begin
+  RegisterDefaultValue(DefValAttribClass, Evaluator(DefValAttribClass));
 end;
 
 { TDefaultValueAttribute }
