@@ -8,33 +8,31 @@ uses
 
 type
 
-  { Base classes }
-
   TDefaultValueAttributeClass = class of TDefaultValueAttribute;
 
   TDefaultValueAttribute = class abstract (TCustomAttribute)
     strict private
-      FValueType : TDefaultValueKind;
+      FValueKind : TDefaultValueKind;
     private
       function GetClassType : TDefaultValueAttributeClass;
+      function GetValue : TValue;
+    strict protected
+      FValue : TValue;
     protected
-      constructor Create(AValueType : TDefaultValueKind);
+      constructor Create(AValueKind : TDefaultValueKind);
+
+      function CalculateValue : TValue; virtual;
     public
-      property ValueKind : TDefaultValueKind read FValueType;
+      property Value : TValue read GetValue;
+      property ValueKind : TDefaultValueKind read FValueKind;
   end;
 
   TDefaultValueAttribute<T> = class abstract (TDefaultValueAttribute)
-    strict private
-      FValue : T;
-    private
-      function GetValue : T;
     protected
-      function CalculateValue : T; virtual;
+      function MakeValue(const AValue : T) : TValue; virtual;
     public
       constructor Create(const AValue : T); overload;
       constructor Create; overload;
-
-      property Value : T read GetValue;
   end;
 
   TDefaultsMap = class
@@ -73,12 +71,64 @@ begin
   TDefaultsMap.StaticInstance.AddValue(DefValAttribClass, Value);
 end;
 
-{ TDefaultsMap }
+{ TDefaultValueAttribute }
 
-procedure TDefaultsMap.AddValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
+constructor TDefaultValueAttribute.Create(AValueKind : TDefaultValueKind);
 begin
-  FInternalMap.Add(DefValAttribClass, Value);
+  inherited Create;
+
+  FValue := TValue.Empty;
+  FValueKind := AValueKind;
 end;
+
+function TDefaultValueAttribute.CalculateValue : TValue;
+begin
+  with TDefaultsMap.StaticInstance do
+    if HasValue(Self.GetClassType) then
+      Result := GetValue(Self.GetClassType)
+    else
+      Result := TValue.Empty;
+end;
+
+function TDefaultValueAttribute.GetClassType : TDefaultValueAttributeClass;
+begin
+  Pointer(Result) := PPointer(Self)^;
+end;
+
+function TDefaultValueAttribute.GetValue : TValue;
+begin
+  Result := TValue.Empty;
+
+  case ValueKind of
+    dvkData:
+      Result := FValue;
+    dvkCalculated:
+      Result := CalculateValue;
+  else
+    Assert(False, 'Unhandled default value kind while getting value.');
+  end;
+end;
+
+{ TDefaultValueAttribute<T> }
+
+constructor TDefaultValueAttribute<T>.Create(const AValue : T);
+begin
+  inherited Create(dvkData);
+
+  FValue := MakeValue(AValue);
+end;
+
+constructor TDefaultValueAttribute<T>.Create;
+begin
+  inherited Create(dvkCalculated);
+end;
+
+function TDefaultValueAttribute<T>.MakeValue(const AValue : T) : TValue;
+begin
+  Result := TValue.From<T>(AValue);
+end;
+
+{ TDefaultsMap }
 
 constructor TDefaultsMap.Create;
 begin
@@ -92,6 +142,11 @@ begin
   FreeAndNil(FInternalMap);
 
   inherited Destroy;
+end;
+
+procedure TDefaultsMap.AddValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
+begin
+  FInternalMap.Add(DefValAttribClass, Value);
 end;
 
 class procedure TDefaultsMap.FreeStaticInstance;
@@ -115,61 +170,6 @@ end;
 function TDefaultsMap.HasValue(DefValAttribClass : TDefaultValueAttributeClass) : Boolean;
 begin
   Result := FInternalMap.ContainsKey(DefValAttribClass);
-end;
-
-{ TDefaultValueAttribute }
-
-constructor TDefaultValueAttribute.Create(AValueType : TDefaultValueKind);
-begin
-  inherited Create;
-
-  FValueType := AValueType;
-end;
-
-function TDefaultValueAttribute.GetClassType : TDefaultValueAttributeClass;
-begin
-  Pointer(Result) := PPointer(Self)^;
-end;
-
-{ TDefaultValueAttribute<T> }
-
-constructor TDefaultValueAttribute<T>.Create(const AValue : T);
-begin
-  inherited Create(dvkData);
-
-  FValue := AValue;
-end;
-
-constructor TDefaultValueAttribute<T>.Create;
-begin
-  inherited Create(dvkCalculated);
-end;
-
-function TDefaultValueAttribute<T>.CalculateValue : T;
-  var
-    V : TValue;
-begin
-  with TDefaultsMap.StaticInstance do
-    if HasValue(Self.GetClassType) then
-      V := GetValue(Self.GetClassType)
-    else
-      V := TValue.Empty;
-
-  Result := V.AsType<T>;
-end;
-
-function TDefaultValueAttribute<T>.GetValue : T;
-begin
-  Result := Default(T);
-
-  case ValueKind of
-    dvkData:
-      Result := FValue;
-    dvkCalculated:
-      Result := CalculateValue;
-  else
-    Assert(False, 'Unhandled default value kind while getting value.');
-  end;
 end;
 
 initialization
