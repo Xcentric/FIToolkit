@@ -54,14 +54,14 @@ begin
   eFalsePart := teThird;
 
   iReturnValue := Iff.Get<Integer>(True, iTruePart, iFalsePart);
-  CheckEquals(iReturnValue, iTruePart, 'Integer::TruePart');
+  CheckEquals(iTruePart, iReturnValue, 'Integer::TruePart');
   iReturnValue := Iff.Get<Integer>(False, iTruePart, iFalsePart);
-  CheckEquals(iReturnValue, iFalsePart, 'Integer::FalsePart');
+  CheckEquals(iFalsePart, iReturnValue, 'Integer::FalsePart');
 
   sReturnValue := Iff.Get<String>(True, sTruePart, sFalsePart);
-  CheckEquals(sReturnValue, sTruePart, 'String::TruePart');
+  CheckEquals(sTruePart, sReturnValue, 'String::TruePart');
   sReturnValue := Iff.Get<String>(False, sTruePart, sFalsePart);
-  CheckEquals(sReturnValue, sFalsePart, 'String::FalsePart');
+  CheckEquals(sFalsePart, sReturnValue, 'String::FalsePart');
 
   eReturnValue := Iff.Get<TTestEnum>(True, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eTruePart, 'TTestEnum::TruePart');

@@ -176,7 +176,7 @@ begin
   ReturnValue := FConfigFile.Load;
 
   CheckTrue(ReturnValue, 'TestLoad::ReturnValue');
-  CheckEquals(FConfigFile.Config.ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), INT_INI_VALUE, 'TestLoad::ReadInteger');
+  CheckEquals(INT_INI_VALUE, FConfigFile.Config.ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), 'TestLoad::ReadInteger');
 end;
 
 procedure TestTConfigFile.TestSave;
@@ -189,7 +189,7 @@ begin
   CheckTrue(ReturnValue, 'TestSave::ReturnValue');
   with TIniFile.Create(GetTestIniFileName) do
     try
-      CheckEquals(ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), INT_INI_VALUE, 'TestSave::WriteInteger');
+      CheckEquals(INT_INI_VALUE, ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), 'TestSave::WriteInteger');
     finally
       Free;
     end;

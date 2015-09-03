@@ -130,14 +130,14 @@ begin
 
   RegisterDefaultValue(TTestAttribute, INT_ATTR_VALUE);
 
-  CheckEquals(FAttrWithNoValue.Value.AsInteger, INT_ATTR_VALUE, 'Value = INT_ATTR_VALUE');
+  CheckEquals(INT_ATTR_VALUE, FAttrWithNoValue.Value.AsInteger, 'Value = INT_ATTR_VALUE');
 end;
 
 procedure TestTDefaultValueAttributeT.TestAttributeWithValue;
 begin
   CheckTrue(FAttrWithValue.ValueKind = dvkData, 'ValueKind = dvkData');
   CheckFalse(FAttrWithValue.Value.IsEmpty, 'Value.IsEmpty');
-  CheckEquals(FAttrWithValue.Value.AsInteger, INT_ATTR_VALUE, 'Value = INT_ATTR_VALUE');
+  CheckEquals(INT_ATTR_VALUE, FAttrWithValue.Value.AsInteger, 'Value = INT_ATTR_VALUE');
 end;
 
 { TestTDefaultsMap }
@@ -165,12 +165,12 @@ begin
   TDefaultsMap.AddValue(DefValAttribClass, Value);
 
   CheckTrue(TDefaultsMap.HasValue(DefValAttribClass), 'HasValue');
-  CheckEquals(TDefaultsMap.GetValue(DefValAttribClass).AsInteger, INT_ATTR_VALUE,
+  CheckEquals(INT_ATTR_VALUE, TDefaultsMap.GetValue(DefValAttribClass).AsInteger,
     'TDefaultsMap.GetValue = INT_ATTR_VALUE');
-  CheckEquals(FDefaultsMap1.GetValue(DefValAttribClass).AsInteger, INT_ATTR_VALUE,
+  CheckEquals(INT_ATTR_VALUE, FDefaultsMap1.GetValue(DefValAttribClass).AsInteger,
     'FDefaultsMap1.GetValue = INT_ATTR_VALUE');
   CheckEquals(FDefaultsMap1.GetValue(DefValAttribClass).AsInteger, FDefaultsMap2.GetValue(DefValAttribClass).AsInteger,
-    'FDefaultsMap1.GetValue = FDefaultsMap2.GetValue');
+    'FDefaultsMap2.GetValue = FDefaultsMap1.GetValue');
 end;
 
 procedure TestTDefaultsMap.TestGetValue;
@@ -196,7 +196,7 @@ begin
   TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
   ReturnValue := TDefaultsMap.GetValue(DefValAttribClass);
 
-  CheckEquals(ReturnValue.AsInteger, INT_ATTR_VALUE, 'ReturnValue = INT_ATTR_VALUE');
+  CheckEquals(INT_ATTR_VALUE, ReturnValue.AsInteger, 'ReturnValue = INT_ATTR_VALUE');
 end;
 
 procedure TestTDefaultsMap.TestHasValue;
@@ -219,9 +219,9 @@ end;
 procedure TestTDefaultsMap.TestIsSingleton;
 begin
   CheckEquals(TDefaultsMap.StaticInstance, FDefaultsMap1.StaticInstance,
-    'TDefaultsMap.StaticInstance = FDefaultsMap1.StaticInstance');
+    'FDefaultsMap1.StaticInstance = TDefaultsMap.StaticInstance');
   CheckEquals(FDefaultsMap1.StaticInstance, FDefaultsMap2.StaticInstance,
-    'FDefaultsMap1.StaticInstance = FDefaultsMap2.StaticInstance');
+    'FDefaultsMap2.StaticInstance = FDefaultsMap1.StaticInstance');
 end;
 
 initialization

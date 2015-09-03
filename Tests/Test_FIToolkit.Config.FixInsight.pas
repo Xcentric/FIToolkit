@@ -79,7 +79,7 @@ begin
   { Check string format }
 
   ReturnValue := FFixInsightOptions.ToString;
-  CheckEquals(ReturnValue, STR_EXPECTED_RESULT, 'ReturnValue = STR_EXPECTED_RESULT');
+  CheckEquals(STR_EXPECTED_RESULT, ReturnValue, 'ReturnValue = STR_EXPECTED_RESULT');
 
   { Check validation within method call }
 

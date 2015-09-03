@@ -55,8 +55,8 @@ end;
 
 procedure TestECustomException.TestRegisterExceptionMessage;
 begin
-  CheckEquals(FCustomException.Message, SDefaultErrMsg, 'FCustomException.Message = SDefaultErrMsg');
-  CheckEquals(FTestException.Message, STR_TEST_ERR_MSG, 'FTestException.Message = STR_TEST_ERR_MSG');
+  CheckEquals(SDefaultErrMsg, FCustomException.Message, 'FCustomException.Message = SDefaultErrMsg');
+  CheckEquals(STR_TEST_ERR_MSG, FTestException.Message, 'FTestException.Message = STR_TEST_ERR_MSG');
 end;
 
 initialization
