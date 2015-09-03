@@ -4,9 +4,14 @@ interface
 
 uses
   System.SysUtils, System.Types,
-  FIToolkit.Config.Types, FIToolkit.Config.Defaults;
+  FIToolkit.Config.Types, FIToolkit.Config.Defaults, FIToolkit.Config.Consts;
 
 type
+
+  DefaultCompilerDefines = class (TDefaultValueAttribute<TStringDynArray>);
+  DefaultOutputFileName = class (TDefaultValueAttribute<TFileName>);
+  DefaultOutputFormat = class (TDefaultValueAttribute<TFixInsightOutputFormat>);
+  DefaultSettingsFileName = class (TDefaultValueAttribute<TFileName>);
 
   TFixInsightOptions = class sealed
     strict private
@@ -35,13 +40,13 @@ type
 
       [FixInsightParam]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
-      [FixInsightParam]
+      [FixInsightParam, DefaultOutputFileName(DEF_STR_OUTPUT_FILENAME)]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
-      [FixInsightParam]
+      [FixInsightParam, DefaultOutputFormat(DEF_ENUM_OUTPUT_FORMAT)]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       [FixInsightParam]
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
-      [FixInsightParam]
+      [FixInsightParam, DefaultSettingsFileName(DEF_STR_SETTINGS_FILENAME)]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
 
       property Validate : Boolean read FValidate write FValidate;
@@ -50,8 +55,8 @@ type
 implementation
 
 uses
-  System.IOUtils,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Consts;
+  System.IOUtils, System.Rtti,
+  FIToolkit.Config.Exceptions;
 
 { TFixInsightOptions }
 
@@ -169,5 +174,16 @@ begin
   if not String.IsNullOrEmpty(Value) and not TFile.Exists(Value) then
     raise EFIOSettingsFileNotFound.Create;
 end;
+
+initialization
+  RegisterDefaultValue(DefaultCompilerDefines,
+    function : TValue
+      var
+        StrArr : TStringDynArray;
+    begin
+      SetLength(StrArr, Length(DEF_ARR_COMPILER_DEFINES));
+      Move(DEF_ARR_COMPILER_DEFINES[0], StrArr[0], Length(DEF_ARR_COMPILER_DEFINES) * SizeOf(String));
+    end
+  );
 
 end.
