@@ -54,9 +54,10 @@ type
   end;
 
   procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue); overload;
-  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Evaluator : TFunc<TValue>); overload;
   procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
-    Evaluator : TFunc<TDefaultValueAttributeClass, TValue>); overload;
+    const Evaluator : TFunc<TValue>); overload;
+  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
+    const Evaluator : TFunc<TDefaultValueAttributeClass, TValue>); overload;
 
 implementation
 
@@ -67,13 +68,13 @@ begin
   TDefaultsMap.StaticInstance.AddValue(DefValAttribClass, Value);
 end;
 
-procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Evaluator : TFunc<TValue>);
+procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; const Evaluator : TFunc<TValue>);
 begin
-  RegisterDefaultValue(DefValAttribClass, Evaluator);
+  RegisterDefaultValue(DefValAttribClass, Evaluator());
 end;
 
 procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
-  Evaluator : TFunc<TDefaultValueAttributeClass, TValue>);
+  const Evaluator : TFunc<TDefaultValueAttributeClass, TValue>);
 begin
   RegisterDefaultValue(DefValAttribClass, Evaluator(DefValAttribClass));
 end;
