@@ -38,7 +38,7 @@ type
     public
       function  ToString : String; override;
 
-      [FixInsightParam]
+      [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
       [FixInsightParam, DefaultOutputFileName(DEF_STR_OUTPUT_FILENAME)]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
