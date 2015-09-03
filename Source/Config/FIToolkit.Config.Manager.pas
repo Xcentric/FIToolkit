@@ -17,12 +17,14 @@ type
         TFilterPropPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
     private
       function  FilterConfigProp(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
-      procedure GenerateDefaultConfig;
+      function  GetPropDefaultValue<T>(const Prop : TRttiProperty) : T;
       procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
+      procedure SetObjectPropsDefaults(const Instance : TObject);
       procedure WriteObjectToConfig(const Instance : TObject; Filter : TFilterPropPredicate);
     protected
       procedure FillDataFromFile;
       procedure FillFileFromData;
+      procedure GenerateDefaultConfig;
       procedure SetDefaults;
     public
       constructor Create(const ConfigFileName : TFileName; GenerateConfig, Validate : Boolean);
@@ -35,7 +37,7 @@ implementation
 
 uses
   System.TypInfo,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Types;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults;
 
 { TConfigManager }
 
@@ -105,6 +107,26 @@ begin
   FillFileFromData;
 end;
 
+function TConfigManager.GetPropDefaultValue<T>(const Prop : TRttiProperty) : T;
+  var
+    Attr : TCustomAttribute;
+    V : TValue;
+begin
+  Result := Default(T);
+
+  for Attr in Prop.GetAttributes do
+    if Attr is TDefaultValueAttribute then
+    begin
+      V := TDefaultValueAttribute(Attr).Value;
+
+      if not V.IsEmpty then
+      begin
+        Result := V.AsType<T>;
+        Break;
+      end;
+    end;
+end;
+
 procedure TConfigManager.ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
   var
     Ctx : TRttiContext;
@@ -123,12 +145,14 @@ begin
         else
         if Prop.PropertyType.IsOrdinal then
           //TODO: third patameter must be a routine for getting the default value (parameterized?)
-          Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name, 0))
+          Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name,
+                                                                 GetPropDefaultValue<Integer>(Prop)))
         else
           case Prop.PropertyType.TypeKind of
             tkString, tkLString, tkWString, tkUString:
               //TODO: third patameter must be a routine for getting the default value (parameterized?)
-              Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name, String.Empty));
+              Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name,
+                                                                    GetPropDefaultValue<String>(Prop)));
           else
             Assert(False, 'Unhandled property type kind while deserializing object from config.');
           end;
@@ -140,7 +164,27 @@ end;
 
 procedure TConfigManager.SetDefaults;
 begin
+  SetObjectPropsDefaults(FConfigData);
+end;
 
+procedure TConfigManager.SetObjectPropsDefaults(const Instance : TObject);
+  var
+    Ctx : TRttiContext;
+    InstanceType : TRttiInstanceType;
+    Prop : TRttiProperty;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    InstanceType := Ctx.GetType(Instance.ClassType) as TRttiInstanceType;
+
+    for Prop in InstanceType.GetProperties do
+      if Prop.PropertyType.IsInstance then
+        SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject)
+      else
+        Prop.SetValue(Instance, GetPropDefaultValue<TValue>(Prop));
+  finally
+    Ctx.Free;
+  end;
 end;
 
 procedure TConfigManager.WriteObjectToConfig(const Instance : TObject; Filter : TFilterPropPredicate);
