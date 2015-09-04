@@ -9,7 +9,7 @@ uses
 type
 
   DefaultOutputDirectory = class (TDefaultValueAttribute<String>);
-  DefaultOutputFileName = class (TDefaultValueAttribute<String>);
+  DefaultReportFileName = class (TDefaultValueAttribute<String>);
   DefaultTempDirectory = class (TDefaultValueAttribute<String>);
 
   TConfigData = class
@@ -46,7 +46,7 @@ type
       property InputFileName : TFileName read FInputFileName write SetInputFileName;
       [FIToolkitParam, DefaultOutputDirectory]
       property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
-      [FIToolkitParam, DefaultOutputFileName(DEF_STR_FINAL_REPORT_FILENAME)]
+      [FIToolkitParam, DefaultReportFileName(DEF_STR_REPORT_FILENAME)]
       property OutputFileName : String read FOutputFileName write SetOutputFileName;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read FTempDirectory write SetTempDirectory;

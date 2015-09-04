@@ -174,6 +174,7 @@ begin
       if Prop.PropertyType.IsInstance then
         SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject)
       else
+      if Prop.IsWritable then
         Prop.SetValue(Instance, GetPropDefaultValue(Prop));
   finally
     Ctx.Free;
