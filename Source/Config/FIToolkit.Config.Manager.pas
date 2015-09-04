@@ -17,7 +17,7 @@ type
         TFilterPropPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
     private
       function  FilterConfigProp(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
-      function  GetPropDefaultValue<T>(const Prop : TRttiProperty) : T;
+      function  GetPropDefaultValue(const Prop : TRttiProperty) : TValue;
       procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
       procedure SetObjectPropsDefaults(const Instance : TObject);
       procedure WriteObjectToConfig(const Instance : TObject; Filter : TFilterPropPredicate);
@@ -107,23 +107,18 @@ begin
   FillFileFromData;
 end;
 
-function TConfigManager.GetPropDefaultValue<T>(const Prop : TRttiProperty) : T;
+function TConfigManager.GetPropDefaultValue(const Prop : TRttiProperty) : TValue;
   var
     Attr : TCustomAttribute;
-    V : TValue;
 begin
-  Result := Default(T);
+  Result := TValue.Empty;
 
   for Attr in Prop.GetAttributes do
     if Attr is TDefaultValueAttribute then
     begin
-      V := TDefaultValueAttribute(Attr).Value;
-
-      if not V.IsEmpty then
-      begin
-        Result := V.AsType<T>;
+      Result := TDefaultValueAttribute(Attr).Value;
+      if not Result.IsEmpty then
         Break;
-      end;
     end;
 end;
 
@@ -144,15 +139,13 @@ begin
           ReadObjectFromConfig(Prop.GetValue(Instance).AsObject, Filter)
         else
         if Prop.PropertyType.IsOrdinal then
-          //TODO: third patameter must be a routine for getting the default value (parameterized?)
           Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name,
-                                                                 GetPropDefaultValue<Integer>(Prop)))
+                                                                 GetPropDefaultValue(Prop).AsVariant))
         else
           case Prop.PropertyType.TypeKind of
             tkString, tkLString, tkWString, tkUString:
-              //TODO: third patameter must be a routine for getting the default value (parameterized?)
               Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name,
-                                                                    GetPropDefaultValue<String>(Prop)));
+                                                                    GetPropDefaultValue(Prop).AsVariant));
           else
             Assert(False, 'Unhandled property type kind while deserializing object from config.');
           end;
@@ -181,7 +174,7 @@ begin
       if Prop.PropertyType.IsInstance then
         SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject)
       else
-        Prop.SetValue(Instance, GetPropDefaultValue<TValue>(Prop));
+        Prop.SetValue(Instance, GetPropDefaultValue(Prop));
   finally
     Ctx.Free;
   end;
