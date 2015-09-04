@@ -32,7 +32,7 @@ var
 begin
   try
     sFullExePath := ParamStr(0);
-    SetLength(aLaunchParams, ParamCount - 1);
+    SetLength(aLaunchParams, ParamCount);
     for i := 0 to High(aLaunchParams) do
       aLaunchParams[i] := ParamStr(i + 1);
 
