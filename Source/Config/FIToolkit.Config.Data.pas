@@ -9,7 +9,7 @@ uses
 type
 
   DefaultOutputDirectory = class (TDefaultStringValue);
-  DefaultReportFileName = class (TDefaultStringValue);
+  DefaultOutputFileName = class (TDefaultStringValue);
   DefaultTempDirectory = class (TDefaultStringValue);
 
   TConfigData = class
@@ -46,7 +46,7 @@ type
       property InputFileName : TFileName read FInputFileName write SetInputFileName;
       [FIToolkitParam, DefaultOutputDirectory]
       property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
-      [FIToolkitParam, DefaultReportFileName(DEF_STR_REPORT_FILENAME)]
+      [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
       property OutputFileName : String read FOutputFileName write SetOutputFileName;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read FTempDirectory write SetTempDirectory;
@@ -165,13 +165,13 @@ initialization
   RegisterDefaultValue(DefaultOutputDirectory,
     function : TValue
     begin
-      Result := IncludeTrailingPathDelimiter(TPath.GetTempPath);
+      Result := TPath.GetTempPath;
     end
   );
   RegisterDefaultValue(DefaultTempDirectory,
     function : TValue
     begin
-      Result := IncludeTrailingPathDelimiter(TPath.GetTempPath);
+      Result := TPath.GetTempPath;
     end
   );
 

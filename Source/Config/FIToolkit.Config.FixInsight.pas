@@ -40,13 +40,13 @@ type
 
       [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
-      [FixInsightParam, DefaultOutputFileName(DEF_STR_OUTPUT_FILENAME)]
+      [FixInsightParam, DefaultOutputFileName(DEF_FIO_STR_OUTPUT_FILENAME)]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
-      [FixInsightParam, DefaultOutputFormat(DEF_ENUM_OUTPUT_FORMAT)]
+      [FixInsightParam, DefaultOutputFormat(DEF_FIO_ENUM_OUTPUT_FORMAT)]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       [FixInsightParam]
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
-      [FixInsightParam, DefaultSettingsFileName(DEF_STR_SETTINGS_FILENAME)]
+      [FixInsightParam, DefaultSettingsFileName(DEF_FIO_STR_SETTINGS_FILENAME)]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
 
       property Validate : Boolean read FValidate write FValidate;
@@ -181,8 +181,8 @@ initialization
       var
         StrArr : TStringDynArray;
     begin
-      SetLength(StrArr, Length(DEF_ARR_COMPILER_DEFINES));
-      Move(DEF_ARR_COMPILER_DEFINES[0], StrArr[0], Length(DEF_ARR_COMPILER_DEFINES) * SizeOf(String));
+      SetLength(StrArr, Length(DEF_FIO_ARR_COMPILER_DEFINES));
+      Move(DEF_FIO_ARR_COMPILER_DEFINES[0], StrArr[0], Length(DEF_FIO_ARR_COMPILER_DEFINES) * SizeOf(String));
       Result := TValue.From<TStringDynArray>(StrArr);
     end
   );

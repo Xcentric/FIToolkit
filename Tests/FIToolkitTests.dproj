@@ -90,6 +90,7 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Exceptions.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="..\Source\FIToolkit.Utils.pas"/>
         <DCCReference Include="Test_FIToolkit.Base.Exceptions.pas"/>

@@ -21,12 +21,12 @@ const
 
   { Default config values. Do not localize! }
 
-  DEF_ARR_COMPILER_DEFINES : array [0..0] of String = ('_FIXINSIGHT_');
-  DEF_ENUM_OUTPUT_FORMAT = fiofXML;
-  DEF_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
-  DEF_STR_SETTINGS_FILENAME = 'Default.ficfg';
+  DEF_FIO_ARR_COMPILER_DEFINES : array [0..0] of String = ('_FIXINSIGHT_');
+  DEF_FIO_ENUM_OUTPUT_FORMAT = fiofXML;
+  DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
+  DEF_FIO_STR_SETTINGS_FILENAME = 'Default.ficfg';
 
-  DEF_STR_REPORT_FILENAME = 'FIToolkitReport.html';
+  DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
 
 resourcestring
 
