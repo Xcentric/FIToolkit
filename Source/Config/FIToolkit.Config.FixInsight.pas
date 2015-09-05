@@ -40,13 +40,13 @@ type
 
       [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
-      [FixInsightParam, DefaultOutputFileName(DEF_FIO_STR_OUTPUT_FILENAME)]
+      [FixInsightParam, DefaultOutputFileName]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
       [FixInsightParam, DefaultOutputFormat(DEF_FIO_ENUM_OUTPUT_FORMAT)]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       [FixInsightParam]
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
-      [FixInsightParam, DefaultSettingsFileName(DEF_FIO_STR_SETTINGS_FILENAME)]
+      [FixInsightParam, DefaultSettingsFileName]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
 
       property Validate : Boolean read FValidate write FValidate;
@@ -56,7 +56,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Utils;
 
 { TFixInsightOptions }
 
@@ -186,5 +186,7 @@ initialization
       Result := TValue.From<TStringDynArray>(StrArr);
     end
   );
+  RegisterDefaultValue(DefaultOutputFileName, TPath.GetTempPath + DEF_FIO_STR_OUTPUT_FILENAME);
+  RegisterDefaultValue(DefaultSettingsFileName, TPath.GetExePath + DEF_FIO_STR_SETTINGS_FILENAME);
 
 end.

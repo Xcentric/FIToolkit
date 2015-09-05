@@ -162,17 +162,7 @@ begin
 end;
 
 initialization
-  RegisterDefaultValue(DefaultOutputDirectory,
-    function : TValue
-    begin
-      Result := TPath.GetTempPath;
-    end
-  );
-  RegisterDefaultValue(DefaultTempDirectory,
-    function : TValue
-    begin
-      Result := TPath.GetTempPath;
-    end
-  );
+  RegisterDefaultValue(DefaultOutputDirectory, TPath.GetTempPath);
+  RegisterDefaultValue(DefaultTempDirectory, TPath.GetTempPath);
 
 end.

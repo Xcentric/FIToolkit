@@ -3,7 +3,7 @@ unit FIToolkit.Utils;
 interface
 
 uses
-  System.TypInfo, System.Rtti;
+  System.IOUtils, System.TypInfo, System.Rtti;
 
 type
 
@@ -15,6 +15,11 @@ type
   function Iff : TIff;
 
 type
+
+  TPathHelper = record helper for TPath
+    public
+      class function GetExePath : String; static;
+  end;
 
   TTypeKindHelper = record helper for TTypeKind
     public
@@ -36,6 +41,9 @@ type
 
 implementation
 
+uses
+  System.SysUtils;
+
 { Utils }
 
 function Iff : TIff;
@@ -51,6 +59,13 @@ begin
     Result := TruePart
   else
     Result := FalsePart;
+end;
+
+{ TPathHelper }
+
+class function TPathHelper.GetExePath : String;
+begin
+  Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(ParamStr(0)));
 end;
 
 { TTypeKindHelper }
