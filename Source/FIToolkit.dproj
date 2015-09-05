@@ -91,6 +91,7 @@
         <DCCReference Include="Config\FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="LaunchParams\FIToolkit.LaunchParams.Consts.pas"/>
         <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>

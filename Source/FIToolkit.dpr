@@ -14,6 +14,7 @@ uses
   FIToolkit.Config.FixInsight in 'Config\FIToolkit.Config.FixInsight.pas',
   FIToolkit.Config.Manager in 'Config\FIToolkit.Config.Manager.pas',
   FIToolkit.Config.Storage in 'Config\FIToolkit.Config.Storage.pas',
+  FIToolkit.Config.TypedDefaults in 'Config\FIToolkit.Config.TypedDefaults.pas',
   FIToolkit.Config.Types in 'Config\FIToolkit.Config.Types.pas',
   FIToolkit.LaunchParams.Consts in 'LaunchParams\FIToolkit.LaunchParams.Consts.pas',
   FIToolkit.Logger.Consts in 'Logger\FIToolkit.Logger.Consts.pas',

@@ -4,13 +4,13 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults, FIToolkit.Config.Consts;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults, FIToolkit.Config.Consts;
 
 type
 
-  DefaultOutputDirectory = class (TDefaultValueAttribute<String>);
-  DefaultReportFileName = class (TDefaultValueAttribute<String>);
-  DefaultTempDirectory = class (TDefaultValueAttribute<String>);
+  DefaultOutputDirectory = class (TDefaultStringValue);
+  DefaultReportFileName = class (TDefaultStringValue);
+  DefaultTempDirectory = class (TDefaultStringValue);
 
   TConfigData = class
     strict private
@@ -58,7 +58,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults;
 
 { TConfigData }
 

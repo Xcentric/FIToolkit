@@ -4,14 +4,14 @@ interface
 
 uses
   System.SysUtils, System.Types,
-  FIToolkit.Config.Types, FIToolkit.Config.Defaults, FIToolkit.Config.Consts;
+  FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults, FIToolkit.Config.Consts;
 
 type
 
-  DefaultCompilerDefines = class (TDefaultValueAttribute<TStringDynArray>);
-  DefaultOutputFileName = class (TDefaultValueAttribute<TFileName>);
-  DefaultOutputFormat = class (TDefaultValueAttribute<TFixInsightOutputFormat>);
-  DefaultSettingsFileName = class (TDefaultValueAttribute<TFileName>);
+  DefaultCompilerDefines = class (TDefaultStringArrayValue);
+  DefaultOutputFileName = class (TDefaultFileNameValue);
+  DefaultOutputFormat = class (TDefaultOutputFormatValue);
+  DefaultSettingsFileName = class (TDefaultFileNameValue);
 
   TFixInsightOptions = class sealed
     strict private
@@ -56,7 +56,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults;
 
 { TFixInsightOptions }
 
