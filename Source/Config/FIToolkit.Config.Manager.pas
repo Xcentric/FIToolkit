@@ -37,7 +37,7 @@ implementation
 
 uses
   System.TypInfo,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.Defaults;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Utils;
 
 { TConfigManager }
 
@@ -186,6 +186,9 @@ procedure TConfigManager.WriteObjectToConfig(const Instance : TObject; Filter : 
     Ctx : TRttiContext;
     InstanceType : TRttiInstanceType;
     Prop : TRttiProperty;
+    V : TValue;
+    i : Integer;
+    S : String;
 begin
   Ctx := TRttiContext.Create;
   try
@@ -200,12 +203,24 @@ begin
         if Prop.PropertyType.IsOrdinal then
           FConfigFile.Config.WriteInteger(Instance.QualifiedClassName, Prop.Name, Prop.GetValue(Instance).AsVariant)
         else
-          case Prop.PropertyType.TypeKind of
-            tkString, tkLString, tkWString, tkUString:
-              FConfigFile.Config.WriteString(Instance.QualifiedClassName, Prop.Name, Prop.GetValue(Instance).AsString);
-          else
-            Assert(False, 'Unhandled property type kind while serializing object to config.');
-          end;
+        if Prop.PropertyType.IsString then
+          FConfigFile.Config.WriteString(Instance.QualifiedClassName, Prop.Name, Prop.GetValue(Instance).AsVariant)
+        else
+        if Prop.PropertyType.IsArray then
+        begin
+          V := Prop.GetValue(Instance);
+
+          if not V.TypeData.DynArrElType^.IsArray then
+            for i := 0 to V.GetArrayLength - 1 do
+              if S.IsEmpty then
+                S := V.GetArrayElement(i).ToString
+              else
+                S := S + ',' + V.GetArrayElement(i).ToString;
+
+          FConfigFile.Config.WriteString(Instance.QualifiedClassName, Prop.Name, S);
+        end
+        else
+          Assert(False, 'Unhandled property type kind while serializing object to config.');
       end;
   finally
     Ctx.Free;
