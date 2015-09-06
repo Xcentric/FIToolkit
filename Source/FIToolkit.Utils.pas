@@ -3,7 +3,7 @@ unit FIToolkit.Utils;
 interface
 
 uses
-  System.IOUtils, System.TypInfo, System.Rtti;
+  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti;
 
 type
 
@@ -39,12 +39,37 @@ type
       function IsString : Boolean;
   end;
 
+  function GetFixInsightExePath : TFileName;
+
 implementation
 
 uses
-  System.SysUtils;
+  System.Win.Registry, Winapi.Windows;
 
 { Utils }
+
+function GetFixInsightExePath : TFileName;
+  const
+    STR_FIXINSIGHT_REGKEY = 'Software\FixInsight';
+    STR_FIXINSIGHT_REGVALUE = 'Path';
+    STR_FIXINSIGHT_EXENAME = 'FixInsightCL.exe';
+  var
+    R : TRegistry;
+    S : String;
+begin
+  R := TRegistry.Create;
+  try
+    R.RootKey := HKEY_CURRENT_USER;
+    if R.OpenKeyReadOnly(STR_FIXINSIGHT_REGKEY) then
+    begin
+      S := IncludeTrailingPathDelimiter(R.ReadString(STR_FIXINSIGHT_REGVALUE)) + STR_FIXINSIGHT_EXENAME;
+      if TFile.Exists(S) then
+        Result := S;
+    end;
+  finally
+    R.Free;
+  end;
+end;
 
 function Iff : TIff;
 begin

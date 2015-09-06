@@ -8,6 +8,7 @@ uses
 
 type
 
+  DefaultFixInsightExe = class (TDefaultFileNameValue);
   DefaultOutputDirectory = class (TDefaultStringValue);
   DefaultOutputFileName = class (TDefaultStringValue);
   DefaultTempDirectory = class (TDefaultStringValue);
@@ -38,7 +39,7 @@ type
       constructor Create;
       destructor Destroy; override;
 
-      [FIToolkitParam]
+      [FIToolkitParam, DefaultFixInsightExe]
       property FixInsightExe : TFileName read FFixInsightExe write SetFixInsightExe;
       [FIToolkitParam]
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
@@ -58,7 +59,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Utils;
 
 { TConfigData }
 
@@ -162,6 +163,7 @@ begin
 end;
 
 initialization
+  RegisterDefaultValue(DefaultFixInsightExe, GetFixInsightExePath);
   RegisterDefaultValue(DefaultOutputDirectory, TPath.GetTempPath);
   RegisterDefaultValue(DefaultTempDirectory, TPath.GetTempPath);
 
