@@ -156,8 +156,20 @@ begin
 end;
 
 procedure TConfigManager.SetDefaults;
+  var
+    bValidateCD, bValidateFI : Boolean;
 begin
-  SetObjectPropsDefaults(FConfigData);
+  bValidateCD := FConfigData.Validate;
+  bValidateFI := FConfigData.FixInsightOptions.Validate;
+  try
+    FConfigData.Validate := False;
+    FConfigData.FixInsightOptions.Validate := False;
+
+    SetObjectPropsDefaults(FConfigData);
+  finally
+    FConfigData.Validate := bValidateCD;
+    FConfigData.FixInsightOptions.Validate := bValidateFI;
+  end;
 end;
 
 procedure TConfigManager.SetObjectPropsDefaults(const Instance : TObject);
