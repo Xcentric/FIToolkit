@@ -40,11 +40,11 @@ type
 
       [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
-      [FixInsightParam, DefaultOutputFileName]
+      [FixInsightParam(False), DefaultOutputFileName]
       property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
-      [FixInsightParam, DefaultOutputFormat(DEF_FIO_ENUM_OUTPUT_FORMAT)]
+      [FixInsightParam(False), DefaultOutputFormat(DEF_FIO_ENUM_OUTPUT_FORMAT)]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
-      [FixInsightParam]
+      [FixInsightParam(False)]
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
       [FixInsightParam, DefaultSettingsFileName]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;

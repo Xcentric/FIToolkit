@@ -52,7 +52,9 @@ begin
   FConfigFile := TConfigFile.Create(ConfigFileName, GenerateConfig);
 
   if GenerateConfig then
-    GenerateDefaultConfig;
+    GenerateDefaultConfig
+  else
+    SetDefaults;
 end;
 
 destructor TConfigManager.Destroy;
@@ -92,13 +94,15 @@ begin
   Result := False;
 
   for Attr in Prop.GetAttributes do
-  begin
-    Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
-              ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
+    if Attr is TConfigAttribute then
+      if TConfigAttribute(Attr).Serializable then
+      begin
+        Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
+                  ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
 
-    if Result then
-      Break;
-  end;
+        if Result then
+          Break;
+      end;
 end;
 
 procedure TConfigManager.GenerateDefaultConfig;
