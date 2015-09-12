@@ -98,7 +98,7 @@ begin
 
   CheckTrue(TPath.HasValidPathChars(ReturnValue, False), 'ReturnValue::HasValidPathChars');
   CheckTrue(TPath.HasValidFileNameChars(TPath.GetFileName(ReturnValue), False), 'ReturnValue::HasValidFileNameChars');
-  CheckTrue(TPath.HasExtension(ReturnValue) or (ReturnValue = String.Empty), 'ReturnValue::HasExtension');
+  CheckTrue(TFile.Exists(ReturnValue) or (ReturnValue = String.Empty), 'ReturnValue::Exists or Empty');
 end;
 
 procedure TestFIToolkitUtils.TestIff;
@@ -143,6 +143,7 @@ begin
   sExpected := ExtractFilePath(ParamStr(0));
   CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
   CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar), 'ReturnValue::EndsWith(DirectorySeparatorChar)');
+  CheckTrue(TDirectory.Exists(ReturnValue), 'ReturnValue::Exists');
 end;
 
 { TestTTypeKindHelper }
