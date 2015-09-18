@@ -36,7 +36,7 @@ type
 implementation
 
 uses
-  System.TypInfo,
+  System.TypInfo, System.Classes,
   FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Utils;
 
 { TConfigManager }
@@ -54,7 +54,12 @@ begin
   if GenerateConfig then
     GenerateDefaultConfig
   else
+  begin
     SetDefaults;
+
+    if FConfigFile.HasFile then
+      FillDataFromFile;
+  end;
 end;
 
 destructor TConfigManager.Destroy;
@@ -71,7 +76,7 @@ begin
   ReadObjectFromConfig(FConfigData,
     function (const Instance : TObject; const Prop : TRttiProperty) : Boolean
     begin
-      Result := Prop.IsWritable and FilterConfigProp(Instance, Prop);
+      Result := (Prop.IsWritable or Prop.PropertyType.IsInstance) and FilterConfigProp(Instance, Prop);
     end
   );
 end;
@@ -131,6 +136,11 @@ procedure TConfigManager.ReadObjectFromConfig(const Instance : TObject; Filter :
     Ctx : TRttiContext;
     InstanceType : TRttiInstanceType;
     Prop : TRttiProperty;
+    sArray : String;
+    V : TValue;
+    L : TStringList;
+    arrV : array of TValue;
+    i : Integer;
 begin
   Ctx := TRttiContext.Create;
   try
@@ -146,13 +156,44 @@ begin
           Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name,
                                                                  GetPropDefaultValue(Prop).AsVariant))
         else
-          case Prop.PropertyType.TypeKind of
-            tkString, tkLString, tkWString, tkUString:
-              Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name,
-                                                                    GetPropDefaultValue(Prop).AsVariant));
+        if Prop.PropertyType.IsString then
+          Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name,
+                                                                GetPropDefaultValue(Prop).AsVariant))
+        else
+        if Prop.PropertyType.IsArray then
+        begin
+          sArray := FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name, String.Empty);
+
+          if sArray.IsEmpty then
+          begin
+            if FConfigFile.Config.ValueExists(Instance.QualifiedClassName, Prop.Name) then
+              V := TValue.Empty
+            else
+              V := GetPropDefaultValue(Prop);
+          end
           else
-            Assert(False, 'Unhandled property type kind while deserializing object from config.');
+          if Prop.PropertyType.Handle.TypeData.DynArrElType^.IsString then
+          begin
+            L := TStringList.Create;
+            try
+              L.Delimiter := ',';
+              L.StrictDelimiter := True;
+              L.CommaText := sArray;
+
+              SetLength(arrV, L.Count);
+              for i := 0 to L.Count - 1 do
+                arrV[i] := L[i];
+            finally
+              L.Free;
+            end;
+
+            V := TValue.FromArray(Prop.PropertyType.Handle, arrV);
           end;
+
+          Prop.SetValue(Instance, V);
+        end
+        else
+          Assert(False, 'Unhandled property type kind while deserializing object from config.');
       end;
   finally
     Ctx.Free;
