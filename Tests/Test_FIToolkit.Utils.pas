@@ -26,6 +26,7 @@ type
   TestTPathHelper = class (TTestCase)
     published
       procedure TestGetExePath;
+      procedure TestGetQuotedPath;
   end;
 
   TestTTypeKindHelper = class (TTestCase)
@@ -144,6 +145,32 @@ begin
   CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
   CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar), 'ReturnValue::EndsWith(DirectorySeparatorChar)');
   CheckTrue(TDirectory.Exists(ReturnValue), 'ReturnValue::Exists');
+end;
+
+procedure TestTPathHelper.TestGetQuotedPath;
+  const
+    STR_PATH_QUOTED_NONE = 'C:\test\file.ext';
+    STR_PATH_QUOTED_LEFT = '"' + STR_PATH_QUOTED_NONE;
+    STR_PATH_QUOTED_RIGHT = STR_PATH_QUOTED_NONE + '"';
+    STR_PATH_QUOTED_BOTH = '"' + STR_PATH_QUOTED_NONE + '"';
+    STR_PATH_EXPECTED = '"' + STR_PATH_QUOTED_NONE + '"';
+  var
+    ReturnValue : String;
+begin
+  ReturnValue := TPath.GetQuotedPath(String.Empty);
+  CheckTrue(ReturnValue.StartsWith('"') and ReturnValue.EndsWith('"'), 'ReturnValue::EmptyIsQuoted');
+
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_NONE);
+  CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue::NotQuoted = STR_EXPECTED');
+
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_LEFT);
+  CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue::LeftQuoted = STR_EXPECTED');
+
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_RIGHT);
+  CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue::RightQuoted = STR_EXPECTED');
+
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_BOTH);
+  CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue::BothQuoted = STR_EXPECTED');
 end;
 
 { TestTTypeKindHelper }

@@ -19,6 +19,7 @@ type
   TPathHelper = record helper for TPath
     public
       class function GetExePath : String; static;
+      class function GetQuotedPath(const Path : String) : String; static;
   end;
 
   TTypeKindHelper = record helper for TTypeKind
@@ -57,6 +58,7 @@ function GetFixInsightExePath : TFileName;
     R : TRegistry;
     S : String;
 begin
+  Result := String.Empty;
   R := TRegistry.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -91,6 +93,19 @@ end;
 class function TPathHelper.GetExePath : String;
 begin
   Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(ParamStr(0)));
+end;
+
+class function TPathHelper.GetQuotedPath(const Path : String) : String;
+  const
+    CHR_QUOTE_CHAR = '"';
+begin
+  Result := Path;
+
+  if not Result.StartsWith(CHR_QUOTE_CHAR) then
+    Result := CHR_QUOTE_CHAR + Result;
+
+  if not Result.EndsWith(CHR_QUOTE_CHAR) then
+    Result := Result + CHR_QUOTE_CHAR;
 end;
 
 { TTypeKindHelper }

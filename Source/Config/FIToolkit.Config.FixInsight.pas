@@ -80,7 +80,7 @@ end;
 
 function TFixInsightOptions.FormatOutputFileName : String;
 begin
-  Result := STR_FIPARAM_OUTPUT + FOutputFileName;
+  Result := STR_FIPARAM_OUTPUT + TPath.GetQuotedPath(FOutputFileName);
 end;
 
 function TFixInsightOptions.FormatOutputFormat : String;
@@ -110,12 +110,12 @@ end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
 begin
-  Result := STR_FIPARAM_PROJECT + FProjectFileName;
+  Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName);
 end;
 
 function TFixInsightOptions.FormatSettingsFileName : String;
 begin
-  Result := STR_FIPARAM_SETTINGS + FSettingsFileName;
+  Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName);
 end;
 
 procedure TFixInsightOptions.SetOutputFileName(const Value : TFileName);

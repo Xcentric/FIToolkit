@@ -182,7 +182,7 @@ begin
 
               SetLength(arrV, L.Count);
               for i := 0 to L.Count - 1 do
-                arrV[i] := L[i];
+                arrV[i] := L[i].Trim;
             finally
               L.Free;
             end;
