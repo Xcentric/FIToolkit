@@ -126,7 +126,7 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <UnitTesting>
-                <TestProjectName>D:\Work\Argus\FIToolkit\Tests\FIToolkitTests.dproj</TestProjectName>
+                <TestProjectName>..\Tests\FIToolkitTests.dproj</TestProjectName>
             </UnitTesting>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

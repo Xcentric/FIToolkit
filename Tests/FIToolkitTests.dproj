@@ -129,7 +129,7 @@
             <UnitTesting>
                 <TestFramework>DUnit / Delphi Win32</TestFramework>
                 <TestRunner>GUI</TestRunner>
-                <SourceProjectName>D:\Work\Argus\FIToolkit\Source\FIToolkit.dproj</SourceProjectName>
+                <SourceProjectName>..\Source\FIToolkit.dproj</SourceProjectName>
                 <TestProjectName/>
             </UnitTesting>
         </BorlandProject>
