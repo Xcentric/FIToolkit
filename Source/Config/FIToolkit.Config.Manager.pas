@@ -136,11 +136,11 @@ procedure TConfigManager.ReadObjectFromConfig(const Instance : TObject; Filter :
     Ctx : TRttiContext;
     InstanceType : TRttiInstanceType;
     Prop : TRttiProperty;
-    sArray : String;
+    i : Integer;
     V : TValue;
+    sArray : String;
     L : TStringList;
     arrV : array of TValue;
-    i : Integer;
 begin
   Ctx := TRttiContext.Create;
   try
@@ -152,13 +152,17 @@ begin
         if Prop.PropertyType.IsInstance then
           ReadObjectFromConfig(Prop.GetValue(Instance).AsObject, Filter)
         else
-        if Prop.PropertyType.IsOrdinal then
-          Prop.SetValue(Instance, FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name,
-                                                                 GetPropDefaultValue(Prop).AsVariant))
-        else
         if Prop.PropertyType.IsString then
           Prop.SetValue(Instance, FConfigFile.Config.ReadString(Instance.QualifiedClassName, Prop.Name,
                                                                 GetPropDefaultValue(Prop).AsVariant))
+        else
+        if Prop.PropertyType.IsOrdinal then
+        begin
+          i := FConfigFile.Config.ReadInteger(Instance.QualifiedClassName, Prop.Name,
+                                              GetPropDefaultValue(Prop).AsVariant);
+          TValue.Make(@i, Prop.PropertyType.Handle, V);
+          Prop.SetValue(Instance, V);
+        end
         else
         if Prop.PropertyType.IsArray then
         begin
