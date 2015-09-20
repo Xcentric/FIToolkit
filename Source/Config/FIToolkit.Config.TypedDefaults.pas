@@ -8,6 +8,7 @@ uses
 
 type
 
+  TDefaultBooleanValue = class (TDefaultValueAttribute<Boolean>);
   TDefaultFileNameValue = class (TDefaultValueAttribute<TFileName>);
   TDefaultOutputFormatValue = class (TDefaultValueAttribute<TFixInsightOutputFormat>);
   TDefaultStringArrayValue = class (TDefaultValueAttribute<TStringDynArray>);

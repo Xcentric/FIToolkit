@@ -56,6 +56,7 @@ procedure TestTFixInsightOptions.TestToString;
       STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
       STR_FIPARAM_OUTPUT + '"' + STR_NON_EXISTENT_FILE + '" ' +
       STR_FIPARAM_SETTINGS + '"' + STR_NON_EXISTENT_FILE + '" ' +
+      STR_FIPARAM_SILENT + ' ' +
       STR_FIPARAM_XML;
   var
     Defines : TStringDynArray;
@@ -73,6 +74,7 @@ begin
     CompilerDefines := Defines;
     OutputFileName := STR_NON_EXISTENT_FILE;
     SettingsFileName := STR_NON_EXISTENT_FILE;
+    Silent := True;
     OutputFormat := fiofXML;
   end;
 

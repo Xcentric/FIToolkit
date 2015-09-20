@@ -12,6 +12,7 @@ type
   DefaultOutputFileName = class (TDefaultFileNameValue);
   DefaultOutputFormat = class (TDefaultOutputFormatValue);
   DefaultSettingsFileName = class (TDefaultFileNameValue);
+  DefaultSilent = class (TDefaultBooleanValue);
 
   TFixInsightOptions = class sealed
     strict private
@@ -20,6 +21,7 @@ type
       FOutputFormat : TFixInsightOutputFormat;
       FProjectFileName : TFileName;
       FSettingsFileName : TFileName;
+      FSilent : Boolean;
       FValidate : Boolean;
     private
       function  FormatCompilerDefines : String;
@@ -27,6 +29,7 @@ type
       function  FormatOutputFormat : String;
       function  FormatProjectFileName : String;
       function  FormatSettingsFileName : String;
+      function  FormatSilent : String;
 
       procedure SetOutputFileName(const Value : TFileName);
       procedure SetProjectFileName(const Value : TFileName);
@@ -48,6 +51,8 @@ type
       property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
       [FixInsightParam, DefaultSettingsFileName]
       property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
+      [FixInsightParam(False), DefaultSilent(False)]
+      property Silent : Boolean read FSilent write FSilent;
 
       property Validate : Boolean read FValidate write FValidate;
   end;
@@ -104,8 +109,9 @@ begin
     ValidateSettingsFileName(FSettingsFileName);
   end;
 
-  Result := Trim(Format('%s %s %s %s %s',
-    [FormatProjectFileName, FormatCompilerDefines, FormatOutputFileName, FormatSettingsFileName, FormatOutputFormat]));
+  Result := Trim(Format('%s %s %s %s %s %s',
+    [FormatProjectFileName, FormatCompilerDefines, FormatOutputFileName,
+     FormatSettingsFileName, FormatSilent, FormatOutputFormat]));
 end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
@@ -116,6 +122,11 @@ end;
 function TFixInsightOptions.FormatSettingsFileName : String;
 begin
   Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName);
+end;
+
+function TFixInsightOptions.FormatSilent : String;
+begin
+  Result := Iff.Get<String>(FSilent, STR_FIPARAM_SILENT, String.Empty);
 end;
 
 procedure TFixInsightOptions.SetOutputFileName(const Value : TFileName);
