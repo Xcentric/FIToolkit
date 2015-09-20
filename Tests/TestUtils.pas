@@ -12,6 +12,7 @@ type
     public
       procedure CheckEquals(Expected, Actual : TObject; Msg : String = String.Empty); overload;
       function  GetCurrTestMethodAddr : Pointer;
+      function  GetTestIniFileName : TFileName;
   end;
 
 implementation
@@ -31,6 +32,11 @@ begin
     Result := TMethod(fMethod).Code
   else
     Result := nil;
+end;
+
+function TTestCaseHelper.GetTestIniFileName : TFileName;
+begin
+  Result := TestDataDir + ChangeFileExt(ExtractFileName(ParamStr(0)), '.ini');
 end;
 
 end.

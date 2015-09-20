@@ -12,7 +12,7 @@ unit Test_FIToolkit.Config.Storage;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.IniFiles,
+  TestFramework,
   FIToolkit.Config.Storage;
 
 type
@@ -28,7 +28,6 @@ type
       INT_INI_VALUE = 777;
   private
     function  CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
-    function  GetTestIniFileName : TFileName;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -42,6 +41,7 @@ type
 implementation
 
 uses
+  System.SysUtils, System.IniFiles,
   TestUtils;
 
 function TestTConfigFile.CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
@@ -65,11 +65,6 @@ begin
 
     Result := TConfigFile.Create(sFileName, False);
   end;
-end;
-
-function TestTConfigFile.GetTestIniFileName : TFileName;
-begin
-  Result := TestDataDir + ChangeFileExt(ExtractFileName(ParamStr(0)), '.ini');
 end;
 
 procedure TestTConfigFile.SetUp;
