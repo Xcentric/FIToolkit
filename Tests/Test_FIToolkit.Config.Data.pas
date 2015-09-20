@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Data;
+  FIToolkit.Config.Data;
 
 type
   // Test methods for class TConfigData

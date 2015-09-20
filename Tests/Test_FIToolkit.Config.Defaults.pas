@@ -12,8 +12,8 @@ unit Test_FIToolkit.Config.Defaults;
 interface
 
 uses
-  TestFramework, FIToolkit.Config.Defaults, System.Generics.Collections,
-  System.Rtti, FIToolkit.Config.Types, System.SysUtils;
+  TestFramework,
+  FIToolkit.Config.Defaults;
 
 type
   // Test methods for class TDefaultValueAttribute
@@ -74,7 +74,9 @@ type
 implementation
 
 uses
-  TestUtils;
+  System.SysUtils, System.Rtti,
+  TestUtils,
+  FIToolkit.Config.Types;
 
 { TestTDefaultValueAttribute }
 
