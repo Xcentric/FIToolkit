@@ -84,6 +84,10 @@
         </DelphiCompile>
         <DCCReference Include="Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Consts.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Exceptions.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Options.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Types.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Consts.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Data.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Defaults.pas"/>
@@ -93,7 +97,6 @@
         <DCCReference Include="Config\FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
-        <DCCReference Include="LaunchParams\FIToolkit.LaunchParams.Consts.pas"/>
         <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>
         <DCCReference Include="FIToolkit.Main.pas"/>
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
