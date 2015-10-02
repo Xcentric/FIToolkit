@@ -9,9 +9,6 @@ type
 
   TCLIOption = record
     private
-      const
-        CHR_SPACE = ' ';  // do not localize!
-        CHR_QUOTE = '"';  // do not localize!
       type
         TCLIOptionTokens = record
           Delimiter,
@@ -27,16 +24,16 @@ type
         out Tokens : TCLIOptionTokens);
     public
       class operator Implicit(const Value : String) : TCLIOption;
-      class operator Implicit(const Value : TCLIOption) : String;
+      class operator Implicit(Value : TCLIOption) : String;
 
       constructor Create(const AOptionString : TCLIOptionString); overload;
       constructor Create(const AOptionString : TCLIOptionString; const APrefix, ADelimiter : String); overload;
 
       function HasDelimiter : Boolean;
+      function HasNonEmptyValue : Boolean;
       function HasPrefix : Boolean;
-      function HasValue : Boolean;
-      function HasWhiteSpaceInValue : Boolean;
       function ToString : TCLIOptionString;
+      function ValueContainsSpaces : Boolean;
 
       property Delimiter : String read FOptionTokens.Delimiter;
       property Name : String read FOptionTokens.Name;
@@ -56,6 +53,7 @@ uses
 constructor TCLIOption.Create(const AOptionString : TCLIOptionString; const APrefix, ADelimiter : String);
 begin
   FOptionString := AOptionString;
+  FOptionTokens := Default(TCLIOptionTokens);
   Parse(FOptionString, APrefix, ADelimiter, FOptionTokens);
 end;
 
@@ -69,20 +67,14 @@ begin
   Result := not FOptionTokens.Delimiter.IsEmpty;
 end;
 
-function TCLIOption.HasPrefix : Boolean;
+function TCLIOption.HasNonEmptyValue : Boolean;
 begin
-  Result := not FOptionTokens.Prefix.IsEmpty;
-end;
-
-function TCLIOption.HasValue : Boolean;
-begin
-  //TODO: what if Value IS empty (delimiter and nothing after it)
   Result := not FOptionTokens.Value.IsEmpty;
 end;
 
-function TCLIOption.HasWhiteSpaceInValue : Boolean;
+function TCLIOption.HasPrefix : Boolean;
 begin
-  Result := FOptionTokens.Value.Contains(CHR_SPACE);
+  Result := not FOptionTokens.Prefix.IsEmpty;
 end;
 
 class operator TCLIOption.Implicit(const Value : String) : TCLIOption;
@@ -90,7 +82,7 @@ begin
   Result := TCLIOption.Create(Value);
 end;
 
-class operator TCLIOption.Implicit(const Value : TCLIOption) : String;
+class operator TCLIOption.Implicit(Value : TCLIOption) : String;
 begin
   Result := Value.ToString;
 end;
@@ -134,7 +126,12 @@ function TCLIOption.ToString : TCLIOptionString;
 begin
   with FOptionTokens do
     Result := Prefix + Name + Delimiter +
-      Iff.Get<String>(HasWhiteSpaceInValue, Value.QuotedString(CHR_QUOTE), Value);
+      Iff.Get<String>(ValueContainsSpaces, Value.QuotedString(TCLIOptionString.CHR_QUOTE), Value);
+end;
+
+function TCLIOption.ValueContainsSpaces : Boolean;
+begin
+  Result := FOptionTokens.Value.Contains(TCLIOptionString.CHR_SPACE);
 end;
 
 end.
