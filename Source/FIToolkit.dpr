@@ -2,6 +2,8 @@ program FIToolkit;
 
 {$APPTYPE CONSOLE}
 
+{$R *.res}
+
 uses
   System.SysUtils,
   System.Types,
@@ -26,8 +28,6 @@ uses
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
   FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas',
   FIToolkit.Utils in 'FIToolkit.Utils.pas';
-
-{$R *.res}
 
 var
   sFullExePath : TFileName;
