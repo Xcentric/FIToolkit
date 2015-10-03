@@ -1,4 +1,4 @@
-unit FIToolkit.CommandLine.Consts;
+﻿unit FIToolkit.CommandLine.Consts;
 
 interface
 
@@ -8,6 +8,13 @@ const
 
   STR_CLI_OPTION_PREFIX = '--';
   STR_CLI_OPTION_DELIMITER = '=';
+
+resourcestring
+
+  { Exceptions }
+
+  SCLIOptionIsEmpty = 'Передан пустой параметр командной строки.';
+  SCLIOptionHasNoName = 'Параметр командной строки не имеет имени.';
 
 implementation
 

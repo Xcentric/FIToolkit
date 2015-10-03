@@ -1,4 +1,4 @@
-unit FIToolkit.CommandLine.Options;
+﻿unit FIToolkit.CommandLine.Options;
 
 interface
 
@@ -98,7 +98,7 @@ begin
   iDelimiterPos := S.IndexOf(ADelimiter);
 
   if String.IsNullOrWhiteSpace(S) then
-    raise Exception.Create('TODO: replace');
+    raise ECLIOptionIsEmpty.Create;
 
   with Tokens do
   begin
@@ -120,6 +120,9 @@ begin
       S.Substring(iDelimiterPos + Delimiter.Length)
     );
   end;
+
+  if Tokens.Name.IsEmpty then
+    raise ECLIOptionHasNoName.Create;
 end;
 
 function TCLIOption.ToString : TCLIOptionString;
