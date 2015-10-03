@@ -1,4 +1,4 @@
-unit TestConsts;
+﻿unit TestConsts;
 
 interface
 

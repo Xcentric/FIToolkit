@@ -1,4 +1,4 @@
-unit FIToolkit.Reports.Parser.Consts;
+﻿unit FIToolkit.Reports.Parser.Consts;
 
 interface
 

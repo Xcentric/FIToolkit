@@ -1,4 +1,4 @@
-unit FIToolkit.Config.Data;
+﻿unit FIToolkit.Config.Data;
 
 interface
 

@@ -1,4 +1,4 @@
-unit Test_FIToolkit.Utils;
+﻿unit Test_FIToolkit.Utils;
 {
 
   Delphi DUnit Test Case

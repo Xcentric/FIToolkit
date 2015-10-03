@@ -1,4 +1,4 @@
-unit FIToolkit.Reports.Builder.Consts;
+﻿unit FIToolkit.Reports.Builder.Consts;
 
 interface
 

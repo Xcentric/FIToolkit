@@ -1,4 +1,4 @@
-unit FIToolkit.Base.Consts;
+﻿unit FIToolkit.Base.Consts;
 
 interface
 

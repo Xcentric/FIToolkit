@@ -1,4 +1,4 @@
-unit FIToolkit.Runner.Consts;
+﻿unit FIToolkit.Runner.Consts;
 
 interface
 

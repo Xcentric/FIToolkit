@@ -1,4 +1,4 @@
-unit Test_FIToolkit.Config.Data;
+﻿unit Test_FIToolkit.Config.Data;
 {
 
   Delphi DUnit Test Case

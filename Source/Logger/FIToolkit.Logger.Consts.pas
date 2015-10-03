@@ -1,4 +1,4 @@
-unit FIToolkit.Logger.Consts;
+﻿unit FIToolkit.Logger.Consts;
 
 interface
 

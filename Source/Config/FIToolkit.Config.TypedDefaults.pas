@@ -1,4 +1,4 @@
-unit FIToolkit.Config.TypedDefaults;
+﻿unit FIToolkit.Config.TypedDefaults;
 
 interface
 

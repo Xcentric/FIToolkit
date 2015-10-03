@@ -1,4 +1,4 @@
-unit Test_FIToolkit.Config.Manager;
+﻿unit Test_FIToolkit.Config.Manager;
 {
 
   Delphi DUnit Test Case

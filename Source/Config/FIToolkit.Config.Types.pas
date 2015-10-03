@@ -1,4 +1,4 @@
-unit FIToolkit.Config.Types;
+﻿unit FIToolkit.Config.Types;
 
 interface
 

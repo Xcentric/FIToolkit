@@ -1,4 +1,4 @@
-unit Test_FIToolkit.Config.FixInsight;
+﻿unit Test_FIToolkit.Config.FixInsight;
 {
 
   Delphi DUnit Test Case

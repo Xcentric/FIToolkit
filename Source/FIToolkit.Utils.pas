@@ -1,4 +1,4 @@
-unit FIToolkit.Utils;
+﻿unit FIToolkit.Utils;
 
 interface
 

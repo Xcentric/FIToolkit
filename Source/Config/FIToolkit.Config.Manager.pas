@@ -1,4 +1,4 @@
-unit FIToolkit.Config.Manager;
+﻿unit FIToolkit.Config.Manager;
 
 interface
 

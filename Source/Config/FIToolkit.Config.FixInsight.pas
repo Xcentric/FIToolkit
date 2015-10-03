@@ -1,4 +1,4 @@
-unit FIToolkit.Config.FixInsight;
+﻿unit FIToolkit.Config.FixInsight;
 
 interface
 

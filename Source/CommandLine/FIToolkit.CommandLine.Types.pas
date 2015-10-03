@@ -1,4 +1,4 @@
-unit FIToolkit.CommandLine.Types;
+﻿unit FIToolkit.CommandLine.Types;
 
 interface
 

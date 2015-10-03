@@ -1,4 +1,4 @@
-unit FIToolkit.Base.Exceptions;
+﻿unit FIToolkit.Base.Exceptions;
 
 interface
 
