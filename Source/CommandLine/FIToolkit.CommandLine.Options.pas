@@ -3,6 +3,7 @@
 interface
 
 uses
+  System.Generics.Collections,
   FIToolkit.CommandLine.Types;
 
 type
@@ -32,6 +33,7 @@ type
       function HasDelimiter : Boolean;
       function HasNonEmptyValue : Boolean;
       function HasPrefix : Boolean;
+      function IsEmpty : Boolean;
       function ToString : TCLIOptionString;
       function ValueContainsSpaces : Boolean;
 
@@ -42,10 +44,16 @@ type
       property Value : String read FOptionTokens.Value;
   end;
 
+  TCLIOptions = class (TList<TCLIOption>)
+    public
+      function Contains(const OptionName : String; IgnoreCase : Boolean = True) : Boolean; overload;
+      function Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean = True) : Boolean;
+  end;
+
 implementation
 
 uses
-  System.SysUtils,
+  System.SysUtils, System.Types,
   FIToolkit.Utils, FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts;
 
 { TCLIOption }
@@ -85,6 +93,11 @@ end;
 class operator TCLIOption.Implicit(Value : TCLIOption) : String;
 begin
   Result := Value.ToString;
+end;
+
+function TCLIOption.IsEmpty : Boolean;
+begin
+  Result := FOptionTokens.Name.IsEmpty;
 end;
 
 procedure TCLIOption.Parse(const AOptionString : TCLIOptionString; const APrefix, ADelimiter : String;
@@ -138,6 +151,29 @@ end;
 function TCLIOption.ValueContainsSpaces : Boolean;
 begin
   Result := FOptionTokens.Value.Contains(TCLIOptionString.CHR_SPACE);
+end;
+
+{ TCLIOptions }
+
+function TCLIOptions.Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean;
+  var
+    Option : TCLIOption;
+begin
+  Result := Find(OptionName, Option, IgnoreCase);
+end;
+
+function TCLIOptions.Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean) : Boolean;
+  var
+    Opt : TCLIOption;
+begin
+  Result := False;
+
+  for Opt in Self do
+    if String.Compare(Opt.Name, OptionName, IgnoreCase) = EqualsValue then
+    begin
+      Option := Opt;
+      Exit(True);
+    end;
 end;
 
 end.

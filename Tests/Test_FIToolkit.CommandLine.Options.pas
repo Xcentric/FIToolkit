@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Types;
+  FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Types, FIToolkit.CommandLine.Consts;
 
 type
   // Test methods for class TCLIOption
@@ -37,10 +37,33 @@ type
     procedure TestHasDelimiter;
     procedure TestHasNonEmptyValue;
     procedure TestHasPrefix;
+    procedure TestIsEmpty;
     procedure TestImplicitFromString;
     procedure TestImplicitToString;
     procedure TestToString;
     procedure TestValueContainsSpaces;
+  end;
+
+  // Test methods for class TCLIOptions
+
+  TestTCLIOptions = class (TTestCase)
+  strict private
+    FCLIOptions : TCLIOptions;
+  private
+    const
+      STR_OPTION1_NAME = 'Param1';
+      STR_OPTION1_VALUE = 'Value1';
+      STR_OPTION1 = STR_CLI_OPTION_PREFIX + STR_OPTION1_NAME + STR_CLI_OPTION_DELIMITER + STR_OPTION1_VALUE;
+
+      STR_OPTION2_NAME = 'Param 2';
+      STR_OPTION2_VALUE = 'Value 2';
+      STR_OPTION2 = STR_CLI_OPTION_PREFIX + STR_OPTION2_NAME + STR_CLI_OPTION_DELIMITER + STR_OPTION2_VALUE;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+    procedure TestContains;
+    procedure TestFind;
   end;
 
 implementation
@@ -48,7 +71,7 @@ implementation
 uses
   System.SysUtils,
   TestUtils,
-  FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts;
+  FIToolkit.CommandLine.Exceptions;
 
 procedure TestTCLIOption.TestCreateLong;
 begin
@@ -148,6 +171,15 @@ begin
   CheckEquals(STR_OPTION, S, 'S = STR_OPTION');
 end;
 
+procedure TestTCLIOption.TestIsEmpty;
+  var
+    Option : TCLIOption;
+begin
+  CheckTrue(Option.IsEmpty, 'Option::NotCreated');
+  Option := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
+  CheckFalse(Option.IsEmpty, 'Option::Created');
+end;
+
 procedure TestTCLIOption.TestToString;
 begin
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
@@ -175,8 +207,55 @@ begin
     QuotedStr(STR_OPTION_WITH_SPACE));
 end;
 
+{ TestTCLIOptions }
+
+procedure TestTCLIOptions.SetUp;
+begin
+  FCLIOptions := TCLIOptions.Create;
+  FCLIOptions.Add(STR_OPTION1);
+  FCLIOptions.Add(STR_OPTION2);
+end;
+
+procedure TestTCLIOptions.TearDown;
+begin
+  FreeAndNil(FCLIOptions);
+end;
+
+procedure TestTCLIOptions.TestContains;
+begin
+  CheckTrue(FCLIOptions.Contains(STR_OPTION1_NAME, True),
+    Format('IgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+  CheckTrue(FCLIOptions.Contains(STR_OPTION2_NAME, True),
+    Format('IgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+
+  CheckTrue(FCLIOptions.Contains(STR_OPTION1_NAME, False),
+    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+  CheckFalse(FCLIOptions.Contains(String(STR_OPTION2_NAME).ToLower, False),
+    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+end;
+
+procedure TestTCLIOptions.TestFind;
+  var
+    Opt : TCLIOption;
+begin
+  CheckTrue(FCLIOptions.Find(STR_OPTION1_NAME, Opt, True),
+    Format('IgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+  CheckEquals(STR_OPTION1_NAME, Opt.Name, 'IgnoreCase::(Opt.Name = STR_OPTION1_NAME)');
+
+  CheckTrue(FCLIOptions.Find(STR_OPTION2_NAME, Opt, True),
+    Format('IgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+  CheckEquals(STR_OPTION2_NAME, Opt.Name, 'IgnoreCase::(Opt.Name = STR_OPTION2_NAME)');
+
+  CheckTrue(FCLIOptions.Find(STR_OPTION1_NAME, Opt, False),
+    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+  CheckEquals(STR_OPTION1_NAME, Opt.Name, 'DoNotIgnoreCase::(Opt.Name = STR_OPTION1_NAME)');
+  CheckFalse(FCLIOptions.Find(String(STR_OPTION2_NAME).ToLower, Opt, False),
+    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+end;
+
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestTCLIOption.Suite);
+  RegisterTest(TestTCLIOptions.Suite);
 
 end.
