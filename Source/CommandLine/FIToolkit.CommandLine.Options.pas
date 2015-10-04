@@ -108,6 +108,9 @@ begin
     Delimiter := Iff.Get<String>(not String.IsNullOrWhiteSpace(ADelimiter) and
       (iDelimiterPos > iPrefixPos), ADelimiter, String.Empty);
 
+    iPrefixPos := Iff.Get<Integer>(Prefix.IsEmpty, -1, iPrefixPos);
+    iDelimiterPos := Iff.Get<Integer>(Delimiter.IsEmpty, -1, iDelimiterPos);
+
     Name := Iff.Get<String>(
       Delimiter.IsEmpty,
       S.Substring(iPrefixPos + Prefix.Length),
