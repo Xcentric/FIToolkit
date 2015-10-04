@@ -111,7 +111,7 @@ begin
     Name := Iff.Get<String>(
       Delimiter.IsEmpty,
       S.Substring(iPrefixPos + Prefix.Length),
-      S.Substring(iPrefixPos + Prefix.Length, iDelimiterPos - iPrefixPos + 1)
+      S.Substring(iPrefixPos + Prefix.Length, iDelimiterPos - (iPrefixPos + Prefix.Length))
     );
 
     Value := Iff.Get<String>(
