@@ -43,6 +43,9 @@ begin
     RunApplication(sFullExePath, aLaunchParams);
   except
     on E: Exception do
+    begin
       Writeln(E.ClassName, ': ', E.Message);
+      Halt(1);
+    end;
   end;
 end.
