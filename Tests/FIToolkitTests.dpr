@@ -14,6 +14,8 @@ program FIToolkitTests;
   {$APPTYPE CONSOLE}
 {$ENDIF}
 
+{$R *.RES}
+
 uses
   {$IFDEF TESTINSIGHT}
   TestInsight.DUnit,
@@ -22,6 +24,10 @@ uses
   DUnitTestRunner,
   FIToolkit.Base.Consts in '..\Source\Base\FIToolkit.Base.Consts.pas',
   FIToolkit.Base.Exceptions in '..\Source\Base\FIToolkit.Base.Exceptions.pas',
+  FIToolkit.CommandLine.Consts in '..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas',
+  FIToolkit.CommandLine.Exceptions in '..\Source\CommandLine\FIToolkit.CommandLine.Exceptions.pas',
+  FIToolkit.CommandLine.Options in '..\Source\CommandLine\FIToolkit.CommandLine.Options.pas',
+  FIToolkit.CommandLine.Types in '..\Source\CommandLine\FIToolkit.CommandLine.Types.pas',
   FIToolkit.Config.Consts in '..\Source\Config\FIToolkit.Config.Consts.pas',
   FIToolkit.Config.Data in '..\Source\Config\FIToolkit.Config.Data.pas',
   FIToolkit.Config.Defaults in '..\Source\Config\FIToolkit.Config.Defaults.pas',
@@ -33,6 +39,7 @@ uses
   FIToolkit.Config.Types in '..\Source\Config\FIToolkit.Config.Types.pas',
   FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   Test_FIToolkit.Base.Exceptions in 'Test_FIToolkit.Base.Exceptions.pas',
+  Test_FIToolkit.CommandLine.Options in 'Test_FIToolkit.CommandLine.Options.pas',
   Test_FIToolkit.Config.Data in 'Test_FIToolkit.Config.Data.pas',
   Test_FIToolkit.Config.Defaults in 'Test_FIToolkit.Config.Defaults.pas',
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
@@ -41,8 +48,6 @@ uses
   Test_FIToolkit.Utils in 'Test_FIToolkit.Utils.pas',
   TestConsts in 'TestConsts.pas',
   TestUtils in 'TestUtils.pas';
-
-{$R *.RES}
 
   {$IFDEF TESTINSIGHT}
   function IsTestInsightRunning : Boolean;
