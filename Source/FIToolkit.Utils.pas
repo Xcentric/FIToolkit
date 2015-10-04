@@ -9,10 +9,10 @@ type
 
   TIff = record
     public
-      class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static;
+      class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
   end;
 
-  function Iff : TIff;
+  function Iff : TIff; inline;
 
 type
 
@@ -40,12 +40,14 @@ type
       function IsString : Boolean;
   end;
 
-  function GetFixInsightExePath : TFileName;
+  function  GetFixInsightExePath : TFileName;
+  procedure PressAnyKey;
 
 implementation
 
 uses
-  System.Win.Registry, Winapi.Windows;
+  System.Win.Registry, Winapi.Windows,
+  FIToolkit.Consts;
 
 { Utils }
 
@@ -76,6 +78,12 @@ end;
 function Iff : TIff;
 begin
   Result := Default(TIff);
+end;
+
+procedure PressAnyKey;
+begin
+  Writeln(SPressAnyKey);
+  Readln;
 end;
 
 { TIff }

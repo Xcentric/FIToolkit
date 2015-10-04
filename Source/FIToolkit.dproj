@@ -82,6 +82,10 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="FIToolkit.Consts.pas"/>
+        <DCCReference Include="FIToolkit.Exceptions.pas"/>
+        <DCCReference Include="FIToolkit.Main.pas"/>
+        <DCCReference Include="FIToolkit.Utils.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Exceptions.pas"/>
         <DCCReference Include="CommandLine\FIToolkit.CommandLine.Consts.pas"/>
@@ -98,11 +102,9 @@
         <DCCReference Include="Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>
-        <DCCReference Include="FIToolkit.Main.pas"/>
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
-        <DCCReference Include="FIToolkit.Utils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

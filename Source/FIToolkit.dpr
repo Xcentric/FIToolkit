@@ -7,6 +7,10 @@ program FIToolkit;
 uses
   System.SysUtils,
   System.Types,
+  FIToolkit.Consts in 'FIToolkit.Consts.pas',
+  FIToolkit.Exceptions in 'FIToolkit.Exceptions.pas',
+  FIToolkit.Main in 'FIToolkit.Main.pas',
+  FIToolkit.Utils in 'FIToolkit.Utils.pas',
   FIToolkit.Base.Consts in 'Base\FIToolkit.Base.Consts.pas',
   FIToolkit.Base.Exceptions in 'Base\FIToolkit.Base.Exceptions.pas',
   FIToolkit.CommandLine.Consts in 'CommandLine\FIToolkit.CommandLine.Consts.pas',
@@ -23,29 +27,33 @@ uses
   FIToolkit.Config.TypedDefaults in 'Config\FIToolkit.Config.TypedDefaults.pas',
   FIToolkit.Config.Types in 'Config\FIToolkit.Config.Types.pas',
   FIToolkit.Logger.Consts in 'Logger\FIToolkit.Logger.Consts.pas',
-  FIToolkit.Main in 'FIToolkit.Main.pas',
   FIToolkit.Reports.Builder.Consts in 'Reports\Builder\FIToolkit.Reports.Builder.Consts.pas',
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
-  FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas',
-  FIToolkit.Utils in 'FIToolkit.Utils.pas';
+  FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas';
 
 var
   sFullExePath : TFileName;
-  aLaunchParams : TStringDynArray;
+  arrCmdLineOptions : TStringDynArray;
   i : Integer;
 begin
   try
     sFullExePath := ParamStr(0);
-    SetLength(aLaunchParams, ParamCount);
-    for i := 0 to High(aLaunchParams) do
-      aLaunchParams[i] := ParamStr(i + 1);
+    SetLength(arrCmdLineOptions, ParamCount);
+    for i := 0 to High(arrCmdLineOptions) do
+      arrCmdLineOptions[i] := ParamStr(i + 1);
 
-    RunApplication(sFullExePath, aLaunchParams);
+    RunApplication(sFullExePath, arrCmdLineOptions);
   except
     on E: Exception do
     begin
       Writeln(E.ClassName, ': ', E.Message);
+      {$IFNDEF DEBUG}
       Halt(1);
+      {$ENDIF}
     end;
   end;
+
+  {$IFDEF DEBUG}
+  PressAnyKey;
+  {$ENDIF}
 end.

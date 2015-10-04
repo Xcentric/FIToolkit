@@ -37,6 +37,7 @@ uses
   FIToolkit.Config.Storage in '..\Source\Config\FIToolkit.Config.Storage.pas',
   FIToolkit.Config.TypedDefaults in '..\Source\Config\FIToolkit.Config.TypedDefaults.pas',
   FIToolkit.Config.Types in '..\Source\Config\FIToolkit.Config.Types.pas',
+  FIToolkit.Consts in '..\Source\FIToolkit.Consts.pas',
   FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   Test_FIToolkit.Base.Exceptions in 'Test_FIToolkit.Base.Exceptions.pas',
   Test_FIToolkit.CommandLine.Options in 'Test_FIToolkit.CommandLine.Options.pas',
