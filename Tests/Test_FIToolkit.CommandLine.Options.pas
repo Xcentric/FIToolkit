@@ -151,7 +151,11 @@ end;
 procedure TestTCLIOption.TestToString;
 begin
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
-  CheckEquals(STR_OPTION, FCLIOption.ToString, 'FCLIOption.ToString = STR_OPTION');
+  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::(Prefix → Delimiter)');
+
+  FCLIOption := TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX);
+  CheckEquals(STR_OPTION, FCLIOption.Name, '(FCLIOption.Name = STR_OPTION)::(Delimiter → Prefix)');
+  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::(Delimiter → Prefix)');
 
   FCLIOption := TCLIOption.Create(STR_OPTION_NAME, ' ', ' ');
   CheckEquals(STR_OPTION_NAME, FCLIOption.ToString, 'FCLIOption.ToString = STR_OPTION_NAME');
