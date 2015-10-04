@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.CommandLine.Options;
+  FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Types;
 
 type
   // Test methods for class TCLIOption
@@ -27,7 +27,10 @@ type
       STR_OPTION_NAME = 'ParamName';
       STR_DELIMITER = ':';
       STR_OPTION_VALUE = 'ParamValue';
+      STR_OPTION_VALUE_WITH_SPACE = 'Param' + TCLIOptionString.CHR_SPACE + 'Value';
+
       STR_OPTION = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE;
+      STR_OPTION_WITH_SPACE = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE_WITH_SPACE;
   published
     procedure TestCreateLong;
     procedure TestCreateShort;
@@ -45,7 +48,7 @@ implementation
 uses
   System.SysUtils,
   TestUtils,
-  FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts, FIToolkit.CommandLine.Types;
+  FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts;
 
 procedure TestTCLIOption.TestCreateLong;
 begin
@@ -109,23 +112,20 @@ end;
 
 procedure TestTCLIOption.TestHasDelimiter;
 begin
-  //TODO: messages
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasDelimiter);
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasDelimiter);
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasDelimiter, 'Prefix → Delimiter');
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasDelimiter, 'Delimiter → Prefix');
 end;
 
 procedure TestTCLIOption.TestHasNonEmptyValue;
 begin
-  //TODO: messages
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue);
-  CheckFalse(TCLIOption.Create(STR_OPTION_NAME, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue);
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue, STR_OPTION);
+  CheckFalse(TCLIOption.Create(STR_OPTION_NAME, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue, STR_OPTION_NAME);
 end;
 
 procedure TestTCLIOption.TestHasPrefix;
 begin
-  //TODO: messages
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasPrefix);
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasPrefix);
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasPrefix, 'Prefix → Delimiter');
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasPrefix, 'Delimiter → Prefix');
 end;
 
 procedure TestTCLIOption.TestImplicitFromString;
@@ -151,17 +151,24 @@ end;
 procedure TestTCLIOption.TestToString;
 begin
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
-
   CheckEquals(STR_OPTION, FCLIOption.ToString, 'FCLIOption.ToString = STR_OPTION');
 
-  //TODO: another cases?
+  FCLIOption := TCLIOption.Create(STR_OPTION_NAME, ' ', ' ');
+  CheckEquals(STR_OPTION_NAME, FCLIOption.ToString, 'FCLIOption.ToString = STR_OPTION_NAME');
+
+  FCLIOption := TCLIOption.Create(STR_OPTION_WITH_SPACE, STR_PREFIX, STR_DELIMITER);
+  CheckTrue(
+    String(FCLIOption.ToString).EndsWith(
+      TCLIOptionString.CHR_QUOTE + STR_OPTION_VALUE_WITH_SPACE + TCLIOptionString.CHR_QUOTE),
+    STR_OPTION_WITH_SPACE
+  );
 end;
 
 procedure TestTCLIOption.TestValueContainsSpaces;
 begin
-  //TODO: messages
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces);
-  CheckTrue(TCLIOption.Create(STR_OPTION + TCLIOptionString.CHR_SPACE, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces);
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces, STR_OPTION);
+  CheckTrue(TCLIOption.Create(STR_OPTION_WITH_SPACE, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces,
+    QuotedStr(STR_OPTION_WITH_SPACE));
 end;
 
 initialization
