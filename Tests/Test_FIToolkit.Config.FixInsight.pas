@@ -34,7 +34,7 @@ implementation
 
 uses
   System.SysUtils, System.Types,
-  TestConsts,
+  TestUtils, TestConsts,
   FIToolkit.Config.Exceptions, FIToolkit.Config.Types, FIToolkit.Config.Consts;
 
 procedure TestTFixInsightOptions.SetUp;
@@ -61,7 +61,6 @@ procedure TestTFixInsightOptions.TestToString;
   var
     Defines : TStringDynArray;
     ReturnValue : String;
-    bWasException : Boolean;
 begin
   SetLength(Defines, 2);
   Defines[0] := STR_DEFINE1;
@@ -86,117 +85,95 @@ begin
   { Check validation within method call }
 
   FFixInsightOptions.Validate := True;
-  bWasException := False;
-  try
-    ReturnValue := FFixInsightOptions.ToString;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFixInsightOptionsException), 'E.InheritsFrom(EFixInsightOptionsException)');
-    end;
-  end;
-  CheckTrue(bWasException, 'ToString::bWasException');
+      ReturnValue := FFixInsightOptions.ToString;
+    end,
+    EFixInsightOptionsException,
+    'ToString'
+  );
 end;
 
 procedure TestTFixInsightOptions.TestValidationWithInvalidProps;
-  var
-    bWasException : Boolean;
 begin
   FFixInsightOptions.Validate := True;
 
   { Check validation - invalid project file name }
 
-  bWasException := False;
-  try
-    FFixInsightOptions.ProjectFileName := STR_NON_EXISTENT_FILE;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFIOProjectFileNotFound), 'E.InheritsFrom(EFIOProjectFileNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'ProjectFileName::bWasException');
+      FFixInsightOptions.ProjectFileName := STR_NON_EXISTENT_FILE;
+    end,
+    EFIOProjectFileNotFound,
+    'ProjectFileName'
+  );
 
   { Check validation - empty output file name }
 
-  bWasException := False;
-  try
-    FFixInsightOptions.OutputFileName := ParamStr(0);
-    FFixInsightOptions.OutputFileName := String.Empty;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFIOEmptyOutputFileName), 'E.InheritsFrom(EFIOEmptyOutputFileName)');
-    end;
-  end;
-  CheckTrue(bWasException, 'OutputFileName::bWasException');
+      FFixInsightOptions.OutputFileName := ParamStr(0);
+      FFixInsightOptions.OutputFileName := String.Empty;
+    end,
+    EFIOEmptyOutputFileName,
+    'OutputFileName'
+  );
 
   { Check validation - nonexistent output directory }
 
-  bWasException := False;
-  try
-    FFixInsightOptions.OutputFileName := STR_NON_EXISTENT_DIR + ExtractFileName(ParamStr(0));
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFIOOutputDirectoryNotFound), 'E.InheritsFrom(EFIOOutputDirectoryNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'OutputFileName::bWasException');
+      FFixInsightOptions.OutputFileName := STR_NON_EXISTENT_DIR + ExtractFileName(ParamStr(0));
+    end,
+    EFIOOutputDirectoryNotFound,
+    'OutputFileName'
+  );
 
   { Check validation - invalid output file name }
 
-  bWasException := False;
-  try
-    FFixInsightOptions.OutputFileName := ExtractFilePath(ParamStr(0)) + STR_INVALID_FILENAME;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFIOInvalidOutputFileName), 'E.InheritsFrom(EFIOInvalidOutputFileName)');
-    end;
-  end;
-  CheckTrue(bWasException, 'OutputFileName::bWasException');
+      FFixInsightOptions.OutputFileName := ExtractFilePath(ParamStr(0)) + STR_INVALID_FILENAME;
+    end,
+    EFIOInvalidOutputFileName,
+    'OutputFileName'
+  );
 
   { Check validation - invalid settings file name }
 
-  bWasException := False;
-  try
-    FFixInsightOptions.SettingsFileName := STR_NON_EXISTENT_FILE;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EFIOSettingsFileNotFound), 'E.InheritsFrom(EFIOSettingsFileNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'SettingsFileName::bWasException');
+      FFixInsightOptions.SettingsFileName := STR_NON_EXISTENT_FILE;
+    end,
+    EFIOSettingsFileNotFound,
+    'SettingsFileName'
+  );
 end;
 
 procedure TestTFixInsightOptions.TestValidationWithValidProps;
-  var
-    bWasException : Boolean;
 begin
-  bWasException := False;
-  try
-    with FFixInsightOptions do
+  CheckException(
+    procedure
     begin
-      Validate := True;
-      CompilerDefines := nil;
-      OutputFileName := ParamStr(0);
-      OutputFormat := fiofPlainText;
-      ProjectFileName := ParamStr(0);
-      SettingsFileName := ParamStr(0);
-      SettingsFileName := String.Empty;
-    end;
-  except
-    bWasException := True;
-  end;
-  CheckFalse(bWasException, 'TestValidationWithValidProps::bWasException');
+      with FFixInsightOptions do
+      begin
+        Validate := True;
+        CompilerDefines := nil;
+        OutputFileName := ParamStr(0);
+        OutputFormat := fiofPlainText;
+        ProjectFileName := ParamStr(0);
+        SettingsFileName := ParamStr(0);
+        SettingsFileName := String.Empty;
+      end;
+    end,
+    nil
+  );
 end;
 
 initialization

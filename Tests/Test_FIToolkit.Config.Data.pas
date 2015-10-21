@@ -33,7 +33,7 @@ implementation
 
 uses
   System.SysUtils,
-  TestConsts,
+  TestUtils, TestConsts,
   FIToolkit.Config.Exceptions;
 
 procedure TestTConfigData.SetUp;
@@ -47,101 +47,82 @@ begin
 end;
 
 procedure TestTConfigData.TestInvalidData;
-  var
-    bWasException : Boolean;
 begin
   FConfigData.Validate := True;
 
   { Check validation - invalid FixInsight executable path }
 
-  bWasException := False;
-  try
-    FConfigData.FixInsightExe := STR_NON_EXISTENT_FILE;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(ECDFixInsightExeNotFound), 'E.InheritsFrom(ECDFixInsightExeNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'FixInsightExe::bWasException');
+      FConfigData.FixInsightExe := STR_NON_EXISTENT_FILE;
+    end,
+    ECDFixInsightExeNotFound,
+    'FixInsightExe'
+  );
 
   { Check validation - invalid input file name }
 
-  bWasException := False;
-  try
-    FConfigData.InputFileName := STR_NON_EXISTENT_FILE;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(ECDInputFileNotFound), 'E.InheritsFrom(ECDInputFileNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'InputFileName::bWasException');
-
-  { Check validation - invalid output file name }
-
-  bWasException := False;
-  try
-    FConfigData.OutputDirectory := STR_NON_EXISTENT_DIR;
-  except
-    on E:Exception do
-    begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(ECDOutputDirectoryNotFound), 'E.InheritsFrom(ECDOutputDirectoryNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'OutputDirectory::bWasException');
+      FConfigData.InputFileName := STR_NON_EXISTENT_FILE;
+    end,
+    ECDInputFileNotFound,
+    'InputFileName'
+  );
 
   { Check validation - invalid output directory }
 
-  bWasException := False;
-  try
-    FConfigData.OutputFileName := STR_INVALID_FILENAME;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(ECDInvalidOutputFileName), 'E.InheritsFrom(ECDInvalidOutputFileName)');
-    end;
-  end;
-  CheckTrue(bWasException, 'OutputFileName::bWasException');
+      FConfigData.OutputDirectory := STR_NON_EXISTENT_DIR;
+    end,
+    ECDOutputDirectoryNotFound,
+    'OutputDirectory'
+  );
+
+  { Check validation - invalid output file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.OutputFileName := STR_INVALID_FILENAME;
+    end,
+    ECDInvalidOutputFileName,
+    'OutputFileName'
+  );
 
   { Check validation - invalid temp directory }
 
-  bWasException := False;
-  try
-    FConfigData.TempDirectory := STR_NON_EXISTENT_DIR;
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(ECDTempDirectoryNotFound), 'E.InheritsFrom(ECDTempDirectoryNotFound)');
-    end;
-  end;
-  CheckTrue(bWasException, 'TempDirectory::bWasException');
+      FConfigData.TempDirectory := STR_NON_EXISTENT_DIR;
+    end,
+    ECDTempDirectoryNotFound,
+    'TempDirectory'
+  );
 end;
 
 procedure TestTConfigData.TestValidData;
-  var
-    bWasException : Boolean;
 begin
-  bWasException := False;
-  try
-    with FConfigData do
+  CheckException(
+    procedure
     begin
-      Validate := True;
-      FixInsightExe := ParamStr(0);
-      InputFileName := ParamStr(0);
-      OutputDirectory := ExtractFileDir(ParamStr(0));
-      OutputFileName := ExtractFileName(ParamStr(0));
-      TempDirectory := ExtractFileDir(ParamStr(0));
-    end;
-  except
-    bWasException := True;
-  end;
-  CheckFalse(bWasException, 'TestValidData::bWasException');
+      with FConfigData do
+      begin
+        Validate := True;
+        FixInsightExe := ParamStr(0);
+        InputFileName := ParamStr(0);
+        OutputDirectory := ExtractFileDir(ParamStr(0));
+        OutputFileName := ExtractFileName(ParamStr(0));
+        TempDirectory := ExtractFileDir(ParamStr(0));
+      end;
+    end,
+    nil
+  );
 end;
 
 initialization

@@ -93,22 +93,18 @@ end;
 
 procedure TestTDefaultValueAttribute.TestIsEmpty;
   var
-    bWasException : Boolean;
+    ReturnValue : TValue;
 begin
   CheckTrue(FDefaultValueAttribute.ValueKind = dvkUndefined, 'ValueKind = dvkUndefined');
 
-  bWasException := False;
-  try
-    // Value surely must be empty but we need this test to be failed if we are reaching this point:
-    CheckFalse(FDefaultValueAttribute.Value.IsEmpty, 'Value.IsEmpty');
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EAssertionFailed), 'E.InheritsFrom(EAssertionFailed)');
-    end;
-  end;
-  CheckTrue(bWasException, 'Value::bWasException');
+      ReturnValue := FDefaultValueAttribute.Value;
+    end,
+    EAssertionFailed,
+    'EAssertionFailed::(ValueKind <> dvkUndefined)'
+  );
 end;
 
 { TestTDefaultValueAttributeT }
@@ -179,21 +175,17 @@ procedure TestTDefaultsMap.TestGetValue;
 var
   ReturnValue: TValue;
   DefValAttribClass: TDefaultValueAttributeClass;
-  bWasException : Boolean;
 begin
   DefValAttribClass := TTestGetAttr;
 
-  bWasException := False;
-  try
-    ReturnValue := TDefaultsMap.GetValue(DefValAttribClass);
-  except
-    on E:Exception do
+  CheckException(
+    procedure
     begin
-      bWasException := True;
-      CheckTrue(E.InheritsFrom(EListError), 'E.InheritsFrom(EListError)');
-    end;
-  end;
-  CheckTrue(bWasException, 'GetValue::bWasException');
+      ReturnValue := TDefaultsMap.GetValue(DefValAttribClass);
+    end,
+    EListError,
+    'GetValue'
+  );
 
   TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
   ReturnValue := TDefaultsMap.GetValue(DefValAttribClass);

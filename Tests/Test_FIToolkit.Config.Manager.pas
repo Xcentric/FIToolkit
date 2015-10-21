@@ -82,4 +82,4 @@ initialization
   // Register any test cases with the test runner
   RegisterTest(TestTConfigManager.Suite);
 
-  end.
+end.

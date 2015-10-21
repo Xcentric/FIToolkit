@@ -89,7 +89,6 @@ procedure TestTConfigFile.TestCreate;
   var
     sFileName : TFileName;
     Cfg : TConfigFile;
-    bWasException : Boolean;
 begin
   sFileName := GetTestIniFileName;
 
@@ -98,13 +97,14 @@ begin
   Cfg := nil;
   try
     DeleteFile(sFileName);
-    bWasException := False;
-    try
-      Cfg := TConfigFile.Create(sFileName, False);
-    except
-      bWasException := True;
-    end;
-    CheckFalse(bWasException, 'Create(NotExists,NotWritable)::bWasException');
+    CheckException(
+      procedure
+      begin
+        Cfg := TConfigFile.Create(sFileName, False);
+      end,
+      nil,
+      'Create(NotExists,NotWritable)'
+    );
     CheckFalse(FileExists(sFileName), 'Create(NotExists,NotWritable)::FileExists');
   finally
     if Assigned(Cfg) then
@@ -116,13 +116,14 @@ begin
   Cfg := nil;
   try
     DeleteFile(sFileName);
-    bWasException := False;
-    try
-      Cfg := TConfigFile.Create(sFileName, True);
-    except
-      bWasException := True;
-    end;
-    CheckFalse(bWasException, 'Create(NotExists,Writable)::bWasException');
+    CheckException(
+      procedure
+      begin
+        Cfg := TConfigFile.Create(sFileName, True);
+      end,
+      nil,
+      'Create(NotExists,Writable)'
+    );
     CheckTrue(FileExists(sFileName), 'Create(NotExists,Writable)::FileExists');
   finally
     if Assigned(Cfg) then
@@ -134,13 +135,14 @@ begin
   Cfg := nil;
   try
     Assert(FileExists(sFileName));
-    bWasException := False;
-    try
-      Cfg := TConfigFile.Create(sFileName, False);
-    except
-      bWasException := True;
-    end;
-    CheckFalse(bWasException, 'Create(Exists,NotWritable)::bWasException');
+    CheckException(
+      procedure
+      begin
+        Cfg := TConfigFile.Create(sFileName, False);
+      end,
+      nil,
+      'Create(Exists,NotWritable)'
+    );
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -151,13 +153,14 @@ begin
   Cfg := nil;
   try
     Assert(FileExists(sFileName));
-    bWasException := False;
-    try
-      Cfg := TConfigFile.Create(sFileName, True);
-    except
-      bWasException := True;
-    end;
-    CheckFalse(bWasException, 'Create(Exists,Writable)::bWasException');
+    CheckException(
+      procedure
+      begin
+        Cfg := TConfigFile.Create(sFileName, True);
+      end,
+      nil,
+      'Create(Exists,Writable)'
+    );
   finally
     if Assigned(Cfg) then
       Cfg.Free;
