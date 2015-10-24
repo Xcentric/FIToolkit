@@ -66,12 +66,16 @@ end;
 
 procedure TFIToolkit.InitConfig;
   var
+    bHasGenerateConfigOption : Boolean;
     SetConfigOption : TCLIOption;
 begin
+  bHasGenerateConfigOption := FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG);
+
   if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption) and
-     TPath.IsApplicableFileName(SetConfigOption.Value)
+     TPath.IsApplicableFileName(SetConfigOption.Value) and
+     (TFile.Exists(SetConfigOption.Value) or bHasGenerateConfigOption)
   then
-    FConfig := TConfigManager.Create(SetConfigOption.Value, FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG), True)
+    FConfig := TConfigManager.Create(SetConfigOption.Value, bHasGenerateConfigOption, True)
   else
     raise ENoConfigSpecified.Create;
 end;
