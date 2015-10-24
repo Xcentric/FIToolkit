@@ -49,26 +49,27 @@ procedure TestTConfigManager.TestCreate;
     CfgMgr : TConfigManager;
 begin
   sFileName := GetTestIniFileName;
+  Assert(not String.IsNullOrWhiteSpace(sFileName));
 
   CfgMgr := TConfigManager.Create(sFileName, False, False);
   try
-    CheckFalse(FileExists(sFileName), 'Create(DoNotGenerateConfig)::FileExists');
+    CheckFalse(FileExists(sFileName), 'Create(NonEmptyFileName,DoNotGenerateConfig)::FileExists');
     CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
-              'Create(DoNotGenerateConfig)::PropertiesHaveDefaultValues');
+              'Create(NonEmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
   finally
     CfgMgr.Free;
   end;
 
   CfgMgr := TConfigManager.Create(sFileName, True, False);
   try
-    CheckTrue(FileExists(sFileName), 'Create(GenerateConfig)::FileExists');
+    CheckTrue(FileExists(sFileName), 'Create(NonEmptyFileName,GenerateConfig)::FileExists');
 
     with TIniFile.Create(sFileName) do
       try
         CheckEquals(
           DEF_CD_STR_OUTPUT_FILENAME,
           ReadString(CfgMgr.ConfigData.QualifiedClassName, 'OutputFileName', STR_INVALID_FILENAME),
-          'Create(GenerateConfig)::ConfigFileContainsDefaultValues'
+          'Create(NonEmptyFileName,GenerateConfig)::ConfigFileContainsDefaultValues'
         );
       finally
         Free;
@@ -76,6 +77,23 @@ begin
   finally
     CfgMgr.Free;
   end;
+
+  CfgMgr := TConfigManager.Create(String.Empty, False, False);
+  try
+    CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
+              'Create(EmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
+  finally
+    CfgMgr.Free;
+  end;
+
+  CheckException(
+    procedure
+    begin
+      TConfigManager.Create(String.Empty, True, False);
+    end,
+    EArgumentException,
+    'Create(EmptyFileName,GenerateConfig)::EArgumentException'
+  );
 end;
 
 initialization
