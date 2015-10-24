@@ -15,6 +15,7 @@ const
   STR_CLI_OPTION_HELP = 'help';
   STR_CLI_OPTION_NO_EXIT = 'no-exit';
   STR_CLI_OPTION_SET_CONFIG = 'set-config';
+  STR_CLI_OPTION_VERSION = 'version';
 
 resourcestring
 
