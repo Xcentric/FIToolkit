@@ -27,6 +27,7 @@ type
     published
       procedure TestGetExePath;
       procedure TestGetQuotedPath;
+      procedure TestIsApplicableFileName;
   end;
 
   TestTTypeKindHelper = class (TTestCase)
@@ -89,7 +90,8 @@ type
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti;
+  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
+  TestConsts;
 
 procedure TestFIToolkitUtils.TestGetFixInsightExePath;
   var
@@ -171,6 +173,23 @@ begin
 
   ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_BOTH);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue::BothQuoted = STR_EXPECTED');
+end;
+
+procedure TestTPathHelper.TestIsApplicableFileName;
+  var
+    FileName : TFileName;
+begin
+  FileName := TPath.GetDirectoryName(ParamStr(0));
+  CheckFalse(TPath.IsApplicableFileName(FileName), FileName);
+
+  FileName := TPath.GetFileName(ParamStr(0));
+  CheckTrue(TPath.IsApplicableFileName(FileName), FileName);
+
+  FileName := ParamStr(0);
+  CheckTrue(TPath.IsApplicableFileName(FileName), FileName);
+
+  CheckFalse(TPath.IsApplicableFileName(STR_NON_EXISTENT_DIR), STR_NON_EXISTENT_DIR);
+  CheckFalse(TPath.IsApplicableFileName(STR_INVALID_FILENAME), STR_INVALID_FILENAME);
 end;
 
 { TestTTypeKindHelper }

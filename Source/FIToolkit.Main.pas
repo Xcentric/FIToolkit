@@ -10,6 +10,9 @@ uses
 implementation
 
 uses
+  System.IOUtils,
+  FIToolkit.Exceptions,
+  FIToolkit.Base.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
   FIToolkit.Config.Manager;
 
@@ -65,9 +68,12 @@ procedure TFIToolkit.InitConfig;
   var
     SetConfigOption : TCLIOption;
 begin
-  //TODO: implement (with application state)
-  FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption);
-  FConfig := TConfigManager.Create(SetConfigOption.Value, FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG), True);
+  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption) and
+     TPath.IsApplicableFileName(SetConfigOption.Value)
+  then
+    FConfig := TConfigManager.Create(SetConfigOption.Value, FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG), True)
+  else
+    raise ENoConfigSpecified.Create;
 end;
 
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);

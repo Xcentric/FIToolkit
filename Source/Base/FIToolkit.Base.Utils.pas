@@ -12,14 +12,11 @@ type
       class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
   end;
 
-  function Iff : TIff; inline;
-
-type
-
   TPathHelper = record helper for TPath
     public
       class function GetExePath : String; static;
       class function GetQuotedPath(const Path : String) : String; static;
+      class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
   end;
 
   TTypeKindHelper = record helper for TTypeKind
@@ -40,7 +37,10 @@ type
       function IsString : Boolean;
   end;
 
+  { Utils }
+
   function  GetFixInsightExePath : TFileName;
+  function  Iff : TIff; inline;
   procedure PressAnyKey;
 
 implementation
@@ -114,6 +114,15 @@ begin
 
   if not Result.EndsWith(CHR_QUOTE_CHAR) then
     Result := Result + CHR_QUOTE_CHAR;
+end;
+
+class function TPathHelper.IsApplicableFileName(const FileName : TFileName) : Boolean;
+begin
+  Result := False;
+
+  if not String.IsNullOrWhiteSpace(FileName) then
+    if TPath.HasValidPathChars(FileName, False) and not TDirectory.Exists(FileName) then
+      Result := TPath.HasValidFileNameChars(TPath.GetFileName(FileName), False);
 end;
 
 { TTypeKindHelper }
