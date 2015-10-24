@@ -37,7 +37,7 @@ implementation
 
 uses
   System.TypInfo, System.Classes,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Utils;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Base.Utils;
 
 { TConfigManager }
 

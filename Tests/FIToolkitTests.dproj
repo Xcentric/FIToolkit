@@ -84,6 +84,7 @@
         </DelphiCompile>
         <DCCReference Include="..\Source\Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="..\Source\Base\FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Base\FIToolkit.Base.Utils.pas"/>
         <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas"/>
         <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Exceptions.pas"/>
         <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Options.pas"/>
@@ -98,15 +99,14 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="..\Source\FIToolkit.Consts.pas"/>
-        <DCCReference Include="..\Source\FIToolkit.Utils.pas"/>
         <DCCReference Include="Test_FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="Test_FIToolkit.Base.Utils.pas"/>
         <DCCReference Include="Test_FIToolkit.CommandLine.Options.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Data.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Defaults.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
-        <DCCReference Include="Test_FIToolkit.Utils.pas"/>
         <DCCReference Include="TestConsts.pas"/>
         <DCCReference Include="TestUtils.pas"/>
         <BuildConfiguration Include="Release">

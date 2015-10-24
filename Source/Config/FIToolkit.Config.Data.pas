@@ -59,7 +59,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Utils;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Base.Utils;
 
 { TConfigData }
 
