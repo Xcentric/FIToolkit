@@ -12,6 +12,13 @@ type
       class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
   end;
 
+  { Helpers }
+
+  TFileNameHelper = record helper for TFileName
+    public
+      function IsApplicable : Boolean;
+  end;
+
   TPathHelper = record helper for TPath
     public
       class function GetExePath : String; static;
@@ -19,7 +26,7 @@ type
       class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
   end;
 
-  TTypeKindHelper = record helper for TTypeKind
+  TRttiTypeHelper = class helper for TRttiType
     public
       function IsArray : Boolean;
       function IsString : Boolean;
@@ -31,7 +38,7 @@ type
       function IsString : Boolean;
   end;
 
-  TRttiTypeHelper = class helper for TRttiType
+  TTypeKindHelper = record helper for TTypeKind
     public
       function IsArray : Boolean;
       function IsString : Boolean;
@@ -86,6 +93,13 @@ begin
   Readln;
 end;
 
+{ TFileNameHelper }
+
+function TFileNameHelper.IsApplicable : Boolean;
+begin
+  Result := TPath.IsApplicableFileName(Self);
+end;
+
 { TIff }
 
 class function TIff.Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T;
@@ -125,16 +139,16 @@ begin
       Result := TPath.HasValidFileNameChars(TPath.GetFileName(FileName), False);
 end;
 
-{ TTypeKindHelper }
+{ TRttiTypeHelper }
 
-function TTypeKindHelper.IsArray : Boolean;
+function TRttiTypeHelper.IsArray : Boolean;
 begin
-  Result := Self in [tkArray, tkDynArray];
+  Result := TypeKind.IsArray;
 end;
 
-function TTypeKindHelper.IsString : Boolean;
+function TRttiTypeHelper.IsString : Boolean;
 begin
-  Result := Self in [tkString, tkLString, tkWString, tkUString];
+  Result := TypeKind.IsString;
 end;
 
 { TTypeInfoHelper }
@@ -149,16 +163,16 @@ begin
   Result := Kind.IsString;
 end;
 
-{ TRttiTypeHelper }
+{ TTypeKindHelper }
 
-function TRttiTypeHelper.IsArray : Boolean;
+function TTypeKindHelper.IsArray : Boolean;
 begin
-  Result := TypeKind.IsArray;
+  Result := Self in [tkArray, tkDynArray];
 end;
 
-function TRttiTypeHelper.IsString : Boolean;
+function TTypeKindHelper.IsString : Boolean;
 begin
-  Result := TypeKind.IsString;
+  Result := Self in [tkString, tkLString, tkWString, tkUString];
 end;
 
 end.

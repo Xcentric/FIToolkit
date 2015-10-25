@@ -23,23 +23,16 @@ type
       procedure TestIff;
   end;
 
+  TestTFileNameHelper = class (TTestCase)
+    published
+      procedure TestIsApplicable;
+  end;
+
   TestTPathHelper = class (TTestCase)
     published
       procedure TestGetExePath;
       procedure TestGetQuotedPath;
       procedure TestIsApplicableFileName;
-  end;
-
-  TestTTypeKindHelper = class (TTestCase)
-    published
-      procedure TestIsArray;
-      procedure TestIsString;
-  end;
-
-  TestTTypeInfoHelper = class (TTestCase)
-    published
-      procedure TestIsArray;
-      procedure TestIsString;
   end;
 
   TestTRttiTypeHelper = class (TTestCase)
@@ -82,6 +75,18 @@ type
       property PropUTF8String : UTF8String read FUTF8String;
       [IsStringProp]
       property PropWideString : WideString read FWideString;
+    published
+      procedure TestIsArray;
+      procedure TestIsString;
+  end;
+
+  TestTTypeInfoHelper = class (TTestCase)
+    published
+      procedure TestIsArray;
+      procedure TestIsString;
+  end;
+
+  TestTTypeKindHelper = class (TTestCase)
     published
       procedure TestIsArray;
       procedure TestIsString;
@@ -133,6 +138,28 @@ begin
   CheckTrue(eReturnValue = eTruePart, 'TTestEnum::TruePart');
   eReturnValue := Iff.Get<TTestEnum>(False, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eFalsePart, 'TTestEnum::FalsePart');
+end;
+
+{ TestTFileNameHelper }
+
+procedure TestTFileNameHelper.TestIsApplicable;
+  var
+    FileName : TFileName;
+begin
+  FileName := TPath.GetDirectoryName(ParamStr(0));
+  CheckFalse(FileName.IsApplicable, FileName);
+
+  FileName := TPath.GetFileName(ParamStr(0));
+  CheckTrue(FileName.IsApplicable, FileName);
+
+  FileName := ParamStr(0);
+  CheckTrue(FileName.IsApplicable, FileName);
+
+  FileName := STR_NON_EXISTENT_DIR;
+  CheckFalse(FileName.IsApplicable, STR_NON_EXISTENT_DIR);
+
+  FileName := STR_INVALID_FILENAME;
+  CheckFalse(FileName.IsApplicable, STR_INVALID_FILENAME);
 end;
 
 { TestTPathHelper }
@@ -192,50 +219,6 @@ begin
   CheckFalse(TPath.IsApplicableFileName(STR_INVALID_FILENAME), STR_INVALID_FILENAME);
 end;
 
-{ TestTTypeKindHelper }
-
-procedure TestTTypeKindHelper.TestIsArray;
-  type
-    TTestStaticArray = array [0..9] of Byte;
-    TTestDynamicArray = array of Byte;
-begin
-  CheckTrue(PTypeInfo(TypeInfo(TTestStaticArray)).Kind.IsArray, 'CheckTrue::TTestStaticArray');
-  CheckTrue(PTypeInfo(TypeInfo(TTestDynamicArray)).Kind.IsArray, 'CheckTrue::TTestDynamicArray');
-end;
-
-procedure TestTTypeKindHelper.TestIsString;
-begin
-  CheckTrue(PTypeInfo(TypeInfo(String)).Kind.IsString, 'CheckTrue::String');
-  CheckTrue(PTypeInfo(TypeInfo(ShortString)).Kind.IsString, 'CheckTrue::ShortString');
-  CheckTrue(PTypeInfo(TypeInfo(AnsiString)).Kind.IsString, 'CheckTrue::AnsiString');
-  CheckTrue(PTypeInfo(TypeInfo(WideString)).Kind.IsString, 'CheckTrue::WideString');
-  CheckTrue(PTypeInfo(TypeInfo(UnicodeString)).Kind.IsString, 'CheckTrue::UnicodeString');
-  CheckTrue(PTypeInfo(TypeInfo(UTF8String)).Kind.IsString, 'CheckTrue::UTF8String');
-  CheckTrue(PTypeInfo(TypeInfo(RawByteString)).Kind.IsString, 'CheckTrue::RawByteString');
-end;
-
-{ TestTTypeInfoHelper }
-
-procedure TestTTypeInfoHelper.TestIsArray;
-  type
-    TTestStaticArray = array [0..9] of Byte;
-    TTestDynamicArray = array of Byte;
-begin
-  CheckTrue(PTypeInfo(TypeInfo(TTestStaticArray)).IsArray, 'CheckTrue::TTestStaticArray');
-  CheckTrue(PTypeInfo(TypeInfo(TTestDynamicArray)).IsArray, 'CheckTrue::TTestDynamicArray');
-end;
-
-procedure TestTTypeInfoHelper.TestIsString;
-begin
-  CheckTrue(PTypeInfo(TypeInfo(String)).IsString, 'CheckTrue::String');
-  CheckTrue(PTypeInfo(TypeInfo(ShortString)).IsString, 'CheckTrue::ShortString');
-  CheckTrue(PTypeInfo(TypeInfo(AnsiString)).IsString, 'CheckTrue::AnsiString');
-  CheckTrue(PTypeInfo(TypeInfo(WideString)).IsString, 'CheckTrue::WideString');
-  CheckTrue(PTypeInfo(TypeInfo(UnicodeString)).IsString, 'CheckTrue::UnicodeString');
-  CheckTrue(PTypeInfo(TypeInfo(UTF8String)).IsString, 'CheckTrue::UTF8String');
-  CheckTrue(PTypeInfo(TypeInfo(RawByteString)).IsString, 'CheckTrue::RawByteString');
-end;
-
 { TestTRttiTypeHelper }
 
 procedure TestTRttiTypeHelper.TestIsArray;
@@ -278,12 +261,57 @@ begin
   end;
 end;
 
+{ TestTTypeInfoHelper }
+
+procedure TestTTypeInfoHelper.TestIsArray;
+  type
+    TTestStaticArray = array [0..9] of Byte;
+    TTestDynamicArray = array of Byte;
+begin
+  CheckTrue(PTypeInfo(TypeInfo(TTestStaticArray)).IsArray, 'CheckTrue::TTestStaticArray');
+  CheckTrue(PTypeInfo(TypeInfo(TTestDynamicArray)).IsArray, 'CheckTrue::TTestDynamicArray');
+end;
+
+procedure TestTTypeInfoHelper.TestIsString;
+begin
+  CheckTrue(PTypeInfo(TypeInfo(String)).IsString, 'CheckTrue::String');
+  CheckTrue(PTypeInfo(TypeInfo(ShortString)).IsString, 'CheckTrue::ShortString');
+  CheckTrue(PTypeInfo(TypeInfo(AnsiString)).IsString, 'CheckTrue::AnsiString');
+  CheckTrue(PTypeInfo(TypeInfo(WideString)).IsString, 'CheckTrue::WideString');
+  CheckTrue(PTypeInfo(TypeInfo(UnicodeString)).IsString, 'CheckTrue::UnicodeString');
+  CheckTrue(PTypeInfo(TypeInfo(UTF8String)).IsString, 'CheckTrue::UTF8String');
+  CheckTrue(PTypeInfo(TypeInfo(RawByteString)).IsString, 'CheckTrue::RawByteString');
+end;
+
+{ TestTTypeKindHelper }
+
+procedure TestTTypeKindHelper.TestIsArray;
+  type
+    TTestStaticArray = array [0..9] of Byte;
+    TTestDynamicArray = array of Byte;
+begin
+  CheckTrue(PTypeInfo(TypeInfo(TTestStaticArray)).Kind.IsArray, 'CheckTrue::TTestStaticArray');
+  CheckTrue(PTypeInfo(TypeInfo(TTestDynamicArray)).Kind.IsArray, 'CheckTrue::TTestDynamicArray');
+end;
+
+procedure TestTTypeKindHelper.TestIsString;
+begin
+  CheckTrue(PTypeInfo(TypeInfo(String)).Kind.IsString, 'CheckTrue::String');
+  CheckTrue(PTypeInfo(TypeInfo(ShortString)).Kind.IsString, 'CheckTrue::ShortString');
+  CheckTrue(PTypeInfo(TypeInfo(AnsiString)).Kind.IsString, 'CheckTrue::AnsiString');
+  CheckTrue(PTypeInfo(TypeInfo(WideString)).Kind.IsString, 'CheckTrue::WideString');
+  CheckTrue(PTypeInfo(TypeInfo(UnicodeString)).Kind.IsString, 'CheckTrue::UnicodeString');
+  CheckTrue(PTypeInfo(TypeInfo(UTF8String)).Kind.IsString, 'CheckTrue::UTF8String');
+  CheckTrue(PTypeInfo(TypeInfo(RawByteString)).Kind.IsString, 'CheckTrue::RawByteString');
+end;
+
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestFIToolkitUtils.Suite);
+  RegisterTest(TestTFileNameHelper.Suite);
   RegisterTest(TestTPathHelper.Suite);
-  RegisterTest(TestTTypeKindHelper.Suite);
-  RegisterTest(TestTTypeInfoHelper.Suite);
   RegisterTest(TestTRttiTypeHelper.Suite);
+  RegisterTest(TestTTypeInfoHelper.Suite);
+  RegisterTest(TestTTypeKindHelper.Suite);
 
 end.

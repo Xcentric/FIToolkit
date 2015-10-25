@@ -1,4 +1,4 @@
-program FIToolkitTests;
+﻿program FIToolkitTests;
 {
 
   Delphi DUnit Test Project
