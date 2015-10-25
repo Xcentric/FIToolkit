@@ -26,6 +26,8 @@ resourcestring
 
   { Common strings }
 
+  SConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
+  SEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
   SPressAnyKey = 'Нажмите любую клавишу для продолжения...';
 
   { Exceptions }

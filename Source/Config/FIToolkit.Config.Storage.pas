@@ -106,7 +106,7 @@ end;
 function TConfigFile.GetFileName : TFileName;
 begin
   if Assigned(FConfigFile) then
-    Result := FConfigFile.FileName;
+    Result := TPath.GetFullPath(FConfigFile.FileName);
 end;
 
 function TConfigFile.GetHasFile : Boolean;
