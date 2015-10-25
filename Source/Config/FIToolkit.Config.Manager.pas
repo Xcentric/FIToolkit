@@ -56,12 +56,10 @@ begin
   if GenerateConfig then
     GenerateDefaultConfig
   else
-  begin
+  if FConfigFile.HasFile then
+    FillDataFromFile
+  else
     SetDefaults;
-
-    if FConfigFile.HasFile then
-      FillDataFromFile;
-  end;
 end;
 
 destructor TConfigManager.Destroy;
