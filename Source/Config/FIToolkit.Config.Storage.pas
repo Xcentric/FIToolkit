@@ -12,6 +12,7 @@ type
       FConfig : TMemIniFile;
       FConfigFile : TFileStream;
     private
+      function  GetFileName : TFileName;
       function  GetHasFile : Boolean;
     public
       constructor Create(const FileName : TFileName; Writable : Boolean);
@@ -22,6 +23,7 @@ type
       function  Save : Boolean;
 
       property Config : TMemIniFile read FConfig;
+      property FileName : TFileName read GetFileName;
       property HasFile : Boolean read GetHasFile;
   end;
 
@@ -99,6 +101,12 @@ begin
   FreeAndNil(FConfigFile);
 
   inherited Destroy;
+end;
+
+function TConfigFile.GetFileName : TFileName;
+begin
+  if Assigned(FConfigFile) then
+    Result := FConfigFile.FileName;
 end;
 
 function TConfigFile.GetHasFile : Boolean;

@@ -54,6 +54,8 @@ begin
   CfgMgr := TConfigManager.Create(sFileName, False, False);
   try
     CheckFalse(FileExists(sFileName), 'Create(NonEmptyFileName,DoNotGenerateConfig)::FileExists');
+    CheckTrue(String.IsNullOrEmpty(CfgMgr.ConfigFileName),
+      'Create(NonEmptyFileName,DoNotGenerateConfig)::ConfigFileName.IsEmpty');
     CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
               'Create(NonEmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
   finally
@@ -63,6 +65,7 @@ begin
   CfgMgr := TConfigManager.Create(sFileName, True, False);
   try
     CheckTrue(FileExists(sFileName), 'Create(NonEmptyFileName,GenerateConfig)::FileExists');
+    CheckEquals(sFileName, CfgMgr.ConfigFileName, 'Create(NonEmptyFileName,GenerateConfig)::ConfigFileName.IsEqual');
 
     with TIniFile.Create(sFileName) do
       try
@@ -80,6 +83,8 @@ begin
 
   CfgMgr := TConfigManager.Create(String.Empty, False, False);
   try
+    CheckTrue(String.IsNullOrEmpty(CfgMgr.ConfigFileName),
+      'Create(EmptyFileName,DoNotGenerateConfig)::ConfigFileName.IsEmpty');
     CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
               'Create(EmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
   finally

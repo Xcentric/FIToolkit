@@ -106,6 +106,8 @@ begin
       'Create(NotExists,NotWritable)'
     );
     CheckFalse(FileExists(sFileName), 'Create(NotExists,NotWritable)::FileExists');
+    CheckFalse(Cfg.HasFile, 'Create(NotExists,NotWritable)::HasFile');
+    CheckTrue(String.IsNullOrEmpty(Cfg.FileName), 'Create(NotExists,NotWritable)::FileName.IsEmpty)');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -125,6 +127,8 @@ begin
       'Create(NotExists,Writable)'
     );
     CheckTrue(FileExists(sFileName), 'Create(NotExists,Writable)::FileExists');
+    CheckTrue(Cfg.HasFile, 'Create(NotExists,Writable)::HasFile');
+    CheckEquals(sFileName, Cfg.FileName, 'Create(NotExists,Writable)::FileName.IsEqual');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -143,6 +147,8 @@ begin
       nil,
       'Create(Exists,NotWritable)'
     );
+    CheckTrue(Cfg.HasFile, 'Create(Exists,NotWritable)::HasFile');
+    CheckEquals(sFileName, Cfg.FileName, 'Create(Exists,NotWritable)::FileName.IsEqual');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -161,6 +167,8 @@ begin
       nil,
       'Create(Exists,Writable)'
     );
+    CheckTrue(Cfg.HasFile, 'Create(Exists,Writable)::HasFile');
+    CheckEquals(sFileName, Cfg.FileName, 'Create(Exists,Writable)::FileName.IsEqual');
   finally
     if Assigned(Cfg) then
       Cfg.Free;

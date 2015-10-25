@@ -17,6 +17,7 @@ type
         TFilterPropPredicate = reference to function (const Instance : TObject; const Prop : TRttiProperty) : Boolean;
     private
       function  FilterConfigProp(const Instance : TObject; const Prop : TRttiProperty) : Boolean;
+      function  GetConfigFileName : TFileName;
       function  GetPropDefaultValue(const Prop : TRttiProperty) : TValue;
       procedure ReadObjectFromConfig(const Instance : TObject; Filter : TFilterPropPredicate);
       procedure SetObjectPropsDefaults(const Instance : TObject);
@@ -31,6 +32,7 @@ type
       destructor Destroy; override;
 
       property ConfigData : TConfigData read FConfigData;
+      property ConfigFileName : TFileName read GetConfigFileName;
   end;
 
 implementation
@@ -114,6 +116,11 @@ procedure TConfigManager.GenerateDefaultConfig;
 begin
   SetDefaults;
   FillFileFromData;
+end;
+
+function TConfigManager.GetConfigFileName : TFileName;
+begin
+  Result := FConfigFile.FileName;
 end;
 
 function TConfigManager.GetPropDefaultValue(const Prop : TRttiProperty) : TValue;
