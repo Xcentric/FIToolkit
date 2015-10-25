@@ -2,6 +2,10 @@
 
 interface
 
+const
+
+  sDualBreak = sLineBreak + sLineBreak;
+
 resourcestring
 
   { Exceptions }

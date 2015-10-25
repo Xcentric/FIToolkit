@@ -1,4 +1,4 @@
-program FIToolkit;
+﻿program FIToolkit;
 
 {$APPTYPE CONSOLE}
 
@@ -46,7 +46,7 @@ begin
   except
     on E: Exception do
     begin
-      Writeln(E.ClassName, ': ', E.Message);
+      Writeln(E.ClassName, ': ', E.Message, sLineBreak);
       {$IFNDEF DEBUG}
       Halt(1);
       {$ENDIF}

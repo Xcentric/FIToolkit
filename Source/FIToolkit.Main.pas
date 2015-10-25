@@ -11,7 +11,7 @@ implementation
 
 uses
   System.IOUtils,
-  FIToolkit.Exceptions,
+  FIToolkit.Exceptions, FIToolkit.Consts,
   FIToolkit.Base.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
   FIToolkit.Config.Manager;
@@ -26,6 +26,8 @@ type
       procedure InitConfig;
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
     public
+      class procedure PrintAbout;
+
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
 
@@ -35,15 +37,15 @@ type
 { Utils }
 
 procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
-  var
-    FIToolkit : TFIToolkit;
 begin
-  FIToolkit := TFIToolkit.Create(FullExePath, CmdLineOptions);
-  try
-    FIToolkit.Run;
-  finally
-    FIToolkit.Free;
-  end;
+  TFIToolkit.PrintAbout;
+
+  with TFIToolkit.Create(FullExePath, CmdLineOptions) do
+    try
+      Run;
+    finally
+      Free;
+    end;
 end;
 
 { TFIToolkit }
@@ -88,6 +90,11 @@ begin
 
   for S in CmdLineOptions do
     FOptions.Add(S);
+end;
+
+class procedure TFIToolkit.PrintAbout;
+begin
+  Writeln(SApplicationAbout);
 end;
 
 procedure TFIToolkit.Run;
