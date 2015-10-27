@@ -26,6 +26,7 @@ type
     procedure TearDown; override;
   published
     procedure TestToString;
+    procedure TestValidationWithEmptyProps;
     procedure TestValidationWithInvalidProps;
     procedure TestValidationWithValidProps;
   end;
@@ -92,6 +93,44 @@ begin
     end,
     EFixInsightOptionsException,
     'ToString'
+  );
+end;
+
+procedure TestTFixInsightOptions.TestValidationWithEmptyProps;
+begin
+  FFixInsightOptions.Validate := True;
+
+  { Check validation - empty project file name }
+
+  CheckException(
+    procedure
+    begin
+      FFixInsightOptions.ProjectFileName := String.Empty;
+    end,
+    EFIOProjectFileNotFound,
+    'ProjectFileName'
+  );
+
+  { Check validation - empty output file name }
+
+  CheckException(
+    procedure
+    begin
+      FFixInsightOptions.OutputFileName := String.Empty;
+    end,
+    EFIOEmptyOutputFileName,
+    'OutputFileName'
+  );
+
+  { Check validation - empty settings file name }
+
+  CheckException(
+    procedure
+    begin
+      FFixInsightOptions.SettingsFileName := String.Empty;
+    end,
+    EFIOSettingsFileNotFound,
+    'SettingsFileName'
   );
 end;
 

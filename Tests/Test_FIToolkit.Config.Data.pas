@@ -25,6 +25,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestEmptyData;
     procedure TestInvalidData;
     procedure TestValidData;
   end;
@@ -44,6 +45,66 @@ end;
 procedure TestTConfigData.TearDown;
 begin
   FreeAndNil(FConfigData);
+end;
+
+procedure TestTConfigData.TestEmptyData;
+begin
+  FConfigData.Validate := True;
+
+  { Check validation - empty FixInsight executable path }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.FixInsightExe := String.Empty;
+    end,
+    ECDFixInsightExeNotFound,
+    'FixInsightExe'
+  );
+
+  { Check validation - empty input file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.InputFileName := String.Empty;
+    end,
+    ECDInputFileNotFound,
+    'InputFileName'
+  );
+
+  { Check validation - empty output directory }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.OutputDirectory := String.Empty;
+    end,
+    ECDOutputDirectoryNotFound,
+    'OutputDirectory'
+  );
+
+  { Check validation - empty output file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.OutputFileName := String.Empty;
+    end,
+    ECDInvalidOutputFileName,
+    'OutputFileName'
+  );
+
+  { Check validation - empty temp directory }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.TempDirectory := String.Empty;
+    end,
+    ECDTempDirectoryNotFound,
+    'TempDirectory'
+  );
 end;
 
 procedure TestTConfigData.TestInvalidData;
