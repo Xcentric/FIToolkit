@@ -12,6 +12,7 @@ uses
   FIToolkit.Main in 'FIToolkit.Main.pas',
   FIToolkit.Base.Consts in 'Base\FIToolkit.Base.Consts.pas',
   FIToolkit.Base.Exceptions in 'Base\FIToolkit.Base.Exceptions.pas',
+  FIToolkit.Base.Types in 'Base\FIToolkit.Base.Types.pas',
   FIToolkit.Base.Utils in 'Base\FIToolkit.Base.Utils.pas',
   FIToolkit.CommandLine.Consts in 'CommandLine\FIToolkit.CommandLine.Consts.pas',
   FIToolkit.CommandLine.Exceptions in 'CommandLine\FIToolkit.CommandLine.Exceptions.pas',

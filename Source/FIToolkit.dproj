@@ -87,6 +87,7 @@
         <DCCReference Include="FIToolkit.Main.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Exceptions.pas"/>
+        <DCCReference Include="Base\FIToolkit.Base.Types.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Utils.pas"/>
         <DCCReference Include="CommandLine\FIToolkit.CommandLine.Consts.pas"/>
         <DCCReference Include="CommandLine\FIToolkit.CommandLine.Exceptions.pas"/>
