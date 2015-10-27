@@ -88,9 +88,22 @@ begin
 end;
 
 procedure PressAnyKey;
+  var
+    hConsole : THandle;
+    ConsoleInput : TInputRecord;
+    iDummy : Cardinal;
 begin
   Writeln(SPressAnyKey);
-  Readln;
+
+  hConsole := GetStdHandle(STD_INPUT_HANDLE);
+  repeat
+    WaitForSingleObjectEx(hConsole, INFINITE, False);
+
+    if ReadConsoleInput(hConsole, ConsoleInput, 1, iDummy) then
+      if ConsoleInput.EventType = KEY_EVENT then
+        if ConsoleInput.Event.KeyEvent.bKeyDown then
+          Break;
+  until False;
 end;
 
 { TFileNameHelper }
