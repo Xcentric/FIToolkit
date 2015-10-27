@@ -38,33 +38,84 @@ implementation
 { TestTAssignable }
 
 procedure TestTAssignable.TestAssigned;
+  var
+    AI : TAssignableInteger;
 begin
-
+  CheckFalse(AI.Assigned, 'CheckFalse::Assigned');
+  AI := INT_TEST;
+  CheckTrue(AI.Assigned, 'CheckTrue::Assigned');
 end;
 
 procedure TestTAssignable.TestCreate;
+  var
+    AI1, AI2 : TAssignableInteger;
 begin
+  AI1 := TAssignableInteger.Create(INT_TEST);
+  CheckTrue(AI1.Assigned, 'CheckTrue::AI1.Assigned');
+  CheckEquals(INT_TEST, AI1.Value, 'AI1.Value = INT_TEST');
 
+  AI2 := INT_TEST;
+  CheckTrue(AI2.Assigned, 'CheckTrue::AI2.Assigned');
+  CheckEquals(INT_TEST, AI2, 'AI2 = INT_TEST');
 end;
 
 procedure TestTAssignable.TestOnChange;
+  const
+    INT_OLD_VALUE = INT_TEST;
+    INT_NEW_VALUE = INT_OLD_VALUE + 1;
+  var
+    AI : TAssignableInteger;
 begin
+  CheckFalse(Assigned(AI.OnChange), 'CheckFalse::(OnChange <> nil)');
 
+  AI := INT_OLD_VALUE;
+  AI.OnChange :=
+    procedure (const CurrentValue, OldValue : Integer)
+    begin
+      CheckEquals(INT_OLD_VALUE, OldValue, 'OldValue = INT_OLD_VALUE');
+      CheckEquals(INT_NEW_VALUE, CurrentValue, 'CurrentValue = INT_NEW_VALUE');
+    end;
+  AI := INT_NEW_VALUE;
 end;
 
 procedure TestTAssignable.TestOnChanging;
+  const
+    INT_OLD_VALUE = INT_TEST;
+    INT_NEW_VALUE = INT_OLD_VALUE + 1;
+  var
+    AI : TAssignableInteger;
 begin
+  CheckFalse(Assigned(AI.OnChanging), 'CheckFalse::(OnChanging <> nil)');
 
+  AI := INT_OLD_VALUE;
+  AI.OnChanging :=
+    procedure (const CurrentValue, NewValue : Integer)
+    begin
+      CheckEquals(INT_OLD_VALUE, CurrentValue, 'CurrentValue = INT_OLD_VALUE');
+      CheckEquals(INT_NEW_VALUE, NewValue, 'NewValue = INT_NEW_VALUE');
+    end;
+  AI := INT_NEW_VALUE;
 end;
 
 procedure TestTAssignable.TestUnassign;
+  var
+    AI : TAssignableInteger;
 begin
+  AI := INT_TEST;
+  AI.Unassign;
 
+  CheckFalse(AI.Assigned, 'CheckFalse::Assigned');
+  CheckEquals(Default(Integer), AI, 'AI = 0');
 end;
 
 procedure TestTAssignable.TestValue;
+  var
+    AI : TAssignableInteger;
 begin
-
+  CheckEquals(Default(Integer), AI, 'AI = 0');
+  AI := INT_TEST;
+  CheckEquals(INT_TEST, AI.Value, 'AI.Value = INT_TEST');
+  CheckEquals(INT_TEST, AI, 'AI = INT_TEST');
 end;
 
 initialization

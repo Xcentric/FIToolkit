@@ -8,7 +8,7 @@ uses
 type
 
   TAssignable<T> = record
-    public
+    private
       type
         TOnChange = reference to procedure (const CurrentValue, OldValue : T);
         TOnChanging = reference to procedure (const CurrentValue, NewValue : T);
