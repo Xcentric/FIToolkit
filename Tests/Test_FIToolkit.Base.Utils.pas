@@ -26,6 +26,7 @@ type
   TestTFileNameHelper = class (TTestCase)
     published
       procedure TestIsApplicable;
+      procedure TestIsEmpty;
   end;
 
   TestTPathHelper = class (TTestCase)
@@ -160,6 +161,20 @@ begin
 
   FileName := STR_INVALID_FILENAME;
   CheckFalse(FileName.IsApplicable, STR_INVALID_FILENAME);
+end;
+
+procedure TestTFileNameHelper.TestIsEmpty;
+  var
+    FileName : TFileName;
+begin
+  FileName := String.Empty;
+  CheckTrue(FileName.IsEmpty, 'CheckTrue::IsEmpty(String.Empty)');
+
+  FileName := '  ';
+  CheckFalse(FileName.IsEmpty, 'CheckFalse::IsEmpty(<whitespace>)');
+
+  FileName := STR_NON_EXISTENT_FILE;
+  CheckFalse(FileName.IsEmpty, 'CheckFalse::IsEmpty(<filename>)');
 end;
 
 { TestTPathHelper }

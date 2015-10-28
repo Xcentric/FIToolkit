@@ -17,6 +17,7 @@ type
   TFileNameHelper = record helper for TFileName
     public
       function IsApplicable : Boolean;
+      function IsEmpty : Boolean;
   end;
 
   TPathHelper = record helper for TPath
@@ -111,6 +112,11 @@ end;
 function TFileNameHelper.IsApplicable : Boolean;
 begin
   Result := TPath.IsApplicableFileName(Self);
+end;
+
+function TFileNameHelper.IsEmpty : Boolean;
+begin
+  Result := String.IsNullOrEmpty(Self);
 end;
 
 { TIff }

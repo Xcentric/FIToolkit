@@ -188,7 +188,7 @@ begin
   if not TDirectory.Exists(ExtractFilePath(Value)) then
     raise EFIOOutputDirectoryNotFound.Create;
 
-  if not TPath.HasValidFileNameChars(ExtractFileName(Value), False) then
+  if not TPath.IsApplicableFileName(ExtractFileName(Value)) then
     raise EFIOInvalidOutputFileName.Create;
 end;
 
@@ -200,7 +200,7 @@ end;
 
 procedure TFixInsightOptions.ValidateSettingsFileName(const Value : TFileName);
 begin
-  if not String.IsNullOrEmpty(Value) and not TFile.Exists(Value) then
+  if not (Value.IsEmpty or TFile.Exists(Value)) then
     raise EFIOSettingsFileNotFound.Create;
 end;
 

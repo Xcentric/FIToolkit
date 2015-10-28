@@ -183,7 +183,7 @@ end;
 
 procedure TConfigData.ValidateOutputFileName(const Value : String);
 begin
-  if Value.IsEmpty or not TPath.HasValidFileNameChars(Value, False) then
+  if not TPath.IsApplicableFileName(Value) then
     raise ECDInvalidOutputFileName.Create;
 end;
 
