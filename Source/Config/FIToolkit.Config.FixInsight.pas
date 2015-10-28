@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Types,
-  FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults, FIToolkit.Config.Consts;
+  FIToolkit.Base.Types, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults, FIToolkit.Config.Consts;
 
 type
 
@@ -17,10 +17,10 @@ type
   TFixInsightOptions = class sealed
     strict private
       FCompilerDefines : TStringDynArray;
-      FOutputFileName : TFileName;
+      FOutputFileName : TAssignableFileName;
       FOutputFormat : TFixInsightOutputFormat;
-      FProjectFileName : TFileName;
-      FSettingsFileName : TFileName;
+      FProjectFileName : TAssignableFileName;
+      FSettingsFileName : TAssignableFileName;
       FSilent : Boolean;
       FValidate : Boolean;
     private
@@ -31,6 +31,9 @@ type
       function  FormatSettingsFileName : String;
       function  FormatSilent : String;
 
+      function  GetOutputFileName : TFileName;
+      function  GetProjectFileName : TFileName;
+      function  GetSettingsFileName : TFileName;
       procedure SetOutputFileName(const Value : TFileName);
       procedure SetProjectFileName(const Value : TFileName);
       procedure SetSettingsFileName(const Value : TFileName);
@@ -44,13 +47,13 @@ type
       [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
       [FixInsightParam(False), DefaultOutputFileName]
-      property OutputFileName : TFileName read FOutputFileName write SetOutputFileName;
+      property OutputFileName : TFileName read GetOutputFileName write SetOutputFileName;
       [FixInsightParam(False), DefaultOutputFormat(DEF_FIO_ENUM_OUTPUT_FORMAT)]
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       [FixInsightParam(False)]
-      property ProjectFileName : TFileName read FProjectFileName write SetProjectFileName;
+      property ProjectFileName : TFileName read GetProjectFileName write SetProjectFileName;
       [FixInsightParam, DefaultSettingsFileName]
-      property SettingsFileName : TFileName read FSettingsFileName write SetSettingsFileName;
+      property SettingsFileName : TFileName read GetSettingsFileName write SetSettingsFileName;
       [FixInsightParam(False), DefaultSilent(False)]
       property Silent : Boolean read FSilent write FSilent;
 
@@ -129,9 +132,24 @@ begin
   Result := Iff.Get<String>(FSilent, STR_FIPARAM_SILENT, String.Empty);
 end;
 
+function TFixInsightOptions.GetOutputFileName : TFileName;
+begin
+  Result := FOutputFileName;
+end;
+
+function TFixInsightOptions.GetProjectFileName : TFileName;
+begin
+  Result := FProjectFileName;
+end;
+
+function TFixInsightOptions.GetSettingsFileName : TFileName;
+begin
+  Result := FSettingsFileName;
+end;
+
 procedure TFixInsightOptions.SetOutputFileName(const Value : TFileName);
 begin
-  if FOutputFileName <> Value then
+  if not FOutputFileName.Assigned or (FOutputFileName <> Value) then
   begin
     if FValidate then
       ValidateOutputFileName(Value);
@@ -142,7 +160,7 @@ end;
 
 procedure TFixInsightOptions.SetProjectFileName(const Value : TFileName);
 begin
-  if FProjectFileName <> Value then
+  if not FProjectFileName.Assigned or (FProjectFileName <> Value) then
   begin
     if FValidate then
       ValidateProjectFileName(Value);
@@ -153,7 +171,7 @@ end;
 
 procedure TFixInsightOptions.SetSettingsFileName(const Value : TFileName);
 begin
-  if FSettingsFileName <> Value then
+  if not FSettingsFileName.Assigned or (FSettingsFileName <> Value) then
   begin
     if FValidate then
       ValidateSettingsFileName(Value);

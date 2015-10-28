@@ -36,6 +36,9 @@ type
       property OnChanging : TOnChanging read FOnChanging write FOnChanging;
   end;
 
+  TAssignableFileName = TAssignable<TFileName>;
+  TAssignableString = TAssignable<String>;
+
 implementation
 
 { TAssignable<T> }

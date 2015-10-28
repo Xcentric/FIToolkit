@@ -129,7 +129,7 @@ begin
     begin
       FFixInsightOptions.SettingsFileName := String.Empty;
     end,
-    EFIOSettingsFileNotFound,
+    nil,
     'SettingsFileName'
   );
 end;
