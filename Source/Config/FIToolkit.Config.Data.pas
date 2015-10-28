@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults, FIToolkit.Config.Consts;
+  FIToolkit.Base.Types, FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults,
+  FIToolkit.Config.Consts;
 
 type
 
@@ -15,15 +16,20 @@ type
 
   TConfigData = class
     strict private
-      FFixInsightExe : TFileName;
-      FInputFileName : TFileName;
-      FOutputDirectory : String;
-      FOutputFileName : String;
-      FTempDirectory : String;
+      FFixInsightExe : TAssignableFileName;
+      FInputFileName : TAssignableFileName;
+      FOutputDirectory : TAssignableString;
+      FOutputFileName : TAssignableString;
+      FTempDirectory : TAssignableString;
       FValidate : Boolean;
 
       FFixInsightOptions : TFixInsightOptions;
     private
+      function  GetFixInsightExe : TFileName;
+      function  GetInputFileName : TFileName;
+      function  GetOutputDirectory : String;
+      function  GetOutputFileName : String;
+      function  GetTempDirectory : String;
       procedure SetFixInsightExe(const Value : TFileName);
       procedure SetInputFileName(const Value : TFileName);
       procedure SetOutputDirectory(const Value : String);
@@ -40,17 +46,17 @@ type
       destructor Destroy; override;
 
       [FIToolkitParam, DefaultFixInsightExe]
-      property FixInsightExe : TFileName read FFixInsightExe write SetFixInsightExe;
+      property FixInsightExe : TFileName read GetFixInsightExe write SetFixInsightExe;
       [FIToolkitParam]
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
       [FIToolkitParam]
-      property InputFileName : TFileName read FInputFileName write SetInputFileName;
+      property InputFileName : TFileName read GetInputFileName write SetInputFileName;
       [FIToolkitParam, DefaultOutputDirectory]
-      property OutputDirectory : String read FOutputDirectory write SetOutputDirectory;
+      property OutputDirectory : String read GetOutputDirectory write SetOutputDirectory;
       [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
-      property OutputFileName : String read FOutputFileName write SetOutputFileName;
+      property OutputFileName : String read GetOutputFileName write SetOutputFileName;
       [FIToolkitParam, DefaultTempDirectory]
-      property TempDirectory : String read FTempDirectory write SetTempDirectory;
+      property TempDirectory : String read GetTempDirectory write SetTempDirectory;
 
       property Validate : Boolean read FValidate write FValidate;
   end;
@@ -77,9 +83,34 @@ begin
   inherited Destroy;
 end;
 
+function TConfigData.GetFixInsightExe : TFileName;
+begin
+  Result := FFixInsightExe;
+end;
+
+function TConfigData.GetInputFileName : TFileName;
+begin
+  Result := FInputFileName;
+end;
+
+function TConfigData.GetOutputDirectory : String;
+begin
+  Result := FOutputDirectory;
+end;
+
+function TConfigData.GetOutputFileName : String;
+begin
+  Result := FOutputFileName;
+end;
+
+function TConfigData.GetTempDirectory : String;
+begin
+  Result := FTempDirectory;
+end;
+
 procedure TConfigData.SetFixInsightExe(const Value : TFileName);
 begin
-  if FFixInsightExe <> Value then
+  if not FFixInsightExe.Assigned or (FFixInsightExe <> Value) then
   begin
     if FValidate then
       ValidateFixInsightExe(Value);
@@ -90,7 +121,7 @@ end;
 
 procedure TConfigData.SetInputFileName(const Value : TFileName);
 begin
-  if FInputFileName <> Value then
+  if not FInputFileName.Assigned or (FInputFileName <> Value) then
   begin
     if FValidate then
       ValidateInputFileName(Value);
@@ -101,7 +132,7 @@ end;
 
 procedure TConfigData.SetOutputDirectory(const Value : String);
 begin
-  if FOutputDirectory <> Value then
+  if not FOutputDirectory.Assigned or (FOutputDirectory <> Value) then
   begin
     if FValidate then
       ValidateOutputDirectory(Value);
@@ -112,7 +143,7 @@ end;
 
 procedure TConfigData.SetOutputFileName(const Value : String);
 begin
-  if FOutputFileName <> Value then
+  if not FOutputFileName.Assigned or (FOutputFileName <> Value) then
   begin
     if FValidate then
       ValidateOutputFileName(Value);
@@ -123,7 +154,7 @@ end;
 
 procedure TConfigData.SetTempDirectory(const Value : String);
 begin
-  if FTempDirectory <> Value then
+  if not FTempDirectory.Assigned or (TempDirectory <> Value) then
   begin
     if FValidate then
       ValidateTempDirectory(Value);
@@ -152,7 +183,7 @@ end;
 
 procedure TConfigData.ValidateOutputFileName(const Value : String);
 begin
-  if not TPath.HasValidFileNameChars(Value, False) then
+  if Value.IsEmpty or not TPath.HasValidFileNameChars(Value, False) then
     raise ECDInvalidOutputFileName.Create;
 end;
 
