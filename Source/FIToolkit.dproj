@@ -40,6 +40,8 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <BRCC_OutputDir>..\Bin\$(Platform)\$(Config)</BRCC_OutputDir>
+        <BRCC_IncludePath>..\Bin\$(Platform)\$(Config);$(BRCC_IncludePath)</BRCC_IncludePath>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>FIToolkit</SanitizedProjectName>
         <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
@@ -82,6 +84,9 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <RcCompile Include="ResourceScripts\Help\Help.rc">
+            <Form>Help.res</Form>
+        </RcCompile>
         <DCCReference Include="FIToolkit.Consts.pas"/>
         <DCCReference Include="FIToolkit.Exceptions.pas"/>
         <DCCReference Include="FIToolkit.Main.pas"/>

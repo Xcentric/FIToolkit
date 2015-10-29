@@ -4,6 +4,8 @@
 
 {$R *.res}
 
+{$R 'Help.res' 'ResourceScripts\Help\Help.rc'}
+
 uses
   System.SysUtils,
   System.Types,

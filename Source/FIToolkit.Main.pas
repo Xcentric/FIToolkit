@@ -10,7 +10,7 @@ uses
 implementation
 
 uses
-  System.IOUtils,
+  System.IOUtils, System.Classes,
   FIToolkit.Exceptions, FIToolkit.Consts,
   FIToolkit.Base.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
@@ -22,9 +22,11 @@ type
     strict private
       FConfig : TConfigManager;
       FOptions : TCLIOptions;
-    private
+    strict private
       procedure InitConfig;
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
+    private
+      procedure PrintHelp;
     public
       class procedure PrintAbout;
 
@@ -95,6 +97,26 @@ end;
 class procedure TFIToolkit.PrintAbout;
 begin
   Writeln(SApplicationAbout);
+end;
+
+procedure TFIToolkit.PrintHelp;
+  var
+    RS : TResourceStream;
+    SL : TStringList;
+begin
+  RS := TResourceStream.Create(HInstance, STR_RES_HELP, RT_RCDATA);
+  try
+    SL := TStringList.Create;
+    try
+      RS.Position := 0;
+      SL.LoadFromStream(RS, TEncoding.UTF8);
+      Writeln(SL.Text);
+    finally
+      SL.Free;
+    end;
+  finally
+    RS.Free;
+  end;
 end;
 
 procedure TFIToolkit.Run;

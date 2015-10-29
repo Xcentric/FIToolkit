@@ -15,6 +15,10 @@ const
   STR_APP_DESCRIPTION = ' A set of tools for SourceOddity(R) FixInsight(TM).';
   STR_APP_TITLE = '                           FIToolkit';
 
+  { Resources }
+
+  STR_RES_HELP = 'HelpOutput';
+
 resourcestring
 
   { About }
