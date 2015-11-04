@@ -70,6 +70,8 @@ type
             function GetCombinedHashCode(const HashCodes : array of Integer) : Integer;
           public
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
+              const StateComparer : IStateComparer; const CommandComparer : ICommandComparer); overload;
+            constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
               const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod); overload;
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
@@ -126,44 +128,93 @@ implementation
 { TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition }
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
+  const AOnCommand : TCommand; const StateComparer : IStateComparer; const CommandComparer : ICommandComparer);
+begin
+  inherited Create;
+
+  FFromState := AFromState;
+  FOnCommand := AOnCommand;
+
+  if Assigned(StateComparer) then
+    FStateComparer := StateComparer
+  else
+    FStateComparer := TEqualityComparer<TState>.Default;
+
+  if Assigned(CommandComparer) then
+    FCommandComparer := CommandComparer
+  else
+    FCommandComparer := TEqualityComparer<TCommand>.Default;
+end;
+
+constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
   const AOnCommand : TCommand; const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
   const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod);
 begin
+  Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
+  FOnEnterMethod := OnEnter;
+  FOnExitMethod := OnExit;
 end;
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
   const AOnCommand : TCommand; const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
   const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc);
 begin
+  Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
+  FOnEnterProc := OnEnter;
+  FOnExitProc := OnExit;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Equals(Obj : TObject) : Boolean;
 begin
+  Result := False;
 
+  if Obj is TTransition then
+    Result := FStateComparer.Equals(FFromState, TTransition(Obj).FromState) and
+              FCommandComparer.Equals(FOnCommand, TTransition(Obj).OnCommand);
 end;
 
+{$IFOPT Q+}
+  {$DEFINE OVERFLOW_CHECKS_ENABLED}
+  {$Q-}
+{$ENDIF}
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.GetCombinedHashCode(
   const HashCodes : array of Integer) : Integer;
+  var
+    HashCode : Integer;
 begin
-
+  Result := 17;
+  for HashCode in HashCodes do
+    Result := Result * 37 + HashCode;
 end;
+{$IFDEF OVERFLOW_CHECKS_ENABLED}
+  {$Q+}
+  {$UNDEF OVERFLOW_CHECKS_ENABLED}
+{$ENDIF}
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.GetHashCode : Integer;
 begin
-
+  Result := GetCombinedHashCode([FStateComparer.GetHashCode(FFromState), FCommandComparer.GetHashCode(FOnCommand)]);
 end;
 
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.PerformEnterStateAction(
   const CurrentState : TState);
 begin
+  if Assigned(FOnEnterMethod) then
+    FOnEnterMethod(FFromState, CurrentState, FOnCommand);
 
+  if Assigned(FOnEnterProc) then
+    FOnEnterProc(FFromState, CurrentState, FOnCommand);
 end;
 
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.PerformExitStateAction(const NewState : TState);
 begin
+  if Assigned(FOnExitMethod) then
+    FOnExitMethod(FFromState, NewState, FOnCommand);
 
+  if Assigned(FOnExitProc) then
+    FOnExitProc(FFromState, NewState, FOnCommand);
 end;
 
 { TFiniteStateMachine<TState, TCommand, ErrorClass> }
