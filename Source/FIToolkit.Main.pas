@@ -121,6 +121,12 @@ end;
 
 procedure TFIToolkit.Run;
 begin
+  if FOptions.Contains(STR_CLI_OPTION_HELP) then
+  begin
+    PrintHelp;
+    Exit;
+  end;
+
   if FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG) and TFile.Exists(FConfig.ConfigFileName) then
   begin
     Writeln(SConfigWasGenerated);
