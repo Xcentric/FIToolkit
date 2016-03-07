@@ -104,6 +104,8 @@ type
       procedure AfterExecute(const Command : TCommand); virtual;
       procedure BeforeExecute(const Command : TCommand); virtual;
       function  FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
+      function  GetReachableState(const FromState : TState; const OnCommand : TCommand;
+        out Transition : TTransition) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand;
         out Found : TTransition) : Boolean; overload;
     public
@@ -294,10 +296,21 @@ begin
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.Execute(const Command : TCommand) : IFiniteStateMachine;
+  var
+    NewState : TState;
+    Transition : TTransition;
 begin
   Result := Self;
+  NewState := GetReachableState(FCurrentState, Command, Transition);
 
-  //TODO: implement
+  BeforeExecute(Command);
+  Transition.PerformExitStateAction(NewState);
+  FPreviousState := FCurrentState;
+  FCurrentState  := NewState;
+  Transition.PerformEnterStateAction(NewState);
+  AfterExecute(Command);
+
+  //TODO: raise outer exception
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.FindTransition(const FromState : TState;
@@ -333,8 +346,19 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
   const OnCommand : TCommand) : TState;
+  var
+    T : TTransition;
 begin
-  //TODO: implement
+  Result := GetReachableState(FromState, OnCommand, T);
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
+  const OnCommand : TCommand; out Transition : TTransition) : TState;
+begin
+  if HasTransition(FromState, OnCommand, Transition) then
+    Result := FTransitionTable[Transition]
+  else
+    //TODO: raise exception
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
@@ -343,18 +367,18 @@ begin
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
-  const OnCommand : TCommand; out Found : TTransition) : Boolean;
-begin
-  Found  := FindTransition(FromState, OnCommand);
-  Result := Assigned(Found);
-end;
-
-function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
   const OnCommand : TCommand) : Boolean;
   var
     T : TTransition;
 begin
   Result := HasTransition(FromState, OnCommand, T);
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
+  const OnCommand : TCommand; out Found : TTransition) : Boolean;
+begin
+  Found  := FindTransition(FromState, OnCommand);
+  Result := Assigned(Found);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
