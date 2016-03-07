@@ -63,10 +63,10 @@ type
             FCommandComparer : ICommandComparer;
             FStateComparer : IStateComparer;
 
-            FOnEnterMethod : TOnEnterStateMethod;
-            FOnEnterProc : TOnEnterStateProc;
-            FOnExitMethod : TOnExitStateMethod;
-            FOnExitProc : TOnExitStateProc;
+            FOnEnterStateMethod : TOnEnterStateMethod;
+            FOnEnterStateProc : TOnEnterStateProc;
+            FOnExitStateMethod : TOnExitStateMethod;
+            FOnExitStateProc : TOnExitStateProc;
           private
             function GetCombinedHashCode(const HashCodes : array of Integer) : Integer;
           public
@@ -74,13 +74,14 @@ type
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer); overload;
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
-              const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod); overload;
+              const OnEnterState : TOnEnterStateMethod; const OnExitState : TOnExitStateMethod); overload;
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
-              const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc); overload;
+              const OnEnterState : TOnEnterStateProc; const OnExitState : TOnExitStateProc); overload;
 
             function  Equals(Obj : TObject) : Boolean; override; final;
             function  GetHashCode : Integer; override; final;
+
             procedure PerformEnterStateAction(const CurrentState : TState);
             procedure PerformExitStateAction(const NewState : TState);
 
@@ -89,7 +90,6 @@ type
         end;
 
         TTransitionTable = class (TObjectDictionary<TTransition, TState>);
-        //replace TState to custom object container with OnEnter/OnExit logic?
     strict private
       FCommandComparer : ICommandComparer;
       FCurrentState : TState;
@@ -154,22 +154,22 @@ end;
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
   const AOnCommand : TCommand; const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
-  const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod);
+  const OnEnterState : TOnEnterStateMethod; const OnExitState : TOnExitStateMethod);
 begin
   Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
-  FOnEnterMethod := OnEnter;
-  FOnExitMethod := OnExit;
+  FOnEnterStateMethod := OnEnterState;
+  FOnExitStateMethod := OnExitState;
 end;
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
   const AOnCommand : TCommand; const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
-  const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc);
+  const OnEnterState : TOnEnterStateProc; const OnExitState : TOnExitStateProc);
 begin
   Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
-  FOnEnterProc := OnEnter;
-  FOnExitProc := OnExit;
+  FOnEnterStateProc := OnEnterState;
+  FOnExitStateProc := OnExitState;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Equals(Obj : TObject) : Boolean;
@@ -207,20 +207,20 @@ end;
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.PerformEnterStateAction(
   const CurrentState : TState);
 begin
-  if Assigned(FOnEnterMethod) then
-    FOnEnterMethod(FFromState, CurrentState, FOnCommand);
+  if Assigned(FOnEnterStateMethod) then
+    FOnEnterStateMethod(FFromState, CurrentState, FOnCommand);
 
-  if Assigned(FOnEnterProc) then
-    FOnEnterProc(FFromState, CurrentState, FOnCommand);
+  if Assigned(FOnEnterStateProc) then
+    FOnEnterStateProc(FFromState, CurrentState, FOnCommand);
 end;
 
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.PerformExitStateAction(const NewState : TState);
 begin
-  if Assigned(FOnExitMethod) then
-    FOnExitMethod(FFromState, NewState, FOnCommand);
+  if Assigned(FOnExitStateMethod) then
+    FOnExitStateMethod(FFromState, NewState, FOnCommand);
 
-  if Assigned(FOnExitProc) then
-    FOnExitProc(FFromState, NewState, FOnCommand);
+  if Assigned(FOnExitStateProc) then
+    FOnExitStateProc(FFromState, NewState, FOnCommand);
 end;
 
 { TFiniteStateMachine<TState, TCommand, ErrorClass> }
@@ -228,6 +228,8 @@ end;
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
 begin
+  Result := Self;
+
   FTransitionTable.Add(
     TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer), ToState);
 end;
@@ -235,6 +237,8 @@ end;
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
 begin
+  Result := Self;
+
   FTransitionTable.Add(
     TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
 end;
@@ -242,6 +246,8 @@ end;
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand; const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc) : IFiniteStateMachine;
 begin
+  Result := Self;
+
   FTransitionTable.Add(
     TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
 end;
@@ -273,58 +279,62 @@ begin
   FStateComparer   := StateComparer;
 
   FLock := TObject.Create;
-  FTransitionTable := TTransitionTable.Create([doOwnsKeys, doOwnsValues]);
+  FTransitionTable := TTransitionTable.Create([doOwnsKeys]);
 end;
 
 destructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Destroy;
 begin
-  FreeAndNil(FLock);
   FreeAndNil(FTransitionTable);
+  FreeAndNil(FLock);
 
   inherited Destroy;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.Execute(const Command : TCommand) : IFiniteStateMachine;
 begin
+  Result := Self;
 
+  //TODO: implement
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetCurrentState : TState;
 begin
-
+  Result := FCurrentState;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetPreviousState : TState;
 begin
-
+  Result := FPreviousState;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
   const OnCommand : TCommand) : TState;
 begin
-
+  //TODO: implement
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
 begin
-
+  //TODO: implement
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
   const OnCommand : TCommand) : Boolean;
 begin
-
+  //TODO: implement
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
 begin
-
+  //TODO: implement
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
 begin
+  Result := Self;
 
+  //TODO: implement
 end;
 
 end.
