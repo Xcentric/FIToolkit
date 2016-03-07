@@ -100,9 +100,10 @@ type
     private
       function GetCurrentState : TState;
       function GetPreviousState : TState;
-    protected
+    strict protected
       procedure AfterExecute(const Command : TCommand); virtual;
       procedure BeforeExecute(const Command : TCommand); virtual;
+      function  FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
     public
       constructor Create; overload; virtual; abstract;
       constructor Create(const InitialState : TState); overload; virtual;
@@ -297,6 +298,27 @@ begin
   //TODO: implement
 end;
 
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.FindTransition(const FromState : TState;
+  const OnCommand : TCommand) : TTransition;
+  var
+    SearchKey, Key : TTransition;
+begin
+  SearchKey := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer);
+  try
+    if not FTransitionTable.ContainsKey(SearchKey) then
+      Result := nil
+    else
+      for Key in FTransitionTable.Keys do
+        if Key.Equals(SearchKey) then
+        begin
+          Result := Key;
+          Break;
+        end;
+  finally
+    SearchKey.Free;
+  end;
+end;
+
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetCurrentState : TState;
 begin
   Result := FCurrentState;
@@ -315,7 +337,7 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
 begin
-  //TODO: implement
+  Result := GetReachableState(FCurrentState, OnCommand);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
@@ -326,7 +348,7 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
 begin
-  //TODO: implement
+  Result := HasTransition(FCurrentState, OnCommand);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
