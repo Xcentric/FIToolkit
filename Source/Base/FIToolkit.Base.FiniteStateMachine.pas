@@ -89,6 +89,7 @@ type
         end;
 
         TTransitionTable = class (TObjectDictionary<TTransition, TState>);
+        //replace TState to custom object container with OnEnter/OnExit logic?
     strict private
       FCommandComparer : ICommandComparer;
       FCurrentState : TState;
@@ -272,7 +273,7 @@ begin
   FStateComparer   := StateComparer;
 
   FLock := TObject.Create;
-  FTransitionTable := TTransitionTable.Create([doOwnsKeys]);
+  FTransitionTable := TTransitionTable.Create([doOwnsKeys, doOwnsValues]);
 end;
 
 destructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Destroy;
