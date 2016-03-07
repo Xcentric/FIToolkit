@@ -104,6 +104,8 @@ type
       procedure AfterExecute(const Command : TCommand); virtual;
       procedure BeforeExecute(const Command : TCommand); virtual;
       function  FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
+      function  HasTransition(const FromState : TState; const OnCommand : TCommand;
+        out Found : TTransition) : Boolean; overload;
     public
       constructor Create; overload; virtual; abstract;
       constructor Create(const InitialState : TState); overload; virtual;
@@ -341,9 +343,18 @@ begin
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
-  const OnCommand : TCommand) : Boolean;
+  const OnCommand : TCommand; out Found : TTransition) : Boolean;
 begin
-  //TODO: implement
+  Found  := FindTransition(FromState, OnCommand);
+  Result := Assigned(Found);
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
+  const OnCommand : TCommand) : Boolean;
+  var
+    T : TTransition;
+begin
+  Result := HasTransition(FromState, OnCommand, T);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
@@ -353,10 +364,13 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
+  var
+    T : TTransition;
 begin
   Result := Self;
 
-  //TODO: implement
+  if HasTransition(FromState, OnCommand, T) then
+    FTransitionTable.Remove(T);
 end;
 
 end.
