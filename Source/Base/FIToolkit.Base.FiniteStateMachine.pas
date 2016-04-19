@@ -7,6 +7,8 @@ uses
 
 type
 
+  EFiniteStateMachineError = class abstract (Exception);
+
   TOnEnterStateMethod<TState, TCommand> =
     procedure (const PreviousState, CurrentState : TState; const UsedCommand : TCommand) of object;
 
@@ -108,6 +110,7 @@ type
         out Transition : TTransition) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand;
         out Found : TTransition) : Boolean; overload;
+      procedure RaiseOuterException(E : Exception); virtual;
     public
       constructor Create; overload; virtual; abstract;
       constructor Create(const InitialState : TState); overload; virtual;
@@ -384,6 +387,11 @@ end;
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
 begin
   Result := HasTransition(FCurrentState, OnCommand);
+end;
+
+procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.RaiseOuterException(E : Exception);
+begin
+  Exception(ErrorClass).RaiseOuterException(E);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
