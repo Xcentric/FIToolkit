@@ -30,12 +30,13 @@ type
 
   TExceptionMessageMap = class (TDictionary<ECustomExceptionClass, String>)
     strict private
-      class var FStaticInstance : TExceptionMessageMap;
+      class var
+        FStaticInstance : TExceptionMessageMap;
     private
       class procedure FreeStaticInstance; static;
       class function  GetStaticInstance : TExceptionMessageMap; static;
-    public
-      class property StaticInstance : TExceptionMessageMap read GetStaticInstance;
+    protected
+      class property  StaticInstance : TExceptionMessageMap read GetStaticInstance;
   end;
 
 { Utils }
@@ -54,7 +55,7 @@ end;
 
 function ECustomException.GetClassType : ECustomExceptionClass;
 begin
-  Pointer(Result) := PPointer(Self)^;
+  Result := ECustomExceptionClass(ClassType);
 end;
 
 function ECustomException.GetDefaultMessage : String;
@@ -63,7 +64,7 @@ begin
     if ContainsKey(Self.GetClassType) then
       Result := Items[Self.GetClassType]
     else
-      Result := SDefaultErrMsg;
+      Result := RSDefaultErrMsg;
 end;
 
 { TExceptionMessageMap }

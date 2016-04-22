@@ -37,7 +37,7 @@ type
   end;
 
   TestTRttiTypeHelper = class (TTestCase)
-    strict private
+    private
       type
         TTestAttribute = class abstract (TCustomAttribute);
         IsArrayPropAttribute = class (TTestAttribute);

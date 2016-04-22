@@ -10,7 +10,8 @@ resourcestring
 
   { Exceptions }
 
-  SDefaultErrMsg = 'Unexpected error';
+  RSDefaultErrMsg = 'Unexpected error';
+  RSPressAnyKey = 'Нажмите любую клавишу для продолжения...';
 
 implementation
 

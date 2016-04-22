@@ -55,20 +55,21 @@ implementation
 
 uses
   System.Win.Registry, Winapi.Windows,
-  FIToolkit.Consts;
+  FIToolkit.Base.Consts;
 
 { Utils }
 
 function GetFixInsightExePath : TFileName;
-  const
-    STR_FIXINSIGHT_REGKEY = 'Software\FixInsight';
-    STR_FIXINSIGHT_REGVALUE = 'Path';
-    STR_FIXINSIGHT_EXENAME = 'FixInsightCL.exe';
-  var
-    R : TRegistry;
-    S : String;
+const
+  STR_FIXINSIGHT_REGKEY   = 'Software\FixInsight';
+  STR_FIXINSIGHT_REGVALUE = 'Path';
+  STR_FIXINSIGHT_EXENAME  = 'FixInsightCL.exe';
+var
+  R : TRegistry;
+  S : String;
 begin
   Result := String.Empty;
+
   R := TRegistry.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -89,22 +90,23 @@ begin
 end;
 
 procedure PressAnyKey;
-  var
-    hConsole : THandle;
-    ConsoleInput : TInputRecord;
-    iDummy : Cardinal;
+var
+  hConsole : THandle;
+  ConsoleInput : TInputRecord;
+  iDummy : Cardinal;
 begin
-  Writeln(SPressAnyKey);
+  Writeln(RSPressAnyKey);
 
   hConsole := GetStdHandle(STD_INPUT_HANDLE);
-  repeat
-    WaitForSingleObjectEx(hConsole, INFINITE, False);
+  if hConsole <> INVALID_HANDLE_VALUE then
+    repeat
+      WaitForSingleObjectEx(hConsole, INFINITE, False);
 
-    if ReadConsoleInput(hConsole, ConsoleInput, 1, iDummy) then
-      if ConsoleInput.EventType = KEY_EVENT then
-        if ConsoleInput.Event.KeyEvent.bKeyDown then
-          Break;
-  until False;
+      if ReadConsoleInput(hConsole, ConsoleInput, 1, iDummy) then
+        if ConsoleInput.EventType = KEY_EVENT then
+          if ConsoleInput.Event.KeyEvent.bKeyDown then
+            Break;
+    until False;
 end;
 
 { TFileNameHelper }
@@ -137,8 +139,8 @@ begin
 end;
 
 class function TPathHelper.GetQuotedPath(const Path : String) : String;
-  const
-    CHR_QUOTE_CHAR = '"';
+const
+  CHR_QUOTE_CHAR = '"';
 begin
   Result := Path;
 
