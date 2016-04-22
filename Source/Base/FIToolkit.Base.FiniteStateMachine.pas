@@ -9,6 +9,8 @@ type
 
   EFiniteStateMachineError = class abstract (Exception);
 
+  ETransitionNotFound = class (EFiniteStateMachineError);
+
   TOnEnterStateMethod<TState, TCommand> =
     procedure (const PreviousState, CurrentState : TState; const UsedCommand : TCommand) of object;
 
@@ -21,7 +23,7 @@ type
   TOnExitStateProc<TState, TCommand> =
     reference to procedure (const CurrentState, NewState : TState; const UsedCommand : TCommand);
 
-  IFiniteStateMachine<TState, TCommand; ErrorClass:Exception, constructor> = interface
+  IFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = interface
     function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
       ) : IFiniteStateMachine<TState, TCommand, ErrorClass>; overload;
     function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
@@ -44,18 +46,18 @@ type
     property PreviousState : TState read GetPreviousState;
   end;
 
-  TFiniteStateMachine<TState, TCommand; ErrorClass:Exception, constructor> = class abstract
+  TFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = class abstract
     (TInterfacedObject, IFiniteStateMachine<TState, TCommand, ErrorClass>)
     private
       type
-        ICommandComparer = IEqualityComparer<TCommand>;
+        ICommandComparer    = IEqualityComparer<TCommand>;
         IFiniteStateMachine = IFiniteStateMachine<TState, TCommand, ErrorClass>;
-        IStateComparer = IEqualityComparer<TState>;
+        IStateComparer      = IEqualityComparer<TState>;
 
         TOnEnterStateMethod = TOnEnterStateMethod<TState, TCommand>;
-        TOnEnterStateProc = TOnEnterStateProc<TState, TCommand>;
-        TOnExitStateMethod = TOnExitStateMethod<TState, TCommand>;
-        TOnExitStateProc = TOnExitStateProc<TState, TCommand>;
+        TOnEnterStateProc   = TOnEnterStateProc<TState, TCommand>;
+        TOnExitStateMethod  = TOnExitStateMethod<TState, TCommand>;
+        TOnExitStateProc    = TOnExitStateProc<TState, TCommand>;
 
         TTransition = class sealed
           strict private
@@ -109,10 +111,12 @@ type
       function  GetReachableState(const FromState : TState; const OnCommand : TCommand;
         out Transition : TTransition) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand;
-        out Found : TTransition) : Boolean; overload;
+        out Transition : TTransition) : Boolean; overload;
       procedure RaiseOuterException(E : Exception); virtual;
+    protected
+      class function GetDefaultInitialState : TState; virtual;
     public
-      constructor Create; overload; virtual; abstract;
+      constructor Create; overload;
       constructor Create(const InitialState : TState); overload; virtual;
       constructor Create(const InitialState : TState; const StateComparer : IStateComparer;
         const CommandComparer : ICommandComparer); overload; virtual;
@@ -136,6 +140,10 @@ type
       property CurrentState : TState read GetCurrentState;
       property PreviousState : TState read GetPreviousState;
   end;
+
+resourcestring
+
+  RSTransitionNotFound = 'No such transition available.';
 
 implementation
 
@@ -167,7 +175,7 @@ begin
   Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
   FOnEnterStateMethod := OnEnterState;
-  FOnExitStateMethod := OnExitState;
+  FOnExitStateMethod  := OnExitState;
 end;
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Create(const AFromState : TState;
@@ -177,7 +185,7 @@ begin
   Create(AFromState, AOnCommand, StateComparer, CommandComparer);
 
   FOnEnterStateProc := OnEnterState;
-  FOnExitStateProc := OnExitState;
+  FOnExitStateProc  := OnExitState;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.Equals(Obj : TObject) : Boolean;
@@ -195,10 +203,11 @@ end;
 {$ENDIF}
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition.GetCombinedHashCode(
   const HashCodes : array of Integer) : Integer;
-  var
-    HashCode : Integer;
+var
+  HashCode : Integer;
 begin
   Result := 17;
+
   for HashCode in HashCodes do
     Result := Result * 37 + HashCode;
 end;
@@ -270,6 +279,11 @@ begin
   // for descendants
 end;
 
+constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create;
+begin
+  Create(GetDefaultInitialState);
+end;
+
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create(const InitialState : TState);
 begin
   Create(InitialState, nil, nil);
@@ -299,33 +313,35 @@ begin
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.Execute(const Command : TCommand) : IFiniteStateMachine;
-  var
-    NewState : TState;
-    Transition : TTransition;
+var
+  NewState : TState;
+  Transition : TTransition;
 begin
   Result := Self;
   NewState := GetReachableState(FCurrentState, Command, Transition);
 
-  BeforeExecute(Command);
-  Transition.PerformExitStateAction(NewState);
-  FPreviousState := FCurrentState;
-  FCurrentState  := NewState;
-  Transition.PerformEnterStateAction(NewState);
-  AfterExecute(Command);
-
-  //TODO: raise outer exception
+  try
+    BeforeExecute(Command);
+    Transition.PerformExitStateAction(NewState);
+    FPreviousState := FCurrentState;
+    FCurrentState  := NewState;
+    Transition.PerformEnterStateAction(NewState);
+    AfterExecute(Command);
+  except
+    RaiseOuterException(nil);
+  end;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.FindTransition(const FromState : TState;
   const OnCommand : TCommand) : TTransition;
-  var
-    SearchKey, Key : TTransition;
+var
+  SearchKey, Key : TTransition;
 begin
+  Result := nil;
+
   SearchKey := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer);
   try
-    if not FTransitionTable.ContainsKey(SearchKey) then
-      Result := nil
-    else
+    if FTransitionTable.ContainsKey(SearchKey) then
       for Key in FTransitionTable.Keys do
         if Key.Equals(SearchKey) then
         begin
@@ -342,6 +358,11 @@ begin
   Result := FCurrentState;
 end;
 
+class function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetDefaultInitialState : TState;
+begin
+  Result := Default(TState);
+end;
+
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetPreviousState : TState;
 begin
   Result := FPreviousState;
@@ -349,8 +370,8 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
   const OnCommand : TCommand) : TState;
-  var
-    T : TTransition;
+var
+  T : TTransition;
 begin
   Result := GetReachableState(FromState, OnCommand, T);
 end;
@@ -361,7 +382,7 @@ begin
   if HasTransition(FromState, OnCommand, Transition) then
     Result := FTransitionTable[Transition]
   else
-    //TODO: raise exception
+    RaiseOuterException(ETransitionNotFound.Create(RSTransitionNotFound));
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
@@ -371,17 +392,17 @@ end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
   const OnCommand : TCommand) : Boolean;
-  var
-    T : TTransition;
+var
+  T : TTransition;
 begin
   Result := HasTransition(FromState, OnCommand, T);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
-  const OnCommand : TCommand; out Found : TTransition) : Boolean;
+  const OnCommand : TCommand; out Transition : TTransition) : Boolean;
 begin
-  Found  := FindTransition(FromState, OnCommand);
-  Result := Assigned(Found);
+  Transition := FindTransition(FromState, OnCommand);
+  Result := Assigned(Transition);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
@@ -391,13 +412,20 @@ end;
 
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.RaiseOuterException(E : Exception);
 begin
-  Exception(ErrorClass).RaiseOuterException(E);
+  if not Assigned(E) then
+    Exception.RaiseOuterException(ErrorClass.Create)
+  else
+    try
+      raise E;
+    except
+      RaiseOuterException(nil);
+    end;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
-  var
-    T : TTransition;
+var
+  T : TTransition;
 begin
   Result := Self;
 
