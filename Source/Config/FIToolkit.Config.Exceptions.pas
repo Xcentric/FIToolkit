@@ -35,16 +35,16 @@ uses
   FIToolkit.Config.Consts;
 
 initialization
-  RegisterExceptionMessage(EFIOEmptyOutputFileName, SFIOEmptyOutputFileName);
-  RegisterExceptionMessage(EFIOInvalidOutputFileName, SFIOInvalidOutputFileName);
-  RegisterExceptionMessage(EFIOOutputDirectoryNotFound, SFIOOutputDirectoryNotFound);
-  RegisterExceptionMessage(EFIOProjectFileNotFound, SFIOProjectFileNotFound);
-  RegisterExceptionMessage(EFIOSettingsFileNotFound, SFIOSettingsFileNotFound);
+  RegisterExceptionMessage(EFIOEmptyOutputFileName, RSFIOEmptyOutputFileName);
+  RegisterExceptionMessage(EFIOInvalidOutputFileName, RSFIOInvalidOutputFileName);
+  RegisterExceptionMessage(EFIOOutputDirectoryNotFound, RSFIOOutputDirectoryNotFound);
+  RegisterExceptionMessage(EFIOProjectFileNotFound, RSFIOProjectFileNotFound);
+  RegisterExceptionMessage(EFIOSettingsFileNotFound, RSFIOSettingsFileNotFound);
 
-  RegisterExceptionMessage(ECDFixInsightExeNotFound, SCDFixInsightExeNotFound);
-  RegisterExceptionMessage(ECDInputFileNotFound, SCDInputFileNotFound);
-  RegisterExceptionMessage(ECDInvalidOutputFileName, SCDInvalidOutputFileName);
-  RegisterExceptionMessage(ECDOutputDirectoryNotFound, SCDOutputDirectoryNotFound);
-  RegisterExceptionMessage(ECDTempDirectoryNotFound, SCDTempDirectoryNotFound);
+  RegisterExceptionMessage(ECDFixInsightExeNotFound, RSCDFixInsightExeNotFound);
+  RegisterExceptionMessage(ECDInputFileNotFound, RSCDInputFileNotFound);
+  RegisterExceptionMessage(ECDInvalidOutputFileName, RSCDInvalidOutputFileName);
+  RegisterExceptionMessage(ECDOutputDirectoryNotFound, RSCDOutputDirectoryNotFound);
+  RegisterExceptionMessage(ECDTempDirectoryNotFound, RSCDTempDirectoryNotFound);
 
 end.

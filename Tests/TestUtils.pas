@@ -13,6 +13,7 @@ type
       procedure CheckEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty); overload;
+      procedure CheckNotEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       function  GetCurrTestMethodAddr : Pointer;
       function  GetTestIniFileName : TFileName;
   end;
@@ -51,6 +52,13 @@ begin
 
   if Assigned(AExceptionClass) then
     FailNotEquals(AExceptionClass.ClassName, sExceptionNothig, Msg, ReturnAddress);
+end;
+
+procedure TTestCaseHelper.CheckNotEquals(Expected, Actual : TObject; const Msg : String);
+begin
+  FCheckCalled := True;
+  if Pointer(Expected) = Pointer(Actual) then
+    FailEquals(Format('%p', [Pointer(Expected)]), Format('%p', [Pointer(Actual)]), Msg, ReturnAddress);
 end;
 
 function TTestCaseHelper.GetCurrTestMethodAddr: Pointer;

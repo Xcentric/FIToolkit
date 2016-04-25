@@ -59,6 +59,7 @@ type
       TTestAddAttr = class (TTestAttributeBase);
       TTestGetAttr = class (TTestAttributeBase);
       TTestHasAttr = class (TTestAttributeBase);
+      TDummyAttr   = class (TTestAttributeBase);
     const
       INT_ATTR_VALUE = 777;
   public
@@ -211,11 +212,16 @@ begin
 end;
 
 procedure TestTDefaultsMap.TestIsSingleton;
+var
+  DefValAttribClass: TDefaultValueAttributeClass;
 begin
-  CheckEquals(TDefaultsMap.StaticInstance, FDefaultsMap1.StaticInstance,
-    'FDefaultsMap1.StaticInstance = TDefaultsMap.StaticInstance');
-  CheckEquals(FDefaultsMap1.StaticInstance, FDefaultsMap2.StaticInstance,
-    'FDefaultsMap2.StaticInstance = FDefaultsMap1.StaticInstance');
+  DefValAttribClass := TDummyAttr;
+
+  TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
+
+  CheckNotEquals(FDefaultsMap1, FDefaultsMap2, 'FDefaultsMap1 <> FDefaultsMap2');
+  CheckTrue(FDefaultsMap1.HasValue(DefValAttribClass), 'FDefaultsMap1.StaticInstance = TDefaultsMap.StaticInstance');
+  CheckTrue(FDefaultsMap2.HasValue(DefValAttribClass), 'FDefaultsMap2.StaticInstance = TDefaultsMap.StaticInstance');
 end;
 
 initialization

@@ -15,6 +15,7 @@ type
       FValueKind : TDefaultValueKind;
     private
       function GetClassType : TDefaultValueAttributeClass;
+
       function GetValue : TValue;
     strict protected
       FValue : TValue;
@@ -40,24 +41,23 @@ type
       type
         TInternalMap = class (TDictionary<TDefaultValueAttributeClass, TValue>);
     strict private
-      class var FInternalMap : TInternalMap;
-      class var FStaticInstance : TDefaultsMap;
+      class var
+        FInternalMap : TInternalMap;
+        FStaticInstance : TDefaultsMap;
     private
       class procedure FreeStaticInstance; static;
       class function  GetStaticInstance : TDefaultsMap; static;
+    protected
+      class property StaticInstance : TDefaultsMap read GetStaticInstance;
     public
       class procedure AddValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
       class function  GetValue(DefValAttribClass : TDefaultValueAttributeClass) : TValue;
       class function  HasValue(DefValAttribClass : TDefaultValueAttributeClass) : Boolean;
-
-      class property StaticInstance : TDefaultsMap read GetStaticInstance;
   end;
 
   procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue); overload;
   procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
     const Evaluator : TFunc<TValue>); overload;
-  procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
-    const Evaluator : TFunc<TDefaultValueAttributeClass, TValue>); overload;
 
 implementation
 
@@ -71,12 +71,6 @@ end;
 procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass; const Evaluator : TFunc<TValue>);
 begin
   RegisterDefaultValue(DefValAttribClass, Evaluator());
-end;
-
-procedure RegisterDefaultValue(DefValAttribClass : TDefaultValueAttributeClass;
-  const Evaluator : TFunc<TDefaultValueAttributeClass, TValue>);
-begin
-  RegisterDefaultValue(DefValAttribClass, Evaluator(DefValAttribClass));
 end;
 
 { TDefaultValueAttribute }
@@ -100,14 +94,14 @@ end;
 
 function TDefaultValueAttribute.GetClassType : TDefaultValueAttributeClass;
 begin
-  Pointer(Result) := PPointer(Self)^;
+  Result := TDefaultValueAttributeClass(ClassType);
 end;
 
 function TDefaultValueAttribute.GetValue : TValue;
 begin
   Result := TValue.Empty;
 
-  case ValueKind of
+  case FValueKind of
     dvkData:
       Result := FValue;
     dvkCalculated:

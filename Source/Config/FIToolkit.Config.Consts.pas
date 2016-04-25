@@ -3,14 +3,15 @@
 interface
 
 uses
+  System.Types,
   FIToolkit.Config.Types;
 
 const
 
   { FixInsight command line parameters. Do not localize! }
 
-  STR_FIPARAM_PREFIX = '--';
-  STR_FIPARAM_VALUE_DELIM = '=';
+  STR_FIPARAM_PREFIX       = '--';
+  STR_FIPARAM_VALUE_DELIM  = '=';
   STR_FIPARAM_VALUES_DELIM = ';';
 
   STR_FIPARAM_DEFINES  = STR_FIPARAM_PREFIX + 'defines'  + STR_FIPARAM_VALUE_DELIM;
@@ -22,7 +23,7 @@ const
 
   { Default config values. Do not localize! }
 
-  DEF_FIO_ARR_COMPILER_DEFINES : array [0..0] of String = ('_FIXINSIGHT_');
+  DEF_FIO_ARR_COMPILER_DEFINES : TStringDynArray = ['_FIXINSIGHT_'];
   DEF_FIO_ENUM_OUTPUT_FORMAT = fiofXML;
   DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
   DEF_FIO_STR_SETTINGS_FILENAME = 'FixInsightConfig.ficfg';
@@ -33,17 +34,17 @@ resourcestring
 
   { Exceptions }
 
-  SFIOEmptyOutputFileName = 'Пустое имя выходного файла.';
-  SFIOInvalidOutputFileName = 'Имя выходного файла содержит недопустимые символы.';
-  SFIOOutputDirectoryNotFound = 'Директории выходного файла не существует.';
-  SFIOProjectFileNotFound = 'Файл проекта не найден.';
-  SFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден.';
+  RSFIOEmptyOutputFileName = 'Пустое имя выходного файла.';
+  RSFIOInvalidOutputFileName = 'Имя выходного файла содержит недопустимые символы.';
+  RSFIOOutputDirectoryNotFound = 'Директории выходного файла не существует.';
+  RSFIOProjectFileNotFound = 'Файл проекта не найден.';
+  RSFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден.';
 
-  SCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден.';
-  SCDInputFileNotFound = 'Входной файл не найден.';
-  SCDInvalidOutputFileName = 'Неверное имя выходного файла.';
-  SCDOutputDirectoryNotFound = 'Выходная директория не найдена.';
-  SCDTempDirectoryNotFound = 'Директория для временных файлов не найдена.';
+  RSCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден.';
+  RSCDInputFileNotFound = 'Входной файл не найден.';
+  RSCDInvalidOutputFileName = 'Неверное имя выходного файла.';
+  RSCDOutputDirectoryNotFound = 'Выходная директория не найдена.';
+  RSCDTempDirectoryNotFound = 'Директория для временных файлов не найдена.';
 
 implementation
 
