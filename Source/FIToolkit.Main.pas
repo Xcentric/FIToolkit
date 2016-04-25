@@ -69,9 +69,9 @@ begin
 end;
 
 procedure TFIToolkit.InitConfig;
-  var
-    bHasGenerateConfigOption : Boolean;
-    SetConfigOption : TCLIOption;
+var
+  bHasGenerateConfigOption : Boolean;
+  SetConfigOption : TCLIOption;
 begin
   bHasGenerateConfigOption := FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG);
 
@@ -81,12 +81,12 @@ begin
   then
     FConfig := TConfigManager.Create(SetConfigOption.Value, bHasGenerateConfigOption, True)
   else
-    raise ENoConfigSpecified.Create;
+    raise ENoValidConfigSpecified.Create;
 end;
 
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
-  var
-    S : String;
+var
+  S : String;
 begin
   FOptions := TCLIOptions.Create;
 
@@ -96,13 +96,13 @@ end;
 
 class procedure TFIToolkit.PrintAbout;
 begin
-  Writeln(SApplicationAbout);
+  Writeln(RSApplicationAbout);
 end;
 
 procedure TFIToolkit.PrintHelp;
-  var
-    RS : TResourceStream;
-    SL : TStringList;
+var
+  RS : TResourceStream;
+  SL : TStringList;
 begin
   RS := TResourceStream.Create(HInstance, STR_RES_HELP, RT_RCDATA);
   try
@@ -129,9 +129,9 @@ begin
 
   if FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG) and TFile.Exists(FConfig.ConfigFileName) then
   begin
-    Writeln(SConfigWasGenerated);
+    Writeln(RSConfigWasGenerated);
     Writeln(FConfig.ConfigFileName);
-    Writeln(SEditConfigManually);
+    Writeln(RSEditConfigManually);
     Exit;
   end;
 end;

@@ -2,9 +2,9 @@
 
 {$APPTYPE CONSOLE}
 
-{$R *.res}
-
 {$R 'Help.res' 'ResourceScripts\Help\Help.rc'}
+
+{$R *.res}
 
 uses
   System.SysUtils,

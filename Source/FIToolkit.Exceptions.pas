@@ -13,7 +13,7 @@ type
 
   EConfigException = class abstract (EApplicationException);
 
-  ENoConfigSpecified = class (EConfigException);
+  ENoValidConfigSpecified = class (EConfigException);
 
 implementation
 
@@ -21,6 +21,6 @@ uses
   FIToolkit.Consts;
 
 initialization
-  RegisterExceptionMessage(ENoConfigSpecified, SNoConfigSpecified);
+  RegisterExceptionMessage(ENoValidConfigSpecified, RSNoValidConfigSpecified);
 
 end.

@@ -1,4 +1,4 @@
-Usage:
+﻿Usage:
   fitoolkit.exe (--help | --version | --set-config="<path>" [--generate-config]) [--no-exit=<N>]
  
 Command-line options:
