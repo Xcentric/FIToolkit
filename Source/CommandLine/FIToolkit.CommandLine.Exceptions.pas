@@ -24,7 +24,7 @@ uses
   FIToolkit.CommandLine.Consts;
 
 initialization
-  RegisterExceptionMessage(ECLIOptionIsEmpty, SCLIOptionIsEmpty);
-  RegisterExceptionMessage(ECLIOptionHasNoName, SCLIOptionHasNoName);
+  RegisterExceptionMessage(ECLIOptionIsEmpty, RSCLIOptionIsEmpty);
+  RegisterExceptionMessage(ECLIOptionHasNoName, RSCLIOptionHasNoName);
 
 end.

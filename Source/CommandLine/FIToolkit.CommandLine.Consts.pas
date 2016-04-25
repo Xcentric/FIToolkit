@@ -21,8 +21,8 @@ resourcestring
 
   { Exceptions }
 
-  SCLIOptionIsEmpty = 'Передан пустой параметр командной строки.';
-  SCLIOptionHasNoName = 'Параметр командной строки не имеет имени.';
+  RSCLIOptionIsEmpty = 'Передан пустой параметр командной строки.';
+  RSCLIOptionHasNoName = 'Параметр командной строки не имеет имени.';
 
 implementation
 

@@ -61,7 +61,6 @@ uses
 constructor TCLIOption.Create(const AOptionString : TCLIOptionString; const APrefix, ADelimiter : String);
 begin
   FOptionString := AOptionString;
-  FOptionTokens := Default(TCLIOptionTokens);
   Parse(FOptionString, APrefix, ADelimiter, FOptionTokens);
 end;
 
@@ -102,9 +101,9 @@ end;
 
 procedure TCLIOption.Parse(const AOptionString : TCLIOptionString; const APrefix, ADelimiter : String;
   out Tokens : TCLIOptionTokens);
-  var
-    S : String;
-    iPrefixPos, iDelimiterPos : Integer;
+var
+  S : String;
+  iPrefixPos, iDelimiterPos : Integer;
 begin
   S := AOptionString;
   iPrefixPos := S.IndexOf(APrefix);
@@ -113,6 +112,7 @@ begin
   if String.IsNullOrWhiteSpace(S) then
     raise ECLIOptionIsEmpty.Create;
 
+  Tokens := Default(TCLIOptionTokens);
   with Tokens do
   begin
     Prefix := Iff.Get<String>(not String.IsNullOrWhiteSpace(APrefix) and
@@ -156,15 +156,15 @@ end;
 { TCLIOptions }
 
 function TCLIOptions.Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean;
-  var
-    Option : TCLIOption;
+var
+  Option : TCLIOption;
 begin
   Result := Find(OptionName, Option, IgnoreCase);
 end;
 
 function TCLIOptions.Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean) : Boolean;
-  var
-    Opt : TCLIOption;
+var
+  Opt : TCLIOption;
 begin
   Result := False;
 
