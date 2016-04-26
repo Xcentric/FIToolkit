@@ -7,7 +7,7 @@ uses
 
 type
 
-  TConfigFile = class
+  TConfigFile = class sealed
     strict private
       FConfig : TMemIniFile;
       FConfigFile : TFileStream;
@@ -22,9 +22,9 @@ type
       function  Load : Boolean;
       function  Save : Boolean;
 
-      property Config : TMemIniFile read FConfig;
-      property FileName : TFileName read GetFileName;
-      property HasFile : Boolean read GetHasFile;
+      property  Config : TMemIniFile read FConfig;
+      property  FileName : TFileName read GetFileName;
+      property  HasFile : Boolean read GetHasFile;
   end;
 
 implementation
@@ -37,36 +37,36 @@ type
 
   TMemIniFileHelper = class helper for TMemIniFile
     public
-      procedure LoadFromStream(const Stream : TStream);
-      procedure SaveToStream(const Stream : TStream);
+      procedure LoadFromStream(Stream : TStream);
+      procedure SaveToStream(Stream : TStream);
   end;
 
 { TMemIniFileHelper }
 
-procedure TMemIniFileHelper.LoadFromStream(const Stream : TStream);
-  var
-    L : TStringList;
+procedure TMemIniFileHelper.LoadFromStream(Stream : TStream);
+var
+  L : TStringList;
 begin
   L := TStringList.Create;
   try
     Stream.Position := 0;
-    L.LoadFromStream(Stream);
+    L.LoadFromStream(Stream, Encoding);
     SetStrings(L);
   finally
     L.Free;
   end;
 end;
 
-procedure TMemIniFileHelper.SaveToStream(const Stream : TStream);
-  var
-    L : TStringList;
+procedure TMemIniFileHelper.SaveToStream(Stream : TStream);
+var
+  L : TStringList;
 begin
   L := TStringList.Create;
   try
     GetStrings(L);
     Stream.Position := 0;
     Stream.Size := 0;
-    L.SaveToStream(Stream);
+    L.SaveToStream(Stream, Encoding);
   finally
     L.Free;
   end;
@@ -92,7 +92,7 @@ begin
       Iff.Get<TFileAccess>(Writable, TFileAccess.faReadWrite, TFileAccess.faRead),
       TFileShare.fsRead);
 
-  FConfig := TMemIniFile.Create(String.Empty);
+  FConfig := TMemIniFile.Create(String.Empty, TEncoding.UTF8);
 end;
 
 destructor TConfigFile.Destroy;
@@ -106,7 +106,9 @@ end;
 function TConfigFile.GetFileName : TFileName;
 begin
   if Assigned(FConfigFile) then
-    Result := TPath.GetFullPath(FConfigFile.FileName);
+    Result := TPath.GetFullPath(FConfigFile.FileName)
+  else
+    Result := String.Empty;
 end;
 
 function TConfigFile.GetHasFile : Boolean;

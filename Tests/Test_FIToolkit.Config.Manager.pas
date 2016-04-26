@@ -49,7 +49,6 @@ procedure TestTConfigManager.TestCreate;
     CfgMgr : TConfigManager;
 begin
   sFileName := GetTestIniFileName;
-  Assert(not String.IsNullOrWhiteSpace(sFileName));
 
   CfgMgr := TConfigManager.Create(sFileName, False, False);
   try
@@ -67,7 +66,7 @@ begin
     CheckTrue(FileExists(sFileName), 'Create(NonEmptyFileName,GenerateConfig)::FileExists');
     CheckEquals(sFileName, CfgMgr.ConfigFileName, 'Create(NonEmptyFileName,GenerateConfig)::ConfigFileName.IsEqual');
 
-    with TIniFile.Create(sFileName) do
+    with TMemIniFile.Create(CloneFile(sFileName), TEncoding.UTF8) do
       try
         CheckEquals(
           DEF_CD_STR_OUTPUT_FILENAME,

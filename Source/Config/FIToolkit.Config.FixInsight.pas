@@ -31,16 +31,16 @@ type
       function  FormatSettingsFileName : String;
       function  FormatSilent : String;
 
+      procedure ValidateOutputFileName(const Value : TFileName);
+      procedure ValidateProjectFileName(const Value : TFileName);
+      procedure ValidateSettingsFileName(const Value : TFileName);
+
       function  GetOutputFileName : TFileName;
       function  GetProjectFileName : TFileName;
       function  GetSettingsFileName : TFileName;
       procedure SetOutputFileName(const Value : TFileName);
       procedure SetProjectFileName(const Value : TFileName);
       procedure SetSettingsFileName(const Value : TFileName);
-
-      procedure ValidateOutputFileName(const Value : TFileName);
-      procedure ValidateProjectFileName(const Value : TFileName);
-      procedure ValidateSettingsFileName(const Value : TFileName);
     public
       function  ToString : String; override;
 
@@ -69,21 +69,11 @@ uses
 { TFixInsightOptions }
 
 function TFixInsightOptions.FormatCompilerDefines : String;
-  var
-    S : String;
 begin
-  Result := String.Empty;
+  Result := String.Join(STR_FIPARAM_VALUES_DELIM, FCompilerDefines);
 
-  if Length(FCompilerDefines) > 0 then
-  begin
-    for S in FCompilerDefines do
-      if String.IsNullOrEmpty(Result) then
-        Result := S
-      else
-        Result := Concat(Result, STR_FIPARAM_VALUES_DELIM, S);
-
+  if not Result.IsEmpty then
     Result := STR_FIPARAM_DEFINES + Result;
-  end;
 end;
 
 function TFixInsightOptions.FormatOutputFileName : String;
@@ -93,13 +83,15 @@ end;
 
 function TFixInsightOptions.FormatOutputFormat : String;
 begin
+  Result := String.Empty;
+
   case FOutputFormat of
     fiofPlainText:
       Result := String.Empty;
     fiofXML:
       Result := STR_FIPARAM_XML;
   else
-    Result := String.Empty;
+    Assert(False, 'Unhandled FixInsight output format type while converting to string.');
   end;
 end;
 
@@ -113,8 +105,8 @@ begin
   end;
 
   Result := Trim(Format('%s %s %s %s %s %s',
-    [FormatProjectFileName, FormatCompilerDefines, FormatOutputFileName,
-     FormatSettingsFileName, FormatSilent, FormatOutputFormat]));
+    [FormatProjectFileName, FormatCompilerDefines, FormatSettingsFileName,
+     FormatOutputFileName, FormatOutputFormat, FormatSilent]));
 end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
@@ -205,16 +197,7 @@ begin
 end;
 
 initialization
-  RegisterDefaultValue(DefaultCompilerDefines,
-    function : TValue
-      var
-        StrArr : TStringDynArray;
-    begin
-      SetLength(StrArr, Length(DEF_FIO_ARR_COMPILER_DEFINES));
-      Move(DEF_FIO_ARR_COMPILER_DEFINES[0], StrArr[0], Length(DEF_FIO_ARR_COMPILER_DEFINES) * SizeOf(String));
-      Result := TValue.From<TStringDynArray>(StrArr);
-    end
-  );
+  RegisterDefaultValue(DefaultCompilerDefines, TValue.From<TStringDynArray>(DEF_FIO_ARR_COMPILER_DEFINES));
   RegisterDefaultValue(DefaultOutputFileName, TPath.GetTempPath + DEF_FIO_STR_OUTPUT_FILENAME);
   RegisterDefaultValue(DefaultSettingsFileName, TPath.GetExePath + DEF_FIO_STR_SETTINGS_FILENAME);
 

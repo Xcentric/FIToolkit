@@ -55,10 +55,10 @@ procedure TestTFixInsightOptions.TestToString;
     STR_EXPECTED_RESULT =
       STR_FIPARAM_PROJECT + '"' + STR_NON_EXISTENT_FILE + '" ' +
       STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
-      STR_FIPARAM_OUTPUT + '"' + STR_NON_EXISTENT_FILE + '" ' +
       STR_FIPARAM_SETTINGS + '"' + STR_NON_EXISTENT_FILE + '" ' +
-      STR_FIPARAM_SILENT + ' ' +
-      STR_FIPARAM_XML;
+      STR_FIPARAM_OUTPUT + '"' + STR_NON_EXISTENT_FILE + '" ' +
+      STR_FIPARAM_XML + ' ' +
+      STR_FIPARAM_SILENT;
   var
     Defines : TStringDynArray;
     ReturnValue : String;

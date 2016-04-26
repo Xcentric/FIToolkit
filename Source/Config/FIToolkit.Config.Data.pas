@@ -14,7 +14,7 @@ type
   DefaultOutputFileName = class (TDefaultStringValue);
   DefaultTempDirectory = class (TDefaultStringValue);
 
-  TConfigData = class
+  TConfigData = class sealed
     strict private
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
@@ -25,6 +25,12 @@ type
 
       FFixInsightOptions : TFixInsightOptions;
     private
+      procedure ValidateFixInsightExe(const Value : TFileName);
+      procedure ValidateInputFileName(const Value : TFileName);
+      procedure ValidateOutputDirectory(const Value : String);
+      procedure ValidateOutputFileName(const Value : String);
+      procedure ValidateTempDirectory(const Value : String);
+
       function  GetFixInsightExe : TFileName;
       function  GetInputFileName : TFileName;
       function  GetOutputDirectory : String;
@@ -35,12 +41,6 @@ type
       procedure SetOutputDirectory(const Value : String);
       procedure SetOutputFileName(const Value : String);
       procedure SetTempDirectory(const Value : String);
-
-      procedure ValidateFixInsightExe(const Value : TFileName);
-      procedure ValidateInputFileName(const Value : TFileName);
-      procedure ValidateOutputDirectory(const Value : String);
-      procedure ValidateOutputFileName(const Value : String);
-      procedure ValidateTempDirectory(const Value : String);
     public
       constructor Create;
       destructor Destroy; override;

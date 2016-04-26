@@ -56,9 +56,10 @@ begin
   else
   if (CurrentTest = @TestTConfigFile.TestAfterConstruction) or (CurrentTest = @TestTConfigFile.TestLoad) then
   begin
-    with TIniFile.Create(sFileName) do
+    with TMemIniFile.Create(sFileName, TEncoding.UTF8) do
       try
         WriteInteger(STR_INI_SECTION, STR_INI_PARAM, INT_INI_VALUE);
+        UpdateFile;
       finally
         Free;
       end;
@@ -193,7 +194,7 @@ begin
   ReturnValue := FConfigFile.Save;
 
   CheckTrue(ReturnValue, 'TestSave::ReturnValue');
-  with TIniFile.Create(GetTestIniFileName) do
+  with TMemIniFile.Create(CloneFile(FConfigFile.FileName), TEncoding.UTF8) do
     try
       CheckEquals(INT_INI_VALUE, ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), 'TestSave::WriteInteger');
     finally
