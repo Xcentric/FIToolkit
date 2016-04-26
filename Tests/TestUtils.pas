@@ -91,7 +91,7 @@ end;
 
 function TTestCaseHelper.GetTestIniFileName : TFileName;
 begin
-  Result := TestDataDir + ChangeFileExt(ExtractFileName(ParamStr(0)), '.ini');
+  Result := TestDataDir + TPath.GetFileNameWithoutExtension(ParamStr(0)) + '.ini';
 end;
 
 end.
