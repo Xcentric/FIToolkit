@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.FiniteStateMachine;
+﻿unit FIToolkit.Base.FiniteStateMachine.FSM;
 
 interface
 
@@ -6,10 +6,6 @@ uses
   System.SysUtils, System.Generics.Collections, System.Generics.Defaults;
 
 type
-
-  EFiniteStateMachineError = class abstract (Exception);
-
-  ETransitionNotFound = class (EFiniteStateMachineError);
 
   TOnEnterStateMethod<TState, TCommand> =
     procedure (const PreviousState, CurrentState : TState; const UsedCommand : TCommand) of object;
@@ -144,14 +140,11 @@ type
       property  PreviousState : TState read GetPreviousState;
   end;
 
-resourcestring
-
-  RSTransitionNotFound = 'Отсутствует переход из состояния "%s" по команде "%s".';
-
 implementation
 
 uses
-  System.Rtti;
+  System.Rtti,
+  FIToolkit.Base.FiniteStateMachine.Exceptions, FIToolkit.Base.FiniteStateMachine.Consts;
 
 { TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition }
 

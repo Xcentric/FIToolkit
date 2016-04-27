@@ -94,7 +94,9 @@
         <DCCReference Include="FIToolkit.Main.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Consts.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Exceptions.pas"/>
-        <DCCReference Include="Base\FIToolkit.Base.FiniteStateMachine.pas"/>
+        <DCCReference Include="Base\FiniteStateMachine\FIToolkit.Base.FiniteStateMachine.Consts.pas"/>
+        <DCCReference Include="Base\FiniteStateMachine\FIToolkit.Base.FiniteStateMachine.Exceptions.pas"/>
+        <DCCReference Include="Base\FiniteStateMachine\FIToolkit.Base.FiniteStateMachine.FSM.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Types.pas"/>
         <DCCReference Include="Base\FIToolkit.Base.Utils.pas"/>
         <DCCReference Include="CommandLine\FIToolkit.CommandLine.Consts.pas"/>
