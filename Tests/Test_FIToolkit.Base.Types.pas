@@ -68,7 +68,7 @@ var
   AI : TAssignableInteger;
   bCalled : Boolean;
 begin
-  CheckFalse(Assigned(AI.OnChange), 'CheckFalse::(OnChange <> nil)');
+  CheckFalse(Assigned(AI.OnChange), 'CheckFalse::Assigned(AI.OnChange)');
 
   bCalled := False;
   AI.OnChange :=
@@ -101,7 +101,7 @@ var
   AI : TAssignableInteger;
   bCalled : Boolean;
 begin
-  CheckFalse(Assigned(AI.OnChanging), 'CheckFalse::(OnChanging <> nil)');
+  CheckFalse(Assigned(AI.OnChanging), 'CheckFalse::Assigned(AI.OnChanging)');
 
   bCalled := False;
   AI.OnChanging :=
@@ -145,7 +145,7 @@ var
   AI : TAssignableInteger;
   bCalled : Boolean;
 begin
-  CheckFalse(Assigned(AI.OnUnassign), 'CheckFalse::(OnUnassign <> nil)');
+  CheckFalse(Assigned(AI.OnUnassign), 'CheckFalse::Assigned(AI.OnUnassign)');
 
   bCalled := False;
   AI.OnUnassign :=
