@@ -19,8 +19,6 @@ type
   // Test methods for class TCLIOption
 
   TestTCLIOption = class (TTestCase)
-  strict private
-    FCLIOption : TCLIOption;
   private
     const
       STR_PREFIX = '/';
@@ -31,6 +29,8 @@ type
 
       STR_OPTION = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE;
       STR_OPTION_WITH_SPACE = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE_WITH_SPACE;
+  private
+    FCLIOption : TCLIOption;
   published
     procedure TestCreateLong;
     procedure TestCreateShort;
@@ -47,8 +47,6 @@ type
   // Test methods for class TCLIOptions
 
   TestTCLIOptions = class (TTestCase)
-  strict private
-    FCLIOptions : TCLIOptions;
   private
     const
       STR_OPTION1_NAME = 'Param1';
@@ -58,6 +56,8 @@ type
       STR_OPTION2_NAME = 'Param 2';
       STR_OPTION2_VALUE = 'Value 2';
       STR_OPTION2 = STR_CLI_OPTION_PREFIX + STR_OPTION2_NAME + STR_CLI_OPTION_DELIMITER + STR_OPTION2_VALUE;
+  private
+    FCLIOptions : TCLIOptions;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -81,7 +81,7 @@ begin
       TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
     end,
     nil,
-    'Create::ValidParams'
+    'CheckException::nil'
   );
 
   CheckException(
@@ -90,7 +90,7 @@ begin
       TCLIOption.Create(String.Empty, STR_PREFIX, STR_DELIMITER);
     end,
     ECLIOptionIsEmpty,
-    'Create::EmptyOption'
+    'CheckException::ECLIOptionIsEmpty'
   );
 
   CheckException(
@@ -99,7 +99,7 @@ begin
       TCLIOption.Create(STR_PREFIX + STR_DELIMITER, STR_PREFIX, STR_DELIMITER);
     end,
     ECLIOptionHasNoName,
-    'Create::OptionWithEmptyName'
+    'CheckException::ECLIOptionHasNoName'
   );
 end;
 
@@ -111,7 +111,7 @@ begin
       TCLIOption.Create(STR_OPTION_NAME);
     end,
     nil,
-    'Create::ValidParams'
+    'CheckException::nil'
   );
 
   CheckException(
@@ -120,7 +120,7 @@ begin
       TCLIOption.Create(String.Empty);
     end,
     ECLIOptionIsEmpty,
-    'Create::EmptyOption'
+    'CheckException::ECLIOptionIsEmpty'
   );
 
   CheckException(
@@ -129,31 +129,33 @@ begin
       TCLIOption.Create(STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_DELIMITER);
     end,
     ECLIOptionHasNoName,
-    'Create::OptionWithEmptyName'
+    'CheckException::ECLIOptionHasNoName'
   );
 end;
 
 procedure TestTCLIOption.TestHasDelimiter;
 begin
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasDelimiter, 'Prefix → Delimiter');
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasDelimiter, 'Delimiter → Prefix');
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasDelimiter, 'CheckTrue::<Prefix → Delimiter>');
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasDelimiter, 'CheckFalse::<Delimiter → Prefix>');
 end;
 
 procedure TestTCLIOption.TestHasNonEmptyValue;
 begin
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue, STR_OPTION);
-  CheckFalse(TCLIOption.Create(STR_OPTION_NAME, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue, STR_OPTION_NAME);
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue,
+    'CheckTrue::(%s)', [STR_OPTION]);
+  CheckFalse(TCLIOption.Create(STR_OPTION_NAME, STR_PREFIX, STR_DELIMITER).HasNonEmptyValue,
+    'CheckFalse::(%s)', [STR_OPTION_NAME]);
 end;
 
 procedure TestTCLIOption.TestHasPrefix;
 begin
-  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasPrefix, 'Prefix → Delimiter');
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasPrefix, 'Delimiter → Prefix');
+  CheckTrue(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).HasPrefix, 'CheckTrue::<Prefix → Delimiter>');
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX).HasPrefix, 'CheckFalse::<Delimiter → Prefix>');
 end;
 
 procedure TestTCLIOption.TestImplicitFromString;
-  var
-    S : String;
+var
+  S : String;
 begin
   S := STR_OPTION;
   FCLIOption := S;
@@ -162,8 +164,8 @@ begin
 end;
 
 procedure TestTCLIOption.TestImplicitToString;
-  var
-    S : String;
+var
+  S : String;
 begin
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
   S := FCLIOption;
@@ -172,22 +174,22 @@ begin
 end;
 
 procedure TestTCLIOption.TestIsEmpty;
-  var
-    Option : TCLIOption;
+var
+  Option : TCLIOption;
 begin
-  CheckTrue(Option.IsEmpty, 'Option::NotCreated');
+  CheckTrue(Option.IsEmpty, 'CheckTrue::<before construction>');
   Option := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
-  CheckFalse(Option.IsEmpty, 'Option::Created');
+  CheckFalse(Option.IsEmpty, 'CheckFalse::<after construction>');
 end;
 
 procedure TestTCLIOption.TestToString;
 begin
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER);
-  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::(Prefix → Delimiter)');
+  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::<Prefix → Delimiter>');
 
   FCLIOption := TCLIOption.Create(STR_OPTION, STR_DELIMITER, STR_PREFIX);
-  CheckEquals(STR_OPTION, FCLIOption.Name, '(FCLIOption.Name = STR_OPTION)::(Delimiter → Prefix)');
-  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::(Delimiter → Prefix)');
+  CheckEquals(STR_OPTION, FCLIOption.Name, '(FCLIOption.Name = STR_OPTION)::<Delimiter → Prefix>');
+  CheckEquals(STR_OPTION, FCLIOption.ToString, '(FCLIOption.ToString = STR_OPTION)::<Delimiter → Prefix>');
 
   FCLIOption := TCLIOption.Create(STR_OPTION_NAME, ' ', ' ');
   CheckEquals(STR_OPTION_NAME, FCLIOption.ToString, 'FCLIOption.ToString = STR_OPTION_NAME');
@@ -196,15 +198,17 @@ begin
   CheckTrue(
     String(FCLIOption.ToString).EndsWith(
       TCLIOptionString.CHR_QUOTE + STR_OPTION_VALUE_WITH_SPACE + TCLIOptionString.CHR_QUOTE),
-    STR_OPTION_WITH_SPACE
+    'CheckTrue::(%)',
+    [STR_OPTION_WITH_SPACE]
   );
 end;
 
 procedure TestTCLIOption.TestValueContainsSpaces;
 begin
-  CheckFalse(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces, STR_OPTION);
+  CheckFalse(TCLIOption.Create(STR_OPTION, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces,
+    'CheckFalse::(%s)', [STR_OPTION]);
   CheckTrue(TCLIOption.Create(STR_OPTION_WITH_SPACE, STR_PREFIX, STR_DELIMITER).ValueContainsSpaces,
-    QuotedStr(STR_OPTION_WITH_SPACE));
+    'CheckTrue::(%s)', [STR_OPTION_WITH_SPACE]);
 end;
 
 { TestTCLIOptions }
@@ -224,33 +228,33 @@ end;
 procedure TestTCLIOptions.TestContains;
 begin
   CheckTrue(FCLIOptions.Contains(STR_OPTION1_NAME, True),
-    Format('IgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+    'CheckTrue::<case insensitive (%s vs %s)>', [STR_OPTION1_NAME, STR_OPTION1]);
   CheckTrue(FCLIOptions.Contains(STR_OPTION2_NAME, True),
-    Format('IgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+    'CheckTrue::<case insensitive (%s vs %s)>', [STR_OPTION2_NAME, STR_OPTION2]);
 
   CheckTrue(FCLIOptions.Contains(STR_OPTION1_NAME, False),
-    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
+    'CheckTrue::<case sensitive (%s vs %s)>', [STR_OPTION1_NAME, STR_OPTION1]);
   CheckFalse(FCLIOptions.Contains(String(STR_OPTION2_NAME).ToLower, False),
-    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+    'CheckFalse::<case sensitive (%s vs %s)>', [STR_OPTION2_NAME, STR_OPTION2]);
 end;
 
 procedure TestTCLIOptions.TestFind;
-  var
-    Opt : TCLIOption;
+var
+  Opt : TCLIOption;
 begin
   CheckTrue(FCLIOptions.Find(STR_OPTION1_NAME, Opt, True),
-    Format('IgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
-  CheckEquals(STR_OPTION1_NAME, Opt.Name, 'IgnoreCase::(Opt.Name = STR_OPTION1_NAME)');
+    'CheckTrue::<case insensitive (%s vs %s)>', [STR_OPTION1_NAME, STR_OPTION1]);
+  CheckEquals(STR_OPTION1_NAME, Opt.Name, '(Opt.Name = STR_OPTION1_NAME)::<case insensitive>');
 
   CheckTrue(FCLIOptions.Find(STR_OPTION2_NAME, Opt, True),
-    Format('IgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
-  CheckEquals(STR_OPTION2_NAME, Opt.Name, 'IgnoreCase::(Opt.Name = STR_OPTION2_NAME)');
+    'CheckTrue::<case insensitive (%s vs %s)>', [STR_OPTION2_NAME, STR_OPTION2]);
+  CheckEquals(STR_OPTION2_NAME, Opt.Name, '(Opt.Name = STR_OPTION2_NAME)::<case insensitive>');
 
   CheckTrue(FCLIOptions.Find(STR_OPTION1_NAME, Opt, False),
-    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION1_NAME, STR_OPTION1]));
-  CheckEquals(STR_OPTION1_NAME, Opt.Name, 'DoNotIgnoreCase::(Opt.Name = STR_OPTION1_NAME)');
+    'CheckTrue::<case sensitive (%s vs %s)>', [STR_OPTION1_NAME, STR_OPTION1]);
+  CheckEquals(STR_OPTION1_NAME, Opt.Name, '(Opt.Name = STR_OPTION1_NAME)::<case sensitive>');
   CheckFalse(FCLIOptions.Find(String(STR_OPTION2_NAME).ToLower, Opt, False),
-    Format('DoNotIgnoreCase::(%s vs %s)', [STR_OPTION2_NAME, STR_OPTION2]));
+    'CheckFalse::<case sensitive (%s vs %s)>', [STR_OPTION2_NAME, STR_OPTION2]);
 end;
 
 initialization

@@ -97,7 +97,7 @@ implementation
 
 uses
   System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
-  TestConsts;
+  TestUtils, TestConsts;
 
 procedure TestFIToolkitUtils.TestGetFixInsightExePath;
 var
@@ -148,19 +148,19 @@ var
   FileName : TFileName;
 begin
   FileName := TPath.GetDirectoryName(ParamStr(0));
-  CheckFalse(FileName.IsApplicable, Format('CheckFalse::(''%s'')', [FileName]));
+  CheckFalse(FileName.IsApplicable, 'CheckFalse::(%s)', [FileName]);
 
   FileName := TPath.GetFileName(ParamStr(0));
-  CheckTrue(FileName.IsApplicable, Format('CheckTrue::(''%s'')', [FileName]));
+  CheckTrue(FileName.IsApplicable, 'CheckTrue::(%s)', [FileName]);
 
   FileName := ParamStr(0);
-  CheckTrue(FileName.IsApplicable, Format('CheckTrue::(''%s'')', [FileName]));
+  CheckTrue(FileName.IsApplicable, 'CheckTrue::(%s)', [FileName]);
 
   FileName := STR_NON_EXISTENT_DIR;
-  CheckFalse(FileName.IsApplicable, Format('CheckFalse::(''%s'')', [STR_NON_EXISTENT_DIR]));
+  CheckFalse(FileName.IsApplicable, 'CheckFalse::(%s)', [STR_NON_EXISTENT_DIR]);
 
   FileName := STR_INVALID_FILENAME;
-  CheckFalse(FileName.IsApplicable, Format('CheckFalse::(''%s'')', [STR_INVALID_FILENAME]));
+  CheckFalse(FileName.IsApplicable, 'CheckFalse::(%s)', [STR_INVALID_FILENAME]);
 end;
 
 procedure TestTFileNameHelper.TestIsEmpty;
@@ -202,7 +202,7 @@ var
   ReturnValue : String;
 begin
   ReturnValue := TPath.GetQuotedPath(String.Empty);
-  CheckTrue(ReturnValue.StartsWith('"') and ReturnValue.EndsWith('"'), 'ReturnValue(<empty>) = ""');
+  CheckTrue(ReturnValue.StartsWith('"') and ReturnValue.EndsWith('"'), 'CheckTrue::(ReturnValue(<empty>) = "")');
 
   ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_NONE);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_NONE) = STR_EXPECTED');
@@ -222,16 +222,16 @@ var
   FileName : TFileName;
 begin
   FileName := TPath.GetDirectoryName(ParamStr(0));
-  CheckFalse(TPath.IsApplicableFileName(FileName), Format('CheckFalse::(''%s'')', [FileName]));
+  CheckFalse(TPath.IsApplicableFileName(FileName), 'CheckFalse::(%s)', [FileName]);
 
   FileName := TPath.GetFileName(ParamStr(0));
-  CheckTrue(TPath.IsApplicableFileName(FileName), Format('CheckTrue::(''%s'')', [FileName]));
+  CheckTrue(TPath.IsApplicableFileName(FileName), 'CheckTrue::(%s)', [FileName]);
 
   FileName := ParamStr(0);
-  CheckTrue(TPath.IsApplicableFileName(FileName), Format('CheckTrue::(''%s'')', [FileName]));
+  CheckTrue(TPath.IsApplicableFileName(FileName), 'CheckTrue::(%s)', [FileName]);
 
-  CheckFalse(TPath.IsApplicableFileName(STR_NON_EXISTENT_DIR), Format('CheckFalse::(''%s'')', [STR_NON_EXISTENT_DIR]));
-  CheckFalse(TPath.IsApplicableFileName(STR_INVALID_FILENAME), Format('CheckFalse::(''%s'')', [STR_INVALID_FILENAME]));
+  CheckFalse(TPath.IsApplicableFileName(STR_NON_EXISTENT_DIR), 'CheckFalse::(%s)', [STR_NON_EXISTENT_DIR]);
+  CheckFalse(TPath.IsApplicableFileName(STR_INVALID_FILENAME), 'CheckFalse::(%s)', [STR_INVALID_FILENAME]);
 end;
 
 { TestTRttiTypeHelper }
@@ -248,7 +248,7 @@ begin
       for Attr in Prop.GetAttributes do
         if Attr is IsArrayPropAttribute then
         begin
-          CheckTrue(Prop.PropertyType.IsArray, Format('CheckTrue::%s.IsArray', [Prop.Name]));
+          CheckTrue(Prop.PropertyType.IsArray, 'CheckTrue::<%s is array>', [Prop.Name]);
           Break;
         end;
   finally
@@ -268,7 +268,7 @@ begin
       for Attr in Prop.GetAttributes do
         if Attr is IsStringPropAttribute then
         begin
-          CheckTrue(Prop.PropertyType.IsString, Format('CheckTrue::%s.IsString', [Prop.Name]));
+          CheckTrue(Prop.PropertyType.IsString, 'CheckTrue::<%s is string>', [Prop.Name]);
           Break;
         end;
   finally

@@ -13,8 +13,11 @@ type
       procedure CheckEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty); overload;
+      procedure CheckFalse(Condition : Boolean; const Msg : String; const Args : array of const); overload;
       procedure CheckNotEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
+      procedure CheckTrue(Condition : Boolean; const Msg : String; const Args : array of const); overload;
       function  CloneFile(const FileName : TFileName) : TFileName;
+      procedure DebugMsg(const Msg : String; const Args : array of const);
       function  GetCurrTestMethodAddr : Pointer;
       function  GetTestIniFileName : TFileName;
   end;
@@ -22,7 +25,7 @@ type
 implementation
 
 uses
-  System.IOUtils, Winapi.Windows,
+  System.IOUtils, Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
 
 { TTestCaseHelper }
@@ -56,11 +59,25 @@ begin
     FailNotEquals(AExceptionClass.ClassName, sExceptionNothig, Msg, ReturnAddress);
 end;
 
+procedure TTestCaseHelper.CheckFalse(Condition : Boolean; const Msg : String; const Args : array of const);
+begin
+  FCheckCalled := True;
+  if Condition then
+    FailNotEquals(BoolToStr(False), BoolToStr(True), Format(Msg, Args), ReturnAddress);
+end;
+
 procedure TTestCaseHelper.CheckNotEquals(Expected, Actual : TObject; const Msg : String);
 begin
   FCheckCalled := True;
   if Pointer(Expected) = Pointer(Actual) then
     FailEquals(Format('%p', [Pointer(Expected)]), Format('%p', [Pointer(Actual)]), Msg, ReturnAddress);
+end;
+
+procedure TTestCaseHelper.CheckTrue(Condition : Boolean; const Msg : String; const Args : array of const);
+begin
+  FCheckCalled := True;
+  if not Condition then
+    FailNotEquals(BoolToStr(True), BoolToStr(False), Format(Msg, Args), ReturnAddress);
 end;
 
 function TTestCaseHelper.CloneFile(const FileName : TFileName) : TFileName;
@@ -79,6 +96,11 @@ begin
     if TFile.Exists(sCloneFileName) then
       Result := sCloneFileName;
   end;
+end;
+
+procedure TTestCaseHelper.DebugMsg(const Msg : String; const Args : array of const);
+begin
+  ShowMessageFmt(Msg, Args);
 end;
 
 function TTestCaseHelper.GetCurrTestMethodAddr : Pointer;
