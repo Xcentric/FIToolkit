@@ -89,8 +89,8 @@ type
             procedure PerformEnterStateAction(const CurrentState : TState);
             procedure PerformExitStateAction(const NewState : TState);
 
-            property FromState : TState read FFromState;
-            property OnCommand : TCommand read FOnCommand;
+            property  FromState : TState read FFromState;
+            property  OnCommand : TCommand read FOnCommand;
         end;
 
         TTransitionTable = class (TObjectDictionary<TTransition, TState>);
@@ -115,6 +115,9 @@ type
       procedure RaiseOuterException(E : Exception); virtual;
     protected
       class function GetDefaultInitialState : TState; virtual;
+
+      function  CommandToStr(const Command : TCommand) : String; virtual;
+      function  StateToStr(const State : TState) : String; virtual;
     public
       constructor Create; overload;
       constructor Create(const InitialState : TState); overload; virtual;
@@ -122,30 +125,33 @@ type
         const CommandComparer : ICommandComparer); overload; virtual;
       destructor Destroy; override;
 
-      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
         ) : IFiniteStateMachine; overload;
-      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
         ) : IFiniteStateMachine; overload;
-      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
         ) : IFiniteStateMachine; overload;
-      function Execute(const Command : TCommand) : IFiniteStateMachine;
-      function GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
-      function GetReachableState(const OnCommand : TCommand) : TState; overload;
-      function HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
-      function HasTransition(const OnCommand : TCommand) : Boolean; overload;
-      function RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+      function  Execute(const Command : TCommand) : IFiniteStateMachine;
+      function  GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
+      function  GetReachableState(const OnCommand : TCommand) : TState; overload;
+      function  HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
+      function  HasTransition(const OnCommand : TCommand) : Boolean; overload;
+      function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
 
-      property CurrentState : TState read GetCurrentState;
-      property PreviousState : TState read GetPreviousState;
+      property  CurrentState : TState read GetCurrentState;
+      property  PreviousState : TState read GetPreviousState;
   end;
 
 resourcestring
 
-  RSTransitionNotFound = 'No such transition available.';
+  RSTransitionNotFound = 'Отсутствует переход из состояния "%s" по команде "%s".';
 
 implementation
+
+uses
+  System.Rtti;
 
 { TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition }
 
@@ -289,6 +295,15 @@ begin
   Create(InitialState, nil, nil);
 end;
 
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.CommandToStr(const Command : TCommand) : String;
+begin
+  with TValue.From<TCommand>(Command) do
+    if TypeInfo.Kind = tkClass then
+      Result := AsObject.ToString
+    else
+      Result := ToString;
+end;
+
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create(const InitialState : TState;
   const StateComparer : IStateComparer; const CommandComparer : ICommandComparer);
 begin
@@ -379,10 +394,13 @@ end;
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
   const OnCommand : TCommand; out Transition : TTransition) : TState;
 begin
+  Result := Default(TState);
+
   if HasTransition(FromState, OnCommand, Transition) then
     Result := FTransitionTable[Transition]
   else
-    RaiseOuterException(ETransitionNotFound.Create(RSTransitionNotFound));
+    RaiseOuterException(ETransitionNotFound.CreateFmt(
+      RSTransitionNotFound, [StateToStr(FromState), CommandToStr(OnCommand)]));
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
@@ -431,6 +449,15 @@ begin
 
   if HasTransition(FromState, OnCommand, T) then
     FTransitionTable.Remove(T);
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.StateToStr(const State : TState) : String;
+begin
+  with TValue.From<TState>(State) do
+    if TypeInfo.Kind = tkClass then
+      Result := AsObject.ToString
+    else
+      Result := ToString;
 end;
 
 end.
