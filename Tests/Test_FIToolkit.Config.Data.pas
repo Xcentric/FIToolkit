@@ -59,7 +59,7 @@ begin
       FConfigData.FixInsightExe := String.Empty;
     end,
     ECDFixInsightExeNotFound,
-    'FixInsightExe'
+    'CheckException::ECDFixInsightExeNotFound'
   );
 
   { Check validation - empty input file name }
@@ -70,7 +70,7 @@ begin
       FConfigData.InputFileName := String.Empty;
     end,
     ECDInputFileNotFound,
-    'InputFileName'
+    'CheckException::ECDInputFileNotFound'
   );
 
   { Check validation - empty output directory }
@@ -81,7 +81,7 @@ begin
       FConfigData.OutputDirectory := String.Empty;
     end,
     ECDOutputDirectoryNotFound,
-    'OutputDirectory'
+    'CheckException::ECDOutputDirectoryNotFound'
   );
 
   { Check validation - empty output file name }
@@ -92,7 +92,7 @@ begin
       FConfigData.OutputFileName := String.Empty;
     end,
     ECDInvalidOutputFileName,
-    'OutputFileName'
+    'CheckException::ECDInvalidOutputFileName'
   );
 
   { Check validation - empty temp directory }
@@ -103,7 +103,7 @@ begin
       FConfigData.TempDirectory := String.Empty;
     end,
     ECDTempDirectoryNotFound,
-    'TempDirectory'
+    'CheckException::ECDTempDirectoryNotFound'
   );
 end;
 
@@ -119,7 +119,7 @@ begin
       FConfigData.FixInsightExe := STR_NON_EXISTENT_FILE;
     end,
     ECDFixInsightExeNotFound,
-    'FixInsightExe'
+    'CheckException::ECDFixInsightExeNotFound'
   );
 
   { Check validation - invalid input file name }
@@ -130,7 +130,7 @@ begin
       FConfigData.InputFileName := STR_NON_EXISTENT_FILE;
     end,
     ECDInputFileNotFound,
-    'InputFileName'
+    'CheckException::ECDInputFileNotFound'
   );
 
   { Check validation - invalid output directory }
@@ -141,7 +141,7 @@ begin
       FConfigData.OutputDirectory := STR_NON_EXISTENT_DIR;
     end,
     ECDOutputDirectoryNotFound,
-    'OutputDirectory'
+    'CheckException::ECDOutputDirectoryNotFound'
   );
 
   { Check validation - invalid output file name }
@@ -152,7 +152,7 @@ begin
       FConfigData.OutputFileName := STR_INVALID_FILENAME;
     end,
     ECDInvalidOutputFileName,
-    'OutputFileName'
+    'CheckException::ECDInvalidOutputFileName'
   );
 
   { Check validation - invalid temp directory }
@@ -163,7 +163,7 @@ begin
       FConfigData.TempDirectory := STR_NON_EXISTENT_DIR;
     end,
     ECDTempDirectoryNotFound,
-    'TempDirectory'
+    'CheckException::ECDTempDirectoryNotFound'
   );
 end;
 
@@ -182,7 +182,8 @@ begin
         TempDirectory := ExtractFileDir(ParamStr(0));
       end;
     end,
-    nil
+    nil,
+    'CheckException::nil'
   );
 end;
 

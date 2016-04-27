@@ -45,7 +45,7 @@ type
 
         TTestStaticArray = array [0..9] of Byte;
         TTestDynamicArray = TArray<Byte>;
-    private
+    strict private
       FDynamicArray : TTestDynamicArray;
       FStaticArray : TTestStaticArray;
 

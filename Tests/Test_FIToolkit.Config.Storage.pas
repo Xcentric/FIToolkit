@@ -19,13 +19,13 @@ type
   // Test methods for class TConfigFile
 
   TestTConfigFile = class(TTestCase)
-  strict private
-    FConfigFile : TConfigFile;
   private
     const
       STR_INI_SECTION = 'TestSection';
       STR_INI_PARAM = 'TestParam';
       INT_INI_VALUE = 777;
+  strict private
+    FConfigFile : TConfigFile;
   private
     function  CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
   public
@@ -45,8 +45,8 @@ uses
   TestUtils;
 
 function TestTConfigFile.CreateConfigFile(CurrentTest : Pointer) : TConfigFile;
-  var
-    sFileName : TFileName;
+var
+  sFileName : TFileName;
 begin
   Result := nil;
   sFileName := GetTestIniFileName;
@@ -74,22 +74,28 @@ begin
 end;
 
 procedure TestTConfigFile.TearDown;
+var
+  S : String;
 begin
-  FreeAndNil(FConfigFile);
-  DeleteFile(GetTestIniFileName);
+  if Assigned(FConfigFile) then
+  begin
+    S := FConfigFile.FileName;
+    FreeAndNil(FConfigFile);
+    DeleteFile(S);
+  end;
 end;
 
 procedure TestTConfigFile.TestAfterConstruction;
 begin
   FConfigFile.AfterConstruction;
 
-  CheckTrue(FConfigFile.Config.SectionExists(STR_INI_SECTION), 'TestAfterConstruction::SectionExists');
+  CheckTrue(FConfigFile.Config.SectionExists(STR_INI_SECTION), 'CheckTrue::SectionExists');
 end;
 
 procedure TestTConfigFile.TestCreate;
-  var
-    sFileName : TFileName;
-    Cfg : TConfigFile;
+var
+  sFileName : TFileName;
+  Cfg : TConfigFile;
 begin
   sFileName := GetTestIniFileName;
 
@@ -104,11 +110,11 @@ begin
         Cfg := TConfigFile.Create(sFileName, False);
       end,
       nil,
-      'Create(NotExists,NotWritable)'
+      'CheckException::nil<NotExists,NotWritable>'
     );
-    CheckFalse(FileExists(sFileName), 'Create(NotExists,NotWritable)::FileExists');
-    CheckFalse(Cfg.HasFile, 'Create(NotExists,NotWritable)::HasFile');
-    CheckTrue(String.IsNullOrEmpty(Cfg.FileName), 'Create(NotExists,NotWritable)::FileName.IsEmpty)');
+    CheckFalse(FileExists(sFileName), 'CheckFalse::FilexExists<NotExists,NotWritable>');
+    CheckFalse(Cfg.HasFile, 'CheckFalse::HasFile<NotExists,NotWritable>');
+    CheckTrue(String.IsNullOrEmpty(Cfg.FileName), 'CheckTrue::Cfg.FileName.IsEmpty');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -125,11 +131,11 @@ begin
         Cfg := TConfigFile.Create(sFileName, True);
       end,
       nil,
-      'Create(NotExists,Writable)'
+      'CheckException::nil<NotExists,Writable>'
     );
-    CheckTrue(FileExists(sFileName), 'Create(NotExists,Writable)::FileExists');
-    CheckTrue(Cfg.HasFile, 'Create(NotExists,Writable)::HasFile');
-    CheckEquals(sFileName, Cfg.FileName, 'Create(NotExists,Writable)::FileName.IsEqual');
+    CheckTrue(FileExists(sFileName), 'CheckTrue::FileExists<NotExists,Writable>');
+    CheckTrue(Cfg.HasFile, 'CheckTrue::HasFile<NotExists,Writable>');
+    CheckEquals(sFileName, Cfg.FileName, '(Cfg.FileName = sFileName)::<NotExists,Writable>');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -146,10 +152,10 @@ begin
         Cfg := TConfigFile.Create(sFileName, False);
       end,
       nil,
-      'Create(Exists,NotWritable)'
+      'CheckException::nil<Exists,NotWritable>'
     );
-    CheckTrue(Cfg.HasFile, 'Create(Exists,NotWritable)::HasFile');
-    CheckEquals(sFileName, Cfg.FileName, 'Create(Exists,NotWritable)::FileName.IsEqual');
+    CheckTrue(Cfg.HasFile, 'CheckTrue::HasFile<Exists,NotWritable>');
+    CheckEquals(sFileName, Cfg.FileName, '(Cfg.FileName = sFileName)::<Exists,NotWritable>');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -166,10 +172,10 @@ begin
         Cfg := TConfigFile.Create(sFileName, True);
       end,
       nil,
-      'Create(Exists,Writable)'
+      'CheckException::nil<Exists,Writable>'
     );
-    CheckTrue(Cfg.HasFile, 'Create(Exists,Writable)::HasFile');
-    CheckEquals(sFileName, Cfg.FileName, 'Create(Exists,Writable)::FileName.IsEqual');
+    CheckTrue(Cfg.HasFile, 'CheckTrue::HasFile<Exists,Writable>');
+    CheckEquals(sFileName, Cfg.FileName, '(Cfg.FileName = sFileName)::<Exists,Writable>');
   finally
     if Assigned(Cfg) then
       Cfg.Free;
@@ -182,8 +188,9 @@ var
 begin
   ReturnValue := FConfigFile.Load;
 
-  CheckTrue(ReturnValue, 'TestLoad::ReturnValue');
-  CheckEquals(INT_INI_VALUE, FConfigFile.Config.ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), 'TestLoad::ReadInteger');
+  CheckTrue(ReturnValue, 'CheckTrue::ReturnValue');
+  CheckEquals(INT_INI_VALUE, FConfigFile.Config.ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0),
+    'Config.ReadInteger = INT_INI_VALUE');
 end;
 
 procedure TestTConfigFile.TestSave;
@@ -193,10 +200,11 @@ begin
   FConfigFile.Config.WriteInteger(STR_INI_SECTION, STR_INI_PARAM, INT_INI_VALUE);
   ReturnValue := FConfigFile.Save;
 
-  CheckTrue(ReturnValue, 'TestSave::ReturnValue');
+  CheckTrue(ReturnValue, 'CheckTrue::ReturnValue');
   with TMemIniFile.Create(CloneFile(FConfigFile.FileName), TEncoding.UTF8) do
     try
-      CheckEquals(INT_INI_VALUE, ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0), 'TestSave::WriteInteger');
+      CheckEquals(INT_INI_VALUE, ReadInteger(STR_INI_SECTION, STR_INI_PARAM, 0),
+        'TMemIniFile.ReadInteger = INT_INI_VALUE');
     finally
       Free;
     end;

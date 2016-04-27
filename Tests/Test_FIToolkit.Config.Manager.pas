@@ -31,7 +31,7 @@ implementation
 uses
   System.SysUtils, System.IniFiles,
   TestUtils, TestConsts,
-  FIToolkit.Config.Consts;
+  FIToolkit.Config.Consts, FIToolkit.Config.Types;
 
 procedure TestTConfigManager.SetUp;
 begin
@@ -44,34 +44,34 @@ begin
 end;
 
 procedure TestTConfigManager.TestCreate;
-  var
-    sFileName : TFileName;
-    CfgMgr : TConfigManager;
+var
+  sFileName : TFileName;
+  CfgMgr : TConfigManager;
 begin
   sFileName := GetTestIniFileName;
 
   CfgMgr := TConfigManager.Create(sFileName, False, False);
   try
-    CheckFalse(FileExists(sFileName), 'Create(NonEmptyFileName,DoNotGenerateConfig)::FileExists');
+    CheckFalse(FileExists(sFileName), 'CheckFalse::FileExists<NonEmptyFileName,DoNotGenerateConfig>');
     CheckTrue(String.IsNullOrEmpty(CfgMgr.ConfigFileName),
-      'Create(NonEmptyFileName,DoNotGenerateConfig)::ConfigFileName.IsEmpty');
-    CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
-              'Create(NonEmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
+      'CheckTrue::ConfigFileName.IsEmpty<NonEmptyFileName,DoNotGenerateConfig>');
+    CheckEquals<TFixInsightOutputFormat>(DEF_FIO_ENUM_OUTPUT_FORMAT, CfgMgr.ConfigData.FixInsightOptions.OutputFormat,
+      '(ConfigData.FixInsightOptions.OutputFormat = DEF_FIO_ENUM_OUTPUT_FORMAT)::<NonEmptyFileName,DoNotGenerateConfig>');
   finally
     CfgMgr.Free;
   end;
 
   CfgMgr := TConfigManager.Create(sFileName, True, False);
   try
-    CheckTrue(FileExists(sFileName), 'Create(NonEmptyFileName,GenerateConfig)::FileExists');
-    CheckEquals(sFileName, CfgMgr.ConfigFileName, 'Create(NonEmptyFileName,GenerateConfig)::ConfigFileName.IsEqual');
+    CheckTrue(FileExists(sFileName), 'CheckTrue::FileExists<NonEmptyFileName,GenerateConfig>');
+    CheckEquals(sFileName, CfgMgr.ConfigFileName, '(CfgMgr.ConfigFileName = sFileName)::<NonEmptyFileName,GenerateConfig>');
 
     with TMemIniFile.Create(CloneFile(sFileName), TEncoding.UTF8) do
       try
         CheckEquals(
           DEF_CD_STR_OUTPUT_FILENAME,
           ReadString(CfgMgr.ConfigData.QualifiedClassName, 'OutputFileName', STR_INVALID_FILENAME),
-          'Create(NonEmptyFileName,GenerateConfig)::ConfigFileContainsDefaultValues'
+          '(ReadString = DEF_CD_STR_OUTPUT_FILENAME)::<NonEmptyFileName,GenerateConfig>'
         );
       finally
         Free;
@@ -83,9 +83,9 @@ begin
   CfgMgr := TConfigManager.Create(String.Empty, False, False);
   try
     CheckTrue(String.IsNullOrEmpty(CfgMgr.ConfigFileName),
-      'Create(EmptyFileName,DoNotGenerateConfig)::ConfigFileName.IsEmpty');
-    CheckTrue(CfgMgr.ConfigData.OutputFileName = DEF_CD_STR_OUTPUT_FILENAME,
-              'Create(EmptyFileName,DoNotGenerateConfig)::PropertiesHaveDefaultValues');
+      'CheckTrue::ConfigFileName.IsEmpty<EmptyFileName,DoNotGenerateConfig>');
+    CheckEquals<TFixInsightOutputFormat>(DEF_FIO_ENUM_OUTPUT_FORMAT, CfgMgr.ConfigData.FixInsightOptions.OutputFormat,
+      '(ConfigData.FixInsightOptions.OutputFormat = DEF_FIO_ENUM_OUTPUT_FORMAT)::<EmptyFileName,DoNotGenerateConfig>');
   finally
     CfgMgr.Free;
   end;
@@ -96,7 +96,7 @@ begin
       TConfigManager.Create(String.Empty, True, False);
     end,
     EArgumentException,
-    'Create(EmptyFileName,GenerateConfig)::EArgumentException'
+    'CheckException::EArgumentException<EmptyFileName,GenerateConfig>'
   );
 end;
 

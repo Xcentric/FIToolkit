@@ -29,7 +29,7 @@ type
 
       STR_OPTION = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE;
       STR_OPTION_WITH_SPACE = STR_PREFIX + STR_OPTION_NAME + STR_DELIMITER + STR_OPTION_VALUE_WITH_SPACE;
-  private
+  strict private
     FCLIOption : TCLIOption;
   published
     procedure TestCreateLong;
@@ -56,7 +56,7 @@ type
       STR_OPTION2_NAME = 'Param 2';
       STR_OPTION2_VALUE = 'Value 2';
       STR_OPTION2 = STR_CLI_OPTION_PREFIX + STR_OPTION2_NAME + STR_CLI_OPTION_DELIMITER + STR_OPTION2_VALUE;
-  private
+  strict private
     FCLIOptions : TCLIOptions;
   public
     procedure SetUp; override;

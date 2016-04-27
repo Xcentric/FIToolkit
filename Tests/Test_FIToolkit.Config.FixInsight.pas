@@ -49,23 +49,21 @@ begin
 end;
 
 procedure TestTFixInsightOptions.TestToString;
-  const
-    STR_DEFINE1 = 'DEFINE1';
-    STR_DEFINE2 = 'DEFINE2';
-    STR_EXPECTED_RESULT =
-      STR_FIPARAM_PROJECT + '"' + STR_NON_EXISTENT_FILE + '" ' +
-      STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
-      STR_FIPARAM_SETTINGS + '"' + STR_NON_EXISTENT_FILE + '" ' +
-      STR_FIPARAM_OUTPUT + '"' + STR_NON_EXISTENT_FILE + '" ' +
-      STR_FIPARAM_XML + ' ' +
-      STR_FIPARAM_SILENT;
-  var
-    Defines : TStringDynArray;
-    ReturnValue : String;
+const
+  STR_DEFINE1 = 'DEFINE1';
+  STR_DEFINE2 = 'DEFINE2';
+  STR_EXPECTED_RESULT =
+    STR_FIPARAM_PROJECT + '"' + STR_NON_EXISTENT_FILE + '" ' +
+    STR_FIPARAM_DEFINES + STR_DEFINE1 + STR_FIPARAM_VALUES_DELIM + STR_DEFINE2 + ' ' +
+    STR_FIPARAM_SETTINGS + '"' + STR_NON_EXISTENT_FILE + '" ' +
+    STR_FIPARAM_OUTPUT + '"' + STR_NON_EXISTENT_FILE + '" ' +
+    STR_FIPARAM_XML + ' ' +
+    STR_FIPARAM_SILENT;
+var
+  Defines : TStringDynArray;
+  ReturnValue : String;
 begin
-  SetLength(Defines, 2);
-  Defines[0] := STR_DEFINE1;
-  Defines[1] := STR_DEFINE2;
+  Defines := [STR_DEFINE1, STR_DEFINE2];
 
   with FFixInsightOptions do
   begin
@@ -92,7 +90,7 @@ begin
       ReturnValue := FFixInsightOptions.ToString;
     end,
     EFixInsightOptionsException,
-    'ToString'
+    'CheckException::EFixInsightOptionsException'
   );
 end;
 
@@ -108,7 +106,7 @@ begin
       FFixInsightOptions.ProjectFileName := String.Empty;
     end,
     EFIOProjectFileNotFound,
-    'ProjectFileName'
+    'CheckException::EFIOProjectFileNotFound'
   );
 
   { Check validation - empty output file name }
@@ -119,7 +117,7 @@ begin
       FFixInsightOptions.OutputFileName := String.Empty;
     end,
     EFIOEmptyOutputFileName,
-    'OutputFileName'
+    'CheckException::EFIOEmptyOutputFileName'
   );
 
   { Check validation - empty settings file name }
@@ -130,7 +128,7 @@ begin
       FFixInsightOptions.SettingsFileName := String.Empty;
     end,
     nil,
-    'SettingsFileName'
+    'CheckException::nil'
   );
 end;
 
@@ -146,7 +144,7 @@ begin
       FFixInsightOptions.ProjectFileName := STR_NON_EXISTENT_FILE;
     end,
     EFIOProjectFileNotFound,
-    'ProjectFileName'
+    'CheckException::EFIOProjectFileNotFound'
   );
 
   { Check validation - empty output file name }
@@ -158,7 +156,7 @@ begin
       FFixInsightOptions.OutputFileName := String.Empty;
     end,
     EFIOEmptyOutputFileName,
-    'OutputFileName'
+    'CheckException::EFIOEmptyOutputFileName'
   );
 
   { Check validation - nonexistent output directory }
@@ -169,7 +167,7 @@ begin
       FFixInsightOptions.OutputFileName := STR_NON_EXISTENT_DIR + ExtractFileName(ParamStr(0));
     end,
     EFIOOutputDirectoryNotFound,
-    'OutputFileName'
+    'CheckException::EFIOOutputDirectoryNotFound'
   );
 
   { Check validation - invalid output file name }
@@ -180,7 +178,7 @@ begin
       FFixInsightOptions.OutputFileName := ExtractFilePath(ParamStr(0)) + STR_INVALID_FILENAME;
     end,
     EFIOInvalidOutputFileName,
-    'OutputFileName'
+    'CheckException::EFIOInvalidOutputFileName'
   );
 
   { Check validation - invalid settings file name }
@@ -191,7 +189,7 @@ begin
       FFixInsightOptions.SettingsFileName := STR_NON_EXISTENT_FILE;
     end,
     EFIOSettingsFileNotFound,
-    'SettingsFileName'
+    'CheckException::EFIOSettingsFileNotFound'
   );
 end;
 
@@ -211,7 +209,8 @@ begin
         SettingsFileName := String.Empty;
       end;
     end,
-    nil
+    nil,
+    'CheckException::nil'
   );
 end;
 

@@ -31,7 +31,7 @@ type
   // Test methods for class TDefaultValueAttribute<T>
 
   TestTDefaultValueAttributeT = class(TTestCase)
-  strict private
+  private
     type
       TTestAttribute = class (TDefaultValueAttribute<Integer>);
     const
@@ -50,9 +50,6 @@ type
   // Test methods for class TDefaultsMap
 
   TestTDefaultsMap = class(TTestCase)
-  strict private
-    FDefaultsMap1,
-    FDefaultsMap2 : TDefaultsMap;
   private
     type
       TTestAttributeBase = class abstract (TDefaultValueAttribute<Integer>);
@@ -62,6 +59,9 @@ type
       TDummyAttr   = class (TTestAttributeBase);
     const
       INT_ATTR_VALUE = 777;
+  strict private
+    FDefaultsMap1,
+    FDefaultsMap2 : TDefaultsMap;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -88,15 +88,14 @@ end;
 
 procedure TestTDefaultValueAttribute.TearDown;
 begin
-  FDefaultValueAttribute.Free;
-  FDefaultValueAttribute := nil;
+  FreeAndNil(FDefaultValueAttribute);
 end;
 
 procedure TestTDefaultValueAttribute.TestIsEmpty;
-  var
-    ReturnValue : TValue;
+var
+  ReturnValue : TValue;
 begin
-  CheckTrue(FDefaultValueAttribute.ValueKind = dvkUndefined, 'ValueKind = dvkUndefined');
+  CheckEquals<TDefaultValueKind>(dvkUndefined, FDefaultValueAttribute.ValueKind, 'ValueKind = dvkUndefined');
 
   CheckException(
     procedure
@@ -104,7 +103,7 @@ begin
       ReturnValue := FDefaultValueAttribute.Value;
     end,
     EAssertionFailed,
-    'EAssertionFailed::(ValueKind <> dvkUndefined)'
+    'CheckException::EAssertionFailed(ValueKind <> dvkUndefined)'
   );
 end;
 
@@ -124,8 +123,8 @@ end;
 
 procedure TestTDefaultValueAttributeT.TestAttributeWithNoValue;
 begin
-  CheckTrue(FAttrWithNoValue.ValueKind = dvkCalculated, 'ValueKind = dvkCalculated');
-  CheckTrue(FAttrWithNoValue.Value.IsEmpty, 'Value.IsEmpty');
+  CheckEquals<TDefaultValueKind>(dvkCalculated, FAttrWithNoValue.ValueKind, 'ValueKind = dvkCalculated');
+  CheckTrue(FAttrWithNoValue.Value.IsEmpty, 'CheckTrue::IsEmpty');
 
   RegisterDefaultValue(TTestAttribute, INT_ATTR_VALUE);
 
@@ -134,8 +133,8 @@ end;
 
 procedure TestTDefaultValueAttributeT.TestAttributeWithValue;
 begin
-  CheckTrue(FAttrWithValue.ValueKind = dvkData, 'ValueKind = dvkData');
-  CheckFalse(FAttrWithValue.Value.IsEmpty, 'Value.IsEmpty');
+  CheckEquals<TDefaultValueKind>(dvkData, FAttrWithValue.ValueKind, 'ValueKind = dvkData');
+  CheckFalse(FAttrWithValue.Value.IsEmpty, 'CheckFalse::IsEmpty');
   CheckEquals(INT_ATTR_VALUE, FAttrWithValue.Value.AsInteger, 'Value = INT_ATTR_VALUE');
 end;
 
@@ -163,7 +162,7 @@ begin
 
   TDefaultsMap.AddValue(DefValAttribClass, Value);
 
-  CheckTrue(TDefaultsMap.HasValue(DefValAttribClass), 'HasValue');
+  CheckTrue(TDefaultsMap.HasValue(DefValAttribClass), 'CheckTrue::HasValue');
   CheckEquals(INT_ATTR_VALUE, TDefaultsMap.GetValue(DefValAttribClass).AsInteger,
     'TDefaultsMap.GetValue = INT_ATTR_VALUE');
   CheckEquals(INT_ATTR_VALUE, FDefaultsMap1.GetValue(DefValAttribClass).AsInteger,
@@ -185,7 +184,7 @@ begin
       ReturnValue := TDefaultsMap.GetValue(DefValAttribClass);
     end,
     EListError,
-    'GetValue'
+    'CheckException::EListError'
   );
 
   TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
@@ -203,12 +202,12 @@ begin
 
   ReturnValue := TDefaultsMap.HasValue(DefValAttribClass);
 
-  CheckFalse(ReturnValue, 'ReturnValue');
+  CheckFalse(ReturnValue, 'CheckFalse::ReturnValue');
 
   TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
   ReturnValue := TDefaultsMap.HasValue(DefValAttribClass);
 
-  CheckTrue(ReturnValue, 'ReturnValue');
+  CheckTrue(ReturnValue, 'CheckTrue::ReturnValue');
 end;
 
 procedure TestTDefaultsMap.TestIsSingleton;
@@ -220,8 +219,10 @@ begin
   TDefaultsMap.AddValue(DefValAttribClass, INT_ATTR_VALUE);
 
   CheckNotEquals(FDefaultsMap1, FDefaultsMap2, 'FDefaultsMap1 <> FDefaultsMap2');
-  CheckTrue(FDefaultsMap1.HasValue(DefValAttribClass), 'FDefaultsMap1.StaticInstance = TDefaultsMap.StaticInstance');
-  CheckTrue(FDefaultsMap2.HasValue(DefValAttribClass), 'FDefaultsMap2.StaticInstance = TDefaultsMap.StaticInstance');
+  CheckTrue(FDefaultsMap1.HasValue(DefValAttribClass),
+    'CheckTrue::(FDefaultsMap1.StaticInstance = TDefaultsMap.StaticInstance)');
+  CheckTrue(FDefaultsMap2.HasValue(DefValAttribClass),
+    'CheckTrue::(FDefaultsMap2.StaticInstance = TDefaultsMap.StaticInstance)');
 end;
 
 initialization
