@@ -47,6 +47,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    //TODO: implement {TestCreate}
     procedure TestAddTransition_NoEvents;
     procedure TestAddTransition_MethodEvents;
     procedure TestAddTransition_ProcEvents;
@@ -68,12 +69,16 @@ procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState
   const UsedCommand : TCommandType);
 begin
   FEnterStateCalled := True;
+
+  CheckEquals<TStateType>(CurrentState, FFiniteStateMachine.GetReachableState(PreviousState, UsedCommand));
 end;
 
 procedure TestTFiniteStateMachine.OnExitState(const CurrentState, NewState : TStateType;
   const UsedCommand : TCommandType);
 begin
   FExitStateCalled := True;
+
+  CheckEquals<TStateType>(NewState, FFiniteStateMachine.GetReachableState(CurrentState, UsedCommand));
 end;
 
 procedure TestTFiniteStateMachine.SetUp;
@@ -190,11 +195,62 @@ end;
 procedure TestTFiniteStateMachine.TestExecute;
 var
   ReturnValue: IFiniteStateMachine;
-  Command: TCommandType;
+  bEnterStateCalled, bExitStateCalled : Boolean;
 begin
-  // TODO: Setup method call parameters
-  ReturnValue := FFiniteStateMachine.Execute(Command);
-  // TODO: Validate method results
+  bEnterStateCalled := False;
+  bExitStateCalled := False;
+  ReturnValue := FFiniteStateMachine
+    .AddTransition(START_STATE, stState1, ctBegin)
+    .AddTransition(stState1, stState2, ctSwitchState_1to2, OnEnterState, OnExitState)
+    .AddTransition(stState2, stState3, ctSwitchState_2to3,
+      procedure (const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType)
+      begin
+        bEnterStateCalled := True;
+
+        CheckEquals<TStateType>(stState2, PreviousState, 'PreviousState = stState2');
+        CheckEquals<TStateType>(stState3, CurrentState, 'CurrentState = stState3');
+        CheckEquals<TCommandType>(ctSwitchState_2to3, UsedCommand, 'UsedCommand = ctSwitchState_2to3');
+      end,
+      procedure (const CurrentState, NewState : TStateType; const UsedCommand : TCommandType)
+      begin
+        bExitStateCalled := True;
+
+        CheckEquals<TStateType>(stState2, CurrentState, 'CurrentState = stState2');
+        CheckEquals<TStateType>(stState3, NewState, 'NewState = stState3');
+        CheckEquals<TCommandType>(ctSwitchState_2to3, UsedCommand, 'UsedCommand = ctSwitchState_2to3');
+      end)
+    .AddTransition(stState3, FINISH_STATE, ctEnd);
+
+  ReturnValue := ReturnValue
+    .Execute(ctBegin)
+    .Execute(ctSwitchState_1to2)
+    .Execute(ctSwitchState_2to3)
+    .Execute(ctEnd);
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckEquals<TStateType>(FINISH_STATE, ReturnValue.CurrentState, 'CurrentState = FINISH_STATE');
+  CheckNotEquals<TStateType>(START_STATE, ReturnValue.CurrentState, 'CurrentState <> START_STATE');
+  CheckNotEquals<TStateType>(ReturnValue.PreviousState, ReturnValue.CurrentState, 'CurrentState <> PreviousState');
+  CheckTrue(FEnterStateCalled, 'CheckTrue::FEnterStateCalled');
+  CheckTrue(FExitStateCalled, 'CheckTrue::FExitStateCalled');
+  CheckTrue(bEnterStateCalled, 'CheckTrue::bEnterStateCalled');
+  CheckTrue(bExitStateCalled, 'CheckTrue::bExitStateCalled');
+  CheckException(
+    procedure
+    begin
+      ReturnValue.Execute(ctBegin);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
+  CheckInnerException(
+    procedure
+    begin
+      ReturnValue.Execute(ctBegin);
+    end,
+    ETransitionNotFound,
+    'CheckException::ETransitionNotFound'
+  );
 end;
 
 procedure TestTFiniteStateMachine.TestGetReachableState_FromSpecifiedState;
