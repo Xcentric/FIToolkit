@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TDefaultValueAttribute
 
-  TestTDefaultValueAttribute = class(TTestCase)
+  TestTDefaultValueAttribute = class(TGenericTestCase)
   strict private
     FDefaultValueAttribute: TDefaultValueAttribute;
   public
@@ -30,7 +30,7 @@ type
 
   // Test methods for class TDefaultValueAttribute<T>
 
-  TestTDefaultValueAttributeT = class(TTestCase)
+  TestTDefaultValueAttributeT = class(TGenericTestCase)
   private
     type
       TTestAttribute = class (TDefaultValueAttribute<Integer>);
@@ -49,7 +49,7 @@ type
 
   // Test methods for class TDefaultsMap
 
-  TestTDefaultsMap = class(TTestCase)
+  TestTDefaultsMap = class(TGenericTestCase)
   private
     type
       TTestAttributeBase = class abstract (TDefaultValueAttribute<Integer>);

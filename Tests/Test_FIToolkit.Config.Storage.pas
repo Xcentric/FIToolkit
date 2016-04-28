@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TConfigFile
 
-  TestTConfigFile = class(TTestCase)
+  TestTConfigFile = class(TGenericTestCase)
   private
     const
       STR_INI_SECTION = 'TestSection';

@@ -18,7 +18,7 @@ uses
 type
   // Test methods for TAssignable
 
-  TestTAssignable = class (TTestCase)
+  TestTAssignable = class (TGenericTestCase)
   private
     const
       INT_TEST = 777;
@@ -57,7 +57,7 @@ begin
 
   AI2 := INT_TEST;
   CheckTrue(AI2.Assigned, 'CheckTrue::AI2.Assigned');
-  CheckEquals(INT_TEST, AI2, 'AI2 = INT_TEST');
+  CheckEquals(INT_TEST, Integer(AI2), 'AI2 = INT_TEST');
 end;
 
 procedure TestTAssignable.TestOnChange;
@@ -179,17 +179,18 @@ begin
 
   CheckFalse(AI.Assigned, 'CheckFalse::Assigned');
   CheckNotEquals(INT_TEST, AI.Value, 'AI.Value <> INT_TEST');
-  CheckEquals(Default(Integer), AI, 'AI = 0');
+  CheckEquals(Default(Integer), Integer(AI), 'AI = 0');
 end;
 
 procedure TestTAssignable.TestValue;
 var
   AI : TAssignableInteger;
 begin
-  CheckEquals(Default(Integer), AI, 'AI = 0');
+  CheckEquals(Default(Integer), AI.Value, 'AI.Value = 0');
+  CheckEquals(Default(Integer), Integer(AI), 'AI = 0');
   AI := INT_TEST;
   CheckEquals(INT_TEST, AI.Value, 'AI.Value = INT_TEST');
-  CheckEquals(INT_TEST, AI, 'AI = INT_TEST');
+  CheckEquals(INT_TEST, Integer(AI), 'AI = INT_TEST');
 end;
 
 initialization

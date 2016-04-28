@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TFixInsightOptions
 
-  TestTFixInsightOptions = class(TTestCase)
+  TestTFixInsightOptions = class(TGenericTestCase)
   strict private
     FFixInsightOptions: TFixInsightOptions;
   public

@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TCLIOption
 
-  TestTCLIOption = class (TTestCase)
+  TestTCLIOption = class (TGenericTestCase)
   private
     const
       STR_PREFIX = '/';
@@ -46,7 +46,7 @@ type
 
   // Test methods for class TCLIOptions
 
-  TestTCLIOptions = class (TTestCase)
+  TestTCLIOptions = class (TGenericTestCase)
   private
     const
       STR_OPTION1_NAME = 'Param1';

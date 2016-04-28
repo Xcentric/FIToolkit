@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class ECustomException
 
-  TestECustomException = class(TTestCase)
+  TestECustomException = class(TGenericTestCase)
   private
     type
       ETestException = class (ECustomException);

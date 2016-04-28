@@ -17,26 +17,26 @@ uses
 
 type
 
-  TestFIToolkitUtils = class (TTestCase)
+  TestFIToolkitUtils = class (TGenericTestCase)
     published
       procedure TestGetFixInsightExePath;
       procedure TestIff;
   end;
 
-  TestTFileNameHelper = class (TTestCase)
+  TestTFileNameHelper = class (TGenericTestCase)
     published
       procedure TestIsApplicable;
       procedure TestIsEmpty;
   end;
 
-  TestTPathHelper = class (TTestCase)
+  TestTPathHelper = class (TGenericTestCase)
     published
       procedure TestGetExePath;
       procedure TestGetQuotedPath;
       procedure TestIsApplicableFileName;
   end;
 
-  TestTRttiTypeHelper = class (TTestCase)
+  TestTRttiTypeHelper = class (TGenericTestCase)
     private
       type
         TTestAttribute = class abstract (TCustomAttribute);
@@ -81,13 +81,13 @@ type
       procedure TestIsString;
   end;
 
-  TestTTypeInfoHelper = class (TTestCase)
+  TestTTypeInfoHelper = class (TGenericTestCase)
     published
       procedure TestIsArray;
       procedure TestIsString;
   end;
 
-  TestTTypeKindHelper = class (TTestCase)
+  TestTTypeKindHelper = class (TGenericTestCase)
     published
       procedure TestIsArray;
       procedure TestIsString;

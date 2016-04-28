@@ -18,7 +18,7 @@ uses
 type
 
   // Test methods for class TConfigManager
-  TestTConfigManager = class(TTestCase)
+  TestTConfigManager = class(TGenericTestCase)
   public
     procedure SetUp; override;
     procedure TearDown; override;

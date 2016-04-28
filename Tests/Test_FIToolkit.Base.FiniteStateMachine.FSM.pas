@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TFiniteStateMachine
 
-  TestTFiniteStateMachine = class(TTestCase)
+  TestTFiniteStateMachine = class(TGenericTestCase)
   private
     type
       TStateType = (stStart, stState1, stState2, stState3, stFinish);

@@ -11,14 +11,12 @@ type
   TTestCaseHelper = class helper for TTestCase
     public
       procedure CheckEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
-      procedure CheckEquals<T>(Expected, Actual : T; const Msg : String = String.Empty); overload;
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty); overload;
       procedure CheckFalse(Condition : Boolean; const Msg : String; const Args : array of const); overload;
       procedure CheckInnerException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty);
       procedure CheckNotEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
-      procedure CheckNotEquals<T>(Expected, Actual : T; const Msg : String = String.Empty); overload;
       procedure CheckTrue(Condition : Boolean; const Msg : String; const Args : array of const); overload;
       function  CloneFile(const FileName : TFileName) : TFileName;
       procedure DebugMsg(const Msg : String; const Args : array of const);
@@ -39,20 +37,6 @@ begin
   FCheckCalled := True;
   if Pointer(Expected) <> Pointer(Actual) then
     FailNotEquals(Format('%p', [Pointer(Expected)]), Format('%p', [Pointer(Actual)]), Msg, ReturnAddress);
-end;
-
-procedure TTestCaseHelper.CheckEquals<T>(Expected, Actual : T; const Msg : String);
-var
-  Comparer : IEqualityComparer<T>;
-begin
-  Comparer := TEqualityComparer<T>.Default;
-
-  FCheckCalled := True;
-  if not Comparer.Equals(Expected, Actual) then
-    FailNotEquals(
-      Format('%s at %p', [TValue.From<T>(Expected).ToString, Pointer(@Expected)]),
-      Format('%s at %p', [TValue.From<T>(Actual).ToString, Pointer(@Actual)]),
-      Msg, ReturnAddress);
 end;
 
 procedure TTestCaseHelper.CheckException(const AProc : TProc; AExceptionClass : ExceptClass; const Msg : String);
@@ -129,20 +113,6 @@ begin
   FCheckCalled := True;
   if Pointer(Expected) = Pointer(Actual) then
     FailEquals(Format('%p', [Pointer(Expected)]), Format('%p', [Pointer(Actual)]), Msg, ReturnAddress);
-end;
-
-procedure TTestCaseHelper.CheckNotEquals<T>(Expected, Actual : T; const Msg : String);
-var
-  Comparer : IEqualityComparer<T>;
-begin
-  Comparer := TEqualityComparer<T>.Default;
-
-  FCheckCalled := True;
-  if Comparer.Equals(Expected, Actual) then
-    FailEquals(
-      Format('%s at %p', [TValue.From<T>(Expected).ToString, Pointer(@Expected)]),
-      Format('%s at %p', [TValue.From<T>(Actual).ToString, Pointer(@Actual)]),
-      Msg, ReturnAddress);
 end;
 
 procedure TTestCaseHelper.CheckTrue(Condition : Boolean; const Msg : String; const Args : array of const);

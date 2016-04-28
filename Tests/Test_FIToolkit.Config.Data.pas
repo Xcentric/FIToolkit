@@ -18,7 +18,7 @@ uses
 type
   // Test methods for class TConfigData
 
-  TestTConfigData = class(TTestCase)
+  TestTConfigData = class(TGenericTestCase)
   strict private
     FConfigData: TConfigData;
   public
