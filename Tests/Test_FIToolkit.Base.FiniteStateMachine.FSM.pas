@@ -47,10 +47,10 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    //TODO: implement {TestCreate}
     procedure TestAddTransition_NoEvents;
     procedure TestAddTransition_MethodEvents;
     procedure TestAddTransition_ProcEvents;
+    procedure TestCreate;
     procedure TestExecute;
     procedure TestGetReachableState_FromSpecifiedState;
     procedure TestGetReachableState_FromCurrentState;
@@ -190,6 +190,19 @@ begin
     ETestException,
     'CheckException::ETestException'
   );
+end;
+
+procedure TestTFiniteStateMachine.TestCreate;
+var
+  FSM : IFiniteStateMachine;
+begin
+  FSM := TFiniteStateMachine.Create;
+  CheckEquals<TStateType>(START_STATE, FSM.CurrentState, 'CurrentState = START_STATE');
+  CheckEquals<TStateType>(FSM.PreviousState, FSM.CurrentState, 'CurrentState = PreviousState');
+
+  FSM := TFiniteStateMachine.Create(FINISH_STATE);
+  CheckEquals<TStateType>(FINISH_STATE, FSM.CurrentState, 'CurrentState = FINISH_STATE');
+  CheckEquals<TStateType>(FSM.PreviousState, FSM.CurrentState, 'CurrentState = PreviousState');
 end;
 
 procedure TestTFiniteStateMachine.TestExecute;
