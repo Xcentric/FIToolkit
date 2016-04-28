@@ -246,8 +246,12 @@ function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const F
 begin
   Result := Self;
 
-  FTransitionTable.Add(
-    TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer), ToState);
+  try
+    FTransitionTable.Add(
+      TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer), ToState);
+  except
+    RaiseOuterException(nil);
+  end;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
@@ -255,8 +259,12 @@ function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const F
 begin
   Result := Self;
 
-  FTransitionTable.Add(
-    TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
+  try
+    FTransitionTable.Add(
+      TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
+  except
+    RaiseOuterException(nil);
+  end;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
@@ -264,8 +272,12 @@ function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const F
 begin
   Result := Self;
 
-  FTransitionTable.Add(
-    TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
+  try
+    FTransitionTable.Add(
+      TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit), ToState);
+  except
+    RaiseOuterException(nil);
+  end;
 end;
 
 procedure TFiniteStateMachine<TState, TCommand, ErrorClass>.AfterExecute(const Command : TCommand);

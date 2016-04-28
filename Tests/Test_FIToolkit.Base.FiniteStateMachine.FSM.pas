@@ -32,28 +32,54 @@ type
 
       IFiniteStateMachine = IFiniteStateMachine<TStateType, TCommandType, ETestException>;
       TFiniteStateMachine = class (TFiniteStateMachine<TStateType, TCommandType, ETestException>);
+    const
+      START_STATE  = stStart;
+      FINISH_STATE = stFinish;
   strict private
     FFiniteStateMachine: IFiniteStateMachine;
+  private
+    FEnterStateCalled,
+    FExitStateCalled : Boolean;
+
+    procedure OnEnterState(const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType);
+    procedure OnExitState(const CurrentState, NewState : TStateType; const UsedCommand : TCommandType);
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure TestAddTransition;
-    procedure TestAddTransition1;
-    procedure TestAddTransition2;
+    procedure TestAddTransition_NoEvents;
+    procedure TestAddTransition_MethodEvents;
+    procedure TestAddTransition_ProcEvents;
     procedure TestExecute;
-    procedure TestGetReachableState;
-    procedure TestGetReachableState1;
-    procedure TestHasTransition;
-    procedure TestHasTransition1;
+    procedure TestGetReachableState_FromSpecifiedState;
+    procedure TestGetReachableState_FromCurrentState;
+    procedure TestHasTransition_FromSpecifiedState;
+    procedure TestHasTransition_FromCurrentState;
     procedure TestRemoveTransition;
   end;
 
 implementation
 
+uses
+  TestUtils;
+
+procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState : TStateType;
+  const UsedCommand : TCommandType);
+begin
+  FEnterStateCalled := True;
+end;
+
+procedure TestTFiniteStateMachine.OnExitState(const CurrentState, NewState : TStateType;
+  const UsedCommand : TCommandType);
+begin
+  FExitStateCalled := True;
+end;
+
 procedure TestTFiniteStateMachine.SetUp;
 begin
-  FFiniteStateMachine := TFiniteStateMachine.Create;
+  FFiniteStateMachine := TFiniteStateMachine.Create(START_STATE);
+  FEnterStateCalled := False;
+  FExitStateCalled := False;
 end;
 
 procedure TestTFiniteStateMachine.TearDown;
@@ -61,19 +87,34 @@ begin
   FFiniteStateMachine := nil;
 end;
 
-procedure TestTFiniteStateMachine.TestAddTransition;
+procedure TestTFiniteStateMachine.TestAddTransition_NoEvents;
 var
   ReturnValue: IFiniteStateMachine;
   OnCommand: TCommandType;
   ToState: TStateType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := stStart;
+  ToState := stFinish;
+  OnCommand := ctEnd;
+
   ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
-  // TODO: Validate method results
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
+    'GetReachableState = ToState');
+  CheckException(
+    procedure
+    begin
+      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
 end;
 
-procedure TestTFiniteStateMachine.TestAddTransition1;
+procedure TestTFiniteStateMachine.TestAddTransition_MethodEvents;
 var
   ReturnValue: IFiniteStateMachine;
   OnExit: TOnExitStateMethod;
@@ -82,13 +123,30 @@ var
   ToState: TStateType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := stState1;
+  ToState := stState2;
+  OnCommand := ctSwitchState_1to2;
+  OnEnter := OnEnterState;
+  OnExit := OnExitState;
+
   ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
       OnEnter, OnExit);
-  // TODO: Validate method results
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
+    'GetReachableState = ToState');
+  CheckException(
+    procedure
+    begin
+      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
 end;
 
-procedure TestTFiniteStateMachine.TestAddTransition2;
+procedure TestTFiniteStateMachine.TestAddTransition_ProcEvents;
 var
   ReturnValue: IFiniteStateMachine;
   OnExit: TOnExitStateProc;
@@ -97,10 +155,35 @@ var
   ToState: TStateType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := stState3;
+  ToState := stFinish;
+  OnCommand := ctEnd;
+  OnEnter :=
+    procedure (const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType)
+    begin
+      //FEnterStateCalled := True;
+    end;
+  OnExit :=
+    procedure (const CurrentState, NewState : TStateType; const UsedCommand : TCommandType)
+    begin
+      //FExitStateCalled := True;
+    end;
+
   ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
       OnEnter, OnExit);
-  // TODO: Validate method results
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
+    'GetReachableState = ToState');
+  CheckException(
+    procedure
+    begin
+      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
 end;
 
 procedure TestTFiniteStateMachine.TestExecute;
@@ -113,46 +196,97 @@ begin
   // TODO: Validate method results
 end;
 
-procedure TestTFiniteStateMachine.TestGetReachableState;
+procedure TestTFiniteStateMachine.TestGetReachableState_FromSpecifiedState;
+const
+  TARGET_STATE = stState2;
 var
   ReturnValue: TStateType;
   OnCommand: TCommandType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := stState1;
+  OnCommand := ctSwitchState_1to2;
+  FFiniteStateMachine.AddTransition(FromState, TARGET_STATE, OnCommand);
+
   ReturnValue := FFiniteStateMachine.GetReachableState(FromState, OnCommand);
-  // TODO: Validate method results
+
+  CheckEquals<TStateType>(TARGET_STATE, ReturnValue,
+    'ReturnValue = TARGET_STATE');
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
+  //TODO: implement {CheckInnerException}
 end;
 
-procedure TestTFiniteStateMachine.TestGetReachableState1;
+procedure TestTFiniteStateMachine.TestGetReachableState_FromCurrentState;
+const
+  TARGET_STATE = stState1;
 var
   ReturnValue: TStateType;
   OnCommand: TCommandType;
 begin
-  // TODO: Setup method call parameters
+  OnCommand := ctBegin;
+  FFiniteStateMachine.AddTransition(START_STATE, TARGET_STATE, OnCommand);
+
   ReturnValue := FFiniteStateMachine.GetReachableState(OnCommand);
-  // TODO: Validate method results
+
+  CheckEquals<TStateType>(TARGET_STATE, ReturnValue,
+    'ReturnValue = TARGET_STATE');
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
+  //TODO: implement {CheckInnerException}
 end;
 
-procedure TestTFiniteStateMachine.TestHasTransition;
+procedure TestTFiniteStateMachine.TestHasTransition_FromSpecifiedState;
+const
+  TARGET_STATE = stState2;
 var
   ReturnValue: Boolean;
   OnCommand: TCommandType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := stState1;
+  OnCommand := ctSwitchState_1to2;
+  FFiniteStateMachine.AddTransition(FromState, TARGET_STATE, OnCommand);
+
   ReturnValue := FFiniteStateMachine.HasTransition(FromState, OnCommand);
-  // TODO: Validate method results
+  CheckTrue(ReturnValue, 'CheckTrue::ReturnValue');
+
+  FromState := FINISH_STATE;
+  OnCommand := ctEnd;
+
+  ReturnValue := FFiniteStateMachine.HasTransition(FromState, OnCommand);
+  CheckFalse(ReturnValue, 'CheckFalse::ReturnValue');
 end;
 
-procedure TestTFiniteStateMachine.TestHasTransition1;
+procedure TestTFiniteStateMachine.TestHasTransition_FromCurrentState;
+const
+  TARGET_STATE = stState1;
 var
   ReturnValue: Boolean;
   OnCommand: TCommandType;
 begin
-  // TODO: Setup method call parameters
+  OnCommand := ctBegin;
+  FFiniteStateMachine.AddTransition(START_STATE, TARGET_STATE, OnCommand);
+
   ReturnValue := FFiniteStateMachine.HasTransition(OnCommand);
-  // TODO: Validate method results
+  CheckTrue(ReturnValue, 'CheckTrue::ReturnValue');
+
+  OnCommand := ctEnd;
+
+  ReturnValue := FFiniteStateMachine.HasTransition(OnCommand);
+  CheckFalse(ReturnValue, 'CheckFalse::ReturnValue');
 end;
 
 procedure TestTFiniteStateMachine.TestRemoveTransition;
@@ -161,9 +295,23 @@ var
   OnCommand: TCommandType;
   FromState: TStateType;
 begin
-  // TODO: Setup method call parameters
+  FromState := START_STATE;
+  OnCommand := ctEnd;
+  FFiniteStateMachine.AddTransition(FromState, FINISH_STATE, OnCommand);
+
+  CheckTrue(FFiniteStateMachine.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
   ReturnValue := FFiniteStateMachine.RemoveTransition(FromState, OnCommand);
-  // TODO: Validate method results
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckFalse(ReturnValue.HasTransition(FromState, OnCommand), 'CheckFalse::HasTransition');
+  CheckException(
+    procedure
+    begin
+      ReturnValue.RemoveTransition(FromState, OnCommand);
+    end,
+    nil,
+    'CheckException::nil'
+  );
 end;
 
 initialization
