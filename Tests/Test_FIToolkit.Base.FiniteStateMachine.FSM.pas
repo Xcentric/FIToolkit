@@ -13,6 +13,7 @@ interface
 
 uses
   TestFramework,
+  System.Generics.Defaults,
   FIToolkit.Base.FiniteStateMachine.FSM, FIToolkit.Base.Exceptions;
 
 type
@@ -32,9 +33,45 @@ type
 
       IFiniteStateMachine = IFiniteStateMachine<TStateType, TCommandType, ETestException>;
       TFiniteStateMachine = class (TFiniteStateMachine<TStateType, TCommandType, ETestException>);
+
+      TStateRec = record
+        ID : Integer;
+        Flag : Boolean;
+      end;
+
+      TCommandRec = record
+        ID : Integer;
+        Flag : Boolean;
+      end;
+
+      TStateRecComparer = class (TEqualityComparer<TStateRec>)
+        public
+          function Equals(const Left, Right : TStateRec) : Boolean; override;
+          function GetHashCode(const Value : TStateRec) : Integer; override;
+      end;
+
+      TCommandRecComparer = class (TEqualityComparer<TCommandRec>)
+        public
+          function Equals(const Left, Right : TCommandRec) : Boolean; override;
+          function GetHashCode(const Value : TCommandRec) : Integer; override;
+      end;
+
     const
       START_STATE  = stStart;
       FINISH_STATE = stFinish;
+
+      STATE_RECS : array [0..2] of TStateRec =
+        (
+          (ID: 1; Flag: True),
+          (ID: 2; Flag: False),
+          (ID: 3; Flag: False)
+        );
+
+      COMMAND_RECS : array [0..1] of TCommandRec =
+        (
+          (ID: 1; Flag: False),
+          (ID: 2; Flag: True)
+        );
   strict private
     FFiniteStateMachine: IFiniteStateMachine;
   private
@@ -63,6 +100,7 @@ implementation
 
 uses
   TestUtils,
+  System.Hash,
   FIToolkit.Base.FiniteStateMachine.Exceptions;
 
 procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState : TStateType;
@@ -195,14 +233,35 @@ end;
 procedure TestTFiniteStateMachine.TestCreate;
 var
   FSM : IFiniteStateMachine;
+  CustomFSM : IFiniteStateMachine<TStateRec, TCommandRec, ETestException>;
+  StateComparer : IEqualityComparer<TStateRec>;
+  CommandComparer : IEqualityComparer<TCommandRec>;
 begin
+  { Default test FSM }
+
   FSM := TFiniteStateMachine.Create;
   CheckEquals<TStateType>(START_STATE, FSM.CurrentState, 'CurrentState = START_STATE');
   CheckEquals<TStateType>(FSM.PreviousState, FSM.CurrentState, 'CurrentState = PreviousState');
+  FSM := nil;
 
   FSM := TFiniteStateMachine.Create(FINISH_STATE);
   CheckEquals<TStateType>(FINISH_STATE, FSM.CurrentState, 'CurrentState = FINISH_STATE');
   CheckEquals<TStateType>(FSM.PreviousState, FSM.CurrentState, 'CurrentState = PreviousState');
+  FSM := nil;
+
+  { FSM with complex state/command types & custom comparers }
+
+  StateComparer := TStateRecComparer.Create;
+  CommandComparer := TCommandRecComparer.Create;
+  CustomFSM := TFiniteStateMachine<TStateRec, TCommandRec, ETestException>.Create(
+    STATE_RECS[0], StateComparer, CommandComparer);
+  CustomFSM
+    .AddTransition(STATE_RECS[0], STATE_RECS[1], COMMAND_RECS[0])
+    .AddTransition(STATE_RECS[1], STATE_RECS[2], COMMAND_RECS[1]);
+
+  CheckTrue(CustomFSM.HasTransition(STATE_RECS[0], COMMAND_RECS[0]), 'CheckTrue::HasTransition');
+  CheckTrue(StateComparer.Equals(STATE_RECS[2], CustomFSM.GetReachableState(STATE_RECS[1], COMMAND_RECS[1])),
+    'CheckTrue::(GetReachableState = STATE_RECS[2])');
 end;
 
 procedure TestTFiniteStateMachine.TestExecute;
@@ -396,6 +455,30 @@ begin
     nil,
     'CheckException::nil'
   );
+end;
+
+{ TestTFiniteStateMachine.TStateRecComparer }
+
+function TestTFiniteStateMachine.TStateRecComparer.Equals(const Left, Right : TStateRec) : Boolean;
+begin
+  Result := (Left.ID = Right.ID) and (Left.Flag = Right.Flag);
+end;
+
+function TestTFiniteStateMachine.TStateRecComparer.GetHashCode(const Value : TStateRec) : Integer;
+begin
+  Result := THashBobJenkins.GetHashValue(Value, SizeOf(Value));
+end;
+
+{ TestTFiniteStateMachine.TCommandRecComparer }
+
+function TestTFiniteStateMachine.TCommandRecComparer.Equals(const Left, Right : TCommandRec) : Boolean;
+begin
+  Result := (Left.ID = Right.ID) and (Left.Flag = Right.Flag);
+end;
+
+function TestTFiniteStateMachine.TCommandRecComparer.GetHashCode(const Value : TCommandRec) : Integer;
+begin
+  Result := THashBobJenkins.GetHashValue(Value, SizeOf(Value));
 end;
 
 initialization
