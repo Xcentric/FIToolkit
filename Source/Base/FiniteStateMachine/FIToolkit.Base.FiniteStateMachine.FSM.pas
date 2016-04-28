@@ -93,7 +93,7 @@ type
     strict private
       FCommandComparer : ICommandComparer;
       FCurrentState : TState;
-      FLock : TObject;
+      FLock : TObject;  //TODO: implement {thread safety}
       FPreviousState : TState;
       FStateComparer : IStateComparer;
       FTransitionTable : TTransitionTable;

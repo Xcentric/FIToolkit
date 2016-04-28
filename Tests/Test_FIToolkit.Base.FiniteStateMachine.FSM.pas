@@ -1,4 +1,4 @@
-unit Test_FIToolkit.Base.FiniteStateMachine.FSM;
+﻿unit Test_FIToolkit.Base.FiniteStateMachine.FSM;
 {
 
   Delphi DUnit Test Case
@@ -61,7 +61,8 @@ type
 implementation
 
 uses
-  TestUtils;
+  TestUtils,
+  FIToolkit.Base.FiniteStateMachine.Exceptions;
 
 procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState : TStateType;
   const UsedCommand : TCommandType);
@@ -220,7 +221,14 @@ begin
     ETestException,
     'CheckException::ETestException'
   );
-  //TODO: implement {CheckInnerException}
+  CheckInnerException(
+    procedure
+    begin
+      FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
+    end,
+    ETransitionNotFound,
+    'CheckException::ETransitionNotFound'
+  );
 end;
 
 procedure TestTFiniteStateMachine.TestGetReachableState_FromCurrentState;
@@ -245,7 +253,14 @@ begin
     ETestException,
     'CheckException::ETestException'
   );
-  //TODO: implement {CheckInnerException}
+  CheckInnerException(
+    procedure
+    begin
+      FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
+    end,
+    ETransitionNotFound,
+    'CheckException::ETransitionNotFound'
+  );
 end;
 
 procedure TestTFiniteStateMachine.TestHasTransition_FromSpecifiedState;

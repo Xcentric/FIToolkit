@@ -15,6 +15,8 @@ type
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty); overload;
       procedure CheckFalse(Condition : Boolean; const Msg : String; const Args : array of const); overload;
+      procedure CheckInnerException(const AProc : TProc; AExceptionClass : ExceptClass;
+        const Msg : String = String.Empty);
       procedure CheckNotEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       procedure CheckNotEquals<T>(Expected, Actual : T; const Msg : String = String.Empty); overload;
       procedure CheckTrue(Condition : Boolean; const Msg : String; const Args : array of const); overload;
@@ -80,6 +82,46 @@ begin
   FCheckCalled := True;
   if Condition then
     FailNotEquals(BoolToStr(False), BoolToStr(True), Format(Msg, Args), ReturnAddress);
+end;
+
+procedure TTestCaseHelper.CheckInnerException(const AProc : TProc; AExceptionClass : ExceptClass; const Msg : String);
+var
+  bFound : Boolean;
+  E : Exception;
+begin
+  FCheckCalled := True;
+  try
+    AProc;
+  except
+    on Raised: Exception do
+    begin
+      if not Assigned(AExceptionClass) then
+        raise
+      else
+      begin
+        bFound := False;
+        E := Raised;
+
+        while Assigned(E.InnerException) do
+          if not E.InnerException.InheritsFrom(AExceptionClass) then
+            E := E.InnerException
+          else
+          begin
+            bFound := True;
+            Break;
+          end;
+
+        if bFound then
+          AExceptionClass := nil
+        else
+          FailNotEquals(AExceptionClass.ClassName,
+            Format('%s:%s%s', [Raised.ClassName, sLineBreak, Raised.ToString]), Msg, ReturnAddress);
+      end;
+    end;
+  end;
+
+  if Assigned(AExceptionClass) then
+    FailNotEquals(AExceptionClass.ClassName, sExceptionNothig, Msg, ReturnAddress);
 end;
 
 procedure TTestCaseHelper.CheckNotEquals(Expected, Actual : TObject; const Msg : String);
