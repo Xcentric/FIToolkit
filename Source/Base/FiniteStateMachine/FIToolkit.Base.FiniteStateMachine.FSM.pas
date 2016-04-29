@@ -337,6 +337,15 @@ begin
   // for descendants
 end;
 
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.CommandToStr(const Command : TCommand) : String;
+begin
+  with TValue.From<TCommand>(Command) do
+    if TypeInfo.Kind = tkClass then
+      Result := AsObject.ToString
+    else
+      Result := ToString;
+end;
+
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create;
 begin
   Create(GetDefaultInitialState);
@@ -345,15 +354,6 @@ end;
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create(const InitialState : TState);
 begin
   Create(InitialState, nil, nil);
-end;
-
-function TFiniteStateMachine<TState, TCommand, ErrorClass>.CommandToStr(const Command : TCommand) : String;
-begin
-  with TValue.From<TCommand>(Command) do
-    if TypeInfo.Kind = tkClass then
-      Result := AsObject.ToString
-    else
-      Result := ToString;
 end;
 
 constructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Create(const InitialState : TState;
@@ -530,6 +530,28 @@ begin
   end;
 end;
 
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
+  const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
+  const OnCommand : TCommand) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
 constructor TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Create;
 begin
   inherited Create;
@@ -556,28 +578,6 @@ begin
   finally
     Unlock;
     FreeAndNil(FLock);
-  end;
-end;
-
-function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
-  const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
-begin
-  Lock;
-  try
-    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
-  finally
-    Unlock;
-  end;
-end;
-
-function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
-  const OnCommand : TCommand) : IFiniteStateMachine;
-begin
-  Lock;
-  try
-    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
-  finally
-    Unlock;
   end;
 end;
 
