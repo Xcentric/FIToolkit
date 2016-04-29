@@ -93,7 +93,6 @@ type
     strict private
       FCommandComparer : ICommandComparer;
       FCurrentState : TState;
-      FLock : TObject;  //TODO: implement {thread safety}
       FPreviousState : TState;
       FStateComparer : IStateComparer;
       FTransitionTable : TTransitionTable;
@@ -320,14 +319,12 @@ begin
   FCommandComparer := CommandComparer;
   FStateComparer   := StateComparer;
 
-  FLock := TObject.Create;
   FTransitionTable := TTransitionTable.Create([doOwnsKeys]);
 end;
 
 destructor TFiniteStateMachine<TState, TCommand, ErrorClass>.Destroy;
 begin
   FreeAndNil(FTransitionTable);
-  FreeAndNil(FLock);
 
   inherited Destroy;
 end;
