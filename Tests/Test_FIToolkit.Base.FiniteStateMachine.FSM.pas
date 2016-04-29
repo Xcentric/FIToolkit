@@ -93,6 +93,7 @@ type
     procedure TestGetReachableState_FromCurrentState;
     procedure TestHasTransition_FromSpecifiedState;
     procedure TestHasTransition_FromCurrentState;
+    procedure TestRemoveAllTransitions;
     procedure TestRemoveTransition;
   end;
 
@@ -430,6 +431,26 @@ begin
 
   ReturnValue := FFiniteStateMachine.HasTransition(OnCommand);
   CheckFalse(ReturnValue, 'CheckFalse::ReturnValue');
+end;
+
+procedure TestTFiniteStateMachine.TestRemoveAllTransitions;
+var
+  ReturnValue: IFiniteStateMachine;
+begin
+  FFiniteStateMachine
+    .AddTransition(stStart,  stState1, ctBegin)
+    .AddTransition(stState1, stState2, ctSwitchState_1to2)
+    .AddTransition(stState2, stState3, ctSwitchState_2to3);
+
+  ReturnValue := FFiniteStateMachine.RemoveAllTransitions;
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckFalse(
+    ReturnValue.HasTransition(stStart,  ctBegin) or
+    ReturnValue.HasTransition(stState1, ctSwitchState_1to2) or
+    ReturnValue.HasTransition(stState2, ctSwitchState_2to3),
+    'CheckFalse::HasTransition'
+  );
 end;
 
 procedure TestTFiniteStateMachine.TestRemoveTransition;

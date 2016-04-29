@@ -35,6 +35,7 @@ type
     function GetReachableState(const OnCommand : TCommand) : TState; overload;
     function HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
     function HasTransition(const OnCommand : TCommand) : Boolean; overload;
+    function RemoveAllTransitions : IFiniteStateMachine<TState, TCommand, ErrorClass>;
     function RemoveTransition(const FromState : TState; const OnCommand : TCommand
       ) : IFiniteStateMachine<TState, TCommand, ErrorClass>;
 
@@ -133,6 +134,7 @@ type
       function  GetReachableState(const OnCommand : TCommand) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
       function  HasTransition(const OnCommand : TCommand) : Boolean; overload;
+      function  RemoveAllTransitions : IFiniteStateMachine;
       function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
 
       property  CurrentState : TState read GetCurrentState;
@@ -440,6 +442,13 @@ begin
     except
       RaiseOuterException(nil);
     end;
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveAllTransitions : IFiniteStateMachine;
+begin
+  Result := Self;
+
+  FTransitionTable.Clear;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
