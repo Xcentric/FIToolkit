@@ -72,14 +72,14 @@ type
           (ID: 1; Flag: False),
           (ID: 2; Flag: True)
         );
-  strict private
-    FFiniteStateMachine: IFiniteStateMachine;
   private
     FEnterStateCalled,
     FExitStateCalled : Boolean;
 
     procedure OnEnterState(const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType);
     procedure OnExitState(const CurrentState, NewState : TStateType; const UsedCommand : TCommandType);
+  strict protected
+    FFiniteStateMachine: IFiniteStateMachine;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -95,6 +95,11 @@ type
     procedure TestHasTransition_FromCurrentState;
     procedure TestRemoveAllTransitions;
     procedure TestRemoveTransition;
+  end;
+
+  TestTThreadFiniteStateMachine = class(TestTFiniteStateMachine)
+  public
+    procedure SetUp; override;
   end;
 
 implementation
@@ -502,8 +507,19 @@ begin
   Result := THashBobJenkins.GetHashValue(Value, SizeOf(Value));
 end;
 
+{ TestTThreadFiniteStateMachine }
+
+procedure TestTThreadFiniteStateMachine.SetUp;
+begin
+  FFiniteStateMachine := TThreadFiniteStateMachine<
+    TestTFiniteStateMachine.TStateType,
+    TestTFiniteStateMachine.TCommandType,
+    TestTFiniteStateMachine.ETestException
+  >.Create;
+end;
+
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestTFiniteStateMachine.Suite);
+  RegisterTest(TestTThreadFiniteStateMachine.Suite);
 end.
-
