@@ -141,6 +141,52 @@ type
       property  PreviousState : TState read GetPreviousState;
   end;
 
+  TThreadFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = class
+    (TInterfacedObject, IFiniteStateMachine<TState, TCommand, ErrorClass>)
+    private
+      type
+        ICommandComparer    = IEqualityComparer<TCommand>;
+        IFiniteStateMachine = IFiniteStateMachine<TState, TCommand, ErrorClass>;
+        IStateComparer      = IEqualityComparer<TState>;
+
+        TOnEnterStateMethod = TOnEnterStateMethod<TState, TCommand>;
+        TOnEnterStateProc   = TOnEnterStateProc<TState, TCommand>;
+        TOnExitStateMethod  = TOnExitStateMethod<TState, TCommand>;
+        TOnExitStateProc    = TOnExitStateProc<TState, TCommand>;
+    strict private
+      FFiniteStateMachine : IFiniteStateMachine;
+      FLock : TObject;
+    private
+      function  GetCurrentState : TState;
+      function  GetPreviousState : TState;
+    strict protected
+      procedure Lock;
+      procedure Unlock;
+    public
+      constructor Create; overload;
+      constructor Create(const StateMachine : IFiniteStateMachine); overload;
+      destructor Destroy; override;
+
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
+        ) : IFiniteStateMachine; overload;
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
+        ) : IFiniteStateMachine; overload;
+      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
+        ) : IFiniteStateMachine; overload;
+      function  Execute(const Command : TCommand) : IFiniteStateMachine;
+      function  GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
+      function  GetReachableState(const OnCommand : TCommand) : TState; overload;
+      function  HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
+      function  HasTransition(const OnCommand : TCommand) : Boolean; overload;
+      function  RemoveAllTransitions : IFiniteStateMachine;
+      function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+
+      property  CurrentState : TState read GetCurrentState;
+      property  PreviousState : TState read GetPreviousState;
+  end;
+
 implementation
 
 uses
@@ -469,6 +515,173 @@ begin
       Result := AsObject.ToString
     else
       Result := ToString;
+end;
+
+{ TThreadFiniteStateMachine<TState, TCommand, ErrorClass> }
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
+  const OnCommand : TCommand; const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
+  finally
+    Unlock;
+  end;
+end;
+
+constructor TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Create;
+begin
+  inherited Create;
+
+  FLock := TObject.Create;
+  FFiniteStateMachine := TFiniteStateMachine<TState, TCommand, ErrorClass>.Create;
+end;
+
+constructor TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Create(const StateMachine : IFiniteStateMachine);
+begin
+  inherited Create;
+
+  FLock := TObject.Create;
+  FFiniteStateMachine := StateMachine;
+end;
+
+destructor TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Destroy;
+begin
+  Lock;
+  try
+    FFiniteStateMachine := nil;
+
+    inherited Destroy;
+  finally
+    Unlock;
+    FreeAndNil(FLock);
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
+  const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
+  const OnCommand : TCommand) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Execute(const Command : TCommand) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.Execute(Command);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetCurrentState : TState;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.CurrentState;
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetPreviousState : TState;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.PreviousState;
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
+  const OnCommand : TCommand) : TState;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.GetReachableState(FromState, OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.GetReachableState(OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.HasTransition(OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
+  const OnCommand : TCommand) : Boolean;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.HasTransition(FromState, OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Lock;
+begin
+  TMonitor.Enter(FLock);
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveAllTransitions : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.RemoveAllTransitions;
+  finally
+    Unlock;
+  end;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
+  const OnCommand : TCommand) : IFiniteStateMachine;
+begin
+  Lock;
+  try
+    Result := FFiniteStateMachine.RemoveTransition(FromState, OnCommand);
+  finally
+    Unlock;
+  end;
+end;
+
+procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Unlock;
+begin
+  TMonitor.Exit(FLock);
 end;
 
 end.
