@@ -162,6 +162,8 @@ type
     strict protected
       procedure Lock;
       procedure Unlock;
+
+      property  FiniteStateMachine : IFiniteStateMachine read FFiniteStateMachine;
     public
       constructor Create; overload;
       constructor Create(const StateMachine : IFiniteStateMachine); overload;
