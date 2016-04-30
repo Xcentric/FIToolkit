@@ -68,6 +68,8 @@ uses
   {$ENDIF}
 
 begin
+  System.ReportMemoryLeaksOnShutdown := True;
+
   {$IFDEF TESTINSIGHT}
   if IsTestInsightRunning then
     TestInsight.DUnit.RunRegisteredTests

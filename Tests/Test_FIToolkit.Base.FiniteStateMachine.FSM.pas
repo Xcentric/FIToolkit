@@ -152,12 +152,11 @@ begin
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
-  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
-    'GetReachableState = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
   CheckException(
     procedure
     begin
-      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+      FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
     end,
     ETestException,
     'CheckException::ETestException'
@@ -184,12 +183,11 @@ begin
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
-  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
-    'GetReachableState = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
   CheckException(
     procedure
     begin
-      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+      FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
     end,
     ETestException,
     'CheckException::ETestException'
@@ -211,12 +209,12 @@ begin
   OnEnter :=
     procedure (const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType)
     begin
-      //FEnterStateCalled := True;
+      //
     end;
   OnExit :=
     procedure (const CurrentState, NewState : TStateType; const UsedCommand : TCommandType)
     begin
-      //FExitStateCalled := True;
+      //
     end;
 
   ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
@@ -224,12 +222,11 @@ begin
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
-  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand),
-    'GetReachableState = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
   CheckException(
     procedure
     begin
-      ReturnValue.AddTransition(FromState, ToState, OnCommand);
+      FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
     end,
     ETestException,
     'CheckException::ETestException'
@@ -277,7 +274,7 @@ var
 begin
   bEnterStateCalled := False;
   bExitStateCalled := False;
-  ReturnValue := FFiniteStateMachine
+  FFiniteStateMachine
     .AddTransition(START_STATE, stState1, ctBegin)
     .AddTransition(stState1, stState2, ctSwitchState_1to2, OnEnterState, OnExitState)
     .AddTransition(stState2, stState3, ctSwitchState_2to3,
@@ -299,7 +296,7 @@ begin
       end)
     .AddTransition(stState3, FINISH_STATE, ctEnd);
 
-  ReturnValue := ReturnValue
+  ReturnValue := FFiniteStateMachine
     .Execute(ctBegin)
     .Execute(ctSwitchState_1to2)
     .Execute(ctSwitchState_2to3)
@@ -316,7 +313,7 @@ begin
   CheckException(
     procedure
     begin
-      ReturnValue.Execute(ctBegin);
+      FFiniteStateMachine.Execute(ctBegin);
     end,
     ETestException,
     'CheckException::ETestException'
@@ -324,7 +321,7 @@ begin
   CheckInnerException(
     procedure
     begin
-      ReturnValue.Execute(ctBegin);
+      FFiniteStateMachine.Execute(ctBegin);
     end,
     ETransitionNotFound,
     'CheckException::ETransitionNotFound'
@@ -345,8 +342,7 @@ begin
 
   ReturnValue := FFiniteStateMachine.GetReachableState(FromState, OnCommand);
 
-  CheckEquals<TStateType>(TARGET_STATE, ReturnValue,
-    'ReturnValue = TARGET_STATE');
+  CheckEquals<TStateType>(TARGET_STATE, ReturnValue, 'ReturnValue = TARGET_STATE');
   CheckException(
     procedure
     begin
@@ -377,8 +373,7 @@ begin
 
   ReturnValue := FFiniteStateMachine.GetReachableState(OnCommand);
 
-  CheckEquals<TStateType>(TARGET_STATE, ReturnValue,
-    'ReturnValue = TARGET_STATE');
+  CheckEquals<TStateType>(TARGET_STATE, ReturnValue, 'ReturnValue = TARGET_STATE');
   CheckException(
     procedure
     begin
@@ -468,7 +463,6 @@ begin
   OnCommand := ctEnd;
   FFiniteStateMachine.AddTransition(FromState, FINISH_STATE, OnCommand);
 
-  CheckTrue(FFiniteStateMachine.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
   ReturnValue := FFiniteStateMachine.RemoveTransition(FromState, OnCommand);
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
@@ -476,7 +470,7 @@ begin
   CheckException(
     procedure
     begin
-      ReturnValue.RemoveTransition(FromState, OnCommand);
+      FFiniteStateMachine.RemoveTransition(FromState, OnCommand);
     end,
     nil,
     'CheckException::nil'

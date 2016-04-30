@@ -42,6 +42,10 @@ var
   arrCmdLineOptions : TStringDynArray;
   i : Integer;
 begin
+  {$IFDEF DEBUG}
+  System.ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
+
   try
     sFullExePath := ParamStr(0);
     SetLength(arrCmdLineOptions, ParamCount);
