@@ -98,16 +98,18 @@ type
       FStateComparer : IStateComparer;
       FTransitionTable : TTransitionTable;
     private
-      function GetCurrentState : TState;
-      function GetPreviousState : TState;
-    strict protected
-      procedure AfterExecute(const Command : TCommand); virtual;
-      procedure BeforeExecute(const Command : TCommand); virtual;
+      function  AddTransition(var Transition : TTransition; const ToState : TState) : IFiniteStateMachine; overload;
       function  FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
       function  GetReachableState(const FromState : TState; const OnCommand : TCommand;
         out Transition : TTransition) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand;
         out Transition : TTransition) : Boolean; overload;
+
+      function  GetCurrentState : TState;
+      function  GetPreviousState : TState;
+    strict protected
+      procedure AfterExecute(const Command : TCommand); virtual;
+      procedure BeforeExecute(const Command : TCommand); virtual;
       procedure RaiseOuterException(E : Exception); virtual;
     protected
       class function GetDefaultInitialState : TState; virtual;
@@ -296,15 +298,7 @@ var
   T : TTransition;
 begin
   T := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer);
-
-  try
-    FTransitionTable.Add(T, ToState);
-  except
-    T.Free;
-    RaiseOuterException(nil);
-  end;
-
-  Result := Self;
+  Result := AddTransition(T, ToState);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
@@ -313,15 +307,7 @@ var
   T : TTransition;
 begin
   T := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit);
-
-  try
-    FTransitionTable.Add(T, ToState);
-  except
-    T.Free;
-    RaiseOuterException(nil);
-  end;
-
-  Result := Self;
+  Result := AddTransition(T, ToState);
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
@@ -330,11 +316,16 @@ var
   T : TTransition;
 begin
   T := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit);
+  Result := AddTransition(T, ToState);
+end;
 
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(var Transition : TTransition;
+  const ToState : TState) : IFiniteStateMachine;
+begin
   try
-    FTransitionTable.Add(T, ToState);
+    FTransitionTable.Add(Transition, ToState);
   except
-    T.Free;
+    FreeAndNil(Transition);
     RaiseOuterException(nil);
   end;
 
