@@ -159,13 +159,11 @@ type
       FFiniteStateMachine : IFiniteStateMachine;
       FLock : TObject;
     private
+      procedure InternalLock; inline;
+      procedure InternalUnlock; inline;
+
       function  GetCurrentState : TState;
       function  GetPreviousState : TState;
-    strict protected
-      procedure Lock;
-      procedure Unlock;
-
-      property  FiniteStateMachine : IFiniteStateMachine read FFiniteStateMachine;
     public
       constructor Create; overload;
       constructor Create(const StateMachine : IFiniteStateMachine); overload;
@@ -184,8 +182,10 @@ type
       function  GetReachableState(const OnCommand : TCommand) : TState; overload;
       function  HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
       function  HasTransition(const OnCommand : TCommand) : Boolean; overload;
+      function  Lock : IFiniteStateMachine;
       function  RemoveAllTransitions : IFiniteStateMachine;
       function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+      procedure Unlock;
 
       property  CurrentState : TState read GetCurrentState;
       property  PreviousState : TState read GetPreviousState;
@@ -528,11 +528,11 @@ end;
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand; const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc) : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -541,11 +541,11 @@ end;
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -554,11 +554,11 @@ end;
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(const FromState, ToState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -582,24 +582,24 @@ end;
 
 destructor TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Destroy;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine := nil;
 
     inherited Destroy;
   finally
-    Unlock;
+    InternalUnlock;
     FreeAndNil(FLock);
   end;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Execute(const Command : TCommand) : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.Execute(Command);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -607,78 +607,89 @@ end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetCurrentState : TState;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.CurrentState;
   finally
-    Unlock;
+    InternalUnlock;
   end;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetPreviousState : TState;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.PreviousState;
   finally
-    Unlock;
+    InternalUnlock;
   end;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const FromState : TState;
   const OnCommand : TCommand) : TState;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.GetReachableState(FromState, OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.GetReachableState(const OnCommand : TCommand) : TState;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.GetReachableState(OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const OnCommand : TCommand) : Boolean;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.HasTransition(OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
+end;
+
+procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.InternalLock;
+begin
+  TMonitor.Enter(FLock);
+end;
+
+procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.InternalUnlock;
+begin
+  TMonitor.Exit(FLock);
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Lock : IFiniteStateMachine;
+begin
+  InternalLock;
+  Result := FFiniteStateMachine;
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.HasTransition(const FromState : TState;
   const OnCommand : TCommand) : Boolean;
 begin
-  Lock;
+  InternalLock;
   try
     Result := FFiniteStateMachine.HasTransition(FromState, OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
-end;
-
-procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Lock;
-begin
-  TMonitor.Enter(FLock);
 end;
 
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveAllTransitions : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.RemoveAllTransitions;
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -687,11 +698,11 @@ end;
 function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.RemoveTransition(const FromState : TState;
   const OnCommand : TCommand) : IFiniteStateMachine;
 begin
-  Lock;
+  InternalLock;
   try
     FFiniteStateMachine.RemoveTransition(FromState, OnCommand);
   finally
-    Unlock;
+    InternalUnlock;
   end;
 
   Result := Self;
@@ -699,7 +710,7 @@ end;
 
 procedure TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.Unlock;
 begin
-  TMonitor.Exit(FLock);
+  InternalUnlock;
 end;
 
 end.
