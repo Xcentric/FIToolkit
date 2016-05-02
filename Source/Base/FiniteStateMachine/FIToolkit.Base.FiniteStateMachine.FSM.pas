@@ -143,8 +143,14 @@ type
       property  PreviousState : TState read GetPreviousState;
   end;
 
-  TThreadFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = class
-    (TInterfacedObject, IFiniteStateMachine<TState, TCommand, ErrorClass>)
+  IThreadFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = interface
+    (IFiniteStateMachine<TState, TCommand, ErrorClass>)
+    function  Lock : IFiniteStateMachine<TState, TCommand, ErrorClass>;
+    procedure Unlock;
+  end;
+
+  TThreadFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = class (TInterfacedObject,
+    IFiniteStateMachine<TState, TCommand, ErrorClass>, IThreadFiniteStateMachine<TState, TCommand, ErrorClass>)
     private
       type
         ICommandComparer    = IEqualityComparer<TCommand>;
