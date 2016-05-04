@@ -3,7 +3,7 @@
 interface
 
 uses
-  FIToolkit.Base.Exceptions;
+  FIToolkit.Commons.Exceptions;
 
 type
 

@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.FiniteStateMachine.Consts;
+﻿unit FIToolkit.Commons.FiniteStateMachine.Consts;
 
 interface
 

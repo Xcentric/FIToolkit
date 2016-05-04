@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Base.Types, FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults,
+  FIToolkit.Commons.Types, FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults,
   FIToolkit.Config.Consts;
 
 type
@@ -65,7 +65,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Base.Utils;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils;
 
 { TConfigData }
 

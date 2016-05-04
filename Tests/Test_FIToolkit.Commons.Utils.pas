@@ -1,4 +1,4 @@
-﻿unit Test_FIToolkit.Base.Utils;
+﻿unit Test_FIToolkit.Commons.Utils;
 {
 
   Delphi DUnit Test Case
@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.Base.Utils;
+  FIToolkit.Commons.Utils;
 
 type
 

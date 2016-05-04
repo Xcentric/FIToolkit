@@ -54,7 +54,7 @@ implementation
 
 uses
   System.SysUtils, System.Types,
-  FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts, FIToolkit.Base.Utils;
+  FIToolkit.CommandLine.Exceptions, FIToolkit.CommandLine.Consts, FIToolkit.Commons.Utils;
 
 { TCLIOption }
 

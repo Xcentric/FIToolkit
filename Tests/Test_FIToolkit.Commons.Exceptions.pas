@@ -1,4 +1,4 @@
-﻿unit Test_FIToolkit.Base.Exceptions;
+﻿unit Test_FIToolkit.Commons.Exceptions;
 {
 
   Delphi DUnit Test Case
@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.Base.Exceptions;
+  FIToolkit.Commons.Exceptions;
 
 type
   // Test methods for class ECustomException
@@ -38,7 +38,7 @@ implementation
 
 uses
   System.SysUtils,
-  FIToolkit.Base.Consts;
+  FIToolkit.Commons.Consts;
 
 procedure TestECustomException.SetUp;
 begin

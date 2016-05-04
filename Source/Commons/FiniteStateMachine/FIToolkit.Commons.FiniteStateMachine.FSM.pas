@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.FiniteStateMachine.FSM;
+﻿unit FIToolkit.Commons.FiniteStateMachine.FSM;
 
 interface
 
@@ -201,7 +201,7 @@ implementation
 
 uses
   System.Rtti,
-  FIToolkit.Base.FiniteStateMachine.Exceptions, FIToolkit.Base.FiniteStateMachine.Consts;
+  FIToolkit.Commons.FiniteStateMachine.Exceptions, FIToolkit.Commons.FiniteStateMachine.Consts;
 
 { TFiniteStateMachine<TState, TCommand, ErrorClass>.TTransition }
 

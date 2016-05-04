@@ -3,7 +3,7 @@
 interface
 
 uses
-  FIToolkit.Base.Consts;
+  FIToolkit.Commons.Consts;
 
 const
 

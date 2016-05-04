@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.Utils;
+﻿unit FIToolkit.Commons.Utils;
 
 interface
 
@@ -55,7 +55,7 @@ implementation
 
 uses
   System.Win.Registry, Winapi.Windows,
-  FIToolkit.Base.Consts;
+  FIToolkit.Commons.Consts;
 
 { Utils }
 

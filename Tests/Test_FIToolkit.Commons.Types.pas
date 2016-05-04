@@ -1,4 +1,4 @@
-﻿unit Test_FIToolkit.Base.Types;
+﻿unit Test_FIToolkit.Commons.Types;
 {
 
   Delphi DUnit Test Case
@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.Base.Types;
+  FIToolkit.Commons.Types;
 
 type
   // Test methods for TAssignable

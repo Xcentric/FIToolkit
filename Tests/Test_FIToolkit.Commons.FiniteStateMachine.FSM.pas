@@ -1,4 +1,4 @@
-﻿unit Test_FIToolkit.Base.FiniteStateMachine.FSM;
+﻿unit Test_FIToolkit.Commons.FiniteStateMachine.FSM;
 {
 
   Delphi DUnit Test Case
@@ -14,7 +14,7 @@ interface
 uses
   TestFramework,
   System.Generics.Defaults,
-  FIToolkit.Base.FiniteStateMachine.FSM, FIToolkit.Base.Exceptions;
+  FIToolkit.Commons.FiniteStateMachine.FSM, FIToolkit.Commons.Exceptions;
 
 type
   // Test methods for class TFiniteStateMachine
@@ -109,7 +109,7 @@ implementation
 uses
   TestUtils,
   System.Hash, System.Threading, System.Classes, System.SysUtils,
-  FIToolkit.Base.FiniteStateMachine.Exceptions;
+  FIToolkit.Commons.FiniteStateMachine.Exceptions;
 
 procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState : TStateType;
   const UsedCommand : TCommandType);

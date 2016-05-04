@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.Exceptions;
+﻿unit FIToolkit.Commons.Exceptions;
 
 interface
 
@@ -24,7 +24,7 @@ implementation
 
 uses
   System.Generics.Collections,
-  FIToolkit.Base.Consts;
+  FIToolkit.Commons.Consts;
 
 type
 

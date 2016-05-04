@@ -12,7 +12,7 @@ implementation
 uses
   System.IOUtils, System.Classes,
   FIToolkit.Exceptions, FIToolkit.Consts,
-  FIToolkit.Base.Utils,
+  FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
   FIToolkit.Config.Manager;
 

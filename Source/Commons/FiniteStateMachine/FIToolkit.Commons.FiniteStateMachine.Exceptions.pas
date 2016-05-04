@@ -1,4 +1,4 @@
-﻿unit FIToolkit.Base.FiniteStateMachine.Exceptions;
+﻿unit FIToolkit.Commons.FiniteStateMachine.Exceptions;
 
 interface
 
