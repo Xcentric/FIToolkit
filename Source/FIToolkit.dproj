@@ -101,6 +101,7 @@
         <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Consts.pas"/>
         <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Exceptions.pas"/>
         <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.FSM.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.StateMachine.pas"/>
         <DCCReference Include="Commons\FIToolkit.Commons.Types.pas"/>
         <DCCReference Include="Commons\FIToolkit.Commons.Utils.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Consts.pas"/>

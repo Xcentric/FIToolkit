@@ -21,6 +21,7 @@ uses
   FIToolkit.Commons.FiniteStateMachine.Consts in 'Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Consts.pas',
   FIToolkit.Commons.FiniteStateMachine.Exceptions in 'Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Exceptions.pas',
   FIToolkit.Commons.FiniteStateMachine.FSM in 'Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.FSM.pas',
+  FIToolkit.Commons.StateMachine in 'Commons\FIToolkit.Commons.StateMachine.pas',
   FIToolkit.Commons.Types in 'Commons\FIToolkit.Commons.Types.pas',
   FIToolkit.Commons.Utils in 'Commons\FIToolkit.Commons.Utils.pas',
   FIToolkit.Config.Consts in 'Config\FIToolkit.Config.Consts.pas',

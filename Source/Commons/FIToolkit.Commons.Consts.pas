@@ -8,10 +8,14 @@ const
 
 resourcestring
 
+  { Common }
+
+  RSPressAnyKey = 'Нажмите любую клавишу для продолжения...';
+
   { Exceptions }
 
-  RSDefaultErrMsg = 'Unexpected error';
-  RSPressAnyKey = 'Нажмите любую клавишу для продолжения...';
+  RSDefaultErrMsg = 'Непредвиденная ошибка.';
+  RSStateMachineError = 'Ошибка в работе машины состояний.';
 
 implementation
 
