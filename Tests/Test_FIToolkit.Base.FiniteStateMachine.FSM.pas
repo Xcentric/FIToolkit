@@ -100,13 +100,15 @@ type
   TestTThreadFiniteStateMachine = class(TestTFiniteStateMachine)
   public
     procedure SetUp; override;
+  published
+    procedure TestThreadSafety;
   end;
 
 implementation
 
 uses
   TestUtils,
-  System.Hash,
+  System.Hash, System.Threading, System.Classes, System.SysUtils,
   FIToolkit.Base.FiniteStateMachine.Exceptions;
 
 procedure TestTFiniteStateMachine.OnEnterState(const PreviousState, CurrentState : TStateType;
@@ -510,6 +512,112 @@ begin
     TestTFiniteStateMachine.TCommandType,
     TestTFiniteStateMachine.ETestException
   >.Create;
+end;
+
+procedure TestTThreadFiniteStateMachine.TestThreadSafety;
+type
+  IThreadFiniteStateMachine = IThreadFiniteStateMachine<TStateType, TCommandType, ETestException>;
+var
+  ThreadFSM : IThreadFiniteStateMachine;
+  LoadThread : TThread;
+  TestTask : ITask;
+  bLoadThreadFaulted,
+  bCheck1, bCheck2, bCheck3 : Boolean;
+begin
+  ThreadFSM := IThreadFiniteStateMachine(FFiniteStateMachine);
+  ThreadFSM
+    .AddTransition(stStart, stFinish, ctEnd)
+    .AddTransition(stFinish, stStart, ctBegin);
+
+  bLoadThreadFaulted := False;
+  LoadThread := TThread.CreateAnonymousThread(
+    procedure
+    var
+      FSM : IFiniteStateMachine;
+    begin
+      try
+        while not TThread.CheckTerminated do
+        begin
+          FSM := ThreadFSM.Lock;
+          try
+            case FSM.CurrentState of
+              stStart:
+                FSM.Execute(ctEnd);
+              stFinish:
+                FSM.Execute(ctBegin);
+            end;
+          finally
+            ThreadFSM.Unlock;
+          end;
+        end;
+      except
+        bLoadThreadFaulted := True;
+      end;
+    end
+  );
+  LoadThread.Start;
+
+  bCheck1 := False;
+  bCheck2 := False;
+  bCheck3 := False;
+  TestTask := TTask.Run(
+    procedure
+    var
+      i : Integer;
+      FSM : IFiniteStateMachine;
+    begin
+      ThreadFSM
+        .AddTransition(stState1, stState2, ctSwitchState_1to2)
+        .AddTransition(stState2, stState3, ctSwitchState_2to3);
+
+      for i := 1 to 1000 do
+      begin
+        FSM := ThreadFSM.Lock;
+        try
+          case FSM.CurrentState of
+            stStart:
+              FSM.Execute(ctEnd);
+            stFinish:
+              FSM.Execute(ctBegin);
+          end;
+        finally
+          ThreadFSM.Unlock;
+        end;
+      end;
+
+      bCheck1 := ThreadFSM.HasTransition(stState1, ctSwitchState_1to2);
+      ThreadFSM.RemoveTransition(stState1, ctSwitchState_1to2);
+      bCheck2 := not ThreadFSM.HasTransition(stState1, ctSwitchState_1to2);
+
+      with ThreadFSM do
+        try
+          Lock
+            .RemoveAllTransitions
+            .AddTransition(stStart, stFinish, ctEnd)
+            .AddTransition(stFinish, stStart, ctBegin);
+
+          bCheck3 := not HasTransition(stState2, ctSwitchState_2to3);
+        finally
+          Unlock;
+        end;
+    end
+  );
+
+  CheckException(
+    procedure
+    begin
+      TestTask.Wait;
+    end,
+    nil,
+    'CheckException::nil'
+  );
+  CheckFalse(bLoadThreadFaulted, 'CheckFalse::bLoadThreadFaulted');
+  CheckTrue(bCheck1, 'CheckTrue::bCheck1');
+  CheckTrue(bCheck2, 'CheckTrue::bCheck2');
+  CheckTrue(bCheck3, 'CheckTrue::bCheck3');
+
+  TestTask := nil;
+  LoadThread.Terminate;
 end;
 
 initialization
