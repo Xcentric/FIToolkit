@@ -19,13 +19,11 @@ type
   TestUTF8Sources = class (TGenericTestCase)
   private
     const
-      STR_ROOT_DIR                  = '..\..\..\';
       STR_PROJECT_SOURCES_DIR       = 'Source\';
       STR_PROJECT_TESTS_SOURCES_DIR = 'Tests\';
   private
     function  GetProjectSourcesDir : String;
     function  GetProjectTestsSourcesDir : String;
-    function  GetRootDir : String;
     function  IsUTF8TextFile(const FileName : String) : Boolean;
   published
     procedure TestFIToolkitSources;
@@ -42,31 +40,12 @@ uses
 
 function TestUTF8Sources.GetProjectSourcesDir : String;
 begin
-  Result := IncludeTrailingPathDelimiter(GetRootDir + STR_PROJECT_SOURCES_DIR);
+  Result := IncludeTrailingPathDelimiter(GetProjectGroupDir + STR_PROJECT_SOURCES_DIR);
 end;
 
 function TestUTF8Sources.GetProjectTestsSourcesDir : String;
 begin
-  Result := IncludeTrailingPathDelimiter(GetRootDir + STR_PROJECT_TESTS_SOURCES_DIR);
-end;
-
-function TestUTF8Sources.GetRootDir : String;
-var
-  iLevels, i : Integer;
-  arrTokens : TArray<String>;
-begin
-  iLevels := 0;
-  arrTokens := String(STR_ROOT_DIR).Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
-
-  for i := High(arrTokens) downto 0 do
-    if arrTokens[i] = '..' then
-      Inc(iLevels)
-    else
-      Break;
-
-  arrTokens := TestDataDir.Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
-  Result := String
-    .Join(TPath.DirectorySeparatorChar, arrTokens, 0, Length(arrTokens) - iLevels) + TPath.DirectorySeparatorChar;
+  Result := IncludeTrailingPathDelimiter(GetProjectGroupDir + STR_PROJECT_TESTS_SOURCES_DIR);
 end;
 
 function TestUTF8Sources.IsUTF8TextFile(const FileName : String) : Boolean;

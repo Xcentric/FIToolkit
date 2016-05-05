@@ -21,6 +21,8 @@ type
   TestTProjectGroupParser = class(TGenericTestCase)
   strict private
     FProjectGroupParser : TProjectGroupParser;
+  private
+    function  FindProjectGroup : String;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -31,13 +33,19 @@ type
 implementation
 
 uses
-  System.SysUtils;
+  TestUtils,
+  System.SysUtils, System.Types, System.IOUtils;
 
 { TestTProjectGroupParser }
 
+function TestTProjectGroupParser.FindProjectGroup : String;
+begin
+  Result := TDirectory.GetFiles(GetProjectGroupDir, '*.groupproj', TSearchOption.soAllDirectories)[0];
+end;
+
 procedure TestTProjectGroupParser.SetUp;
 begin
-  FProjectGroupParser := TProjectGroupParser.Create('');
+  FProjectGroupParser := TProjectGroupParser.Create(FindProjectGroup);
 end;
 
 procedure TestTProjectGroupParser.TearDown;
@@ -46,8 +54,20 @@ begin
 end;
 
 procedure TestTProjectGroupParser.TestGetIncludedProjectsFiles;
+var
+  sRootDir, S : String;
+  ReturnValue : TStringDynArray;
 begin
-  //
+  sRootDir := GetProjectGroupDir;
+
+  ReturnValue := FProjectGroupParser.GetIncludedProjectsFiles;
+
+  CheckTrue(Length(ReturnValue) > 0, 'CheckTrue::(Length(ReturnValue) > 0)');
+  for S in ReturnValue do
+  begin
+    CheckTrue(S.StartsWith(sRootDir, True), 'CheckTrue::ReturnValue[i].StartsWith(sRootDir)<%s>', [S]);
+    CheckEquals('.dpr', TPath.GetExtension(S), 'TPath.GetExtension(ReturnValue[i]) = ".dpr"');
+  end;
 end;
 
 initialization

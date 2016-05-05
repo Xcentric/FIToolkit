@@ -9,6 +9,9 @@ uses
 type
 
   TTestCaseHelper = class helper for TTestCase
+    private
+      const
+        STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\';
     public
       procedure CheckEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
@@ -21,6 +24,7 @@ type
       function  CloneFile(const FileName : TFileName) : TFileName;
       procedure DebugMsg(const Msg : String; const Args : array of const);
       function  GetCurrTestMethodAddr : Pointer;
+      function  GetProjectGroupDir : String;
       function  GetTestIniFileName : TFileName;
   end;
 
@@ -151,6 +155,25 @@ begin
     Result := TMethod(fMethod).Code
   else
     Result := nil;
+end;
+
+function TTestCaseHelper.GetProjectGroupDir : String;
+var
+  iLevels, i : Integer;
+  arrTokens : TArray<String>;
+begin
+  iLevels := 0;
+  arrTokens := String(STR_PROJECT_GROUP_DIR_RELATIVE_PATH).Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
+
+  for i := High(arrTokens) downto 0 do
+    if arrTokens[i] = '..' then
+      Inc(iLevels)
+    else
+      Break;
+
+  arrTokens := TestDataDir.Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
+  Result := String
+    .Join(TPath.DirectorySeparatorChar, arrTokens, 0, Length(arrTokens) - iLevels) + TPath.DirectorySeparatorChar;
 end;
 
 function TTestCaseHelper.GetTestIniFileName : TFileName;
