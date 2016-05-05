@@ -8,7 +8,7 @@ const
 
 resourcestring
 
-  { Common }
+  { Common strings }
 
   RSPressAnyKey = 'Нажмите любую клавишу для продолжения...';
 

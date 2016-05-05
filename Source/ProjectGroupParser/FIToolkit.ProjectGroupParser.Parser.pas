@@ -3,19 +3,12 @@
 interface
 
 uses
-  System.SysUtils, System.Types, Xml.XMLIntf, Xml.XMLDoc;
+  System.SysUtils, System.Types, Xml.XMLIntf, Xml.XMLDoc,
+  FIToolkit.ProjectGroupParser.Consts;
 
 type
 
   TProjectGroupParser = class
-    private
-      const
-        STR_ROOT_NODE                  = 'Project';
-        STR_PROJECTS_GROUP_NODE        = 'ItemGroup';
-        STR_INCLUDED_PROJECT_NODE      = 'Projects';
-        STR_INCLUDED_PROJECT_ATTRIBUTE = 'Include';
-
-        STR_PROJECT_FILE_EXTENSION = '.dpr';
     strict private
       FXML : IXMLDocument;
     private
@@ -30,7 +23,8 @@ type
 implementation
 
 uses
-  System.IOUtils;
+  System.IOUtils,
+  FIToolkit.ProjectGroupParser.Exceptions;
 
 { TProjectGroupParser }
 
@@ -46,23 +40,30 @@ var
   Root, ProjectsGroup, IncludedProject : IXMLNode;
   i : Integer;
 begin
-  Root := FXML.Node.ChildNodes[STR_ROOT_NODE];
+  try
+    Root := FXML.Node.ChildNodes[STR_ROOT_NODE];
 
-  if Assigned(Root) then
-  begin
-    ProjectsGroup := Root.ChildNodes[STR_PROJECTS_GROUP_NODE];
+    if Assigned(Root) then
+    begin
+      ProjectsGroup := Root.ChildNodes[STR_PROJECTS_GROUP_NODE];
 
-    if Assigned(ProjectsGroup) then
-      for i := 0 to ProjectsGroup.ChildNodes.Count - 1 do
-      begin
-        IncludedProject := ProjectsGroup.ChildNodes.Get(i);
+      if Assigned(ProjectsGroup) then
+        for i := 0 to ProjectsGroup.ChildNodes.Count - 1 do
+        begin
+          IncludedProject := ProjectsGroup.ChildNodes.Get(i);
 
-        if AnsiSameText(IncludedProject.NodeName, STR_INCLUDED_PROJECT_NODE) and
-           IncludedProject.HasAttribute(STR_INCLUDED_PROJECT_ATTRIBUTE)
-        then
-          Result := Result + [IncludedProject.Attributes[STR_INCLUDED_PROJECT_ATTRIBUTE]];
-      end;
+          if AnsiSameText(IncludedProject.NodeName, STR_INCLUDED_PROJECT_NODE) and
+             IncludedProject.HasAttribute(STR_INCLUDED_PROJECT_ATTRIBUTE)
+          then
+            Result := Result + [IncludedProject.Attributes[STR_INCLUDED_PROJECT_ATTRIBUTE]];
+        end;
+    end;
+  except
+    Exception.RaiseOuterException(EProjectGroupParseError.Create);
   end;
+
+  if Length(Result) = 0 then
+    raise EProjectGroupParseError.Create;
 end;
 
 function TProjectGroupParser.GetIncludedProjectsFiles : TStringDynArray;
@@ -77,7 +78,10 @@ end;
 
 function TProjectGroupParser.GetProjectGroupDir : String;
 begin
-  Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(FXML.FileName));
+  if FXML.FileName.IsEmpty then
+    Result := String.Empty
+  else
+    Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(FXML.FileName));
 end;
 
 end.

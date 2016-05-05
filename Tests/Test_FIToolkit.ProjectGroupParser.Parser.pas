@@ -28,13 +28,15 @@ type
     procedure TearDown; override;
   published
     procedure TestGetIncludedProjectsFiles;
+    procedure TestInvalidFile;
   end;
 
 implementation
 
 uses
   TestUtils,
-  System.SysUtils, System.Types, System.IOUtils;
+  System.SysUtils, System.Types, System.IOUtils,
+  FIToolkit.ProjectGroupParser.Exceptions;
 
 { TestTProjectGroupParser }
 
@@ -45,7 +47,10 @@ end;
 
 procedure TestTProjectGroupParser.SetUp;
 begin
-  FProjectGroupParser := TProjectGroupParser.Create(FindProjectGroup);
+  if GetCurrTestMethodAddr = @TestTProjectGroupParser.TestInvalidFile then
+    FProjectGroupParser := TProjectGroupParser.Create(String.Empty)
+  else
+    FProjectGroupParser := TProjectGroupParser.Create(FindProjectGroup);
 end;
 
 procedure TestTProjectGroupParser.TearDown;
@@ -68,6 +73,18 @@ begin
     CheckTrue(S.StartsWith(sRootDir, True), 'CheckTrue::ReturnValue[i].StartsWith(sRootDir)<%s>', [S]);
     CheckEquals('.dpr', TPath.GetExtension(S), 'TPath.GetExtension(ReturnValue[i]) = ".dpr"');
   end;
+end;
+
+procedure TestTProjectGroupParser.TestInvalidFile;
+begin
+  CheckException(
+    procedure
+    begin
+      FProjectGroupParser.GetIncludedProjectsFiles;
+    end,
+    EProjectGroupParseError,
+    'CheckException::EProjectGroupParseError'
+  );
 end;
 
 initialization
