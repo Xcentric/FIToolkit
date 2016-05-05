@@ -53,6 +53,7 @@ uses
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
   Test_FIToolkit.Config.Manager in 'Test_FIToolkit.Config.Manager.pas',
   Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
+  Test_UTF8Sources in 'Test_UTF8Sources.pas',
   TestConsts in 'TestConsts.pas',
   TestUtils in 'TestUtils.pas';
 

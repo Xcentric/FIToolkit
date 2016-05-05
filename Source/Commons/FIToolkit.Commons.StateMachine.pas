@@ -1,4 +1,4 @@
-unit FIToolkit.Commons.StateMachine;
+﻿unit FIToolkit.Commons.StateMachine;
 
 interface
 

@@ -117,6 +117,7 @@
         <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Test_UTF8Sources.pas"/>
         <DCCReference Include="TestConsts.pas"/>
         <DCCReference Include="TestUtils.pas"/>
         <BuildConfiguration Include="Release">
