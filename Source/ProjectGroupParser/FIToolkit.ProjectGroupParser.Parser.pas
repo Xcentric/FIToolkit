@@ -73,6 +73,7 @@ begin
   Result := [];
   sRootDir := GetProjectGroupDir;
 
+  //TODO: implement {EXTRACT CORRECT PROJECT FILE NAME !!! DPR/DPK !!!}
   for S in GetIncludedProjects do
     Result := Result + [sRootDir + TPath.ChangeExtension(S, STR_PROJECT_FILE_EXTENSION)];
 end;
