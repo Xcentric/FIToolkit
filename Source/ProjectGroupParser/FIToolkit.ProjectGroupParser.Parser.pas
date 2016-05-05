@@ -70,6 +70,7 @@ function TProjectGroupParser.GetIncludedProjectsFiles : TStringDynArray;
 var
   sRootDir, S : String;
 begin
+  Result := [];
   sRootDir := GetProjectGroupDir;
 
   for S in GetIncludedProjects do
