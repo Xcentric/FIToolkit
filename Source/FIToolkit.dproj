@@ -120,6 +120,8 @@
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
+        <DCCReference Include="Runner\FIToolkit.Runner.Exceptions.pas"/>
+        <DCCReference Include="Runner\FIToolkit.Runner.Tasks.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

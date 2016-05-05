@@ -39,7 +39,9 @@ uses
   FIToolkit.ProjectGroupParser.Parser in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas',
   FIToolkit.Reports.Builder.Consts in 'Reports\Builder\FIToolkit.Reports.Builder.Consts.pas',
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
-  FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas';
+  FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas',
+  FIToolkit.Runner.Exceptions in 'Runner\FIToolkit.Runner.Exceptions.pas',
+  FIToolkit.Runner.Tasks in 'Runner\FIToolkit.Runner.Tasks.pas';
 
 var
   sFullExePath : TFileName;
