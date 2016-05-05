@@ -34,6 +34,9 @@ uses
   FIToolkit.Config.TypedDefaults in 'Config\FIToolkit.Config.TypedDefaults.pas',
   FIToolkit.Config.Types in 'Config\FIToolkit.Config.Types.pas',
   FIToolkit.Logger.Consts in 'Logger\FIToolkit.Logger.Consts.pas',
+  FIToolkit.ProjectGroupParser.Consts in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas',
+  FIToolkit.ProjectGroupParser.Exceptions in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas',
+  FIToolkit.ProjectGroupParser.Parser in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas',
   FIToolkit.Reports.Builder.Consts in 'Reports\Builder\FIToolkit.Reports.Builder.Consts.pas',
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
   FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas';

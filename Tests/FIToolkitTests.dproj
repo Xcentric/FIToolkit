@@ -107,6 +107,9 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="..\Source\FIToolkit.Consts.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Test_FIToolkit.CommandLine.Options.pas"/>
         <DCCReference Include="Test_FIToolkit.Commons.Exceptions.pas"/>
         <DCCReference Include="Test_FIToolkit.Commons.FiniteStateMachine.FSM.pas"/>
@@ -117,6 +120,7 @@
         <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Test_FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Test_UTF8Sources.pas"/>
         <DCCReference Include="TestConsts.pas"/>
         <DCCReference Include="TestUtils.pas"/>

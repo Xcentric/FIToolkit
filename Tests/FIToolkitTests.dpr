@@ -43,6 +43,9 @@ uses
   FIToolkit.Config.TypedDefaults in '..\Source\Config\FIToolkit.Config.TypedDefaults.pas',
   FIToolkit.Config.Types in '..\Source\Config\FIToolkit.Config.Types.pas',
   FIToolkit.Consts in '..\Source\FIToolkit.Consts.pas',
+  FIToolkit.ProjectGroupParser.Consts in '..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas',
+  FIToolkit.ProjectGroupParser.Exceptions in '..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas',
+  FIToolkit.ProjectGroupParser.Parser in '..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas',
   Test_FIToolkit.CommandLine.Options in 'Test_FIToolkit.CommandLine.Options.pas',
   Test_FIToolkit.Commons.Exceptions in 'Test_FIToolkit.Commons.Exceptions.pas',
   Test_FIToolkit.Commons.FiniteStateMachine.FSM in 'Test_FIToolkit.Commons.FiniteStateMachine.FSM.pas',
@@ -53,6 +56,7 @@ uses
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
   Test_FIToolkit.Config.Manager in 'Test_FIToolkit.Config.Manager.pas',
   Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
+  Test_FIToolkit.ProjectGroupParser.Parser in 'Test_FIToolkit.ProjectGroupParser.Parser.pas',
   Test_UTF8Sources in 'Test_UTF8Sources.pas',
   TestConsts in 'TestConsts.pas',
   TestUtils in 'TestUtils.pas';
