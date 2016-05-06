@@ -23,6 +23,8 @@ type
   TProjectParser = class sealed
     strict private
       FXML : IXMLDocument;
+    private
+      function GetMainSource : String;
     public
       constructor Create(const FileName : TFileName);
 
@@ -32,7 +34,7 @@ type
 implementation
 
 uses
-  System.IOUtils,
+  System.IOUtils, Winapi.ActiveX,
   FIToolkit.Commons.Utils,
   FIToolkit.ProjectGroupParser.Exceptions;
 
@@ -62,13 +64,19 @@ begin
       ProjectsGroup := Root.ChildNodes[STR_GPROJ_PROJECTS_GROUP_NODE];
 
       if Assigned(ProjectsGroup) then
+        repeat
+          IncludedProject := ProjectsGroup.ChildNodes[STR_GPROJ_INCLUDED_PROJECT_NODE];
+
+          if not Assigned(IncludedProject) then
+            ProjectsGroup := ProjectsGroup.NextSibling;
+        until Assigned(IncludedProject) or not Assigned(ProjectsGroup);
+
+      if Assigned(ProjectsGroup) then
         for i := 0 to ProjectsGroup.ChildNodes.Count - 1 do
         begin
           IncludedProject := ProjectsGroup.ChildNodes.Get(i);
 
-          if AnsiSameText(IncludedProject.NodeName, STR_GPROJ_INCLUDED_PROJECT_NODE) and
-             IncludedProject.HasAttribute(STR_GPROJ_INCLUDED_PROJECT_ATTRIBUTE)
-          then
+          if IncludedProject.HasAttribute(STR_GPROJ_INCLUDED_PROJECT_ATTRIBUTE) then
             Result := Result + [IncludedProject.Attributes[STR_GPROJ_INCLUDED_PROJECT_ATTRIBUTE]];
         end;
     end;
@@ -84,12 +92,16 @@ function TProjectGroupParser.GetIncludedProjectsFiles : TStringDynArray;
 var
   sRootDir, S : String;
 begin
-  Result := [];
+  Result   := [];
   sRootDir := GetProjectGroupDir;
 
-  //TODO: implement {EXTRACT CORRECT PROJECT FILE NAME !!! DPR/DPK !!!}
   for S in GetIncludedProjects do
-    Result := Result + [sRootDir + S];
+    with TProjectParser.Create(sRootDir + S) do
+      try
+        Result := Result + [GetMainSourceFileName];
+      finally
+        Free;
+      end;
 end;
 
 function TProjectGroupParser.GetProjectGroupDir : String;
@@ -110,9 +122,47 @@ begin
   end;
 end;
 
+function TProjectParser.GetMainSource : String;
+var
+  Root, PropertyGroup, MainSource : IXMLNode;
+begin
+  Result := String.Empty;
+
+  try
+    Root := FXML.Node.ChildNodes[STR_DPROJ_ROOT_NODE];
+
+    if Assigned(Root) then
+    begin
+      PropertyGroup := Root.ChildNodes[STR_DPROJ_PROPERTY_GROUP_NODE];
+
+      if Assigned(PropertyGroup) then
+        repeat
+          MainSource := PropertyGroup.ChildNodes[STR_DPROJ_MAIN_SOURCE_NODE];
+
+          if not Assigned(MainSource) then
+            PropertyGroup := PropertyGroup.NextSibling;
+        until Assigned(MainSource) or not Assigned(PropertyGroup);
+
+      if Assigned(MainSource) then
+        Result := MainSource.Text;
+    end;
+  except
+    Exception.RaiseOuterException(EProjectParseError.Create);
+  end;
+
+  if Result.IsEmpty then
+    raise EProjectParseError.Create;
+end;
+
 function TProjectParser.GetMainSourceFileName : TFileName;
 begin
-  //TODO: implement {GetMainSourceFileName}
+  Result := TPath.GetDirectoryName(FXML.FileName, True) + GetMainSource;
 end;
+
+initialization
+  CoInitialize(nil);
+
+finalization
+  CoUninitialize;
 
 end.

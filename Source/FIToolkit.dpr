@@ -62,7 +62,7 @@ begin
   except
     on E: Exception do
     begin
-      Writeln(E.ClassName, ': ', E.Message, sLineBreak);
+      Writeln(E.ClassName, ': ', E.ToString, sLineBreak);
       {$IFNDEF DEBUG}
       Halt(1);
       {$ENDIF}
