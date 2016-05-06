@@ -31,9 +31,11 @@ type
 
   TestTPathHelper = class (TGenericTestCase)
     published
+      procedure TestGetDirectoryName;
       procedure TestGetExePath;
       procedure TestGetQuotedPath;
       procedure TestIsApplicableFileName;
+      procedure TestIncludeTrailingPathDelimiter;
   end;
 
   TestTRttiTypeHelper = class (TGenericTestCase)
@@ -179,6 +181,34 @@ end;
 
 { TestTPathHelper }
 
+procedure TestTPathHelper.TestGetDirectoryName;
+const
+  STR_FULL_FILE_NAME = 'C:\test\file.ext';
+  STR_SHORT_FILE_NAME = 'file.ext';
+var
+  ReturnValue : String;
+begin
+  ReturnValue := TPath.GetDirectoryName(String.Empty, False);
+  CheckTrue(ReturnValue.IsEmpty, 'CheckTrue::ReturnValue.IsEmpty<False>');
+
+  ReturnValue := TPath.GetDirectoryName(String.Empty, True);
+  CheckTrue(ReturnValue.IsEmpty, 'CheckTrue::ReturnValue.IsEmpty<True>');
+
+  ReturnValue := TPath.GetDirectoryName(STR_FULL_FILE_NAME, False);
+  CheckFalse(ReturnValue.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckFalse::EndsWith(TPath.DirectorySeparatorChar)</False>');
+
+  ReturnValue := TPath.GetDirectoryName(STR_FULL_FILE_NAME, True);
+  CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckTrue::EndsWith(TPath.DirectorySeparatorChar)</True>');
+
+  ReturnValue := TPath.GetDirectoryName(STR_SHORT_FILE_NAME, False);
+  CheckTrue(ReturnValue.IsEmpty, 'CheckTrue::ReturnValue.IsEmpty<STR_SHORT_FILE_NAME, False>');
+
+  ReturnValue := TPath.GetDirectoryName(STR_SHORT_FILE_NAME, True);
+  CheckTrue(ReturnValue.IsEmpty, 'CheckTrue::ReturnValue.IsEmpty<STR_SHORT_FILE_NAME, True>');
+end;
+
 procedure TestTPathHelper.TestGetExePath;
 var
   ReturnValue, sExpected : String;
@@ -215,6 +245,26 @@ begin
 
   ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_BOTH);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_BOTH) = STR_EXPECTED');
+end;
+
+procedure TestTPathHelper.TestIncludeTrailingPathDelimiter;
+const
+  STR_PATH = 'C:\test\subdir';
+var
+  ReturnValue : String;
+begin
+  ReturnValue := TPath.IncludeTrailingPathDelimiter(String.Empty);
+  CheckTrue(ReturnValue.IsEmpty, 'CheckTrue::ReturnValue.IsEmpty');
+
+  ReturnValue := TPath.IncludeTrailingPathDelimiter(STR_PATH);
+  CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckTrue::EndsWith(TPath.DirectorySeparatorChar)<no trailing path delim>');
+
+  ReturnValue := TPath.IncludeTrailingPathDelimiter(STR_PATH + TPath.DirectorySeparatorChar);
+  CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckTrue::EndsWith(TPath.DirectorySeparatorChar)<trailing path delim>');
+  CheckFalse(ReturnValue.EndsWith(TPath.DirectorySeparatorChar + TPath.DirectorySeparatorChar),
+    'CheckFalse::EndsWith(TPath.DirectorySeparatorChar + TPath.DirectorySeparatorChar)');
 end;
 
 procedure TestTPathHelper.TestIsApplicableFileName;

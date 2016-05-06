@@ -7,9 +7,11 @@ uses
 
 type
 
-  EProjectGroupParserException = class abstract (ECustomException);
+  EProjectsParserException = class abstract (ECustomException);
 
-  EProjectGroupParseError = class (EProjectGroupParserException);
+  EProjectGroupParseError = class (EProjectsParserException);
+
+  EProjectParseError = class (EProjectsParserException);
 
 implementation
 
@@ -18,5 +20,6 @@ uses
 
 initialization
   RegisterExceptionMessage(EProjectGroupParseError, RSProjectGroupParseError);
+  RegisterExceptionMessage(EProjectParseError, RSProjectParseError);
 
 end.

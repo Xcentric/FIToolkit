@@ -22,8 +22,10 @@ type
 
   TPathHelper = record helper for TPath
     public
+      class function GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String; overload; static;
       class function GetExePath : String; static;
       class function GetQuotedPath(const Path : String) : String; static;
+      class function IncludeTrailingPathDelimiter(const Path : String) : String; static;
       class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
   end;
 
@@ -133,9 +135,22 @@ end;
 
 { TPathHelper }
 
+class function TPathHelper.GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String;
+begin
+  Result := String.Empty;
+
+  if not String.IsNullOrWhiteSpace(FileName) and TPath.HasValidPathChars(FileName, True) then
+  begin
+    Result := GetDirectoryName(FileName);
+
+    if TrailingPathDelim then
+      Result := TPath.IncludeTrailingPathDelimiter(Result);
+  end;
+end;
+
 class function TPathHelper.GetExePath : String;
 begin
-  Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(ParamStr(0)));
+  Result := GetDirectoryName(ParamStr(0), True);
 end;
 
 class function TPathHelper.GetQuotedPath(const Path : String) : String;
@@ -149,6 +164,14 @@ begin
 
   if not Result.EndsWith(CHR_QUOTE_CHAR) then
     Result := Result + CHR_QUOTE_CHAR;
+end;
+
+class function TPathHelper.IncludeTrailingPathDelimiter(const Path : String) : String;
+begin
+  Result := Path;
+
+  if not Result.IsEmpty then
+    Result := System.SysUtils.IncludeTrailingPathDelimiter(Result);
 end;
 
 class function TPathHelper.IsApplicableFileName(const FileName : TFileName) : Boolean;

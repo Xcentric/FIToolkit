@@ -8,7 +8,7 @@ uses
 
 type
 
-  TProjectGroupParser = class
+  TProjectGroupParser = class sealed
     strict private
       FXML : IXMLDocument;
     private
@@ -20,10 +20,20 @@ type
       function GetIncludedProjectsFiles : TStringDynArray;
   end;
 
+  TProjectParser = class sealed
+    strict private
+      FXML : IXMLDocument;
+    public
+      constructor Create(const FileName : TFileName);
+
+      function GetMainSourceFileName : TFileName;
+  end;
+
 implementation
 
 uses
   System.IOUtils,
+  FIToolkit.Commons.Utils,
   FIToolkit.ProjectGroupParser.Exceptions;
 
 { TProjectGroupParser }
@@ -32,7 +42,11 @@ constructor TProjectGroupParser.Create(const FileName : TFileName);
 begin
   inherited Create;
 
-  FXML := TXMLDocument.Create(FileName);
+  try
+    FXML := TXMLDocument.Create(FileName);
+  except
+    Exception.RaiseOuterException(EProjectGroupParseError.Create);
+  end;
 end;
 
 function TProjectGroupParser.GetIncludedProjects : TStringDynArray;
@@ -41,21 +55,21 @@ var
   i : Integer;
 begin
   try
-    Root := FXML.Node.ChildNodes[STR_ROOT_NODE];
+    Root := FXML.Node.ChildNodes[STR_GPROJ_ROOT_NODE];
 
     if Assigned(Root) then
     begin
-      ProjectsGroup := Root.ChildNodes[STR_PROJECTS_GROUP_NODE];
+      ProjectsGroup := Root.ChildNodes[STR_GPROJ_PROJECTS_GROUP_NODE];
 
       if Assigned(ProjectsGroup) then
         for i := 0 to ProjectsGroup.ChildNodes.Count - 1 do
         begin
           IncludedProject := ProjectsGroup.ChildNodes.Get(i);
 
-          if AnsiSameText(IncludedProject.NodeName, STR_INCLUDED_PROJECT_NODE) and
-             IncludedProject.HasAttribute(STR_INCLUDED_PROJECT_ATTRIBUTE)
+          if AnsiSameText(IncludedProject.NodeName, STR_GPROJ_INCLUDED_PROJECT_NODE) and
+             IncludedProject.HasAttribute(STR_GPROJ_INCLUDED_PROJECT_ATTRIBUTE)
           then
-            Result := Result + [IncludedProject.Attributes[STR_INCLUDED_PROJECT_ATTRIBUTE]];
+            Result := Result + [IncludedProject.Attributes[STR_GPROJ_INCLUDED_PROJECT_ATTRIBUTE]];
         end;
     end;
   except
@@ -75,15 +89,30 @@ begin
 
   //TODO: implement {EXTRACT CORRECT PROJECT FILE NAME !!! DPR/DPK !!!}
   for S in GetIncludedProjects do
-    Result := Result + [sRootDir + TPath.ChangeExtension(S, STR_PROJECT_FILE_EXTENSION)];
+    Result := Result + [sRootDir + S];
 end;
 
 function TProjectGroupParser.GetProjectGroupDir : String;
 begin
-  if FXML.FileName.IsEmpty then
-    Result := String.Empty
-  else
-    Result := IncludeTrailingPathDelimiter(TPath.GetDirectoryName(FXML.FileName));
+  Result := TPath.GetDirectoryName(FXML.FileName, True);
+end;
+
+{ TProjectParser }
+
+constructor TProjectParser.Create(const FileName : TFileName);
+begin
+  inherited Create;
+
+  try
+    FXML := TXMLDocument.Create(FileName);
+  except
+    Exception.RaiseOuterException(EProjectParseError.Create);
+  end;
+end;
+
+function TProjectParser.GetMainSourceFileName : TFileName;
+begin
+  //TODO: implement {GetMainSourceFileName}
 end;
 
 end.

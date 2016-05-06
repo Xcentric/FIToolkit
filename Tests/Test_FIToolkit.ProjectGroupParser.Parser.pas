@@ -71,7 +71,9 @@ begin
   for S in ReturnValue do
   begin
     CheckTrue(S.StartsWith(sRootDir, True), 'CheckTrue::ReturnValue[i].StartsWith(sRootDir)<%s>', [S]);
-    CheckEquals('.dpr', TPath.GetExtension(S), 'TPath.GetExtension(ReturnValue[i]) = ".dpr"');
+    CheckTrue(TPath.GetExtension(S).Equals('.dpr') or TPath.GetExtension(S).Equals('.dpk'),
+      'CheckTrue::<"%s" in [".dpr", ".dpk"]>', [TPath.GetExtension(S)]);
+    CheckTrue(TFile.Exists(S), 'CheckTrue::TFile.Exists("%s")', [S]);
   end;
 end;
 

@@ -53,14 +53,12 @@ var
   sDir, sFileName, sFileExt,
   sUniquePart : String;
 begin
-  sDir      := TPath.GetDirectoryName(FOptions.OutputFileName);
+  sDir      := TPath.GetDirectoryName(FOptions.OutputFileName, True);
   sFileName := TPath.GetFileNameWithoutExtension(FOptions.OutputFileName);
   sFileExt  := TPath.GetExtension(FOptions.OutputFileName);
 
   sUniquePart := TThread.CurrentThread.ThreadID.ToString + CHR_DELIMITER + TPath.GetGUIDFileName(False);
-  Result := TPath.GetFullPath(
-    Iff.Get<String>(sDir.IsEmpty, String.Empty, sDir + TPath.DirectorySeparatorChar) +
-    sFileName + CHR_DELIMITER + sUniquePart + sFileExt);
+  Result := TPath.GetFullPath(sDir + sFileName + CHR_DELIMITER + sUniquePart + sFileExt);
 end;
 
 end.
