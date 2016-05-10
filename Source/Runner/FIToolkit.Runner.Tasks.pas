@@ -12,34 +12,36 @@ type
     strict private
       FExecutable : TFileName;
       FOptions : TFixInsightOptions;
-      FOutputFileName : TFileName;
+      [volatile] FOutputFileName : TFileName;
     private
-      function  GenerateOutputFileName : String;
+      function GenerateOutputFileName : String;
     public
-      constructor Create(const Executable : TFileName; const Options : TFixInsightOptions);
+      constructor Create(const Executable : TFileName; Options : TFixInsightOptions);
 
-      procedure Execute;
+      function Execute : ITask;
 
-      property  OutputFileName : TFileName read FOutputFileName;
+      property OutputFileName : TFileName read FOutputFileName;
   end;
 
 implementation
 
 uses
   System.IOUtils, System.Classes,
-  FIToolkit.Commons.Utils;
+  FIToolkit.Commons.Utils,
+  FIToolkit.Runner.Consts;
 
 { TTaskRunner }
 
-constructor TTaskRunner.Create(const Executable : TFileName; const Options : TFixInsightOptions);
+constructor TTaskRunner.Create(const Executable : TFileName; Options : TFixInsightOptions);
 begin
   inherited Create;
 
   FExecutable := Executable;
-  FOptions    := Options;
+  FOptions := TFixInsightOptions.Create;
+  FOptions.Assign(Options, False);
 end;
 
-procedure TTaskRunner.Execute;
+function TTaskRunner.Execute : ITask;
 begin
   FOutputFileName := GenerateOutputFileName;
 
@@ -48,17 +50,18 @@ end;
 
 function TTaskRunner.GenerateOutputFileName : String;
 const
-  CHR_DELIMITER = '_';
+  CHR_DELIMITER = CHR_GENERATED_OUTPUT_FILE_NAME_PARTS_DELIMITER;
 var
-  sDir, sFileName, sFileExt,
+  sDir, sFileName, sFileExt, sProject,
   sUniquePart : String;
 begin
   sDir      := TPath.GetDirectoryName(FOptions.OutputFileName, True);
   sFileName := TPath.GetFileNameWithoutExtension(FOptions.OutputFileName);
   sFileExt  := TPath.GetExtension(FOptions.OutputFileName);
+  sProject  := TPath.GetFileNameWithoutExtension(FOptions.ProjectFileName);
 
   sUniquePart := TThread.CurrentThread.ThreadID.ToString + CHR_DELIMITER + TPath.GetGUIDFileName(False);
-  Result := TPath.GetFullPath(sDir + sFileName + CHR_DELIMITER + sUniquePart + sFileExt);
+  Result := TPath.GetFullPath(sDir + sFileName + CHR_DELIMITER + sProject + CHR_DELIMITER + sUniquePart + sFileExt);
 end;
 
 end.

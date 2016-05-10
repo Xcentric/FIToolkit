@@ -25,6 +25,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestAssign;
     procedure TestToString;
     procedure TestValidationWithEmptyProps;
     procedure TestValidationWithInvalidProps;
@@ -46,6 +47,44 @@ end;
 procedure TestTFixInsightOptions.TearDown;
 begin
   FreeAndNil(FFixInsightOptions);
+end;
+
+procedure TestTFixInsightOptions.TestAssign;
+var
+  FIO : TFixInsightOptions;
+begin
+  FIO := TFixInsightOptions.Create;
+  FIO.ProjectFileName := STR_INVALID_FILENAME;
+
+  try
+    FFixInsightOptions.Validate := False;
+    CheckException(
+      procedure
+      begin
+        FFixInsightOptions.Assign(FIO, True);
+      end,
+      EFixInsightOptionsException,
+      'CheckException::EFixInsightOptionsException'
+    );
+    CheckFalse(FFixInsightOptions.Validate, 'CheckFalse::FFixInsightOptions.Validate');
+    CheckNotEquals(STR_INVALID_FILENAME, FFixInsightOptions.ProjectFileName,
+      'FFixInsightOptions.ProjectFileName <> STR_INVALID_FILENAME');
+
+    FFixInsightOptions.Validate := True;
+    CheckException(
+      procedure
+      begin
+        FFixInsightOptions.Assign(FIO, False);
+      end,
+      nil,
+      'CheckException::nil'
+    );
+    CheckTrue(FFixInsightOptions.Validate, 'CheckTrue::FFixInsightOptions.Validate');
+    CheckEquals(STR_INVALID_FILENAME, FFixInsightOptions.ProjectFileName,
+      'FFixInsightOptions.ProjectFileName = STR_INVALID_FILENAME');
+  finally
+    FIO.Free;
+  end;
 end;
 
 procedure TestTFixInsightOptions.TestToString;

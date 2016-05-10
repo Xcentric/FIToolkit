@@ -42,7 +42,8 @@ type
       procedure SetProjectFileName(const Value : TFileName);
       procedure SetSettingsFileName(const Value : TFileName);
     public
-      function  ToString : String; override;
+      procedure Assign(Source : TFixInsightOptions; CheckValid : Boolean);
+      function  ToString : String; override; final;
 
       [FixInsightParam, DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
@@ -67,6 +68,22 @@ uses
   FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils;
 
 { TFixInsightOptions }
+
+procedure TFixInsightOptions.Assign(Source : TFixInsightOptions; CheckValid : Boolean);
+var
+  bValidate : Boolean;
+begin
+  if Assigned(Source) then
+  begin
+    bValidate := FValidate;
+    FValidate := CheckValid;
+    try
+      //TODO: implement {Assign}
+    finally
+      FValidate := bValidate;
+    end;
+  end;
+end;
 
 function TFixInsightOptions.FormatCompilerDefines : String;
 begin
