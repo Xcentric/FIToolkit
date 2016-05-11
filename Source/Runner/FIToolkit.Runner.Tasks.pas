@@ -43,6 +43,7 @@ end;
 
 function TTaskRunner.Execute : ITask;
 begin
+  Result := nil;
   FOutputFileName := GenerateOutputFileName;
 
   //TODO: implement {Execute}

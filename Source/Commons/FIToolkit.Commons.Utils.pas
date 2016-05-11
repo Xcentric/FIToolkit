@@ -3,13 +3,19 @@
 interface
 
 uses
-  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti;
+  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
+  FIToolkit.Commons.Types;
 
 type
 
   TIff = record
     public
       class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
+  end;
+
+  TObjectProperties<T:class> = record
+    public
+      class procedure Copy(Source, Destination : T; const Filter : TObjectPropertyFilter = nil); static;
   end;
 
   { Helpers }
@@ -214,6 +220,32 @@ end;
 function TTypeKindHelper.IsString : Boolean;
 begin
   Result := Self in [tkString, tkLString, tkWString, tkUString];
+end;
+
+{ TObjectProperties<T> }
+
+class procedure TObjectProperties<T>.Copy(Source, Destination : T; const Filter : TObjectPropertyFilter);
+var
+  Ctx : TRttiContext;
+  InstanceType : TRttiInstanceType;
+  Prop : TRttiProperty;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    InstanceType := Ctx.GetType(T) as TRttiInstanceType;
+
+    for Prop in InstanceType.GetProperties do
+      if Prop.IsReadable and Prop.IsWritable then
+      begin
+        if Assigned(Filter) then
+          if not Filter(Source, Prop) then
+            Continue;
+
+        Prop.SetValue(TObject(Destination), Prop.GetValue(TObject(Source)));
+      end;
+  finally
+    Ctx.Free;
+  end;
 end;
 
 end.

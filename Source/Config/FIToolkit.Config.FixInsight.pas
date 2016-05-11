@@ -78,7 +78,18 @@ begin
     bValidate := FValidate;
     FValidate := CheckValid;
     try
-      //TODO: implement {Assign}
+      TObjectProperties<TFixInsightOptions>.Copy(Source, Self,
+        function (Instance : TObject; Prop : TRttiProperty) : Boolean
+        var
+          Attr : TCustomAttribute;
+        begin
+          Result := False;
+
+          for Attr in Prop.GetAttributes do
+            if Attr is FixInsightParam then
+              Exit(True);
+        end
+      );
     finally
       FValidate := bValidate;
     end;
