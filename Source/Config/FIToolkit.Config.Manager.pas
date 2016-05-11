@@ -35,7 +35,7 @@ type
 implementation
 
 uses
-  System.TypInfo, System.Classes,
+  System.TypInfo,
   FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Config.Consts,
   FIToolkit.Commons.Utils;
 

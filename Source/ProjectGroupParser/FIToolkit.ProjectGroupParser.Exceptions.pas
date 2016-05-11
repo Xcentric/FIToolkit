@@ -9,7 +9,11 @@ type
 
   EProjectsParserException = class abstract (ECustomException);
 
+  { Project group parser exceptions }
+
   EProjectGroupParseError = class (EProjectsParserException);
+
+  { Project parser exceptions }
 
   EProjectParseError = class (EProjectsParserException);
 

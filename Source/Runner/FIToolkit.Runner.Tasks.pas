@@ -27,9 +27,8 @@ type
 implementation
 
 uses
-  System.IOUtils, System.Classes,
-  FIToolkit.Commons.Utils,
-  FIToolkit.Runner.Consts;
+  System.IOUtils, System.Classes, Winapi.Windows,
+  FIToolkit.Commons.Utils, FIToolkit.CommandLine.Types, FIToolkit.Runner.Exceptions, FIToolkit.Runner.Consts;
 
 { TTaskRunner }
 
@@ -51,10 +50,38 @@ end;
 
 function TTaskRunner.Execute : ITask;
 begin
-  Result := nil;
-  FOutputFileName := GenerateOutputFileName;
+  Result := TTask.Run(
+    procedure
+    var
+      sCmdLine : String;
+      SI : TStartupInfo;
+      PI : TProcessInformation;
+    begin
+      FOptions.Validate := True;
+      FOptions.OutputFileName := GenerateOutputFileName;
+      FOutputFileName := FOptions.OutputFileName;
 
-  //TODO: implement {Execute}
+      sCmdLine := Format('%s %s', [TPath.GetQuotedPath(FExecutable, TCLIOptionString.CHR_QUOTE), FOptions.ToString]);
+      FillChar(SI, SizeOf(TStartupInfo), 0);
+      SI.cb := SizeOf(TStartupInfo);
+      SI.wShowWindow := SW_HIDE;
+
+      if CreateProcess(PChar(FExecutable), PChar(sCmdLine), nil, nil, False, CREATE_NO_WINDOW, nil, nil, SI, PI) then
+        try
+          while WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_OBJECT_0 do
+            TThread.SpinWait(INT_SPIN_WAIT_ITERATIONS);
+        finally
+          CloseHandle(PI.hProcess);
+          CloseHandle(PI.hThread);
+        end
+      else
+        try
+          RaiseLastOSError;
+        except
+          Exception.RaiseOuterException(ECreateProcessError.Create);
+        end;
+    end
+  );
 end;
 
 function TTaskRunner.GenerateOutputFileName : String;

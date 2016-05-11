@@ -8,6 +8,14 @@ const
 
   CHR_TASK_OUTPUT_FILENAME_PARTS_DELIM = Char('_');
 
+  INT_SPIN_WAIT_ITERATIONS = 1000;
+
+resourcestring
+
+  { Exceptions }
+
+  RSCreateProcessError = 'Не удалось создать процесс.';
+
 implementation
 
 end.

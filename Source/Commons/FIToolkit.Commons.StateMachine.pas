@@ -3,7 +3,7 @@
 interface
 
 uses
-  FIToolkit.Commons.Exceptions, FIToolkit.Commons.FiniteStateMachine.FSM;
+  FIToolkit.Commons.Exceptions{, FIToolkit.Commons.FiniteStateMachine.FSM};
 
 type
 

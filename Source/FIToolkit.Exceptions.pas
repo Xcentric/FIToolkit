@@ -9,11 +9,7 @@ type
 
   EApplicationException = class abstract (ECustomException);
 
-  { Config exceptions }
-
-  EConfigException = class abstract (EApplicationException);
-
-  ENoValidConfigSpecified = class (EConfigException);
+  ENoValidConfigSpecified = class (EApplicationException);
 
 implementation
 
