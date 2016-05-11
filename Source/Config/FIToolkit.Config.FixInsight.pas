@@ -65,7 +65,7 @@ implementation
 
 uses
   System.IOUtils, System.Rtti,
-  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils;
+  FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils, FIToolkit.CommandLine.Types;
 
 { TFixInsightOptions }
 
@@ -95,7 +95,7 @@ end;
 
 function TFixInsightOptions.FormatOutputFileName : String;
 begin
-  Result := STR_FIPARAM_OUTPUT + TPath.GetQuotedPath(FOutputFileName);
+  Result := STR_FIPARAM_OUTPUT + TPath.GetQuotedPath(FOutputFileName, TCLIOptionString.CHR_QUOTE);
 end;
 
 function TFixInsightOptions.FormatOutputFormat : String;
@@ -128,12 +128,12 @@ end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
 begin
-  Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName);
+  Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName, TCLIOptionString.CHR_QUOTE);
 end;
 
 function TFixInsightOptions.FormatSettingsFileName : String;
 begin
-  Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName);
+  Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName, TCLIOptionString.CHR_QUOTE);
 end;
 
 function TFixInsightOptions.FormatSilent : String;

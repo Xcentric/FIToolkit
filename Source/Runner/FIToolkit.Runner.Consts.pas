@@ -4,7 +4,7 @@ interface
 
 const
 
-  CHR_GENERATED_OUTPUT_FILE_NAME_PARTS_DELIMITER = '_';
+  CHR_TASK_OUTPUT_FILENAME_PARTS_DELIM = Char('_');
 
 implementation
 

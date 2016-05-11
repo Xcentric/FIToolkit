@@ -9,14 +9,12 @@ uses
 type
 
   TConfigManager = class sealed
-    strict private
-      FConfigData : TConfigData;
-      FConfigFile : TConfigFile;
     private
       type
         TFilterPropPredicate = reference to function (Instance : TObject; Prop : TRttiProperty) : Boolean;
-      const
-        CHR_ARRAY_DELIMITER = ',';
+    strict private
+      FConfigData : TConfigData;
+      FConfigFile : TConfigFile;
     private
       function  FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
       function  GetConfigFileName : TFileName;
@@ -41,7 +39,8 @@ implementation
 
 uses
   System.TypInfo, System.Classes,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Commons.Utils;
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Config.Consts,
+  FIToolkit.Commons.Utils;
 
 { TConfigManager }
 
@@ -181,7 +180,7 @@ begin
           else
           if Prop.PropertyType.Handle.TypeData.DynArrElType^.IsString then
           begin
-            arrS := sArray.Split([CHR_ARRAY_DELIMITER], ExcludeEmpty);
+            arrS := sArray.Split([CHR_CONFIG_FILE_ARRAY_DELIM], ExcludeEmpty);
 
             SetLength(arrV, Length(arrS));
             for i := 0 to High(arrV) do
@@ -274,7 +273,7 @@ begin
             if S.IsEmpty then
               S := V.GetArrayElement(i).ToString
             else
-              S := S + CHR_ARRAY_DELIMITER + V.GetArrayElement(i).ToString;
+              S := S + CHR_CONFIG_FILE_ARRAY_DELIM + V.GetArrayElement(i).ToString;
 
           FConfigFile.Config.WriteString(Instance.QualifiedClassName, Prop.Name, S);
         end

@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Threading,
-  FIToolkit.Config.Data, FIToolkit.Config.FixInsight;
+  FIToolkit.Config.FixInsight;
 
 type
 
@@ -50,7 +50,7 @@ end;
 
 function TTaskRunner.GenerateOutputFileName : String;
 const
-  CHR_DELIMITER = CHR_GENERATED_OUTPUT_FILE_NAME_PARTS_DELIMITER;
+  CHR_DELIMITER = Char(CHR_TASK_OUTPUT_FILENAME_PARTS_DELIM);
 var
   sDir, sFileName, sFileExt, sProject,
   sUniquePart : String;

@@ -223,28 +223,33 @@ end;
 
 procedure TestTPathHelper.TestGetQuotedPath;
 const
-  STR_PATH_QUOTED_NONE = 'C:\test\file.ext';
-  STR_PATH_QUOTED_LEFT = '"' + STR_PATH_QUOTED_NONE;
-  STR_PATH_QUOTED_RIGHT = STR_PATH_QUOTED_NONE + '"';
-  STR_PATH_QUOTED_BOTH = '"' + STR_PATH_QUOTED_NONE + '"';
-  STR_PATH_EXPECTED = '"' + STR_PATH_QUOTED_NONE + '"';
+  CHR_QUOTE = '"';
+  STR_PATH_QUOTED_NONE  = 'C:\test\file.ext';
+  STR_PATH_QUOTED_LEFT  = CHR_QUOTE + STR_PATH_QUOTED_NONE;
+  STR_PATH_QUOTED_RIGHT = STR_PATH_QUOTED_NONE + CHR_QUOTE;
+  STR_PATH_QUOTED_BOTH  = CHR_QUOTE + STR_PATH_QUOTED_NONE + CHR_QUOTE;
+  STR_PATH_EXPECTED     = CHR_QUOTE + STR_PATH_QUOTED_NONE + CHR_QUOTE;
 var
   ReturnValue : String;
 begin
-  ReturnValue := TPath.GetQuotedPath(String.Empty);
-  CheckTrue(ReturnValue.StartsWith('"') and ReturnValue.EndsWith('"'), 'CheckTrue::(ReturnValue(<empty>) = "")');
+  ReturnValue := TPath.GetQuotedPath(String.Empty, CHR_QUOTE);
+  CheckTrue(ReturnValue.StartsWith(CHR_QUOTE) and ReturnValue.EndsWith(CHR_QUOTE),
+    'CheckTrue::(ReturnValue(<empty>) = "")');
 
-  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_NONE);
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_NONE, CHR_QUOTE);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_NONE) = STR_EXPECTED');
 
-  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_LEFT);
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_LEFT, CHR_QUOTE);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_LEFT) = STR_EXPECTED');
 
-  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_RIGHT);
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_RIGHT, CHR_QUOTE);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_RIGHT) = STR_EXPECTED');
 
-  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_BOTH);
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_BOTH, CHR_QUOTE);
   CheckEquals(STR_PATH_EXPECTED, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_BOTH) = STR_EXPECTED');
+
+  ReturnValue := TPath.GetQuotedPath(STR_PATH_QUOTED_NONE, #0);
+  CheckEquals(STR_PATH_QUOTED_NONE, ReturnValue, 'ReturnValue(STR_PATH_QUOTED_NONE, #0) = STR_PATH_QUOTED_NONE');
 end;
 
 procedure TestTPathHelper.TestIncludeTrailingPathDelimiter;

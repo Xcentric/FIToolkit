@@ -24,7 +24,7 @@ type
     public
       class function GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String; overload; static;
       class function GetExePath : String; static;
-      class function GetQuotedPath(const Path : String) : String; static;
+      class function GetQuotedPath(const Path : String; QuoteChar : Char) : String; static;
       class function IncludeTrailingPathDelimiter(const Path : String) : String; static;
       class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
   end;
@@ -62,10 +62,6 @@ uses
 { Utils }
 
 function GetFixInsightExePath : TFileName;
-const
-  STR_FIXINSIGHT_REGKEY   = 'Software\FixInsight';
-  STR_FIXINSIGHT_REGVALUE = 'Path';
-  STR_FIXINSIGHT_EXENAME  = 'FixInsightCL.exe';
 var
   R : TRegistry;
   S : String;
@@ -153,17 +149,18 @@ begin
   Result := GetDirectoryName(ParamStr(0), True);
 end;
 
-class function TPathHelper.GetQuotedPath(const Path : String) : String;
-const
-  CHR_QUOTE_CHAR = '"';
+class function TPathHelper.GetQuotedPath(const Path : String; QuoteChar : Char) : String;
 begin
   Result := Path;
 
-  if not Result.StartsWith(CHR_QUOTE_CHAR) then
-    Result := CHR_QUOTE_CHAR + Result;
+  if QuoteChar <> #0 then
+  begin
+    if not Result.StartsWith(QuoteChar) then
+      Result := QuoteChar + Result;
 
-  if not Result.EndsWith(CHR_QUOTE_CHAR) then
-    Result := Result + CHR_QUOTE_CHAR;
+    if not Result.EndsWith(QuoteChar) then
+      Result := Result + QuoteChar;
+  end;
 end;
 
 class function TPathHelper.IncludeTrailingPathDelimiter(const Path : String) : String;

@@ -4,7 +4,15 @@ interface
 
 const
 
+  { Common consts }
+
   sDualBreak = sLineBreak + sLineBreak;
+
+  { FixInsight registry consts }
+
+  STR_FIXINSIGHT_REGKEY   = 'Software\FixInsight';
+  STR_FIXINSIGHT_REGVALUE = 'Path';
+  STR_FIXINSIGHT_EXENAME  = 'FixInsightCL.exe';
 
 resourcestring
 
