@@ -3,9 +3,11 @@
 interface
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.Rtti;
 
 type
+
+  TObjectPropertyFilter = reference to function (Instance : TObject; Prop : TRttiProperty) : Boolean;
 
   TAssignable<T> = record
     private

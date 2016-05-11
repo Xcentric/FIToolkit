@@ -4,14 +4,11 @@ interface
 
 uses
   System.SysUtils, System.Rtti,
-  FIToolkit.Config.Data, FIToolkit.Config.Storage;
+  FIToolkit.Config.Data, FIToolkit.Config.Storage, FIToolkit.Commons.Types;
 
 type
 
   TConfigManager = class sealed
-    private
-      type
-        TFilterPropPredicate = reference to function (Instance : TObject; Prop : TRttiProperty) : Boolean;
     strict private
       FConfigData : TConfigData;
       FConfigFile : TConfigFile;
@@ -19,9 +16,9 @@ type
       function  FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
       function  GetConfigFileName : TFileName;
       function  GetPropDefaultValue(Prop : TRttiProperty) : TValue;
-      procedure ReadObjectFromConfig(Instance : TObject; const Filter : TFilterPropPredicate);
+      procedure ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
       procedure SetObjectPropsDefaults(Instance : TObject);
-      procedure WriteObjectToConfig(Instance : TObject; const Filter : TFilterPropPredicate);
+      procedure WriteObjectToConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
     protected
       procedure FillDataFromFile;
       procedure FillFileFromData;
@@ -133,7 +130,7 @@ begin
       Exit(TDefaultValueAttribute(Attr).Value);
 end;
 
-procedure TConfigManager.ReadObjectFromConfig(Instance : TObject; const Filter : TFilterPropPredicate);
+procedure TConfigManager.ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
 var
   Ctx : TRttiContext;
   InstanceType : TRttiInstanceType;
@@ -239,7 +236,7 @@ begin
   end;
 end;
 
-procedure TConfigManager.WriteObjectToConfig(Instance : TObject; const Filter : TFilterPropPredicate);
+procedure TConfigManager.WriteObjectToConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
 var
   Ctx : TRttiContext;
   InstanceType : TRttiInstanceType;
