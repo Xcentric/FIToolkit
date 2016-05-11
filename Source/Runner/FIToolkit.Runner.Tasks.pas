@@ -17,6 +17,7 @@ type
       function GenerateOutputFileName : String;
     public
       constructor Create(const Executable : TFileName; Options : TFixInsightOptions);
+      destructor Destroy; override;
 
       function Execute : ITask;
 
@@ -39,6 +40,13 @@ begin
   FExecutable := Executable;
   FOptions := TFixInsightOptions.Create;
   FOptions.Assign(Options, False);
+end;
+
+destructor TTaskRunner.Destroy;
+begin
+  FreeAndNil(FOptions);
+
+  inherited Destroy;
 end;
 
 function TTaskRunner.Execute : ITask;
