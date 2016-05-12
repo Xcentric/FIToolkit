@@ -12,7 +12,7 @@ type
     strict private
       FExecutable : TFileName;
       FOptions : TFixInsightOptions;
-      [volatile] FOutputFileName : TFileName;
+      FOutputFileName : TFileName;
     private
       function GenerateOutputFileName : String;
     public
