@@ -57,7 +57,6 @@ begin
       SI : TStartupInfo;
       PI : TProcessInformation;
     begin
-      FOptions.Validate := True;
       FOptions.OutputFileName := GenerateOutputFileName;
       FOutputFileName := FOptions.OutputFileName;
 
