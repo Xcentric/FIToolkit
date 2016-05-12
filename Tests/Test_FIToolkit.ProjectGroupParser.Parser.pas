@@ -61,7 +61,7 @@ end;
 procedure TestTProjectGroupParser.TestGetIncludedProjectsFiles;
 var
   sRootDir, S : String;
-  ReturnValue : TStringDynArray;
+  ReturnValue : TArray<TFileName>;
 begin
   sRootDir := GetProjectGroupDir;
 

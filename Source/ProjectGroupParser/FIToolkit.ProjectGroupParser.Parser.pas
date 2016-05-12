@@ -17,7 +17,7 @@ type
     public
       constructor Create(const FileName : TFileName);
 
-      function GetIncludedProjectsFiles : TStringDynArray;
+      function GetIncludedProjectsFiles : TArray<TFileName>;
   end;
 
   TProjectParser = class sealed
@@ -88,7 +88,7 @@ begin
     raise EProjectGroupParseError.Create;
 end;
 
-function TProjectGroupParser.GetIncludedProjectsFiles : TStringDynArray;
+function TProjectGroupParser.GetIncludedProjectsFiles : TArray<TFileName>;
 var
   sRootDir, S : String;
 begin
