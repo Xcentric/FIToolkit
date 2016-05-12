@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Threading,
+  System.SysUtils, System.Threading, System.Generics.Collections,
   FIToolkit.Config.FixInsight;
 
 type
@@ -22,6 +22,16 @@ type
       function Execute : ITask;
 
       property OutputFileName : TFileName read FOutputFileName;
+  end;
+
+  TTaskRunnerList = class (TObjectList<TTaskRunner>);
+
+  //TODO: implement {TTaskManager}
+  TTaskManager = class sealed
+    strict private
+      FRunners : TTaskRunnerList;
+    public
+      destructor Destroy; override;
   end;
 
 implementation
@@ -97,6 +107,15 @@ begin
 
   sUniquePart := TThread.CurrentThread.ThreadID.ToString + CHR_DELIMITER + TPath.GetGUIDFileName(False);
   Result := TPath.GetFullPath(sDir + sFileName + CHR_DELIMITER + sProject + CHR_DELIMITER + sUniquePart + sFileExt);
+end;
+
+{ TTaskManager }
+
+destructor TTaskManager.Destroy;
+begin
+  FreeAndNil(FRunners);
+
+  inherited Destroy;
 end;
 
 end.
