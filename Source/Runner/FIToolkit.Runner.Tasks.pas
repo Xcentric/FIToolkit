@@ -31,7 +31,11 @@ type
     strict private
       FRunners : TTaskRunnerList;
     public
+      constructor Create(const Executable : TFileName; Options : TFixInsightOptions;
+        const Files : TArray<TFileName>; const TempDirectory : String);
       destructor Destroy; override;
+
+      function RunAndReturn : IFuture<TArray<TFileName>>;
   end;
 
 implementation
@@ -111,11 +115,59 @@ end;
 
 { TTaskManager }
 
+constructor TTaskManager.Create(const Executable : TFileName; Options : TFixInsightOptions;
+  const Files : TArray<TFileName>; const TempDirectory : String);
+var
+  FIO : TFixInsightOptions;
+  S : String;
+begin
+  inherited Create;
+
+  FRunners := TTaskRunnerList.Create(True);
+
+  FIO := TFixInsightOptions.Create;
+  try
+    FIO.Assign(Options, False);
+    FIO.OutputFileName := TPath.IncludeTrailingPathDelimiter(TempDirectory) + TPath.GetFileName(FIO.OutputFileName);
+
+    for S in Files do
+    begin
+      FIO.ProjectFileName := S;
+      FRunners.Add(TTaskRunner.Create(Executable, FIO));
+    end;
+  finally
+    FIO.Free;
+  end;
+end;
+
 destructor TTaskManager.Destroy;
 begin
   FreeAndNil(FRunners);
 
   inherited Destroy;
+end;
+
+function TTaskManager.RunAndReturn : IFuture<TArray<TFileName>>;
+var
+  R : TTaskRunner;
+  arrTasks : TArray<ITask>;
+begin
+  for R in FRunners do
+    arrTasks := arrTasks + [R.Execute];
+
+  Result := TTask.Future<TArray<TFileName>>(
+    function : TArray<TFileName>
+    var
+      TR : TTaskRunner;
+    begin
+      //TODO: no exception handling - IFuture is a bad idea
+      TTask.WaitForAll(arrTasks);
+
+      //TODO: multi-threaded access to thread-unsafe classes
+      for TR in FRunners do
+        Result := Result + [TR.OutputFileName];
+    end
+  );
 end;
 
 end.
