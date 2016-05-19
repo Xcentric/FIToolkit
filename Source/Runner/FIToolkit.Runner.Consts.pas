@@ -15,6 +15,7 @@ resourcestring
   { Exceptions }
 
   RSCreateProcessError = 'Не удалось создать процесс.';
+  RSSomeTasksFailed = 'Одна или более задач по обработке проектов завершились неудачей.';
 
 implementation
 

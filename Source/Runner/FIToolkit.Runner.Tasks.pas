@@ -155,7 +155,11 @@ begin
   for i := 0 to High(arrTasks) do
     arrTasks[i] := FRunners[i].Execute;
 
-  TTask.WaitForAll(arrTasks);
+  try
+    TTask.WaitForAll(arrTasks);
+  except
+    Exception.RaiseOuterException(ESomeTasksFailed.Create);
+  end;
 
   SetLength(Result, FRunners.Count);
   for i := 0 to High(Result) do
