@@ -11,20 +11,28 @@ implementation
 
 uses
   System.IOUtils, System.Classes,
-  FIToolkit.Exceptions, FIToolkit.Consts,
-  FIToolkit.Commons.Utils,
+  FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts,
+  FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
+  FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
   FIToolkit.Config.Manager;
 
 type
 
   TFIToolkit = class sealed
+    private
+      type
+        //TODO: replace when "F2084 Internal Error: URW1175" fixed
+        IStateMachine = IFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
+        TStateMachine = TFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
     strict private
       FConfig : TConfigManager;
       FOptions : TCLIOptions;
+      FStateMachine : IStateMachine;
     strict private
       procedure InitConfig;
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
+      procedure InitStateMachine;
     private
       procedure PrintHelp;
     public
@@ -56,18 +64,20 @@ constructor TFIToolkit.Create(const FullExePath : TFileName; const CmdLineOption
 begin
   inherited Create;
 
+  InitStateMachine;
   InitOptions(CmdLineOptions);
-  InitConfig;
 end;
 
 destructor TFIToolkit.Destroy;
 begin
   FreeAndNil(FConfig);
   FreeAndNil(FOptions);
+  FStateMachine := nil;
 
   inherited Destroy;
 end;
 
+//TODO: implement {rewrite to accept parameters}
 procedure TFIToolkit.InitConfig;
 var
   bHasGenerateConfigOption : Boolean;
@@ -89,9 +99,16 @@ var
   S : String;
 begin
   FOptions := TCLIOptions.Create;
+  FOptions.Capacity := Length(CmdLineOptions);
 
   for S in CmdLineOptions do
     FOptions.Add(S);
+end;
+
+procedure TFIToolkit.InitStateMachine;
+begin
+  FStateMachine := TStateMachine.Create(asInitial);
+  //TODO: implement {InitStateMachine}
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -108,7 +125,6 @@ begin
   try
     SL := TStringList.Create;
     try
-      RS.Position := 0;
       SL.LoadFromStream(RS, TEncoding.UTF8);
       Writeln(SL.Text);
     finally
@@ -121,19 +137,7 @@ end;
 
 procedure TFIToolkit.Run;
 begin
-  if FOptions.Contains(STR_CLI_OPTION_HELP) then
-  begin
-    PrintHelp;
-    Exit;
-  end;
-
-  if FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG) and TFile.Exists(FConfig.ConfigFileName) then
-  begin
-    Writeln(RSConfigWasGenerated);
-    Writeln(FConfig.ConfigFileName);
-    Writeln(RSEditConfigManually);
-    Exit;
-  end;
+  //TODO: implement {Run}
 end;
 
 end.
