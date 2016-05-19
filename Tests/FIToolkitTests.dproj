@@ -106,7 +106,6 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
-        <DCCReference Include="..\Source\FIToolkit.Consts.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>

@@ -3,7 +3,8 @@
 interface
 
 uses
-  FIToolkit.Commons.Consts;
+  System.SysUtils,
+  FIToolkit.Commons.Consts, FIToolkit.CommandLine.Consts, FIToolkit.Types;
 
 const
 
@@ -14,6 +15,19 @@ const
   STR_APP_COPYRIGHT_TEXT = ' Copyright (c) ' + STR_APP_COPYRIGHT_HOLDER + ', 2016';
   STR_APP_DESCRIPTION = ' A set of tools for SourceOddity(R) FixInsight(TM).';
   STR_APP_TITLE = '                           FIToolkit';
+
+  { Common consts }
+
+  CLIOptionToAppCommandMapping : array [Low(TApplicationCommand)..High(TApplicationCommand)] of String = (
+    String.Empty,
+    //
+    STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
+    STR_CLI_OPTION_NO_EXIT,
+    //
+    String.Empty, String.Empty, String.Empty, String.Empty,
+    //
+    String.Empty
+  );
 
   { Resources }
 

@@ -11,7 +11,7 @@ implementation
 
 uses
   System.IOUtils, System.Classes,
-  FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts,
+  FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Types, FIToolkit.Consts,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
@@ -136,7 +136,27 @@ begin
 end;
 
 procedure TFIToolkit.Run;
+var
+  O : TCLIOption;
+  C : TApplicationCommand;
 begin
+  try
+    for O in FOptions do
+      if TryCLIOptionToAppCommand(O.Name, C) then
+        FStateMachine.Execute(C);
+
+    FStateMachine
+      .Execute(acReset)
+      .Execute(acParseProjectGroup)
+      .Execute(acRunFixInsight)
+      .Execute(acParseReports)
+      .Execute(acBuildReport)
+      .Execute(acTerminate);
+  except
+    on E: Exception do
+      raise;  //TODO: handle with no-exit specific
+  end;
+
   //TODO: implement {Run}
 end;
 
