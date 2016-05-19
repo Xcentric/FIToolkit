@@ -26,7 +26,6 @@ type
 
   TTaskRunnerList = class (TObjectList<TTaskRunner>);
 
-  //TODO: implement {TTaskManager}
   TTaskManager = class sealed
     strict private
       FRunners : TTaskRunnerList;
@@ -35,7 +34,7 @@ type
         const Files : TArray<TFileName>; const TempDirectory : String);
       destructor Destroy; override;
 
-      function RunAndReturn : IFuture<TArray<TFileName>>;
+      function RunAndGetOutput : TArray<TFileName>;
   end;
 
 implementation
@@ -147,27 +146,20 @@ begin
   inherited Destroy;
 end;
 
-function TTaskManager.RunAndReturn : IFuture<TArray<TFileName>>;
+function TTaskManager.RunAndGetOutput : TArray<TFileName>;
 var
-  R : TTaskRunner;
   arrTasks : TArray<ITask>;
+  i : Integer;
 begin
-  for R in FRunners do
-    arrTasks := arrTasks + [R.Execute];
+  SetLength(arrTasks, FRunners.Count);
+  for i := 0 to High(arrTasks) do
+    arrTasks[i] := FRunners[i].Execute;
 
-  Result := TTask.Future<TArray<TFileName>>(
-    function : TArray<TFileName>
-    var
-      TR : TTaskRunner;
-    begin
-      //TODO: no exception handling - IFuture is a bad idea
-      TTask.WaitForAll(arrTasks);
+  TTask.WaitForAll(arrTasks);
 
-      //TODO: multi-threaded access to thread-unsafe classes
-      for TR in FRunners do
-        Result := Result + [TR.OutputFileName];
-    end
-  );
+  SetLength(Result, FRunners.Count);
+  for i := 0 to High(Result) do
+    Result[i] := FRunners[i].OutputFileName;
 end;
 
 end.
