@@ -31,7 +31,7 @@ type
       FRunners : TTaskRunnerList;
     public
       constructor Create(const Executable : TFileName; Options : TFixInsightOptions;
-        const Files : TArray<TFileName>; const TempDirectory : String);
+        const Files : array of TFileName; const TempDirectory : String);
       destructor Destroy; override;
 
       function RunAndGetOutput : TArray<TFileName>;
@@ -115,7 +115,7 @@ end;
 { TTaskManager }
 
 constructor TTaskManager.Create(const Executable : TFileName; Options : TFixInsightOptions;
-  const Files : TArray<TFileName>; const TempDirectory : String);
+  const Files : array of TFileName; const TempDirectory : String);
 var
   FIO : TFixInsightOptions;
   S : String;
@@ -123,6 +123,7 @@ begin
   inherited Create;
 
   FRunners := TTaskRunnerList.Create(True);
+  FRunners.Capacity := Length(Files);
 
   FIO := TFixInsightOptions.Create;
   try
