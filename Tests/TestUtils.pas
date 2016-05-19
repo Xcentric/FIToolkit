@@ -13,6 +13,8 @@ type
       const
         STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\';
     public
+      procedure CheckAggregateException(const AProc : TProc; AExceptionClass : ExceptClass;
+        const Msg : String = String.Empty);
       procedure CheckEquals(Expected, Actual : TObject; const Msg : String = String.Empty); overload;
       procedure CheckException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty); overload;
@@ -31,10 +33,49 @@ type
 implementation
 
 uses
-  System.Generics.Defaults, System.Rtti, System.IOUtils, Winapi.Windows, Vcl.Dialogs,
+  System.Generics.Defaults, System.Rtti, System.IOUtils, System.Threading,
+  Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
 
 { TTestCaseHelper }
+
+procedure TTestCaseHelper.CheckAggregateException(const AProc : TProc; AExceptionClass : ExceptClass; const Msg : String);
+var
+  bFound : Boolean;
+  E : Exception;
+begin
+  FCheckCalled := True;
+  try
+    AProc;
+  except
+    on Raised: Exception do
+    begin
+      if not Assigned(AExceptionClass) then
+        raise
+      else
+      begin
+        bFound := False;
+
+        if Raised.InheritsFrom(EAggregateException) then
+          for E in EAggregateException(Raised) do
+            if E.InheritsFrom(AExceptionClass) then
+            begin
+              bFound := True;
+              Break;
+            end;
+
+        if bFound then
+          AExceptionClass := nil
+        else
+          FailNotEquals(AExceptionClass.ClassName,
+            Format('%s:%s%s', [Raised.ClassName, sLineBreak, Raised.ToString]), Msg, ReturnAddress);
+      end;
+    end;
+  end;
+
+  if Assigned(AExceptionClass) then
+    FailNotEquals(AExceptionClass.ClassName, sExceptionNothig, Msg, ReturnAddress);
+end;
 
 procedure TTestCaseHelper.CheckEquals(Expected, Actual : TObject; const Msg : String);
 begin

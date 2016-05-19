@@ -20,6 +20,14 @@ type
 
   // Test methods for class TTaskRunner
   TestTTaskRunner = class (TGenericTestCase)
+  private
+    const
+      STR_OUTPUT_FILENAME_NO_EXT = 'test_output';
+      STR_OUTPUT_FILENAME_EXT = '.ext';
+      STR_OUTPUT_FILENAME = STR_OUTPUT_FILENAME_NO_EXT + STR_OUTPUT_FILENAME_EXT;
+
+      STR_PROJECT_FILENAME_NO_EXT = 'test_input';
+      STR_PROJECT_FILENAME = STR_PROJECT_FILENAME_NO_EXT + '.ext';
   strict private
     FTaskRunner : TTaskRunner;
   public
@@ -46,8 +54,9 @@ type
 implementation
 
 uses
-  System.Threading,
-  FIToolkit.Config.FixInsight;
+  System.Threading, System.IOUtils,
+  TestUtils,
+  FIToolkit.Config.FixInsight, FIToolkit.Commons.Utils, FIToolkit.Runner.Exceptions;
 
 procedure TestTTaskRunner.SetUp;
 var
@@ -55,6 +64,8 @@ var
 begin
   FIO := TFixInsightOptions.Create;
   try
+    FIO.OutputFileName  := STR_OUTPUT_FILENAME;
+    FIO.ProjectFileName := STR_PROJECT_FILENAME;
     FTaskRunner := TTaskRunner.Create(String.Empty, FIO);
   finally
     FIO.Free;
@@ -68,10 +79,29 @@ end;
 
 procedure TestTTaskRunner.TestExecute;
 var
-  ReturnValue: ITask;
+  ReturnValue : ITask;
+  S : String;
 begin
   ReturnValue := FTaskRunner.Execute;
-  // TODO: Validate method results
+
+  CheckAggregateException(
+    procedure
+    begin
+      ReturnValue.Wait;
+    end,
+    ECreateProcessError,
+    'CheckAggregateException::ECreateProcessError'
+  );
+
+  S := FTaskRunner.OutputFileName;
+
+  CheckTrue(TPath.IsApplicableFileName(S), 'IsApplicableFileName(%s)', [S]);
+  CheckEquals(TestDataDir, TPath.GetDirectoryName(S, True), 'GetDirectoryName(S) = TestDataDir');
+  CheckTrue(TPath.GetFileName(S).StartsWith(STR_OUTPUT_FILENAME_NO_EXT),
+    'GetFileName(S).StartsWith(%s)', [STR_OUTPUT_FILENAME_NO_EXT]);
+  CheckTrue(S.EndsWith(STR_OUTPUT_FILENAME_EXT), 'S.EndsWith(%s)', [STR_OUTPUT_FILENAME_EXT]);
+  CheckTrue(S.Contains(STR_PROJECT_FILENAME_NO_EXT), 'S.Contains(%s)', [STR_PROJECT_FILENAME_NO_EXT]);
+  CheckFalse(S.Contains(STR_PROJECT_FILENAME), 'S.Contains(%s)', [STR_PROJECT_FILENAME]);
 end;
 
 procedure TestTTaskManager.SetUp;
@@ -95,8 +125,14 @@ procedure TestTTaskManager.TestRunAndGetOutput;
 var
   ReturnValue: TArray<TFileName>;
 begin
-  ReturnValue := FTaskManager.RunAndGetOutput;
-  // TODO: Validate method results
+  CheckException(
+    procedure
+    begin
+      ReturnValue := FTaskManager.RunAndGetOutput;
+    end,
+    ESomeTasksFailed,
+    'CheckException::ESomeTasksFailed'
+  );
 end;
 
 initialization
