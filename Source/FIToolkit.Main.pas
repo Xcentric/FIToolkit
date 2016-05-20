@@ -10,7 +10,7 @@ uses
 implementation
 
 uses
-  System.IOUtils, System.Classes,
+  System.IOUtils, System.Classes, System.Generics.Defaults, System.Math,
   FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Types, FIToolkit.Consts,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
@@ -35,6 +35,7 @@ type
       procedure InitStateMachine;
     private
       procedure PrintHelp;
+      procedure ProcessOptions;
     public
       class procedure PrintAbout;
 
@@ -77,7 +78,7 @@ begin
   inherited Destroy;
 end;
 
-//TODO: implement {rewrite to accept parameters}
+//TODO: rewrite to accept parameters
 procedure TFIToolkit.InitConfig;
 var
   bHasGenerateConfigOption : Boolean;
@@ -135,16 +136,34 @@ begin
   end;
 end;
 
-procedure TFIToolkit.Run;
+procedure TFIToolkit.ProcessOptions;
 var
   O : TCLIOption;
   C : TApplicationCommand;
 begin
   try
+    FOptions.Sort(TComparer<TCLIOption>.Construct(
+      function (const Left, Right : TCLIOption) : Integer
+      begin
+        Result := CompareValue(GetCLIOptionWeight(Left.Name), GetCLIOptionWeight(Right.Name));
+        //TODO: compare CLI option weight values
+      end
+    ));
+
     for O in FOptions do
       if TryCLIOptionToAppCommand(O.Name, C) then
         FStateMachine.Execute(C);
+  except
+    //TODO: handle with no-exit specific
+    raise;
+  end;
+end;
 
+procedure TFIToolkit.Run;
+begin
+  ProcessOptions;
+
+  try
     FStateMachine
       .Execute(acReset)
       .Execute(acParseProjectGroup)
@@ -153,8 +172,8 @@ begin
       .Execute(acBuildReport)
       .Execute(acTerminate);
   except
-    on E: Exception do
-      raise;  //TODO: handle with no-exit specific
+    //TODO: handle with no-exit specific
+    raise;
   end;
 
   //TODO: implement {Run}

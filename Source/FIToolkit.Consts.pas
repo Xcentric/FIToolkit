@@ -18,7 +18,7 @@ const
 
   { Common consts }
 
-  CLIOptionToAppCommandMapping : array [Low(TApplicationCommand)..High(TApplicationCommand)] of String = (
+  ARR_APPCOMMAND_TO_CLIOPTION_MAPPING : array [Low(TApplicationCommand)..High(TApplicationCommand)] of String = (
     String.Empty,
     //
     STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
@@ -27,6 +27,15 @@ const
     String.Empty, String.Empty, String.Empty, String.Empty,
     //
     String.Empty
+  );
+
+  //TODO: fill weights values
+  ARR_CLIOPTION_WEIGHTS : array [0..4] of TCLIOptionWeight = (
+    (OptionName: STR_CLI_OPTION_HELP; OptionWeight: 0),
+    (OptionName: STR_CLI_OPTION_VERSION; OptionWeight: 0),
+    (OptionName: STR_CLI_OPTION_GENERATE_CONFIG; OptionWeight: 0),
+    (OptionName: STR_CLI_OPTION_SET_CONFIG; OptionWeight: 0),
+    (OptionName: STR_CLI_OPTION_NO_EXIT; OptionWeight: 0)
   );
 
   { Resources }
