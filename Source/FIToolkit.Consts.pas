@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Commons.Consts, FIToolkit.CommandLine.Consts, FIToolkit.Types;
+  FIToolkit.Types,
+  FIToolkit.Commons.Consts, FIToolkit.CommandLine.Consts;
 
 const
 
@@ -37,6 +38,15 @@ const
     (OptionName: STR_CLI_OPTION_SET_CONFIG; OptionWeight: 0),
     (OptionName: STR_CLI_OPTION_NO_EXIT; OptionWeight: 0)
   );
+
+  //TODO: select options sorting method (weights vs index-based)
+  ARR_CLIOPTION_PROCESSING_ORDER : TArray<String> = [
+    STR_CLI_OPTION_NO_EXIT,
+    STR_CLI_OPTION_HELP,
+    STR_CLI_OPTION_VERSION,
+    STR_CLI_OPTION_GENERATE_CONFIG,
+    STR_CLI_OPTION_SET_CONFIG
+  ];
 
   { Resources }
 
