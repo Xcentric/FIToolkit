@@ -326,7 +326,22 @@ begin
       FFiniteStateMachine.Execute(ctBegin);
     end,
     ETransitionNotFound,
-    'CheckException::ETransitionNotFound'
+    'CheckInnerException::ETransitionNotFound'
+  );
+
+  FFiniteStateMachine.AddTransition(FINISH_STATE, START_STATE, ctBegin,
+    procedure (const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType)
+    begin
+      FFiniteStateMachine.Execute(ctEnd);
+    end
+  );
+  CheckInnerException(
+    procedure
+    begin
+      FFiniteStateMachine.Execute(ctBegin);
+    end,
+    EExecutionInProgress,
+    'CheckInnerException::EExecutionInProgress'
   );
 end;
 
@@ -359,7 +374,7 @@ begin
       FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
     end,
     ETransitionNotFound,
-    'CheckException::ETransitionNotFound'
+    'CheckInnerException::ETransitionNotFound'
   );
 end;
 
@@ -390,7 +405,7 @@ begin
       FFiniteStateMachine.GetReachableState(FINISH_STATE, ctEnd);
     end,
     ETransitionNotFound,
-    'CheckException::ETransitionNotFound'
+    'CheckInnerException::ETransitionNotFound'
   );
 end;
 

@@ -9,6 +9,8 @@ type
 
   EFiniteStateMachineError = class abstract (Exception);
 
+  EExecutionInProgress = class (EFiniteStateMachineError);
+
   ETransitionNotFound = class (EFiniteStateMachineError);
 
 implementation

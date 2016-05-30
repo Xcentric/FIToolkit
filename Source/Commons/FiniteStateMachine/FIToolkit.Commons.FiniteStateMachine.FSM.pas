@@ -94,6 +94,7 @@ type
     strict private
       FCommandComparer : ICommandComparer;
       FCurrentState : TState;
+      FExecuting : Boolean;
       FPreviousState : TState;
       FStateComparer : IStateComparer;
       FTransitionTable : TTransitionTable;
@@ -393,15 +394,23 @@ var
   NewState : TState;
   Transition : TTransition;
 begin
+  if FExecuting then
+    RaiseOuterException(EExecutionInProgress.Create(RSExecutionInProgress));
+
   NewState := GetReachableState(FCurrentState, Command, Transition);
 
   try
-    BeforeExecute(Command);
-    Transition.PerformExitStateAction(NewState);
-    FPreviousState := FCurrentState;
-    FCurrentState  := NewState;
-    Transition.PerformEnterStateAction(NewState);
-    AfterExecute(Command);
+    FExecuting := True;
+    try
+      BeforeExecute(Command);
+      Transition.PerformExitStateAction(NewState);
+      FPreviousState := FCurrentState;
+      FCurrentState  := NewState;
+      Transition.PerformEnterStateAction(NewState);
+      AfterExecute(Command);
+    finally
+      FExecuting := False;
+    end;
   except
     RaiseOuterException(nil);
   end;
