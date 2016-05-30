@@ -30,20 +30,10 @@ const
     String.Empty
   );
 
-  //TODO: fill weights values
-  ARR_CLIOPTION_WEIGHTS : array [0..4] of TCLIOptionWeight = (
-    (OptionName: STR_CLI_OPTION_HELP; OptionWeight: 0),
-    (OptionName: STR_CLI_OPTION_VERSION; OptionWeight: 0),
-    (OptionName: STR_CLI_OPTION_GENERATE_CONFIG; OptionWeight: 0),
-    (OptionName: STR_CLI_OPTION_SET_CONFIG; OptionWeight: 0),
-    (OptionName: STR_CLI_OPTION_NO_EXIT; OptionWeight: 0)
-  );
-
-  //TODO: select options sorting method (weights vs index-based)
   ARR_CLIOPTION_PROCESSING_ORDER : TArray<String> = [
-    STR_CLI_OPTION_NO_EXIT,
     STR_CLI_OPTION_HELP,
     STR_CLI_OPTION_VERSION,
+    STR_CLI_OPTION_NO_EXIT,
     STR_CLI_OPTION_GENERATE_CONFIG,
     STR_CLI_OPTION_SET_CONFIG
   ];

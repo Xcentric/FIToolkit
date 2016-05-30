@@ -46,8 +46,9 @@ type
 
   TCLIOptions = class (TList<TCLIOption>)
     public
-      function Contains(const OptionName : String; IgnoreCase : Boolean = True) : Boolean; overload;
-      function Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean = True) : Boolean;
+      //TODO: implement {AddUnique/AddIfNotExists}
+      function Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean; overload;
+      function Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean) : Boolean;
   end;
 
 implementation

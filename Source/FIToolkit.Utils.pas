@@ -5,8 +5,9 @@ interface
 uses
   FIToolkit.Types;
 
-  function GetCLIOptionWeight(const OptionName : String) : Integer;
-  function TryCLIOptionToAppCommand(const OptionName : String; out Command : TApplicationCommand) : Boolean;
+  function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
+  function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
+    out Command : TApplicationCommand) : Boolean;
 
 implementation
 
@@ -14,20 +15,24 @@ uses
   System.SysUtils,
   FIToolkit.Consts;
 
-//TODO: cover with test case {GetCLIOptionWeight}
-function GetCLIOptionWeight(const OptionName : String) : Integer;
+//TODO: cover with test case {GetCLIOptionProcessingOrder}
+function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
 var
-  W : TCLIOptionWeight;
+  i : Integer;
 begin
-  Result := -1;
+  if not String.IsNullOrWhiteSpace(OptionName) then
+    for i := 0 to High(ARR_CLIOPTION_PROCESSING_ORDER) do
+      if ARR_CLIOPTION_PROCESSING_ORDER[i].Equals(OptionName) or
+        (IgnoreCase and AnsiSameText(ARR_CLIOPTION_PROCESSING_ORDER[i], OptionName))
+      then
+        Exit(i);
 
-  for W in ARR_CLIOPTION_WEIGHTS do
-    if W.OptionName.Equals(OptionName) then
-      Exit(W.OptionWeight);
+  Result := -1;
 end;
 
 //TODO: cover with test case {TryCLIOptionToAppCommand}
-function TryCLIOptionToAppCommand(const OptionName : String; out Command : TApplicationCommand) : Boolean;
+function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
+  out Command : TApplicationCommand) : Boolean;
 var
   C : TApplicationCommand;
 begin
@@ -35,7 +40,8 @@ begin
 
   if not String.IsNullOrWhiteSpace(OptionName) then
     for C := Low(ARR_APPCOMMAND_TO_CLIOPTION_MAPPING) to High(ARR_APPCOMMAND_TO_CLIOPTION_MAPPING) do
-      if ARR_APPCOMMAND_TO_CLIOPTION_MAPPING[C].Equals(OptionName) then
+      if ARR_APPCOMMAND_TO_CLIOPTION_MAPPING[C].Equals(OptionName) or
+        (IgnoreCase and AnsiSameText(ARR_APPCOMMAND_TO_CLIOPTION_MAPPING[C], OptionName)) then
       begin
         Command := C;
         Exit(True);

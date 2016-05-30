@@ -35,7 +35,9 @@ type
       procedure InitStateMachine;
     private
       procedure PrintHelp;
+      procedure PrintVersion;
       procedure ProcessOptions;
+      procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
 
@@ -86,7 +88,8 @@ var
 begin
   bHasGenerateConfigOption := FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG);
 
-  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption) and
+  //TODO: get IgnoreCase value somewhere #1
+  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption, True) and
      TPath.IsApplicableFileName(SetConfigOption.Value) and
      (TFile.Exists(SetConfigOption.Value) or bHasGenerateConfigOption)
   then
@@ -102,14 +105,60 @@ begin
   FOptions := TCLIOptions.Create;
   FOptions.Capacity := Length(CmdLineOptions);
 
+  //TODO: add unique only options
   for S in CmdLineOptions do
     FOptions.Add(S);
 end;
 
 procedure TFIToolkit.InitStateMachine;
+var
+  P : TOnEnterStateProc<TApplicationState, TApplicationCommand>;
 begin
   FStateMachine := TStateMachine.Create(asInitial);
   //TODO: implement {InitStateMachine}
+
+  { Common states }
+
+  FStateMachine
+    .AddTransition(asInitial, asHelpPrinted, acPrintHelp,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        PrintHelp;
+      end
+    )
+    .AddTransition(asInitial, asVersionPrinted, acPrintVersion,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        PrintVersion;
+      end
+    )
+    .AddTransition(asInitial, asNoExitSet, acSetNoExit,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        SetNoExitBehavior;
+      end
+    );
+
+  { Config states }
+
+  P :=
+    procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+    begin
+      case CurrentState of
+        asConfigGenerated:
+          InitConfig{TODO: pass params #1};
+        asConfigSet:
+          InitConfig{TODO: pass params #2};
+      else
+        Assert(False, 'Unhandled application state while initializing configuration.');
+      end;
+    end;
+
+  FStateMachine
+    .AddTransition(asInitial,   asConfigGenerated, acGenerateConfig, P)
+    .AddTransition(asNoExitSet, asConfigGenerated, acGenerateConfig, P)
+    .AddTransition(asInitial,   asConfigSet, acSetConfig, P)
+    .AddTransition(asNoExitSet, asConfigSet, acSetConfig, P);
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -136,6 +185,11 @@ begin
   end;
 end;
 
+procedure TFIToolkit.PrintVersion;
+begin
+  //TODO: implement {PrintVersion}
+end;
+
 procedure TFIToolkit.ProcessOptions;
 var
   O : TCLIOption;
@@ -145,13 +199,17 @@ begin
     FOptions.Sort(TComparer<TCLIOption>.Construct(
       function (const Left, Right : TCLIOption) : Integer
       begin
-        Result := CompareValue(GetCLIOptionWeight(Left.Name), GetCLIOptionWeight(Right.Name));
-        //TODO: compare CLI option weight values
+        //TODO: get IgnoreCase value from somewhere #2
+        Result := CompareValue(
+          GetCLIOptionProcessingOrder(Left.Name, False),
+          GetCLIOptionProcessingOrder(Right.Name, False)
+        );
       end
     ));
 
+    //TODO: get IgnoreCase value from somewhere #3
     for O in FOptions do
-      if TryCLIOptionToAppCommand(O.Name, C) then
+      if TryCLIOptionToAppCommand(O.Name, False, C) then
         FStateMachine.Execute(C);
   except
     //TODO: handle with no-exit specific
@@ -175,8 +233,11 @@ begin
     //TODO: handle with no-exit specific
     raise;
   end;
+end;
 
-  //TODO: implement {Run}
+procedure TFIToolkit.SetNoExitBehavior;
+begin
+  //TODO: implement {SetNoExitBehavior}
 end;
 
 end.

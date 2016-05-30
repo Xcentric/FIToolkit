@@ -16,11 +16,6 @@ type
     asProjectGroupParsed, asFixInsightRan, asReportsParsed, asReportBuilt,
     asFinal);
 
-  TCLIOptionWeight = record
-    OptionName : String;
-    OptionWeight : Integer;
-  end;
-
   TNoExitBehavior = (neDisabled, neEnabled, neEnabledOnException);
 
 implementation
