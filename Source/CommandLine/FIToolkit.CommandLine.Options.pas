@@ -46,9 +46,9 @@ type
 
   TCLIOptions = class (TList<TCLIOption>)
     public
-      //TODO: implement {AddUnique/AddIfNotExists}
+      function AddUnique(const Value : TCLIOption; IgnoreCase : Boolean) : Integer;
       function Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean; overload;
-      function Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean) : Boolean;
+      function Find(const OptionName : String; out Value : TCLIOption; IgnoreCase : Boolean) : Boolean;
   end;
 
 implementation
@@ -156,6 +156,16 @@ end;
 
 { TCLIOptions }
 
+function TCLIOptions.AddUnique(const Value : TCLIOption; IgnoreCase : Boolean) : Integer;
+var
+  Option : TCLIOption;
+begin
+  if Find(Value.Name, Option, IgnoreCase) then
+    Result := IndexOf(Option)
+  else
+    Result := Add(Value);
+end;
+
 function TCLIOptions.Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean;
 var
   Option : TCLIOption;
@@ -163,16 +173,16 @@ begin
   Result := Find(OptionName, Option, IgnoreCase);
 end;
 
-function TCLIOptions.Find(const OptionName : String; out Option : TCLIOption; IgnoreCase : Boolean) : Boolean;
+function TCLIOptions.Find(const OptionName : String; out Value : TCLIOption; IgnoreCase : Boolean) : Boolean;
 var
-  Opt : TCLIOption;
+  Option : TCLIOption;
 begin
   Result := False;
 
-  for Opt in Self do
-    if String.Compare(Opt.Name, OptionName, IgnoreCase) = EqualsValue then
+  for Option in Self do
+    if String.Compare(Option.Name, OptionName, IgnoreCase) = EqualsValue then
     begin
-      Option := Opt;
+      Value := Option;
       Exit(True);
     end;
 end;

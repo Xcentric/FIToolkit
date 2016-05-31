@@ -62,6 +62,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestAddUnique;
     procedure TestContains;
     procedure TestFind;
   end;
@@ -223,6 +224,35 @@ end;
 procedure TestTCLIOptions.TearDown;
 begin
   FreeAndNil(FCLIOptions);
+end;
+
+procedure TestTCLIOptions.TestAddUnique;
+const
+  STR_OPTION3 = '--Param3=Value3';
+var
+  iOldCount, iIdx : Integer;
+begin
+  iOldCount := FCLIOptions.Count;
+  iIdx := FCLIOptions.AddUnique(STR_OPTION3, True);
+  CheckEquals(iOldCount + 1, FCLIOptions.Count,
+    '(FCLIOptions.Count = iOldCount + 1)::AddUnique(STR_OPTION3, True)');
+
+  iOldCount := FCLIOptions.Count;
+  CheckEquals(iIdx, FCLIOptions.AddUnique(STR_OPTION3, False), 'AddUnique(STR_OPTION3, False) = iIdx');
+  CheckEquals(iIdx, FCLIOptions.AddUnique(STR_OPTION3, True), 'AddUnique(STR_OPTION3, True) = iIdx');
+  CheckEquals(iOldCount, FCLIOptions.Count,
+    '(FCLIOptions.Count = iOldCount)::AddUnique(STR_OPTION3, <True/False>)');
+
+  iOldCount := FCLIOptions.Count;
+  FCLIOptions.AddUnique(AnsiUpperCase(STR_OPTION3), False);
+  CheckEquals(iOldCount + 1, FCLIOptions.Count,
+    '(FCLIOptions.Count = iOldCount + 1)::AddUnique(AnsiUpperCase(STR_OPTION3), False)');
+
+  iOldCount := FCLIOptions.Count;
+  CheckEquals(iIdx, FCLIOptions.AddUnique(AnsiLowerCase(STR_OPTION3), True),
+    'AddUnique(AnsiLowerCase(STR_OPTION3), True) = iIdx');
+  CheckEquals(iOldCount, FCLIOptions.Count,
+    '(FCLIOptions.Count = iOldCount)::AddUnique(AnsiLowerCase(STR_OPTION3), True)');
 end;
 
 procedure TestTCLIOptions.TestContains;
