@@ -31,7 +31,7 @@ type
       FOptions : TCLIOptions;
       FStateMachine : IStateMachine;
     strict private
-      procedure InitConfig;
+      procedure InitConfig(GenerateFlag : Boolean);
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
       procedure InitStateMachine;
     private
@@ -82,22 +82,22 @@ begin
   inherited Destroy;
 end;
 
-//TODO: rewrite to accept parameters
-procedure TFIToolkit.InitConfig;
+procedure TFIToolkit.InitConfig(GenerateFlag : Boolean);
 var
-  bHasGenerateConfigOption : Boolean;
   SetConfigOption : TCLIOption;
 begin
-  bHasGenerateConfigOption := FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG);
-
-  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
-                   not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
-     TPath.IsApplicableFileName(SetConfigOption.Value) and
-     (TFile.Exists(SetConfigOption.Value) or bHasGenerateConfigOption)
-  then
-    FConfig := TConfigManager.Create(SetConfigOption.Value, bHasGenerateConfigOption, True)
-  else
-    raise ENoValidConfigSpecified.Create;
+  //TODO: this method is called twice due to generate-config option - how to refactor?
+  if not Assigned(FConfig) then
+  begin
+    if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
+                     not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
+       TPath.IsApplicableFileName(SetConfigOption.Value) and
+       (TFile.Exists(SetConfigOption.Value) or GenerateFlag)
+    then
+      FConfig := TConfigManager.Create(SetConfigOption.Value, GenerateFlag, True)
+    else
+      raise ENoValidConfigSpecified.Create;
+  end;
 end;
 
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
@@ -151,9 +151,9 @@ begin
     begin
       case CurrentState of
         asConfigGenerated:
-          InitConfig{TODO: pass params #1};
+          InitConfig(True);
         asConfigSet:
-          InitConfig{TODO: pass params #2};
+          InitConfig(False);
       else
         Assert(False, 'Unhandled application state while initializing configuration.');
       end;
