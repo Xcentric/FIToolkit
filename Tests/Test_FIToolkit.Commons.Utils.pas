@@ -12,6 +12,7 @@
 interface
 
 uses
+  System.SysUtils,
   TestFramework,
   FIToolkit.Commons.Utils;
 
@@ -21,6 +22,15 @@ type
     published
       procedure TestGetFixInsightExePath;
       procedure TestIff;
+  end;
+
+  TestTExceptionHelper = class (TGenericTestCase)
+    private
+      type
+        ETestError1 = class (Exception);
+        ETestError2 = class (Exception);
+    published
+      procedure TestToString;
   end;
 
   TestTFileNameHelper = class (TGenericTestCase)
@@ -98,8 +108,10 @@ type
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
+  System.IOUtils, System.TypInfo, System.Rtti,
   TestUtils, TestConsts;
+
+{ TestFIToolkitUtils }
 
 procedure TestFIToolkitUtils.TestGetFixInsightExePath;
 var
@@ -141,6 +153,39 @@ begin
   CheckTrue(eReturnValue = eTruePart, 'eReturnValue = eTruePart');
   eReturnValue := Iff.Get<TTestEnum>(False, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eFalsePart, 'eReturnValue = eFalsePart');
+end;
+
+{ TestTExceptionHelper }
+
+procedure TestTExceptionHelper.TestToString;
+const
+  STR_ERRMSG1 = 'Error1';
+  STR_ERRMSG2 = 'Error2';
+var
+  ReturnValue : String;
+begin
+  try
+    try
+      raise ETestError1.Create(STR_ERRMSG1);
+    except
+      Exception.RaiseOuterException(ETestError2.Create(STR_ERRMSG2));
+    end;
+  except
+    on E: Exception do
+    begin
+      CheckEquals(E.ToString, E.ToString(False), 'E.ToString(False) = E.ToString');
+
+      ReturnValue := E.ToString(True);
+      CheckTrue(ReturnValue.Contains(ETestError1.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [ETestError1.ClassName]);
+      CheckTrue(ReturnValue.Contains(ETestError2.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [ETestError2.ClassName]);
+      CheckTrue(ReturnValue.Contains(E.Message),
+        'CheckTrue::ReturnValue.Contains(%s)', [E.Message]);
+      CheckTrue(ReturnValue.Contains(E.InnerException.Message),
+        'CheckTrue::ReturnValue.Contains(%s)', [E.InnerException.Message]);
+    end;
+  end;
 end;
 
 { TestTFileNameHelper }
@@ -378,6 +423,7 @@ end;
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestFIToolkitUtils.Suite);
+  RegisterTest(TestTExceptionHelper.Suite);
   RegisterTest(TestTFileNameHelper.Suite);
   RegisterTest(TestTPathHelper.Suite);
   RegisterTest(TestTRttiTypeHelper.Suite);

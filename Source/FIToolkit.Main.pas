@@ -173,7 +173,7 @@ end;
 
 procedure TFIToolkit.PrintException(E : Exception);
 begin
-  //TODO: implement {PrintException}
+  Writeln(E.ToString(True), sLineBreak);
 end;
 
 procedure TFIToolkit.PrintHelp;

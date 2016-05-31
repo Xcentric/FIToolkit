@@ -20,6 +20,11 @@ type
 
   { Helpers }
 
+  TExceptionHelper = class helper for Exception
+    public
+      function ToString(IncludeClassName : Boolean) : String; overload;
+  end;
+
   TFileNameHelper = record helper for TFileName
     public
       function IsApplicable : Boolean;
@@ -111,6 +116,35 @@ begin
           if ConsoleInput.Event.KeyEvent.bKeyDown then
             Break;
     until False;
+end;
+
+{ TExceptionHelper }
+
+function TExceptionHelper.ToString(IncludeClassName : Boolean) : String;
+const
+  STR_SEPARATOR = ': ';
+var
+  Inner : Exception;
+  S : String;
+begin
+  if not IncludeClassName then
+    Result := ToString
+  else
+  begin
+    Inner := Self;
+
+    while Assigned(Inner) do
+    begin
+      S := Inner.ClassName + STR_SEPARATOR + Inner.Message;
+
+      if Result.IsEmpty then
+        Result := S
+      else
+        Result := Result + sLineBreak + S;
+
+      Inner := Inner.InnerException;
+    end;
+  end;
 end;
 
 { TFileNameHelper }
