@@ -27,6 +27,7 @@ type
         TStateMachine = TFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
     strict private
       FConfig : TConfigManager;
+      FNoExitBehavior : TNoExitBehavior;
       FOptions : TCLIOptions;
       FStateMachine : IStateMachine;
     strict private
@@ -34,6 +35,7 @@ type
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
       procedure InitStateMachine;
     private
+      procedure PrintException(E : Exception);
       procedure PrintHelp;
       procedure PrintVersion;
       procedure ProcessOptions;
@@ -135,7 +137,7 @@ begin
         PrintVersion;
       end
     )
-    .AddTransition(asInitial, asNoExitSet, acSetNoExit,
+    .AddTransition(asInitial, asNoExitBehaviorSet, acSetNoExitBehavior,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         SetNoExitBehavior;
@@ -158,15 +160,20 @@ begin
     end;
 
   FStateMachine
-    .AddTransition(asInitial,   asConfigGenerated, acGenerateConfig, P)
-    .AddTransition(asNoExitSet, asConfigGenerated, acGenerateConfig, P)
-    .AddTransition(asInitial,   asConfigSet, acSetConfig, P)
-    .AddTransition(asNoExitSet, asConfigSet, acSetConfig, P);
+    .AddTransition(asInitial,           asConfigGenerated, acGenerateConfig, P)
+    .AddTransition(asNoExitBehaviorSet, asConfigGenerated, acGenerateConfig, P)
+    .AddTransition(asInitial,           asConfigSet, acSetConfig, P)
+    .AddTransition(asNoExitBehaviorSet, asConfigSet, acSetConfig, P);
 end;
 
 class procedure TFIToolkit.PrintAbout;
 begin
   Writeln(RSApplicationAbout);
+end;
+
+procedure TFIToolkit.PrintException(E : Exception);
+begin
+  //TODO: implement {PrintException}
 end;
 
 procedure TFIToolkit.PrintHelp;
@@ -198,47 +205,69 @@ var
   O : TCLIOption;
   C : TApplicationCommand;
 begin
-  try
-    FOptions.Sort(TComparer<TCLIOption>.Construct(
-      function (const Left, Right : TCLIOption) : Integer
-      begin
-        Result := CompareValue(
-          GetCLIOptionProcessingOrder(Left.Name,  not IsCaseSensitiveCLIOption(Left.Name)),
-          GetCLIOptionProcessingOrder(Right.Name, not IsCaseSensitiveCLIOption(Right.Name))
-        );
-      end
-    ));
+  FOptions.Sort(TComparer<TCLIOption>.Construct(
+    function (const Left, Right : TCLIOption) : Integer
+    begin
+      Result := CompareValue(
+        GetCLIOptionProcessingOrder(Left.Name,  not IsCaseSensitiveCLIOption(Left.Name)),
+        GetCLIOptionProcessingOrder(Right.Name, not IsCaseSensitiveCLIOption(Right.Name))
+      );
+    end
+  ));
 
-    for O in FOptions do
-      if TryCLIOptionToAppCommand(O.Name, not IsCaseSensitiveCLIOption(O.Name), C) then
-        FStateMachine.Execute(C);
-  except
-    //TODO: handle with no-exit specific
-    raise;
-  end;
+  for O in FOptions do
+    if TryCLIOptionToAppCommand(O.Name, not IsCaseSensitiveCLIOption(O.Name), C) then
+      FStateMachine.Execute(C);
 end;
 
 procedure TFIToolkit.Run;
 begin
-  ProcessOptions;
-
   try
-    FStateMachine
-      .Execute(acReset)
-      .Execute(acParseProjectGroup)
-      .Execute(acRunFixInsight)
-      .Execute(acParseReports)
-      .Execute(acBuildReport)
-      .Execute(acTerminate);
+    try
+      ProcessOptions;
+    except
+      Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
+    end;
+
+    try
+      FStateMachine
+        .Execute(acReset)
+        .Execute(acParseProjectGroup)
+        .Execute(acRunFixInsight)
+        .Execute(acParseReports)
+        .Execute(acBuildReport)
+        .Execute(acTerminate);
+    except
+      Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
+    end;
+
+    if FNoExitBehavior = neEnabled then
+      PressAnyKey;
   except
-    //TODO: handle with no-exit specific
-    raise;
+    on E: Exception do
+      case FNoExitBehavior of
+        neDisabled:
+          raise;
+        neEnabledOnException, neEnabled:
+          begin
+            PrintException(E);
+            PressAnyKey;
+          end;
+      else
+        Assert(False, 'Unhandled no-exit behavior while handling exception.');
+      end;
   end;
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
+var
+  NoExitOption : TCLIOption;
+  iValue : Integer;
 begin
-  //TODO: implement {SetNoExitBehavior}
+  if FOptions.Find(STR_CLI_OPTION_NO_EXIT, NoExitOption, not IsCaseSensitiveCLIOption(STR_CLI_OPTION_NO_EXIT)) then
+    if Integer.TryParse(NoExitOption.Value, iValue) then
+      if InRange(iValue, Integer(Low(TNoExitBehavior)), Integer(High(TNoExitBehavior))) then
+        FNoExitBehavior := TNoExitBehavior(iValue);
 end;
 
 end.

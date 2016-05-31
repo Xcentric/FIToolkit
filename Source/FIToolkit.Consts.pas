@@ -60,6 +60,8 @@ resourcestring
 
   { Exceptions }
 
+  RSApplicationExecutionFailed = 'Ошибка при выполнении программы.';
+  RSCLIOptionsProcessingFailed = 'Ошибка при обработке параметров командной строки.';
   RSNoValidConfigSpecified = 'Не был указан существующий или генерируемый файл конфигурации.';
 
 implementation

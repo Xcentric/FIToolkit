@@ -6,17 +6,17 @@ type
 
   TApplicationCommand = (
     acReset,
-    acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExit,
+    acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExitBehavior,
     acParseProjectGroup, acRunFixInsight, acParseReports, acBuildReport,
     acTerminate);
 
   TApplicationState = (
     asInitial,
-    asHelpPrinted, asVersionPrinted, asConfigGenerated, asConfigSet, asNoExitSet,
+    asHelpPrinted, asVersionPrinted, asConfigGenerated, asConfigSet, asNoExitBehaviorSet,
     asProjectGroupParsed, asFixInsightRan, asReportsParsed, asReportBuilt,
     asFinal);
 
-  TNoExitBehavior = (neDisabled, neEnabled, neEnabledOnException);
+  TNoExitBehavior = (neDisabled, neEnabledOnException, neEnabled);
 
 implementation
 
