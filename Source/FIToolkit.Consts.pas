@@ -30,6 +30,8 @@ const
     String.Empty
   );
 
+  ARR_CASE_SENSITIVE_CLI_OPTIONS : TArray<String> = [];
+
   ARR_CLIOPTION_PROCESSING_ORDER : TArray<String> = [
     STR_CLI_OPTION_HELP,
     STR_CLI_OPTION_VERSION,

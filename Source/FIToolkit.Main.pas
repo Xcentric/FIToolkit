@@ -88,8 +88,8 @@ var
 begin
   bHasGenerateConfigOption := FOptions.Contains(STR_CLI_OPTION_GENERATE_CONFIG);
 
-  //TODO: get IgnoreCase value somewhere #1
-  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption, True) and
+  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
+                   not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
      TPath.IsApplicableFileName(SetConfigOption.Value) and
      (TFile.Exists(SetConfigOption.Value) or bHasGenerateConfigOption)
   then
@@ -101,13 +101,16 @@ end;
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
 var
   S : String;
+  O : TCLIOption;
 begin
   FOptions := TCLIOptions.Create;
   FOptions.Capacity := Length(CmdLineOptions);
 
-  //TODO: add unique only options
   for S in CmdLineOptions do
-    FOptions.Add(S);
+  begin
+    O := S;
+    FOptions.AddUnique(O, not IsCaseSensitiveCLIOption(O.Name));
+  end;
 end;
 
 procedure TFIToolkit.InitStateMachine;
@@ -199,17 +202,15 @@ begin
     FOptions.Sort(TComparer<TCLIOption>.Construct(
       function (const Left, Right : TCLIOption) : Integer
       begin
-        //TODO: get IgnoreCase value from somewhere #2
         Result := CompareValue(
-          GetCLIOptionProcessingOrder(Left.Name, False),
-          GetCLIOptionProcessingOrder(Right.Name, False)
+          GetCLIOptionProcessingOrder(Left.Name,  not IsCaseSensitiveCLIOption(Left.Name)),
+          GetCLIOptionProcessingOrder(Right.Name, not IsCaseSensitiveCLIOption(Right.Name))
         );
       end
     ));
 
-    //TODO: get IgnoreCase value from somewhere #3
     for O in FOptions do
-      if TryCLIOptionToAppCommand(O.Name, False, C) then
+      if TryCLIOptionToAppCommand(O.Name, not IsCaseSensitiveCLIOption(O.Name), C) then
         FStateMachine.Execute(C);
   except
     //TODO: handle with no-exit specific

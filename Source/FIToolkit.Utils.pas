@@ -1,11 +1,14 @@
 ﻿unit FIToolkit.Utils;
 
+//TODO: cover with tests
+
 interface
 
 uses
   FIToolkit.Types;
 
   function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
+  function IsCaseSensitiveCLIOption(const OptionName : String) : Boolean;
   function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
     out Command : TApplicationCommand) : Boolean;
 
@@ -15,7 +18,6 @@ uses
   System.SysUtils,
   FIToolkit.Consts;
 
-//TODO: cover with test case {GetCLIOptionProcessingOrder}
 function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
 var
   i : Integer;
@@ -30,7 +32,18 @@ begin
   Result := -1;
 end;
 
-//TODO: cover with test case {TryCLIOptionToAppCommand}
+function IsCaseSensitiveCLIOption(const OptionName : String) : Boolean;
+var
+  S : String;
+begin
+  Result := False;
+
+  if not String.IsNullOrWhiteSpace(OptionName) then
+    for S in ARR_CASE_SENSITIVE_CLI_OPTIONS do
+      if AnsiSameText(S, OptionName) then
+        Exit(True);
+end;
+
 function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
   out Command : TApplicationCommand) : Boolean;
 var
