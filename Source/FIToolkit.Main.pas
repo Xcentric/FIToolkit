@@ -111,12 +111,12 @@ begin
   end;
 end;
 
+//TODO: implement {InitStateMachine}
 procedure TFIToolkit.InitStateMachine;
 var
   P : TOnEnterStateProc<TApplicationState, TApplicationCommand>;
 begin
   FStateMachine := TStateMachine.Create(asInitial);
-  //TODO: implement {InitStateMachine}
 
   { Common states }
 
@@ -226,6 +226,9 @@ begin
     except
       Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
     end;
+
+    if not Assigned(FConfig) then
+      raise ENoValidConfigSpecified.Create;
 
     try
       FStateMachine
