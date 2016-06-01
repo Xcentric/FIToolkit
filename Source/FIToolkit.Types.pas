@@ -5,7 +5,7 @@ interface
 type
 
   TApplicationCommand = (
-    acReset,
+    acStart,
     acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExitBehavior,
     acParseProjectGroup, acRunFixInsight, acParseReports, acBuildReport,
     acTerminate);

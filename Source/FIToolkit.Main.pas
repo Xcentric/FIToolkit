@@ -161,7 +161,19 @@ begin
     .AddTransition(asInitial,           asConfigGenerated, acGenerateConfig, P)
     .AddTransition(asNoExitBehaviorSet, asConfigGenerated, acGenerateConfig, P)
     .AddTransition(asInitial,           asConfigSet, acSetConfig, P)
-    .AddTransition(asNoExitBehaviorSet, asConfigSet, acSetConfig, P);
+    .AddTransition(asNoExitBehaviorSet, asConfigSet, acSetConfig, P)
+    .AddTransition(asConfigGenerated,   asConfigSet, acSetConfig, P);
+
+  { Execution states }
+
+  FStateMachine
+    .AddTransition(asConfigSet, asInitial, acStart,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        if not Assigned(FConfig) then
+          raise ENoValidConfigSpecified.Create;
+      end
+    );
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -227,12 +239,9 @@ begin
       Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
     end;
 
-    if not Assigned(FConfig) then
-      raise ENoValidConfigSpecified.Create;
-
     try
       FStateMachine
-        .Execute(acReset)
+        .Execute(acStart)
         .Execute(acParseProjectGroup)
         .Execute(acRunFixInsight)
         .Execute(acParseReports)

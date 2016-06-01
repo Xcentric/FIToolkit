@@ -131,6 +131,7 @@ begin
     Result := ToString
   else
   begin
+    Result := String.Empty;
     Inner := Self;
 
     while Assigned(Inner) do
