@@ -86,18 +86,14 @@ procedure TFIToolkit.InitConfig(GenerateFlag : Boolean);
 var
   SetConfigOption : TCLIOption;
 begin
-  //TODO: this method is called twice due to generate-config option - how to refactor?
-  if not Assigned(FConfig) then
-  begin
-    if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
-                     not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
-       TPath.IsApplicableFileName(SetConfigOption.Value) and
-       (TFile.Exists(SetConfigOption.Value) or GenerateFlag)
-    then
-      FConfig := TConfigManager.Create(SetConfigOption.Value, GenerateFlag, True)
-    else
-      raise ENoValidConfigSpecified.Create;
-  end;
+  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
+                   not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
+     TPath.IsApplicableFileName(SetConfigOption.Value) and
+     (TFile.Exists(SetConfigOption.Value) or GenerateFlag)
+  then
+    FConfig := TConfigManager.Create(SetConfigOption.Value, GenerateFlag, True)
+  else
+    raise ENoValidConfigSpecified.Create;
 end;
 
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
@@ -151,9 +147,11 @@ begin
     begin
       case CurrentState of
         asConfigGenerated:
-          InitConfig(True);
+          if not Assigned(FConfig) then
+            InitConfig(True);
         asConfigSet:
-          InitConfig(False);
+          if not Assigned(FConfig) then
+            InitConfig(False);
       else
         Assert(False, 'Unhandled application state while initializing configuration.');
       end;
