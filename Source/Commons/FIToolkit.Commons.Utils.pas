@@ -62,7 +62,7 @@ type
 
   function  GetFixInsightExePath : TFileName;
   function  Iff : TIff; inline;
-  procedure PressAnyKey;
+  procedure PressAnyKeyPrompt;
 
 implementation
 
@@ -98,7 +98,7 @@ begin
   Result := Default(TIff);
 end;
 
-procedure PressAnyKey;
+procedure PressAnyKeyPrompt;
 var
   hConsole : THandle;
   ConsoleInput : TInputRecord;

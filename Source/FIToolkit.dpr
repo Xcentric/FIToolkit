@@ -72,6 +72,6 @@ begin
   end;
 
   {$IFDEF DEBUG}
-  PressAnyKey;
+  PressAnyKeyPrompt;
   {$ENDIF}
 end.

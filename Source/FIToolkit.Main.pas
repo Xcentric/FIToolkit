@@ -10,8 +10,8 @@ uses
 implementation
 
 uses
-  System.IOUtils, System.Classes, System.Generics.Defaults, System.Math,
-  FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Types, FIToolkit.Consts,
+  System.Classes, System.IOUtils, System.Math, System.Generics.Defaults,
+  FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts, FIToolkit.Utils,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
@@ -27,7 +27,6 @@ type
         TStateMachine = TFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
     strict private
       FConfig : TConfigManager;
-      FNoExitBehavior : TNoExitBehavior;
       FOptions : TCLIOptions;
       FStateMachine : IStateMachine;
     strict private
@@ -35,10 +34,14 @@ type
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
       procedure InitStateMachine;
     private
+      FNoExitBehavior : TNoExitBehavior;
+
       procedure PrintException(E : Exception);
+      procedure ProcessOptions;
+
+      // Application command implementations:
       procedure PrintHelp;
       procedure PrintVersion;
-      procedure ProcessOptions;
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
@@ -99,19 +102,14 @@ end;
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
 var
   S : String;
-  O : TCLIOption;
 begin
   FOptions := TCLIOptions.Create;
   FOptions.Capacity := Length(CmdLineOptions);
 
   for S in CmdLineOptions do
-  begin
-    O := S;
-    FOptions.AddUnique(O, not IsCaseSensitiveCLIOption(O.Name));
-  end;
+    FOptions.AddUnique(S, not IsCaseSensitiveCLIOption(TCLIOption(S).Name));
 end;
 
-//TODO: implement {InitStateMachine}
 procedure TFIToolkit.InitStateMachine;
 var
   P : TOnEnterStateProc<TApplicationState, TApplicationCommand>;
@@ -174,6 +172,8 @@ begin
           raise ENoValidConfigSpecified.Create;
       end
     );
+
+  //TODO: implement {InitStateMachine → Execution States}
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -252,7 +252,7 @@ begin
     end;
 
     if FNoExitBehavior = neEnabled then
-      PressAnyKey;
+      PressAnyKeyPrompt;
   except
     on E: Exception do
       case FNoExitBehavior of
@@ -261,7 +261,8 @@ begin
         neEnabledOnException, neEnabled:
           begin
             PrintException(E);
-            PressAnyKey;
+            PressAnyKeyPrompt;
+            //TODO: re-raise or return exit code <> 0
           end;
       else
         Assert(False, 'Unhandled no-exit behavior while handling exception.');
