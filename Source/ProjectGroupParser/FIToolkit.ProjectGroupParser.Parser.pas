@@ -3,8 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Types, Xml.XMLIntf, Xml.XMLDoc,
-  FIToolkit.ProjectGroupParser.Consts;
+  System.SysUtils, System.Types, Xml.XMLIntf, Xml.XMLDoc;
 
 type
 
@@ -36,7 +35,7 @@ implementation
 uses
   System.IOUtils, Winapi.ActiveX,
   FIToolkit.Commons.Utils,
-  FIToolkit.ProjectGroupParser.Exceptions;
+  FIToolkit.ProjectGroupParser.Exceptions, FIToolkit.ProjectGroupParser.Consts;
 
 { TProjectGroupParser }
 

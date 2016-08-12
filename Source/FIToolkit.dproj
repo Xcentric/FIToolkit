@@ -121,6 +121,9 @@
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Exceptions.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Tasks.pas"/>
