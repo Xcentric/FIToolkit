@@ -20,6 +20,9 @@ type
   // Test methods for class TFixInsightXMLParser
 
   TestTFixInsightXMLParser = class (TGenericTestCase)
+  private
+    const
+      STR_TEST_XML_FILE = 'test.xml';
   strict private
     FFixInsightXMLParser : TFixInsightXMLParser;
   private
@@ -33,9 +36,26 @@ type
 
 implementation
 
+uses
+  System.IOUtils;
+
 function TestTFixInsightXMLParser.GenerateXMLFile : TFileName;
+const
+  STR_XML =
+  '<?xml version="1.0"?>' + sLineBreak +
+  '<FixInsightReport version="2015.11upd6">' + sLineBreak +
+  '  <file name="SourceFile_1.pas">' + sLineBreak +
+  '    <message line="321" col="123" id="W777">W777 Some message text</message>' + sLineBreak +
+  '    <message line="456" col="654" id="C666">C666 Some message text</message>' + sLineBreak +
+  '  </file>' + sLineBreak +
+  '  <file name="..\SourceFile_2.pas">' + sLineBreak +
+  '    <message line="321" col="123" id="O000">O000 Some message text</message>' + sLineBreak +
+  '    <message line="456" col="654" id="Tria">Triality!!!</message>' + sLineBreak +
+  '  </file>' + sLineBreak +
+  '</FixInsightReport>';
 begin
-  // TODO: implement {TestTFixInsightXMLParser.GenerateXMLFile}
+  Result := TestDataDir + STR_TEST_XML_FILE;
+  TFile.AppendAllText(Result, STR_XML);
 end;
 
 procedure TestTFixInsightXMLParser.SetUp;
@@ -50,12 +70,25 @@ end;
 
 procedure TestTFixInsightXMLParser.TestParse;
 var
-  Append : Boolean;
+  sXMLFileName : TFileName;
+  iOldCount : Integer;
 begin
-  Append := True;
-  FFixInsightXMLParser.Parse(GenerateXMLFile, Append);
+  sXMLFileName := GenerateXMLFile;
+  try
+    CheckEquals(0, FFixInsightXMLParser.Messages.Count, 'Messages.Count = 0');
+    FFixInsightXMLParser.Parse(sXMLFileName, False);
+    CheckTrue(FFixInsightXMLParser.Messages.Count > 0, 'CheckTrue::(Messages.Count > 0)');
 
-  // TODO: implement {TestTFixInsightXMLParser.TestParse}
+    iOldCount := FFixInsightXMLParser.Messages.Count;
+    FFixInsightXMLParser.Parse(sXMLFileName, False);
+    CheckEquals(iOldCount, FFixInsightXMLParser.Messages.Count, 'Messages.Count = iOldCount');
+
+    iOldCount := FFixInsightXMLParser.Messages.Count;
+    FFixInsightXMLParser.Parse(sXMLFileName, True);
+    CheckEquals(iOldCount * 2, FFixInsightXMLParser.Messages.Count, 'Messages.Count = 2 * iOldCount');
+  finally
+    DeleteFile(sXMLFileName);
+  end;
 end;
 
 initialization
