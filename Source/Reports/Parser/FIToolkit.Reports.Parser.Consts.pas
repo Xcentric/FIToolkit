@@ -20,6 +20,12 @@ const
   ARR_MSGTYPE_TO_MSGID_REGEX_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
     (String.Empty, REGEX_FIMSG_WARNING, REGEX_FIMSG_OPTIMIZATION, REGEX_FIMSG_CODING_CONVENTION, REGEX_FIMSG_TRIAL);
 
+resourcestring
+
+  { Exceptions }
+
+  RSFixInsightXMLParseError = 'Ошибка при разборе файла отчёта FixInsight.';
+
 implementation
 
 end.

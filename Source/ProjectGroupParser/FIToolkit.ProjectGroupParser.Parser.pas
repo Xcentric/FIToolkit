@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Types, Xml.XMLIntf, Xml.XMLDoc;
+  System.SysUtils, System.Types, Xml.XMLIntf;
 
 type
 
@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  System.IOUtils, Winapi.ActiveX,
+  System.IOUtils, Xml.XMLDoc, Winapi.ActiveX,
   FIToolkit.Commons.Utils,
   FIToolkit.ProjectGroupParser.Exceptions, FIToolkit.ProjectGroupParser.Consts;
 
