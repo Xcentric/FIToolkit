@@ -38,19 +38,19 @@ const
 var
   FIM : TFixInsightMessage;
 begin
-  FIM := TFixInsightMessage.Create(0, 0, String.Empty, String.Empty);
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, String.Empty, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtUnknown, FIM.MsgType, 'MsgType = fimtUnknown');
 
-  FIM := TFixInsightMessage.Create(0, 0, MSGID_WARNING, String.Empty);
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_WARNING, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtWarning, FIM.MsgType, 'MsgType = fimtWarning');
 
-  FIM := TFixInsightMessage.Create(0, 0, MSGID_OPTIMIZATION, String.Empty);
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_OPTIMIZATION, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtOptimization, FIM.MsgType, 'MsgType = fimtOptimization');
 
-  FIM := TFixInsightMessage.Create(0, 0, MSGID_CODING_CONVENTION, String.Empty);
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_CODING_CONVENTION, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtCodingConvention, FIM.MsgType, 'MsgType = fimtCodingConvention');
 
-  FIM := TFixInsightMessage.Create(0, 0, MSGID_TRIAL, String.Empty);
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_TRIAL, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtTrial, FIM.MsgType, 'MsgType = fimtTrial');
 end;
 

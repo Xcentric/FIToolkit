@@ -34,8 +34,41 @@ uses
 { TFixInsightXMLParser }
 
 procedure TFixInsightXMLParser.AppendMessagesFromXML(const XML : IXMLDocument);
+var
+  RootNode, FileNode, MessageNode : IXMLNode;
+  i, k : Integer;
+  sFileName : String;
 begin
-  // TODO: implement {TFixInsightXMLParser.AppendMessagesFromXML}
+  try
+    RootNode := XML.Node.ChildNodes[STR_FIXML_ROOT_NODE];
+
+    if Assigned(RootNode) then
+      for i := 0 to RootNode.ChildNodes.Count - 1 do
+      begin
+        FileNode := RootNode.ChildNodes.Get(i);
+
+        if SameText(FileNode.NodeName, STR_FIXML_FILE_NODE) then
+        begin
+          sFileName := FileNode.Attributes[STR_FIXML_NAME_ATTRIBUTE];
+
+          for k := 0 to FileNode.ChildNodes.Count - 1 do
+          begin
+            MessageNode := FileNode.ChildNodes.Get(k);
+
+            if SameText(MessageNode.NodeName, STR_FIXML_MESSAGE_NODE) then
+              FMessages.Add(
+                TFixInsightMessage.Create(
+                  sFileName,
+                  MessageNode.Attributes[STR_FIXML_LINE_ATTRIBUTE],
+                  MessageNode.Attributes[STR_FIXML_COL_ATTRIBUTE],
+                  MessageNode.Attributes[STR_FIXML_ID_ATTRIBUTE],
+                  MessageNode.Text));
+          end;
+        end;
+      end;
+  except
+    Exception.RaiseOuterException(EFixInsightXMLParseError.Create);
+  end;
 end;
 
 constructor TFixInsightXMLParser.Create;

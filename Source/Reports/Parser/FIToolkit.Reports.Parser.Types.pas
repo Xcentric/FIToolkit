@@ -2,6 +2,9 @@
 
 interface
 
+uses
+  System.SysUtils;
+
 type
 
   TFixInsightMessageType = (fimtUnknown, fimtWarning, fimtOptimization, fimtCodingConvention, fimtTrial);
@@ -10,15 +13,17 @@ type
     strict private
       FColumn,
       FLine : Integer;
+      FFileName : TFileName;
       FID,
       FText : String;
       FMsgType : TFixInsightMessageType;
     private
       function GetMsgTypeByID(const MsgID : String) : TFixInsightMessageType;
     public
-      constructor Create(ALine, AColumn : Integer; const AID, AText : String);
+      constructor Create(const AFileName : TFileName; ALine, AColumn : Integer; const AID, AText : String);
 
       property Column : Integer read FColumn;
+      property FileName : TFileName read FFileName;
       property ID : String read FID;
       property Line : Integer read FLine;
       property MsgType : TFixInsightMessageType read FMsgType;
@@ -33,13 +38,13 @@ uses
 
 { TFixInsightMessage }
 
-constructor TFixInsightMessage.Create(ALine, AColumn : Integer; const AID, AText : String);
+constructor TFixInsightMessage.Create(const AFileName : TFileName; ALine, AColumn : Integer; const AID, AText : String);
 begin
-  FLine   := ALine;
-  FColumn := AColumn;
-
-  FID   := AID;
-  FText := AText;
+  FFileName := AFileName;
+  FLine     := ALine;
+  FColumn   := AColumn;
+  FID       := AID;
+  FText     := AText;
 
   FMsgType := GetMsgTypeByID(FID);
 end;
