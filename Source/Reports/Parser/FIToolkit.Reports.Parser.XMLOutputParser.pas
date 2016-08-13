@@ -17,6 +17,13 @@ type
 implementation
 
 uses
+  Winapi.ActiveX,
   FIToolkit.Reports.Parser.Consts;
+
+initialization
+  CoInitialize(nil);
+
+finalization
+  CoUninitialize;
 
 end.
