@@ -20,6 +20,18 @@ const
   ARR_MSGTYPE_TO_MSGID_REGEX_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
     (String.Empty, REGEX_FIMSG_WARNING, REGEX_FIMSG_OPTIMIZATION, REGEX_FIMSG_CODING_CONVENTION, REGEX_FIMSG_TRIAL);
 
+  { XML consts for a FixInsight report format. Do not localize! }
+
+  // <FixInsightReport>\<file>\<message>
+  STR_FIXML_ROOT_NODE    = 'FixInsightReport';
+  STR_FIXML_FILE_NODE    = 'file';
+  STR_FIXML_MESSAGE_NODE = 'message';
+
+  STR_FIXML_COL_ATTRIBUTE  = 'col';
+  STR_FIXML_ID_ATTRIBUTE   = 'id';
+  STR_FIXML_LINE_ATTRIBUTE = 'line';
+  STR_FIXML_NAME_ATTRIBUTE = 'name';
+
 resourcestring
 
   { Exceptions }
