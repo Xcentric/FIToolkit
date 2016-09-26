@@ -40,6 +40,7 @@ uses
   FIToolkit.ProjectGroupParser.Exceptions in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas',
   FIToolkit.ProjectGroupParser.Parser in 'ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas',
   FIToolkit.Reports.Builder.Consts in 'Reports\Builder\FIToolkit.Reports.Builder.Consts.pas',
+  FIToolkit.Reports.Builder.Intf in 'Reports\Builder\FIToolkit.Reports.Builder.Intf.pas',
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
   FIToolkit.Reports.Parser.Exceptions in 'Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas',
   FIToolkit.Reports.Parser.Types in 'Reports\Parser\FIToolkit.Reports.Parser.Types.pas',
