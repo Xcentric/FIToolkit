@@ -120,7 +120,10 @@
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Exceptions.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.HTML.pas"/>
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Intf.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Types.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
