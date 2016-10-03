@@ -3,6 +3,7 @@
 interface
 
 uses
+  System.Classes,
   FIToolkit.Reports.Builder.Types;
 
 type
@@ -13,6 +14,7 @@ type
     procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
     procedure AddSummary(const Items : array of TSummaryItem);
     procedure AppendRecord(const Item : TReportRecord);
+    procedure Initialize(Output : TStream);
   end;
 
 implementation
