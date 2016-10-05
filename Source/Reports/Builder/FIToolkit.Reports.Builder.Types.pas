@@ -19,6 +19,8 @@ type
     MessageTypeName : String;
   end;
 
+  TTemplateElement = type String;
+
 implementation
 
 end.
