@@ -9,6 +9,8 @@ uses
 type
 
   THTMLReportBuilder = class (TInterfacedObject, IReportBuilder)
+    strict private
+      FOutput : TStream;
     public
       procedure AddFooter(FinishTime : TDateTime);
       procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
@@ -18,6 +20,9 @@ type
   end;
 
 implementation
+
+uses
+  FIToolkit.Reports.Builder.Consts;
 
 { THTMLReportBuilder }
 
@@ -43,7 +48,10 @@ end;
 
 procedure THTMLReportBuilder.Initialize(Output : TStream);
 begin
-  // TODO: implement {THTMLReportBuilder.Initialize}
+  FOutput := Output;
+
+  FOutput.Position := 0;
+  FOutput.Size := 0;
 end;
 
 end.
