@@ -8,7 +8,7 @@ uses
 
 type
 
-  THTMLReportBuilder = class (TInterfacedObject, ITextReportBuilder)
+  THTMLReportBuilder = class (TInterfacedObject, IReportBuilder, ITemplatableTextReport)
     strict private
       FOutput : TStream;
       FTemplate : ITextReportTemplate;
@@ -16,8 +16,11 @@ type
       procedure AddFooter(FinishTime : TDateTime);
       procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
       procedure AddSummary(const Items : array of TSummaryItem);
-      procedure AppendRecord(const Item : TReportRecord);
-      procedure Initialize(const Template : ITextReportTemplate; Output : TStream);
+      procedure AppendRecord(Item : TReportRecord);
+      procedure BeginReport;
+      procedure EndReport;
+      procedure SetOutput(Output : TStream);
+      procedure SetTemplate(const Template : ITextReportTemplate);
   end;
 
 implementation
@@ -42,18 +45,32 @@ begin
   // TODO: implement {THTMLReportBuilder.AddSummary}
 end;
 
-procedure THTMLReportBuilder.AppendRecord(const Item : TReportRecord);
+procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);
 begin
   // TODO: implement {THTMLReportBuilder.AppendRecord}
 end;
 
-procedure THTMLReportBuilder.Initialize(const Template : ITextReportTemplate; Output : TStream);
+procedure THTMLReportBuilder.BeginReport;
+begin
+  // TODO: implement {THTMLReportBuilder.BeginReport}
+end;
+
+procedure THTMLReportBuilder.EndReport;
+begin
+  // TODO: implement {THTMLReportBuilder.EndReport}
+end;
+
+procedure THTMLReportBuilder.SetOutput(Output : TStream);
 begin
   FOutput := Output;
-  FTemplate := Template;
 
   FOutput.Position := 0;
   FOutput.Size := 0;
+end;
+
+procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);
+begin
+  FTemplate := Template;
 end;
 
 end.

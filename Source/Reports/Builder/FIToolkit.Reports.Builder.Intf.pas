@@ -8,6 +8,19 @@ uses
 
 type
 
+  { Common }
+
+  IReportBuilder = interface
+    ['{68BE0EA3-035D-42B9-B20F-CFF16DA05DA8}']
+    procedure AddFooter(FinishTime : TDateTime);
+    procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
+    procedure AddSummary(const Items : array of TSummaryItem);
+    procedure AppendRecord(Item : TReportRecord);
+    procedure BeginReport;
+    procedure EndReport;
+    procedure SetOutput(Output : TStream);
+  end;
+
   { Generic interfaces }
 
   IReportTemplate<T> = interface
@@ -19,22 +32,18 @@ type
     function GetSummaryItem : T;
   end;
 
-  IReportBuilder<T; I : IReportTemplate<T>> = interface
-    procedure AddFooter(FinishTime : TDateTime);
-    procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
-    procedure AddSummary(const Items : array of TSummaryItem);
-    procedure AppendRecord(const Item : TReportRecord);
-    procedure Initialize(const Template : I; Output : TStream);
+  ITemplatableReport<T; I : IReportTemplate<T>> = interface
+    procedure SetTemplate(const Template : I);
   end;
 
   { Type-specific interfaces }
 
   ITextReportTemplate = interface (IReportTemplate<String>)
-    ['{75F7631B-EF2E-4A04-93A0-DEB2A32455ED}']
+    ['{42897586-028B-4AEE-A518-B86074D7DCEB}']
   end;
 
-  ITextReportBuilder = interface (IReportBuilder<String, ITextReportTemplate>)
-    ['{E5F3555E-A1B2-4087-AB75-F6A9DAB22627}']
+  ITemplatableTextReport = interface (ITemplatableReport<String, ITextReportTemplate>)
+    ['{EC0ADF10-E81C-4602-867D-EE060A9B8020}']
   end;
 
 implementation
