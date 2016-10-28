@@ -86,7 +86,8 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <RcCompile Include="ResourceScripts\Help\Help.rc">
+        <RcCompile Include="ResourceScripts\Main\Help.rc">
+            <ModuleName>Help.rc</ModuleName>
             <Form>Help.res</Form>
         </RcCompile>
         <DCCReference Include="FIToolkit.Consts.pas"/>

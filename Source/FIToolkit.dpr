@@ -2,7 +2,7 @@
 
 {$APPTYPE CONSOLE}
 
-{$R 'Help.res' 'ResourceScripts\Help\Help.rc'}
+{$R 'Help.res' 'ResourceScripts\Main\Help.rc'}
 
 {$R *.res}
 
