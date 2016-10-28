@@ -89,6 +89,9 @@
         <RcCompile Include="ResourceScripts\Main\Main-Help.rc">
             <Form>Main-Help.res</Form>
         </RcCompile>
+        <RcCompile Include="ResourceScripts\Reports\Reports-Builder.rc">
+            <Form>Reports-Builder.res</Form>
+        </RcCompile>
         <DCCReference Include="FIToolkit.Consts.pas"/>
         <DCCReference Include="FIToolkit.Exceptions.pas"/>
         <DCCReference Include="FIToolkit.Main.pas"/>

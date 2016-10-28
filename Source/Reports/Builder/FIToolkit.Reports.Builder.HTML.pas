@@ -22,6 +22,18 @@ type
       procedure SetTemplate(const Template : ITextReportTemplate);
   end;
 
+  THTMLReportTemplate = class (TInterfacedObject, ITextReportTemplate)
+    public
+      function GetFooterElement : String;
+      function GetHeaderElement : String;
+      function GetMessageElement : String;
+      function GetProjectMessagesElement : String;
+      function GetProjectSectionElement : String;
+      function GetProjectSummaryElement : String;
+      function GetTotalSummaryElement : String;
+      function GetTotalSummaryItemElement : String;
+  end;
+
 implementation
 
 uses
@@ -72,6 +84,48 @@ end;
 procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);
 begin
   FTemplate := Template;
+end;
+
+{ THTMLReportTemplate }
+
+function THTMLReportTemplate.GetFooterElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetFooterElement}
+end;
+
+function THTMLReportTemplate.GetHeaderElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetHeaderElement}
+end;
+
+function THTMLReportTemplate.GetMessageElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetMessageElement}
+end;
+
+function THTMLReportTemplate.GetProjectMessagesElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetProjectMessagesElement}
+end;
+
+function THTMLReportTemplate.GetProjectSectionElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetProjectSectionElement}
+end;
+
+function THTMLReportTemplate.GetProjectSummaryElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetProjectSummaryElement}
+end;
+
+function THTMLReportTemplate.GetTotalSummaryElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetTotalSummaryElement}
+end;
+
+function THTMLReportTemplate.GetTotalSummaryItemElement : String;
+begin
+  // TODO: implement {THTMLReportTemplate.GetTotalSummaryItemElement}
 end;
 
 end.

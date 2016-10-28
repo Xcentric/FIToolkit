@@ -3,6 +3,7 @@
 {$APPTYPE CONSOLE}
 
 {$R 'Main-Help.res' 'ResourceScripts\Main\Main-Help.rc'}
+{$R 'Reports-Builder.res' 'ResourceScripts\Reports\Reports-Builder.rc'}
 
 {$R *.res}
 
