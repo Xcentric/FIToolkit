@@ -3,23 +3,22 @@
 interface
 
 uses
-  System.Classes,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 type
 
   THTMLReportBuilder = class (TInterfacedObject, IReportBuilder, ITemplatableTextReport)
     strict private
-      FOutput : TStream;
       FTemplate : ITextReportTemplate;
     public
       procedure AddFooter(FinishTime : TDateTime);
-      procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
-      procedure AddSummary(const Items : array of TSummaryItem);
+      procedure AddHeader(const Title : String; StartTime : TDateTime);
+      procedure AddTotalSummary(const Items : array of TSummaryItem);
       procedure AppendRecord(Item : TReportRecord);
+      procedure BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
       procedure BeginReport;
+      procedure EndProjectSection;
       procedure EndReport;
-      procedure SetOutput(Output : TStream);
       procedure SetTemplate(const Template : ITextReportTemplate);
   end;
 
@@ -35,14 +34,14 @@ begin
   // TODO: implement {THTMLReportBuilder.AddFooter}
 end;
 
-procedure THTMLReportBuilder.AddHeader(const ProjectTitle : String; StartTime : TDateTime);
+procedure THTMLReportBuilder.AddHeader(const Title : String; StartTime : TDateTime);
 begin
   // TODO: implement {THTMLReportBuilder.AddHeader}
 end;
 
-procedure THTMLReportBuilder.AddSummary(const Items : array of TSummaryItem);
+procedure THTMLReportBuilder.AddTotalSummary(const Items : array of TSummaryItem);
 begin
-  // TODO: implement {THTMLReportBuilder.AddSummary}
+  // TODO: implement {THTMLReportBuilder.AddTotalSummary}
 end;
 
 procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);
@@ -50,22 +49,24 @@ begin
   // TODO: implement {THTMLReportBuilder.AppendRecord}
 end;
 
+procedure THTMLReportBuilder.BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
+begin
+  // TODO: implement {THTMLReportBuilder.BeginProjectSection}
+end;
+
 procedure THTMLReportBuilder.BeginReport;
 begin
   // TODO: implement {THTMLReportBuilder.BeginReport}
 end;
 
+procedure THTMLReportBuilder.EndProjectSection;
+begin
+  // TODO: implement {THTMLReportBuilder.EndProjectSection}
+end;
+
 procedure THTMLReportBuilder.EndReport;
 begin
   // TODO: implement {THTMLReportBuilder.EndReport}
-end;
-
-procedure THTMLReportBuilder.SetOutput(Output : TStream);
-begin
-  FOutput := Output;
-
-  FOutput.Position := 0;
-  FOutput.Size := 0;
 end;
 
 procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);

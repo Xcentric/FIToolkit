@@ -3,7 +3,6 @@
 interface
 
 uses
-  System.Classes,
   FIToolkit.Reports.Builder.Types;
 
 type
@@ -13,23 +12,26 @@ type
   IReportBuilder = interface
     ['{68BE0EA3-035D-42B9-B20F-CFF16DA05DA8}']
     procedure AddFooter(FinishTime : TDateTime);
-    procedure AddHeader(const ProjectTitle : String; StartTime : TDateTime);
-    procedure AddSummary(const Items : array of TSummaryItem);
+    procedure AddHeader(const Title : String; StartTime : TDateTime);
+    procedure AddTotalSummary(const Items : array of TSummaryItem);
     procedure AppendRecord(Item : TReportRecord);
+    procedure BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
     procedure BeginReport;
+    procedure EndProjectSection;
     procedure EndReport;
-    procedure SetOutput(Output : TStream);
   end;
 
   { Generic interfaces }
 
   IReportTemplate<T> = interface
-    function GetFooter : T;
-    function GetHeader : T;
-    function GetMessage : T;
-    function GetMessageList : T;
-    function GetSummary : T;
-    function GetSummaryItem : T;
+    function GetFooterElement : T;
+    function GetHeaderElement : T;
+    function GetMessageElement : T;
+    function GetProjectMessagesElement : T;
+    function GetProjectSectionElement : T;
+    function GetProjectSummaryElement : T;
+    function GetTotalSummaryElement : T;
+    function GetTotalSummaryItemElement : T;
   end;
 
   ITemplatableReport<T; I : IReportTemplate<T>> = interface
