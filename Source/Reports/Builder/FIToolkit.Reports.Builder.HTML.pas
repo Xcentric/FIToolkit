@@ -166,8 +166,59 @@ begin
 end;
 
 procedure THTMLReportTemplate.Parse(const TemplateSource : IXMLDocument);
+var
+  RootNode, TotalSummaryNode, ProjectSectionNode, ProjectSummaryNode, ProjectMessagesNode : IXMLNode;
 begin
-  // TODO: implement {THTMLReportTemplate.Parse}
+  RootNode := TemplateSource.Node.ChildNodes[STR_RPTXML_ROOT_NODE];
+  TotalSummaryNode := RootNode.ChildNodes[STR_RPTXML_TOTAL_SUMMARY_NODE];
+  ProjectSectionNode := RootNode.ChildNodes[STR_RPTXML_PROJECT_SECTION_NODE];
+  ProjectSummaryNode := ProjectSectionNode.ChildNodes[STR_RPTXML_PROJECT_SUMMARY_NODE];
+  ProjectMessagesNode := ProjectSectionNode.ChildNodes[STR_RPTXML_PROJECT_MESSAGES_NODE];
+
+  FCSS :=
+    RootNode
+    .ChildNodes[STR_RPTXML_CSS_NODE].Text;
+
+  FHeaderElement :=
+    RootNode
+    .ChildNodes[STR_RPTXML_HEADER_NODE]
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FTotalSummaryElement :=
+    TotalSummaryNode
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FTotalSummaryItemElement :=
+    TotalSummaryNode
+    .ChildNodes[STR_RPTXML_TOTAL_SUMMARY_ITEM_NODE]
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FProjectSectionElement :=
+    ProjectSectionNode
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FProjectSummaryElement :=
+    ProjectSummaryNode
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FProjectSummaryItemElement :=
+    ProjectSummaryNode
+    .ChildNodes[STR_RPTXML_PROJECT_SUMMARY_ITEM_NODE]
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FProjectMessagesElement :=
+    ProjectMessagesNode
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FMessageElement :=
+    ProjectMessagesNode
+    .ChildNodes[STR_RPTXML_MESSAGE_NODE]
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;
+
+  FFooterElement :=
+    RootNode
+    .ChildNodes[STR_RPTXML_FOOTER_NODE]
+    .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;    
 end;
 
 initialization
