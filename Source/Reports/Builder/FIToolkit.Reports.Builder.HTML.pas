@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Classes, Xml.XMLIntf,
+  System.SysUtils, System.Classes, Xml.XMLIntf,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 type
@@ -49,12 +49,24 @@ type
       function GetProjectSummaryItemElement : String;
       function GetTotalSummaryElement : String;
       function GetTotalSummaryItemElement : String;
+
+      property CSS : String read FCSS;
+  end;
+
+  THTMLReportCustomTemplate = class (THTMLReportTemplate)
+    public
+      constructor Create(const FileName : TFileName);
+  end;
+
+  THTMLReportDefaultTemplate = class (THTMLReportTemplate)
+    public
+      constructor Create;
   end;
 
 implementation
 
 uses
-  System.SysUtils, Xml.XMLDoc, Winapi.ActiveX,
+  Xml.XMLDoc, Winapi.ActiveX,
   FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts;
 
 { THTMLReportBuilder }
@@ -219,6 +231,20 @@ begin
     RootNode
     .ChildNodes[STR_RPTXML_FOOTER_NODE]
     .ChildNodes[STR_RPTXML_ELEMENT_NODE].Text;    
+end;
+
+{ THTMLReportCustomTemplate }
+
+constructor THTMLReportCustomTemplate.Create(const FileName : TFileName);
+begin
+  // TODO: implement {THTMLReportCustomTemplate.Create}
+end;
+
+{ THTMLReportDefaultTemplate }
+
+constructor THTMLReportDefaultTemplate.Create;
+begin
+  // TODO: implement {THTMLReportDefaultTemplate.Create}
 end;
 
 initialization
