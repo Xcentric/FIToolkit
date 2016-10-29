@@ -3,6 +3,7 @@
 interface
 
 uses
+  System.Classes, Xml.XMLIntf,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 type
@@ -22,7 +23,20 @@ type
       procedure SetTemplate(const Template : ITextReportTemplate);
   end;
 
-  THTMLReportTemplate = class (TInterfacedObject, ITextReportTemplate)
+  THTMLReportTemplate = class abstract (TInterfacedObject, ITextReportTemplate)
+    strict private
+      FFooterElement,
+      FHeaderElement,
+      FMessageElement,
+      FProjectMessagesElement,
+      FProjectSectionElement,
+      FProjectSummaryElement,
+      FTotalSummaryElement,
+      FTotalSummaryItemElement : String;
+    private
+      procedure Parse(const TemplateSource : IXMLDocument);
+    protected
+      constructor Create(XMLStream : TStream);
     public
       function GetFooterElement : String;
       function GetHeaderElement : String;
@@ -37,7 +51,8 @@ type
 implementation
 
 uses
-  FIToolkit.Reports.Builder.Consts;
+  System.SysUtils, Xml.XMLDoc, Winapi.ActiveX,
+  FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts;
 
 { THTMLReportBuilder }
 
@@ -88,44 +103,69 @@ end;
 
 { THTMLReportTemplate }
 
+constructor THTMLReportTemplate.Create(XMLStream : TStream);
+var
+  XML : IXMLDocument;
+begin
+  XML := TXMLDocument.Create(nil);
+
+  try
+    XML.LoadFromStream(XMLStream);
+    Parse(XML);
+  except
+    Exception.RaiseOuterException(EReportTemplateParseError.Create);
+  end;
+end;
+
 function THTMLReportTemplate.GetFooterElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetFooterElement}
+  Result := FFooterElement;
 end;
 
 function THTMLReportTemplate.GetHeaderElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetHeaderElement}
+  Result := FHeaderElement;
 end;
 
 function THTMLReportTemplate.GetMessageElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetMessageElement}
+  Result := FMessageElement;
 end;
 
 function THTMLReportTemplate.GetProjectMessagesElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetProjectMessagesElement}
+  Result := FProjectMessagesElement;
 end;
 
 function THTMLReportTemplate.GetProjectSectionElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetProjectSectionElement}
+  Result := FProjectSectionElement;
 end;
 
 function THTMLReportTemplate.GetProjectSummaryElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetProjectSummaryElement}
+  Result := FProjectSummaryElement;
 end;
 
 function THTMLReportTemplate.GetTotalSummaryElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetTotalSummaryElement}
+  Result := FTotalSummaryElement;
 end;
 
 function THTMLReportTemplate.GetTotalSummaryItemElement : String;
 begin
-  // TODO: implement {THTMLReportTemplate.GetTotalSummaryItemElement}
+  Result := FTotalSummaryItemElement;
 end;
+
+procedure THTMLReportTemplate.Parse(const TemplateSource : IXMLDocument);
+begin
+  // TODO: implement {THTMLReportTemplate.Parse}
+end;
+
+initialization
+  CoInitialize(nil);
+
+finalization
+  CoUninitialize;
 
 end.
