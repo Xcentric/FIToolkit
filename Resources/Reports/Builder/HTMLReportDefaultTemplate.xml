@@ -38,6 +38,13 @@
 					%PROJECT_SUMMARY_ELEMENT%
 				]]>
 			</Element>
+			<ProjectSummaryItem>
+				<Element>
+					<![CDATA[
+						%PROJECT_SUMMARY_ITEM_ELEMENT%
+					]]>
+				</Element>
+			</ProjectSummaryItem>
 		</ProjectSummary>
 		<ProjectMessages>
 			<Element>

@@ -25,12 +25,14 @@ type
 
   THTMLReportTemplate = class abstract (TInterfacedObject, ITextReportTemplate)
     strict private
+      FCSS,
       FFooterElement,
       FHeaderElement,
       FMessageElement,
       FProjectMessagesElement,
       FProjectSectionElement,
       FProjectSummaryElement,
+      FProjectSummaryItemElement,
       FTotalSummaryElement,
       FTotalSummaryItemElement : String;
     private
@@ -44,6 +46,7 @@ type
       function GetProjectMessagesElement : String;
       function GetProjectSectionElement : String;
       function GetProjectSummaryElement : String;
+      function GetProjectSummaryItemElement : String;
       function GetTotalSummaryElement : String;
       function GetTotalSummaryItemElement : String;
   end;
@@ -145,6 +148,11 @@ end;
 function THTMLReportTemplate.GetProjectSummaryElement : String;
 begin
   Result := FProjectSummaryElement;
+end;
+
+function THTMLReportTemplate.GetProjectSummaryItemElement : String;
+begin
+  Result := FProjectSummaryItemElement;
 end;
 
 function THTMLReportTemplate.GetTotalSummaryElement : String;

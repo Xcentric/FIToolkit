@@ -30,6 +30,7 @@ type
     function GetProjectMessagesElement : T;
     function GetProjectSectionElement : T;
     function GetProjectSummaryElement : T;
+    function GetProjectSummaryItemElement : T;
     function GetTotalSummaryElement : T;
     function GetTotalSummaryItemElement : T;
   end;
