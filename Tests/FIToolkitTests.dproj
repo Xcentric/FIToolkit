@@ -109,6 +109,11 @@
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.HTML.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Intf.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Types.pas"/>
         <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
         <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
         <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
@@ -127,6 +132,7 @@
         <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="Test_FIToolkit.ProjectGroupParser.Parser.pas"/>
+        <DCCReference Include="Test_FIToolkit.Reports.Builder.HTML.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Parser.Types.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
         <DCCReference Include="Test_FIToolkit.Runner.Tasks.pas"/>
