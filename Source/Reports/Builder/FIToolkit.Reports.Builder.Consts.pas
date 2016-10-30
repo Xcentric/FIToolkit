@@ -20,6 +20,10 @@ const
   STR_RPTXML_FOOTER_NODE               = 'Footer';
   STR_RPTXML_ELEMENT_NODE              = 'Element';
 
+  { Resources }
+
+  STR_RES_HTML_REPORT_DEFAULT_TEMPLATE = 'HTMLReportDefaultTemplate';
+
 resourcestring
 
   { Exceptions }

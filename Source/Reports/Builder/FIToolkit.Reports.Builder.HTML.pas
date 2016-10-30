@@ -66,7 +66,7 @@ type
 implementation
 
 uses
-  Xml.XMLDoc, Winapi.ActiveX,
+  System.Types, System.IOUtils, Xml.XMLDoc, Winapi.ActiveX,
   FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts;
 
 { THTMLReportBuilder }
@@ -236,15 +236,37 @@ end;
 { THTMLReportCustomTemplate }
 
 constructor THTMLReportCustomTemplate.Create(const FileName : TFileName);
+var
+  FS : TFileStream;
 begin
-  // TODO: implement {THTMLReportCustomTemplate.Create}
+  try
+    FS := TFile.Open(FileName, TFileMode.fmOpen, TFileAccess.faRead, TFileShare.fsRead);
+    try
+      inherited Create(FS);
+    finally
+      FS.Free;
+    end;
+  except
+    Exception.RaiseOuterException(EReportTemplateLoadError.Create);
+  end;
 end;
 
 { THTMLReportDefaultTemplate }
 
 constructor THTMLReportDefaultTemplate.Create;
+var
+  RS : TResourceStream;
 begin
-  // TODO: implement {THTMLReportDefaultTemplate.Create}
+  try
+    RS := TResourceStream.Create(HInstance, STR_RES_HTML_REPORT_DEFAULT_TEMPLATE, RT_RCDATA);
+    try
+      inherited Create(RS);
+    finally
+      RS.Free;
+    end;
+  except
+    Exception.RaiseOuterException(EReportTemplateLoadError.Create);
+  end;
 end;
 
 initialization
