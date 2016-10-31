@@ -130,6 +130,11 @@ type
   // Test methods for class THTMLReportCustomTemplate
 
   TestTHTMLReportCustomTemplate = class (TGenericTestCase)
+  private
+    function  GetTestXMLFileName : String;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
   published
     procedure TestCreate;
   end;
@@ -145,7 +150,8 @@ implementation
 
 uses
   System.Classes, System.SysUtils,
-  FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
+  FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
+  TestUtils;
 
 { TestTHTMLReportBuilder }
 
@@ -346,16 +352,62 @@ end;
 
 { TestTHTMLReportCustomTemplate }
 
+function TestTHTMLReportCustomTemplate.GetTestXMLFileName : String;
+begin
+  Result := TestDataDir + ClassName + '.xml';
+end;
+
+procedure TestTHTMLReportCustomTemplate.SetUp;
+var
+  L : TStringList;
+begin
+  L := TStringList.Create;
+  try
+    L.Text := TestTHTMLReportTemplate.STR_TEMPLATE;
+    L.SaveToFile(GetTestXMLFileName);
+  finally
+    L.Free;
+  end;
+end;
+
+procedure TestTHTMLReportCustomTemplate.TearDown;
+begin
+  DeleteFile(GetTestXMLFileName);
+end;
+
 procedure TestTHTMLReportCustomTemplate.TestCreate;
 begin
-  //
+  CheckException(
+    procedure
+    begin
+      THTMLReportCustomTemplate.Create(String.Empty);
+    end,
+    EReportTemplateLoadError,
+    'CheckException::EReportTemplateLoadError'
+  );
+
+  CheckException(
+    procedure
+    begin
+      THTMLReportCustomTemplate.Create(GetTestXMLFileName).Free;
+    end,
+    nil,
+    'CheckException::nil'
+  );
 end;
 
 { TestTHTMLReportDefaultTemplate }
 
 procedure TestTHTMLReportDefaultTemplate.TestCreate;
 begin
-  //
+  CheckException(
+    procedure
+    begin
+      THTMLReportDefaultTemplate.Create;
+    end,
+    EReportTemplateLoadError,
+    'CheckException::EReportTemplateLoadError'
+  );
 end;
 
 initialization
