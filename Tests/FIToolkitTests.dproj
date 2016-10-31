@@ -138,6 +138,7 @@
         <DCCReference Include="Test_FIToolkit.Runner.Tasks.pas"/>
         <DCCReference Include="Test_UTF8Sources.pas"/>
         <DCCReference Include="TestConsts.pas"/>
+        <DCCReference Include="TestTypes.pas"/>
         <DCCReference Include="TestUtils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

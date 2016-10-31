@@ -74,6 +74,7 @@ uses
   Test_FIToolkit.Runner.Tasks in 'Test_FIToolkit.Runner.Tasks.pas',
   Test_UTF8Sources in 'Test_UTF8Sources.pas',
   TestConsts in 'TestConsts.pas',
+  TestTypes in 'TestTypes.pas',
   TestUtils in 'TestUtils.pas';
 
   {$IFDEF TESTINSIGHT}

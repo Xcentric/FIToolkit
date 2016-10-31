@@ -13,13 +13,24 @@ interface
 
 uses
   TestFramework,
-  FIToolkit.Reports.Builder.HTML;
+  FIToolkit.Reports.Builder.HTML,
+  TestTypes;
 
 type
 
   // Test methods for class THTMLReportBuilder
 
   TestTHTMLReportBuilder = class (TGenericTestCase)
+  private
+    const
+      START_TIME : TDateTimeRec = (
+        Year : 2015; Month : 06; Day : 29;
+        Hour : 18; Minute : 24; Second : 44;
+      );
+      FINISH_TIME : TDateTimeRec = (
+        Year : 2016; Month : 10; Day : 31;
+        Hour : 20; Minute : 35; Second : 54;
+      );
   strict private
     FHTMLReportBuilder : THTMLReportBuilder;
   public
@@ -94,7 +105,7 @@ procedure TestTHTMLReportBuilder.TestAddFooter;
 var
   FinishTime : TDateTime;
 begin
-  // TODO: Setup method call parameters
+  FinishTime := FINISH_TIME;
   FHTMLReportBuilder.AddFooter(FinishTime);
   // TODO: Validate method results
 end;
@@ -104,7 +115,7 @@ var
   StartTime : TDateTime;
   Title : String;
 begin
-  // TODO: Setup method call parameters
+  StartTime := START_TIME;
   FHTMLReportBuilder.AddHeader(Title, StartTime);
   // TODO: Validate method results
 end;
