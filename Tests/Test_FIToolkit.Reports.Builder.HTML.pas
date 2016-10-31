@@ -51,12 +51,71 @@ type
   // Test methods for class THTMLReportTemplate
 
   TestTHTMLReportTemplate = class (TGenericTestCase)
+    private
+      const
+        STR_TEMPLATE =
+          {$REGION 'XML'}
+          '<?xml version="1.0" encoding="UTF-8"?>' +
+          '<HTMLReportTemplate>' +
+          '	<CSS>' +
+          '		<![CDATA[%STYLE%]]>' +
+          '	</CSS>' +
+          '	<Header>' +
+          '		<Element>' +
+          '			<![CDATA[%HEADER_ELEMENT%]]>' +
+          '		</Element>' +
+          '	</Header>' +
+          '	<TotalSummary>' +
+          '		<Element>' +
+          '			<![CDATA[%TOTAL_SUMMARY_ELEMENT%]]>' +
+          '		</Element>' +
+          '		<TotalSummaryItem>' +
+          '			<Element>' +
+          '				<![CDATA[%TOTAL_SUMMARY_ITEM_ELEMENT%]]>' +
+          '			</Element>' +
+          '		</TotalSummaryItem>' +
+          '	</TotalSummary>' +
+          '	<ProjectSection>' +
+          '		<Element>' +
+          '			<![CDATA[%PROJECT_SECTION_ELEMENT%]]>' +
+          '		</Element>' +
+          '		<ProjectSummary>' +
+          '			<Element>' +
+          '				<![CDATA[%PROJECT_SUMMARY_ELEMENT%]]>' +
+          '			</Element>' +
+          '			<ProjectSummaryItem>' +
+          '				<Element>' +
+          '					<![CDATA[%PROJECT_SUMMARY_ITEM_ELEMENT%]]>' +
+          '				</Element>' +
+          '			</ProjectSummaryItem>' +
+          '		</ProjectSummary>' +
+          '		<ProjectMessages>' +
+          '			<Element>' +
+          '				<![CDATA[%PROJECT_MESSAGES_ELEMENT%]]>' +
+          '			</Element>' +
+          '			<Message>' +
+          '				<Element>' +
+          '					<![CDATA[%MESSAGE_ELEMENT%]]>' +
+          '				</Element>' +
+          '			</Message>' +
+          '		</ProjectMessages>' +
+          '	</ProjectSection>' +
+          '	<Footer>' +
+          '		<Element>' +
+          '			<![CDATA[%FOOTER_ELEMENT%]]>' +
+          '		</Element>' +
+          '	</Footer>' +
+          '</HTMLReportTemplate>';
+          {$ENDREGION}
+    type
+      TTestHTMLReportTemplate = class sealed (THTMLReportTemplate);
   strict private
-    FHTMLReportTemplate : THTMLReportTemplate;
+    FHTMLReportTemplate : TTestHTMLReportTemplate;
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestCSS;
     procedure TestGetFooterElement;
     procedure TestGetHeaderElement;
     procedure TestGetMessageElement;
@@ -85,7 +144,7 @@ type
 implementation
 
 uses
-  System.SysUtils,
+  System.Classes, System.SysUtils,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 { TestTHTMLReportBuilder }
@@ -178,8 +237,15 @@ end;
 { TestTHTMLReportTemplate }
 
 procedure TestTHTMLReportTemplate.SetUp;
+var
+  XML : TStringStream;
 begin
-  FHTMLReportTemplate := THTMLReportTemplate.Create;
+  XML := TStringStream.Create(STR_TEMPLATE);
+  try
+    FHTMLReportTemplate := TTestHTMLReportTemplate.Create(XML);
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TestTHTMLReportTemplate.TearDown;
@@ -188,12 +254,22 @@ begin
   FHTMLReportTemplate := nil;
 end;
 
+procedure TestTHTMLReportTemplate.TestCSS;
+var
+  ReturnValue : String;
+begin
+  ReturnValue := FHTMLReportTemplate.CSS;
+
+  CheckEquals('%STYLE%', ReturnValue, 'ReturnValue = %STYLE%');
+end;
+
 procedure TestTHTMLReportTemplate.TestGetFooterElement;
 var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetFooterElement;
-  // TODO: Validate method results
+
+  CheckEquals('%FOOTER_ELEMENT%', ReturnValue, 'ReturnValue = %FOOTER_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetHeaderElement;
@@ -201,7 +277,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetHeaderElement;
-  // TODO: Validate method results
+
+  CheckEquals('%HEADER_ELEMENT%', ReturnValue, 'ReturnValue = %HEADER_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetMessageElement;
@@ -209,7 +286,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetMessageElement;
-  // TODO: Validate method results
+
+  CheckEquals('%MESSAGE_ELEMENT%', ReturnValue, 'ReturnValue = %MESSAGE_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectMessagesElement;
@@ -217,7 +295,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectMessagesElement;
-  // TODO: Validate method results
+
+  CheckEquals('%PROJECT_MESSAGES_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_MESSAGES_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSectionElement;
@@ -225,7 +304,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSectionElement;
-  // TODO: Validate method results
+
+  CheckEquals('%PROJECT_SECTION_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SECTION_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSummaryElement;
@@ -233,7 +313,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSummaryElement;
-  // TODO: Validate method results
+
+  CheckEquals('%PROJECT_SUMMARY_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SUMMARY_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSummaryItemElement;
@@ -241,7 +322,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSummaryItemElement;
-  // TODO: Validate method results
+
+  CheckEquals('%PROJECT_SUMMARY_ITEM_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SUMMARY_ITEM_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetTotalSummaryElement;
@@ -249,7 +331,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetTotalSummaryElement;
-  // TODO: Validate method results
+
+  CheckEquals('%TOTAL_SUMMARY_ELEMENT%', ReturnValue, 'ReturnValue = %TOTAL_SUMMARY_ELEMENT%');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetTotalSummaryItemElement;
@@ -257,7 +340,8 @@ var
   ReturnValue : String;
 begin
   ReturnValue := FHTMLReportTemplate.GetTotalSummaryItemElement;
-  // TODO: Validate method results
+
+  CheckEquals('%TOTAL_SUMMARY_ITEM_ELEMENT%', ReturnValue, 'ReturnValue = %TOTAL_SUMMARY_ITEM_ELEMENT%');
 end;
 
 { TestTHTMLReportCustomTemplate }
