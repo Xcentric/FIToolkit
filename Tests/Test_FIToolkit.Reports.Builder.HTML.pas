@@ -115,7 +115,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure TestCSS;
+    procedure TestGetCSS;
     procedure TestGetFooterElement;
     procedure TestGetHeaderElement;
     procedure TestGetMessageElement;
@@ -260,11 +260,11 @@ begin
   FHTMLReportTemplate := nil;
 end;
 
-procedure TestTHTMLReportTemplate.TestCSS;
+procedure TestTHTMLReportTemplate.TestGetCSS;
 var
   ReturnValue : String;
 begin
-  ReturnValue := FHTMLReportTemplate.CSS;
+  ReturnValue := FHTMLReportTemplate.GetCSS;
 
   CheckEquals('%STYLE%', ReturnValue, 'ReturnValue = %STYLE%');
 end;

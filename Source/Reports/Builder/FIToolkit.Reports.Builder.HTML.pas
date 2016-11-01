@@ -23,7 +23,12 @@ type
       procedure SetTemplate(const Template : ITextReportTemplate);
   end;
 
-  THTMLReportTemplate = class abstract (TInterfacedObject, ITextReportTemplate)
+  IHTMLReportTemplate = interface (ITextReportTemplate)
+    ['{C2CC3425-2FEC-4F41-A122-9FA3F8CC16D5}']
+    function GetCSS : String;
+  end;
+
+  THTMLReportTemplate = class abstract (TInterfacedObject, IHTMLReportTemplate)
     strict private
       FCSS,
       FFooterElement,
@@ -40,6 +45,7 @@ type
     protected
       constructor Create(XMLStream : TStream);
     public
+      function GetCSS : String;
       function GetFooterElement : String;
       function GetHeaderElement : String;
       function GetMessageElement : String;
@@ -49,8 +55,6 @@ type
       function GetProjectSummaryItemElement : String;
       function GetTotalSummaryElement : String;
       function GetTotalSummaryItemElement : String;
-
-      property CSS : String read FCSS;
   end;
 
   THTMLReportCustomTemplate = class (THTMLReportTemplate)
@@ -130,6 +134,11 @@ begin
   except
     Exception.RaiseOuterException(EReportTemplateParseError.Create);
   end;
+end;
+
+function THTMLReportTemplate.GetCSS : String;
+begin
+  Result := FCSS;
 end;
 
 function THTMLReportTemplate.GetFooterElement : String;
