@@ -35,6 +35,11 @@ type
   strict private
     FHTMLReportBuilder : THTMLReportBuilder;
     FReportOutput : TStringStream;
+    FReportPrevPos : Int64;
+  private
+    procedure CheckReportPositionIncreased;
+    function  GetTemplate : IHTMLReportTemplate;
+    procedure SaveReportPosition;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -157,10 +162,33 @@ uses
 
 { TestTHTMLReportBuilder }
 
+procedure TestTHTMLReportBuilder.CheckReportPositionIncreased;
+begin
+  CheckTrue(FReportOutput.Position > FReportPrevPos, 'CheckTrue::(FReportOutput.Position > FReportPrevPos)');
+end;
+
+function TestTHTMLReportBuilder.GetTemplate : IHTMLReportTemplate;
+var
+  XML : TStringStream;
+begin
+  XML := TStringStream.Create(TestTHTMLReportTemplate.STR_TEMPLATE);
+  try
+    Result := TestTHTMLReportTemplate.TTestHTMLReportTemplate.Create(XML);
+  finally
+    XML.Free;
+  end;
+end;
+
+procedure TestTHTMLReportBuilder.SaveReportPosition;
+begin
+  FReportPrevPos := FReportOutput.Position;
+end;
+
 procedure TestTHTMLReportBuilder.SetUp;
 begin
   FReportOutput := TStringStream.Create;
   FHTMLReportBuilder := THTMLReportBuilder.Create(FReportOutput);
+  FHTMLReportBuilder.SetTemplate(GetTemplate);
 end;
 
 procedure TestTHTMLReportBuilder.TearDown;
