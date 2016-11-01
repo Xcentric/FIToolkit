@@ -232,12 +232,15 @@ begin
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;
-var
-  Template : ITextReportTemplate;
 begin
-  // TODO: Setup method call parameters
-  FHTMLReportBuilder.SetTemplate(Template);
-  // TODO: Validate method results
+  CheckException(
+    procedure
+    begin
+      FHTMLReportBuilder.SetTemplate(nil);
+    end,
+    EInvalidReportTemplate,
+    'CheckException::EInvalidReportTemplate'
+  );
 end;
 
 { TestTHTMLReportTemplate }

@@ -28,6 +28,7 @@ resourcestring
 
   { Exceptions }
 
+  RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
   RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
   RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
 

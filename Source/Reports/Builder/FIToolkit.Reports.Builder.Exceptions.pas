@@ -17,6 +17,7 @@ type
 
   EReportTemplateException = class abstract (EReportsBuilderCommonException);
 
+  EInvalidReportTemplate = class (EReportTemplateException);
   EReportTemplateLoadError = class (EReportTemplateException);
   EReportTemplateParseError = class (EReportTemplateException);
 
@@ -26,6 +27,7 @@ uses
   FIToolkit.Reports.Builder.Consts;
 
 initialization
+  RegisterExceptionMessage(EInvalidReportTemplate, RSInvalidReportTemplate);
   RegisterExceptionMessage(EReportTemplateLoadError, RSReportTemplateLoadError);
   RegisterExceptionMessage(EReportTemplateParseError, RSReportTemplateParseError);
 
