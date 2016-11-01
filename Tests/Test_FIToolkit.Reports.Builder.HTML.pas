@@ -38,8 +38,11 @@ type
     FReportPrevPos : Int64;
   private
     procedure CheckReportPositionIncreased;
+    function  GetReportText : String;
     function  GetTemplate : IHTMLReportTemplate;
     procedure SaveReportPosition;
+
+    property  ReportText : String read GetReportText;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -165,6 +168,11 @@ uses
 procedure TestTHTMLReportBuilder.CheckReportPositionIncreased;
 begin
   CheckTrue(FReportOutput.Position > FReportPrevPos, 'CheckTrue::(FReportOutput.Position > FReportPrevPos)');
+end;
+
+function TestTHTMLReportBuilder.GetReportText : String;
+begin
+  Result := FReportOutput.DataString;
 end;
 
 function TestTHTMLReportBuilder.GetTemplate : IHTMLReportTemplate;
