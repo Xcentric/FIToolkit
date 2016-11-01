@@ -209,33 +209,42 @@ procedure TestTHTMLReportBuilder.TestAddFooter;
 var
   FinishTime : TDateTime;
 begin
+  FinishTime := FINISH_TIME;
   SaveReportPosition;
 
-  FinishTime := FINISH_TIME;
   FHTMLReportBuilder.AddFooter(FinishTime);
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains(DateTimeToStr(FinishTime)), 'CheckTrue::Contains(FinishTime)');
 end;
 
 procedure TestTHTMLReportBuilder.TestAddHeader;
 var
-  StartTime : TDateTime;
   Title : String;
+  StartTime : TDateTime;
 begin
+  Title := 'HTML Report Title';
+  StartTime := START_TIME;
   SaveReportPosition;
 
-  StartTime := START_TIME;
   FHTMLReportBuilder.AddHeader(Title, StartTime);
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains(Title), 'CheckTrue::Contains(Title)');
+  CheckTrue(ReportText.Contains(DateTimeToStr(StartTime)), 'CheckTrue::Contains(StartTime)');
 end;
 
 procedure TestTHTMLReportBuilder.TestAddTotalSummary;
+const
+  ARR_SUMMARY_ITEMS : array [0..1] of TSummaryItem = (
+    (MessageCount: 6667; MessageTypeKeyWord: 'classError'; MessageTypeName: 'ERROR'),
+    (MessageCount: 7776; MessageTypeKeyword: 'classWarning'; MessageTypeName: 'WARNING')
+  );
 var
   Items : array of TSummaryItem;
 begin
+  SetLength(Items, Length(ARR_SUMMARY_ITEMS));
+  CopyArray(@Items[0], @ARR_SUMMARY_ITEMS[0], TypeInfo(TSummaryItem), Length(ARR_SUMMARY_ITEMS));
   SaveReportPosition;
 
   // TODO: Setup method call parameters
@@ -243,6 +252,14 @@ begin
   // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  //
+  CheckTrue(ReportText.Contains(6667.ToString), 'CheckTrue::Contains(6667)');
+  CheckTrue(ReportText.Contains('classError'), 'CheckTrue::Contains(classError)');
+  CheckTrue(ReportText.Contains('ERROR'), 'CheckTrue::Contains(ERROR)');
+  //
+  CheckTrue(ReportText.Contains(7776.ToString), 'CheckTrue::Contains(7776)');
+  CheckTrue(ReportText.Contains('classWarning'), 'CheckTrue::Contains(classWarning)');
+  CheckTrue(ReportText.Contains('WARNING'), 'CheckTrue::Contains(WARNING)');
 end;
 
 procedure TestTHTMLReportBuilder.TestAppendRecord;
@@ -277,9 +294,10 @@ begin
   SaveReportPosition;
 
   FHTMLReportBuilder.BeginReport;
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.StartsWith('<html>'), 'CheckTrue::StartsWith(<html>)');
+  CheckTrue(ReportText.Contains('<body>'), 'CheckTrue::Contains(<body>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestEndProjectSection;
@@ -297,9 +315,10 @@ begin
   SaveReportPosition;
 
   FHTMLReportBuilder.EndReport;
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains('</body>'), 'CheckTrue::Contains(</body>)');
+  CheckTrue(ReportText.EndsWith('</html>'), 'CheckTrue::EndsWith(</html>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;
