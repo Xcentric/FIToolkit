@@ -10,8 +10,11 @@ type
 
   THTMLReportBuilder = class (TInterfacedObject, IReportBuilder, ITemplatableTextReport)
     strict private
+      FOutput : TStream;
       FTemplate : ITextReportTemplate;
     public
+      constructor Create(Output : TStream);
+
       procedure AddFooter(FinishTime : TDateTime);
       procedure AddHeader(const Title : String; StartTime : TDateTime);
       procedure AddTotalSummary(const Items : array of TSummaryItem);
@@ -103,6 +106,13 @@ end;
 procedure THTMLReportBuilder.BeginReport;
 begin
   // TODO: implement {THTMLReportBuilder.BeginReport}
+end;
+
+constructor THTMLReportBuilder.Create(Output : TStream);
+begin
+  inherited Create;
+
+  FOutput := Output;
 end;
 
 procedure THTMLReportBuilder.EndProjectSection;

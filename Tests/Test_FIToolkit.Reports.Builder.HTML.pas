@@ -13,6 +13,7 @@ interface
 
 uses
   TestFramework,
+  System.Classes,
   FIToolkit.Reports.Builder.HTML,
   TestTypes;
 
@@ -33,6 +34,7 @@ type
       );
   strict private
     FHTMLReportBuilder : THTMLReportBuilder;
+    FReportOutput : TStringStream;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -149,7 +151,7 @@ type
 implementation
 
 uses
-  System.Classes, System.SysUtils,
+  System.SysUtils,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
   TestUtils;
 
@@ -157,13 +159,14 @@ uses
 
 procedure TestTHTMLReportBuilder.SetUp;
 begin
-  FHTMLReportBuilder := THTMLReportBuilder.Create;
+  FReportOutput := TStringStream.Create;
+  FHTMLReportBuilder := THTMLReportBuilder.Create(FReportOutput);
 end;
 
 procedure TestTHTMLReportBuilder.TearDown;
 begin
-  FHTMLReportBuilder.Free;
-  FHTMLReportBuilder := nil;
+  FreeAndNil(FHTMLReportBuilder);
+  FreeAndNil(FReportOutput);
 end;
 
 procedure TestTHTMLReportBuilder.TestAddFooter;
