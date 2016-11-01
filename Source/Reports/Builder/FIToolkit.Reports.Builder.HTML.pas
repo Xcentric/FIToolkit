@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Classes, Xml.XMLIntf,
+  System.Classes, System.SysUtils, Xml.XMLIntf,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 type
@@ -126,8 +126,9 @@ constructor THTMLReportTemplate.Create(XMLStream : TStream);
 var
   XML : IXMLDocument;
 begin
-  XML := TXMLDocument.Create(nil);
+  inherited Create;
 
+  XML := TXMLDocument.Create(nil);
   try
     XML.LoadFromStream(XMLStream);
     Parse(XML);
