@@ -201,9 +201,13 @@ procedure TestTHTMLReportBuilder.TestAddFooter;
 var
   FinishTime : TDateTime;
 begin
+  SaveReportPosition;
+
   FinishTime := FINISH_TIME;
   FHTMLReportBuilder.AddFooter(FinishTime);
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestAddHeader;
@@ -211,27 +215,39 @@ var
   StartTime : TDateTime;
   Title : String;
 begin
+  SaveReportPosition;
+
   StartTime := START_TIME;
   FHTMLReportBuilder.AddHeader(Title, StartTime);
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestAddTotalSummary;
 var
   Items : array of TSummaryItem;
 begin
+  SaveReportPosition;
+
   // TODO: Setup method call parameters
   FHTMLReportBuilder.AddTotalSummary(Items);
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestAppendRecord;
 var
   Item : TReportRecord;
 begin
+  SaveReportPosition;
+
   // TODO: Setup method call parameters
   FHTMLReportBuilder.AppendRecord(Item);
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestBeginProjectSection;
@@ -239,27 +255,43 @@ var
   ProjectSummary : array of TSummaryItem;
   Title : String;
 begin
+  SaveReportPosition;
+
   // TODO: Setup method call parameters
   FHTMLReportBuilder.BeginProjectSection(Title, ProjectSummary);
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestBeginReport;
 begin
+  SaveReportPosition;
+
   FHTMLReportBuilder.BeginReport;
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestEndProjectSection;
 begin
+  SaveReportPosition;
+
   FHTMLReportBuilder.EndProjectSection;
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestEndReport;
 begin
+  SaveReportPosition;
+
   FHTMLReportBuilder.EndReport;
   // TODO: Validate method results
+
+  CheckReportPositionIncreased;
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;
