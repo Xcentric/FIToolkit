@@ -266,27 +266,54 @@ procedure TestTHTMLReportBuilder.TestAppendRecord;
 var
   Item : TReportRecord;
 begin
+  with Item do
+  begin
+    Column             := 81;
+    Line               := 666;
+    FileName           := 'TestFileName';
+    MessageText        := 'TestMessageText';
+    MessageTypeKeyword := 'TestMessageTypeKeyword';
+    MessageTypeName    := 'TestMessageTypeName';
+  end;
   SaveReportPosition;
 
-  // TODO: Setup method call parameters
   FHTMLReportBuilder.AppendRecord(Item);
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains(Item.Column.ToString), 'CheckTrue::Contains(Column)');
+  CheckTrue(ReportText.Contains(Item.Line.ToString), 'CheckTrue::Contains(Line)');
+  CheckTrue(ReportText.Contains(Item.FileName), 'CheckTrue::Contains(FileName)');
+  CheckTrue(ReportText.Contains(Item.MessageText), 'CheckTrue::Contains(MessageText)');
+  CheckTrue(ReportText.Contains(Item.MessageTypeKeyword), 'CheckTrue::Contains(MessageTypeKeyword)');
+  CheckTrue(ReportText.Contains(Item.MessageTypeName), 'CheckTrue::Contains(MessageTypeName)');
 end;
 
 procedure TestTHTMLReportBuilder.TestBeginProjectSection;
+const
+  ARR_SUMMARY_ITEMS : array [0..1] of TSummaryItem = (
+    (MessageCount: 7778; MessageTypeKeyWord: 'classOptimization'; MessageTypeName: 'OPTIMIZATION'),
+    (MessageCount: 8887; MessageTypeKeyword: 'classHint'; MessageTypeName: 'HINT')
+  );
 var
   ProjectSummary : array of TSummaryItem;
   Title : String;
 begin
+  SetLength(ProjectSummary, Length(ARR_SUMMARY_ITEMS));
+  CopyArray(@ProjectSummary[0], @ARR_SUMMARY_ITEMS[0], TypeInfo(TSummaryItem), Length(ARR_SUMMARY_ITEMS));
+  Title := 'ProjectTitle';
   SaveReportPosition;
 
-  // TODO: Setup method call parameters
   FHTMLReportBuilder.BeginProjectSection(Title, ProjectSummary);
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  //
+  CheckTrue(ReportText.Contains(7778.ToString), 'CheckTrue::Contains(7778)');
+  CheckTrue(ReportText.Contains('classOptimization'), 'CheckTrue::Contains(classOptimization)');
+  CheckTrue(ReportText.Contains('OPTIMIZATION'), 'CheckTrue::Contains(OPTIMIZATION)');
+  //
+  CheckTrue(ReportText.Contains(8777.ToString), 'CheckTrue::Contains(8777)');
+  CheckTrue(ReportText.Contains('classHint'), 'CheckTrue::Contains(classHint)');
+  CheckTrue(ReportText.Contains('HINT'), 'CheckTrue::Contains(HINT)');
 end;
 
 procedure TestTHTMLReportBuilder.TestBeginReport;
@@ -305,9 +332,9 @@ begin
   SaveReportPosition;
 
   FHTMLReportBuilder.EndProjectSection;
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.EndsWith('</div>'), 'CheckTrue::EndsWith(</div>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestEndReport;
