@@ -247,9 +247,7 @@ begin
   CopyArray(@Items[0], @ARR_SUMMARY_ITEMS[0], TypeInfo(TSummaryItem), Length(ARR_SUMMARY_ITEMS));
   SaveReportPosition;
 
-  // TODO: Setup method call parameters
   FHTMLReportBuilder.AddTotalSummary(Items);
-  // TODO: Validate method results
 
   CheckReportPositionIncreased;
   //
