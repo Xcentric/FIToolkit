@@ -22,7 +22,10 @@ const
 
   { HTML report builder consts. Do not localize! }
 
+  STR_HTML_FINISH_TIME = '%FINISH_TIME%';
+  STR_HTML_REPORT_TITLE = '%REPORT_TITLE%';
   STR_HTML_ROOT_ID = 'root';
+  STR_HTML_START_TIME = '%START_TIME%';
 
   { Resources }
 

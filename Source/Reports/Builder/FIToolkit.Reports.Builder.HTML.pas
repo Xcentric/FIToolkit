@@ -84,12 +84,19 @@ uses
 
 procedure THTMLReportBuilder.AddFooter(FinishTime : TDateTime);
 begin
-  // TODO: implement {THTMLReportBuilder.AddFooter}
+  WriteLine(
+    FTemplate.GetFooterElement
+      .Replace(STR_HTML_FINISH_TIME, DateTimeToStr(FinishTime))
+  );
 end;
 
 procedure THTMLReportBuilder.AddHeader(const Title : String; StartTime : TDateTime);
 begin
-  // TODO: implement {THTMLReportBuilder.AddHeader}
+  WriteLine(
+    FTemplate.GetHeaderElement
+      .Replace(STR_HTML_REPORT_TITLE, Title)
+      .Replace(STR_HTML_FINISH_TIME, DateTimeToStr(StartTime))
+  );
 end;
 
 procedure THTMLReportBuilder.AddTotalSummary(const Items : array of TSummaryItem);

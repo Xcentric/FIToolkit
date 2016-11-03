@@ -14,7 +14,7 @@ interface
 uses
   TestFramework,
   System.Classes,
-  FIToolkit.Reports.Builder.HTML,
+  FIToolkit.Reports.Builder.HTML, FIToolkit.Reports.Builder.Consts,
   TestTypes;
 
 type
@@ -72,7 +72,7 @@ type
           '	</CSS>' +
           '	<Header>' +
           '		<Element>' +
-          '			<![CDATA[%HEADER_ELEMENT%]]>' +
+          '			<![CDATA[' + STR_HTML_REPORT_TITLE + '|' + STR_HTML_START_TIME + ']]>' +
           '		</Element>' +
           '	</Header>' +
           '	<TotalSummary>' +
@@ -112,7 +112,7 @@ type
           '	</ProjectSection>' +
           '	<Footer>' +
           '		<Element>' +
-          '			<![CDATA[%FOOTER_ELEMENT%]]>' +
+          '			<![CDATA[' + STR_HTML_FINISH_TIME + ']]>' +
           '		</Element>' +
           '	</Footer>' +
           '</HTMLReportTemplate>';
@@ -161,7 +161,6 @@ implementation
 uses
   System.SysUtils,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
-  FIToolkit.Reports.Builder.Consts,
   TestUtils;
 
 { TestTHTMLReportBuilder }
@@ -401,7 +400,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetFooterElement;
 
-  CheckEquals('%FOOTER_ELEMENT%', ReturnValue, 'ReturnValue = %FOOTER_ELEMENT%');
+  CheckEquals(STR_HTML_FINISH_TIME, ReturnValue, 'ReturnValue = ' + STR_HTML_FINISH_TIME);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetHeaderElement;
@@ -410,7 +409,8 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetHeaderElement;
 
-  CheckEquals('%HEADER_ELEMENT%', ReturnValue, 'ReturnValue = %HEADER_ELEMENT%');
+  CheckTrue(ReturnValue.StartsWith(STR_HTML_REPORT_TITLE), 'CheckTrue::StartsWith(%s)', [STR_HTML_REPORT_TITLE]);
+  CheckTrue(ReturnValue.EndsWith(STR_HTML_START_TIME), 'CheckTrue::EndsWith(%s)', [STR_HTML_START_TIME]);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetMessageElement;
