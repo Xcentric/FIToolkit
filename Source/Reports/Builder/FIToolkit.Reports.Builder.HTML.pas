@@ -141,7 +141,7 @@ var
 begin
   WriteLine('<head>');
   WriteLine('<meta charset="UTF-8">');
-  WriteLine('<title>' + RSHTMLReportTitle + '</title>');
+  WriteLine('<title>' + RSReportTitle + '</title>');
 
   if Supports(FTemplate, IHTMLReportTemplate, HTMLTemplate) then
   begin

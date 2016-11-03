@@ -30,15 +30,15 @@ const
 
 resourcestring
 
+  { Common }
+
+  RSReportTitle = 'FIToolkit Report';
+
   { Exceptions }
 
   RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
   RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
   RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
-
-  { HTML report builder strings }
-
-  RSHTMLReportTitle = 'FIToolkit Report';
 
 implementation
 

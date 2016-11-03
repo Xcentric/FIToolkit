@@ -328,7 +328,7 @@ begin
   CheckTrue(ReportText.Contains('<head>'), 'CheckTrue::Contains(<head>)');
   CheckTrue(ReportText.Contains('<meta charset="UTF-8">'), 'CheckTrue::Contains(charset="UTF-8")');
   CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
-  CheckTrue(ReportText.Contains(RSHTMLReportTitle), 'CheckTrue::Contains(%s)', [RSHTMLReportTitle]);
+  CheckTrue(ReportText.Contains(RSReportTitle), 'CheckTrue::Contains(%s)', [RSReportTitle]);
   CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
 end;
 
