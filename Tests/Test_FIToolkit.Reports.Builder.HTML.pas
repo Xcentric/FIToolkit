@@ -161,6 +161,7 @@ implementation
 uses
   System.SysUtils,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
+  FIToolkit.Reports.Builder.Consts,
   TestUtils;
 
 { TestTHTMLReportBuilder }
@@ -321,8 +322,14 @@ begin
   FHTMLReportBuilder.BeginReport;
 
   CheckReportPositionIncreased;
-  CheckTrue(ReportText.StartsWith('<html>'), 'CheckTrue::StartsWith(<html>)');
+  CheckTrue(ReportText.StartsWith('<!DOCTYPE html>'), 'CheckTrue::StartsWith(<!DOCTYPE html>)');
+  CheckTrue(ReportText.Contains('<html>'), 'CheckTrue::Contains(<html>)');
   CheckTrue(ReportText.Contains('<body>'), 'CheckTrue::Contains(<body>)');
+  CheckTrue(ReportText.Contains('<head>'), 'CheckTrue::Contains(<head>)');
+  CheckTrue(ReportText.Contains('<meta charset="UTF-8">'), 'CheckTrue::Contains(charset="UTF-8")');
+  CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
+  CheckTrue(ReportText.Contains(RSHTMLReportTitle), 'CheckTrue::Contains(%s)', [RSHTMLReportTitle]);
+  CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestEndProjectSection;
@@ -342,8 +349,9 @@ begin
   FHTMLReportBuilder.EndReport;
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains('</div>'), 'CheckTrue::Contains(</div>)');
   CheckTrue(ReportText.Contains('</body>'), 'CheckTrue::Contains(</body>)');
-  CheckTrue(ReportText.EndsWith('</html>'), 'CheckTrue::EndsWith(</html>)');
+  CheckTrue(ReportText.EndsWith('</html>' + sLineBreak), 'CheckTrue::EndsWith(</html>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;

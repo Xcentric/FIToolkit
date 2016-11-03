@@ -20,6 +20,10 @@ const
   STR_RPTXML_FOOTER_NODE               = 'Footer';
   STR_RPTXML_ELEMENT_NODE              = 'Element';
 
+  { HTML report builder consts. Do not localize! }
+
+  STR_HTML_ROOT_ID = 'root';
+
   { Resources }
 
   STR_RES_HTML_REPORT_DEFAULT_TEMPLATE = 'HTMLReportDefaultTemplate';
@@ -31,6 +35,10 @@ resourcestring
   RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
   RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
   RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
+
+  { HTML report builder strings }
+
+  RSHTMLReportTitle = 'FIToolkit Report';
 
 implementation
 

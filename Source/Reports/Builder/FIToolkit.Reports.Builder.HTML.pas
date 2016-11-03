@@ -12,6 +12,10 @@ type
     strict private
       FOutput : TStream;
       FTemplate : ITextReportTemplate;
+    private
+      function  GenerateHTMLHead : String;
+    strict protected
+      procedure WriteLine(const Text : String);
     public
       constructor Create(Output : TStream);
 
@@ -105,7 +109,11 @@ end;
 
 procedure THTMLReportBuilder.BeginReport;
 begin
-  // TODO: implement {THTMLReportBuilder.BeginReport}
+  WriteLine('<!DOCTYPE html>');
+  WriteLine('<html>');
+  WriteLine(GenerateHTMLHead);
+  WriteLine('<body>');
+  WriteLine('<div id="' + STR_HTML_ROOT_ID + '">');
 end;
 
 constructor THTMLReportBuilder.Create(Output : TStream);
@@ -122,12 +130,40 @@ end;
 
 procedure THTMLReportBuilder.EndReport;
 begin
-  // TODO: implement {THTMLReportBuilder.EndReport}
+  WriteLine('</div>');
+  WriteLine('</body>');
+  WriteLine('</html>');
+end;
+
+function THTMLReportBuilder.GenerateHTMLHead : String;
+var
+  HTMLTemplate : IHTMLReportTemplate;
+begin
+  WriteLine('<head>');
+  WriteLine('<meta charset="UTF-8">');
+  WriteLine('<title>' + RSHTMLReportTitle + '</title>');
+
+  if Supports(FTemplate, IHTMLReportTemplate, HTMLTemplate) then
+  begin
+    WriteLine('<style>');
+    WriteLine(HTMLTemplate.GetCSS);
+    WriteLine('</style>');
+  end;
+
+  WriteLine('</head>');
 end;
 
 procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);
 begin
   FTemplate := Template;
+end;
+
+procedure THTMLReportBuilder.WriteLine(const Text : String);
+var
+  TextBytes : TBytes;
+begin
+  TextBytes := TEncoding.UTF8.GetBytes(Text + sLineBreak);
+  FOutput.WriteData(TextBytes, Length(TextBytes));
 end;
 
 { THTMLReportTemplate }
