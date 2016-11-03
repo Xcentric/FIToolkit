@@ -78,7 +78,8 @@ implementation
 
 uses
   System.Types, System.IOUtils, Xml.XMLDoc, Winapi.ActiveX,
-  FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts;
+  FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts,
+  FIToolkit.Commons.Utils;
 
 { THTMLReportBuilder }
 
@@ -100,8 +101,27 @@ begin
 end;
 
 procedure THTMLReportBuilder.AddTotalSummary(const Items : array of TSummaryItem);
+var
+  sSummaryItem, sSummary : String;
+  Item : TSummaryItem;
 begin
-  // TODO: implement {THTMLReportBuilder.AddTotalSummary}
+  WriteLine('<div id="' + STR_HTML_TOTAL_SUMMARY_ID + '">');
+
+  for Item in Items do
+  begin
+    sSummaryItem :=
+      FTemplate.GetTotalSummaryItemElement
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
+        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
+    sSummary := Iff.Get<String>(sSummary.IsEmpty, sSummaryItem, sSummary + sLineBreak + sSummaryItem);
+  end;
+
+  WriteLine(
+    FTemplate.GetTotalSummaryElement
+      .Replace(STR_HTML_TOTAL_SUMMARY, sSummary)
+  );
+  WriteLine('</div>');
 end;
 
 procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);

@@ -63,6 +63,10 @@ type
   TestTHTMLReportTemplate = class (TGenericTestCase)
     private
       const
+        STR_HTML_SUMMARY_ITEM =
+          STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD + '|' +
+          STR_HTML_SUMMARY_MESSAGE_TYPE_NAME + '|' +
+          STR_HTML_SUMMARY_MESSAGE_COUNT;
         STR_TEMPLATE =
           {$REGION 'XML'}
           '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -77,11 +81,11 @@ type
           '	</Header>' +
           '	<TotalSummary>' +
           '		<Element>' +
-          '			<![CDATA[%TOTAL_SUMMARY_ELEMENT%]]>' +
+          '			<![CDATA[' + STR_HTML_TOTAL_SUMMARY + ']]>' +
           '		</Element>' +
           '		<TotalSummaryItem>' +
           '			<Element>' +
-          '				<![CDATA[%TOTAL_SUMMARY_ITEM_ELEMENT%]]>' +
+          '				<![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
           '			</Element>' +
           '		</TotalSummaryItem>' +
           '	</TotalSummary>' +
@@ -250,6 +254,7 @@ begin
   FHTMLReportBuilder.AddTotalSummary(Items);
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains(STR_HTML_TOTAL_SUMMARY_ID), 'CheckTrue::Contains(%s)', [STR_HTML_TOTAL_SUMMARY_ID]);
   //
   CheckTrue(ReportText.Contains(6667.ToString), 'CheckTrue::Contains(6667)');
   CheckTrue(ReportText.Contains('classError'), 'CheckTrue::Contains(classError)');
@@ -329,6 +334,7 @@ begin
   CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
   CheckTrue(ReportText.Contains(RSReportTitle), 'CheckTrue::Contains(%s)', [RSReportTitle]);
   CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
+  CheckTrue(ReportText.Contains(STR_HTML_ROOT_ID), 'CheckTrue::Contains(%s)', [STR_HTML_ROOT_ID]);
 end;
 
 procedure TestTHTMLReportBuilder.TestEndProjectSection;
@@ -464,7 +470,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetTotalSummaryElement;
 
-  CheckEquals('%TOTAL_SUMMARY_ELEMENT%', ReturnValue, 'ReturnValue = %TOTAL_SUMMARY_ELEMENT%');
+  CheckEquals(STR_HTML_TOTAL_SUMMARY, ReturnValue, 'ReturnValue = ' + STR_HTML_TOTAL_SUMMARY);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetTotalSummaryItemElement;
@@ -473,7 +479,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetTotalSummaryItemElement;
 
-  CheckEquals('%TOTAL_SUMMARY_ITEM_ELEMENT%', ReturnValue, 'ReturnValue = %TOTAL_SUMMARY_ITEM_ELEMENT%');
+  CheckEquals(STR_HTML_SUMMARY_ITEM, ReturnValue, 'ReturnValue = ' + STR_HTML_SUMMARY_ITEM);
 end;
 
 { TestTHTMLReportCustomTemplate }
