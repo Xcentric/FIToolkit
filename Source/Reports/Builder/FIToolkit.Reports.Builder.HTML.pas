@@ -98,7 +98,7 @@ begin
   WriteLine(
     FTemplate.GetHeaderElement
       .Replace(STR_HTML_REPORT_TITLE, Title)
-      .Replace(STR_HTML_FINISH_TIME, DateTimeToStr(StartTime))
+      .Replace(STR_HTML_START_TIME, DateTimeToStr(StartTime))
   );
 end;
 

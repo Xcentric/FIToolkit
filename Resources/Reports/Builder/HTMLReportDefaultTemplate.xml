@@ -2,13 +2,16 @@
 <HTMLReportTemplate>
 	<CSS>
 		<![CDATA[
-			%STYLE%
+		{STYLE}
 		]]>
 	</CSS>
 	<Header>
 		<Element>
 			<![CDATA[
-				%HEADER_ELEMENT%
+	<div>
+		<div>%REPORT_TITLE%</div>
+		<div>%START_TIME%</div>
+	</div>
 			]]>
 		</Element>
 	</Header>
@@ -64,7 +67,9 @@
 	<Footer>
 		<Element>
 			<![CDATA[
-				%FOOTER_ELEMENT%
+	<div>
+		<div>%FINISH_TIME%</div>
+	</div>
 			]]>
 		</Element>
 	</Footer>

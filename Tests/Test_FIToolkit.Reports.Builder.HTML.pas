@@ -72,7 +72,7 @@ type
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<HTMLReportTemplate>' +
           '	<CSS>' +
-          '		<![CDATA[%STYLE%]]>' +
+          '		<![CDATA[{STYLE}]]>' +
           '	</CSS>' +
           '	<Header>' +
           '		<Element>' +
@@ -396,7 +396,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetCSS;
 
-  CheckEquals('%STYLE%', ReturnValue, 'ReturnValue = %STYLE%');
+  CheckEquals('{STYLE}', ReturnValue, 'ReturnValue = {STYLE}');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetFooterElement;
