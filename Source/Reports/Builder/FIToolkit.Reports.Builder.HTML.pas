@@ -105,8 +105,6 @@ var
   sSummaryItem, sSummary : String;
   Item : TSummaryItem;
 begin
-  WriteLine('<div id="' + STR_HTML_TOTAL_SUMMARY_ID + '">');
-
   for Item in Items do
   begin
     sSummaryItem :=
@@ -121,7 +119,6 @@ begin
     FTemplate.GetTotalSummaryElement
       .Replace(STR_HTML_TOTAL_SUMMARY, sSummary)
   );
-  WriteLine('</div>');
 end;
 
 procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);
@@ -140,7 +137,7 @@ begin
   WriteLine('<html>');
   WriteLine(GenerateHTMLHead);
   WriteLine('<body>');
-  WriteLine('<div id="' + STR_HTML_ROOT_ID + '">');
+  WriteLine('<div id="' + STR_HTML_REPORT_ROOT_ID + '">');
 end;
 
 constructor THTMLReportBuilder.Create(Output : TStream);

@@ -254,7 +254,6 @@ begin
   FHTMLReportBuilder.AddTotalSummary(Items);
 
   CheckReportPositionIncreased;
-  CheckTrue(ReportText.Contains(STR_HTML_TOTAL_SUMMARY_ID), 'CheckTrue::Contains(%s)', [STR_HTML_TOTAL_SUMMARY_ID]);
   //
   CheckTrue(ReportText.Contains(6667.ToString), 'CheckTrue::Contains(6667)');
   CheckTrue(ReportText.Contains('classError'), 'CheckTrue::Contains(classError)');
@@ -334,7 +333,7 @@ begin
   CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
   CheckTrue(ReportText.Contains(RSReportTitle), 'CheckTrue::Contains(%s)', [RSReportTitle]);
   CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
-  CheckTrue(ReportText.Contains(STR_HTML_ROOT_ID), 'CheckTrue::Contains(%s)', [STR_HTML_ROOT_ID]);
+  CheckTrue(ReportText.Contains(STR_HTML_REPORT_ROOT_ID), 'CheckTrue::Contains(%s)', [STR_HTML_REPORT_ROOT_ID]);
 end;
 
 procedure TestTHTMLReportBuilder.TestEndProjectSection;
