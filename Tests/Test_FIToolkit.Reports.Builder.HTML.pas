@@ -91,21 +91,21 @@ type
           '	</TotalSummary>' +
           '	<ProjectSection>' +
           '		<Element>' +
-          '			<![CDATA[%PROJECT_SECTION_ELEMENT%]]>' +
+          '			<![CDATA[<div>' + STR_HTML_PROJECT_TITLE + '|' + STR_HTML_PROJECT_SUMMARY + '</div>]]>' +
           '		</Element>' +
           '		<ProjectSummary>' +
           '			<Element>' +
-          '				<![CDATA[%PROJECT_SUMMARY_ELEMENT%]]>' +
+          '				<![CDATA[' + STR_HTML_PROJECT_SUMMARY + ']]>' +
           '			</Element>' +
           '			<ProjectSummaryItem>' +
           '				<Element>' +
-          '					<![CDATA[%PROJECT_SUMMARY_ITEM_ELEMENT%]]>' +
+          '					<![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
           '				</Element>' +
           '			</ProjectSummaryItem>' +
           '		</ProjectSummary>' +
           '		<ProjectMessages>' +
           '			<Element>' +
-          '				<![CDATA[%PROJECT_MESSAGES_ELEMENT%]]>' +
+          '				<![CDATA[<table></table>]]>' +
           '			</Element>' +
           '			<Message>' +
           '				<Element>' +
@@ -176,7 +176,7 @@ end;
 
 function TestTHTMLReportBuilder.GetReportText : String;
 begin
-  Result := FReportOutput.DataString;
+  Result := Trim(FReportOutput.DataString);
 end;
 
 function TestTHTMLReportBuilder.GetTemplate : IHTMLReportTemplate;
@@ -244,14 +244,10 @@ const
     (MessageCount: 6667; MessageTypeKeyWord: 'classError'; MessageTypeName: 'ERROR'),
     (MessageCount: 7776; MessageTypeKeyword: 'classWarning'; MessageTypeName: 'WARNING')
   );
-var
-  Items : array of TSummaryItem;
 begin
-  SetLength(Items, Length(ARR_SUMMARY_ITEMS));
-  CopyArray(@Items[0], @ARR_SUMMARY_ITEMS[0], TypeInfo(TSummaryItem), Length(ARR_SUMMARY_ITEMS));
   SaveReportPosition;
 
-  FHTMLReportBuilder.AddTotalSummary(Items);
+  FHTMLReportBuilder.AddTotalSummary(ARR_SUMMARY_ITEMS);
 
   CheckReportPositionIncreased;
   //
@@ -297,17 +293,15 @@ const
     (MessageCount: 8887; MessageTypeKeyword: 'classHint'; MessageTypeName: 'HINT')
   );
 var
-  ProjectSummary : array of TSummaryItem;
   Title : String;
 begin
-  SetLength(ProjectSummary, Length(ARR_SUMMARY_ITEMS));
-  CopyArray(@ProjectSummary[0], @ARR_SUMMARY_ITEMS[0], TypeInfo(TSummaryItem), Length(ARR_SUMMARY_ITEMS));
-  Title := 'ProjectTitle';
+  Title := 'Some Project Title';
   SaveReportPosition;
 
-  FHTMLReportBuilder.BeginProjectSection(Title, ProjectSummary);
+  FHTMLReportBuilder.BeginProjectSection(Title, ARR_SUMMARY_ITEMS);
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains(Title), 'CheckTrue::Contains(%s)', [Title]);
   //
   CheckTrue(ReportText.Contains(7778.ToString), 'CheckTrue::Contains(7778)');
   CheckTrue(ReportText.Contains('classOptimization'), 'CheckTrue::Contains(classOptimization)');
@@ -343,6 +337,7 @@ begin
   FHTMLReportBuilder.EndProjectSection;
 
   CheckReportPositionIncreased;
+  CheckTrue(ReportText.Contains('</table>'), 'CheckTrue::Contains(</table>)');
   CheckTrue(ReportText.EndsWith('</div>'), 'CheckTrue::EndsWith(</div>)');
 end;
 
@@ -355,7 +350,7 @@ begin
   CheckReportPositionIncreased;
   CheckTrue(ReportText.Contains('</div>'), 'CheckTrue::Contains(</div>)');
   CheckTrue(ReportText.Contains('</body>'), 'CheckTrue::Contains(</body>)');
-  CheckTrue(ReportText.EndsWith('</html>' + sLineBreak), 'CheckTrue::EndsWith(</html>)');
+  CheckTrue(ReportText.EndsWith('</html>'), 'CheckTrue::EndsWith(</html>)');
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;
@@ -433,7 +428,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectMessagesElement;
 
-  CheckEquals('%PROJECT_MESSAGES_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_MESSAGES_ELEMENT%');
+  CheckEquals('<table></table>', ReturnValue, 'ReturnValue = <table></table>');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSectionElement;
@@ -442,7 +437,10 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSectionElement;
 
-  CheckEquals('%PROJECT_SECTION_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SECTION_ELEMENT%');
+  CheckTrue(ReturnValue.StartsWith('<div>' + STR_HTML_PROJECT_TITLE),
+    'CheckTrue::StartsWith(<div>%s)', [STR_HTML_PROJECT_TITLE]);
+  CheckTrue(ReturnValue.EndsWith(STR_HTML_PROJECT_SUMMARY + '</div>'),
+    'CheckTrue::EndsWith(%s</div>)', [STR_HTML_PROJECT_SUMMARY]);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSummaryElement;
@@ -451,7 +449,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSummaryElement;
 
-  CheckEquals('%PROJECT_SUMMARY_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SUMMARY_ELEMENT%');
+  CheckEquals(STR_HTML_PROJECT_SUMMARY, ReturnValue, 'ReturnValue = ' + STR_HTML_PROJECT_SUMMARY);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSummaryItemElement;
@@ -460,7 +458,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSummaryItemElement;
 
-  CheckEquals('%PROJECT_SUMMARY_ITEM_ELEMENT%', ReturnValue, 'ReturnValue = %PROJECT_SUMMARY_ITEM_ELEMENT%');
+  CheckEquals(STR_HTML_SUMMARY_ITEM, ReturnValue, 'ReturnValue = ' + STR_HTML_SUMMARY_ITEM);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetTotalSummaryElement;

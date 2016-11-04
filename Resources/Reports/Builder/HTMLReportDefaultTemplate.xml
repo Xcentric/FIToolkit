@@ -18,13 +18,18 @@
 	<TotalSummary>
 		<Element>
 			<![CDATA[
-				%TOTAL_SUMMARY_ELEMENT%
+	<div>
+%TOTAL_SUMMARY%
+	</div>
 			]]>
 		</Element>
 		<TotalSummaryItem>
 			<Element>
 				<![CDATA[
-					%TOTAL_SUMMARY_ITEM_ELEMENT%
+		<div>
+			<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
+			<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
+		</div>
 				]]>
 			</Element>
 		</TotalSummaryItem>
@@ -32,19 +37,27 @@
 	<ProjectSection>
 		<Element>
 			<![CDATA[
-				%PROJECT_SECTION_ELEMENT%
+	<div>
+		<div>%PROJECT_TITLE%</div>
+%PROJECT_SUMMARY%
+	</div>
 			]]>
 		</Element>
 		<ProjectSummary>
 			<Element>
 				<![CDATA[
-					%PROJECT_SUMMARY_ELEMENT%
+		<div>
+%PROJECT_SUMMARY%
+		</div>
 				]]>
 			</Element>
 			<ProjectSummaryItem>
 				<Element>
 					<![CDATA[
-						%PROJECT_SUMMARY_ITEM_ELEMENT%
+			<div>
+				<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
+				<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
+			</div>
 					]]>
 				</Element>
 			</ProjectSummaryItem>
@@ -52,7 +65,8 @@
 		<ProjectMessages>
 			<Element>
 				<![CDATA[
-					%PROJECT_MESSAGES_ELEMENT%
+		<table>
+		</table>
 				]]>
 			</Element>
 			<Message>

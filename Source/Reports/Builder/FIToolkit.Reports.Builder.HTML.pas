@@ -129,8 +129,27 @@ begin
 end;
 
 procedure THTMLReportBuilder.BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
+var
+  sSummaryItem, sSummary : String;
+  Item : TSummaryItem;
 begin
-  // TODO: implement {THTMLReportBuilder.BeginProjectSection}
+  for Item in ProjectSummary do
+  begin
+    sSummaryItem :=
+      FTemplate.GetProjectSummaryItemElement
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
+        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
+    sSummary := Iff.Get<String>(sSummary.IsEmpty, sSummaryItem, sSummary + sLineBreak + sSummaryItem);
+  end;
+
+  sSummary := FTemplate.GetProjectSummaryElement.Replace(STR_HTML_PROJECT_SUMMARY, sSummary);
+  WriteLine(
+    ExcludeClosingTag(FTemplate.GetProjectSectionElement)
+      .Replace(STR_HTML_PROJECT_TITLE, Title)
+      .Replace(STR_HTML_PROJECT_SUMMARY, sSummary)
+  );
+  WriteLine(ExcludeClosingTag(FTemplate.GetProjectMessagesElement));
 end;
 
 procedure THTMLReportBuilder.BeginReport;
@@ -151,7 +170,8 @@ end;
 
 procedure THTMLReportBuilder.EndProjectSection;
 begin
-  // TODO: implement {THTMLReportBuilder.EndProjectSection}
+  WriteLine(ExtractClosingTag(FTemplate.GetProjectMessagesElement));
+  WriteLine(ExtractClosingTag(FTemplate.GetProjectSectionElement));
 end;
 
 procedure THTMLReportBuilder.EndReport;
@@ -224,6 +244,8 @@ var
 begin
   TextBytes := TEncoding.UTF8.GetBytes(Text + sLineBreak);
   FOutput.WriteData(TextBytes, Length(TextBytes));
+
+  // TODO: implement {sanitize all string params in public methods}
 end;
 
 { THTMLReportTemplate }

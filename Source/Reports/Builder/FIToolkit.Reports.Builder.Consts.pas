@@ -27,6 +27,8 @@ const
 
   // Macros:
   STR_HTML_FINISH_TIME                  = '%FINISH_TIME%';
+  STR_HTML_PROJECT_SUMMARY              = '%PROJECT_SUMMARY%';
+  STR_HTML_PROJECT_TITLE                = '%PROJECT_TITLE%';
   STR_HTML_REPORT_TITLE                 = '%REPORT_TITLE%';
   STR_HTML_START_TIME                   = '%START_TIME%';
   STR_HTML_SUMMARY_MESSAGE_COUNT        = '%SUMMARY_MESSAGE_COUNT%';
