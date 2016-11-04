@@ -235,7 +235,10 @@ end;
 
 procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);
 begin
-  FTemplate := Template;
+  if Assigned(Template) then
+    FTemplate := Template
+  else
+    raise EInvalidReportTemplate.Create;
 end;
 
 procedure THTMLReportBuilder.WriteLine(const Text : String);
