@@ -307,7 +307,7 @@ begin
   CheckTrue(ReportText.Contains('classOptimization'), 'CheckTrue::Contains(classOptimization)');
   CheckTrue(ReportText.Contains('OPTIMIZATION'), 'CheckTrue::Contains(OPTIMIZATION)');
   //
-  CheckTrue(ReportText.Contains(8777.ToString), 'CheckTrue::Contains(8777)');
+  CheckTrue(ReportText.Contains(8887.ToString), 'CheckTrue::Contains(8887)');
   CheckTrue(ReportText.Contains('classHint'), 'CheckTrue::Contains(classHint)');
   CheckTrue(ReportText.Contains('HINT'), 'CheckTrue::Contains(HINT)');
 end;
