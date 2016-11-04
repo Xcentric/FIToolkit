@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Classes, System.SysUtils, Xml.XMLIntf,
+  System.Classes, System.SysUtils, System.RegularExpressions, Xml.XMLIntf,
   FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types;
 
 type
@@ -13,8 +13,10 @@ type
       FOutput : TStream;
       FTemplate : ITextReportTemplate;
     private
+      function  ExcludeClosingTag(const TemplateElement : String) : String;
+      function  ExtractClosingTag(const TemplateElement : String) : String;
+      function  FindClosingTag(const TemplateElement : String; out ClosingTag : TMatch) : Boolean;
       function  GenerateHTMLHead : String;
-    strict protected
       procedure WriteLine(const Text : String);
     public
       constructor Create(Output : TStream);
@@ -157,6 +159,40 @@ begin
   WriteLine('</div>');
   WriteLine('</body>');
   WriteLine('</html>');
+end;
+
+function THTMLReportBuilder.ExcludeClosingTag(const TemplateElement : String) : String;
+var
+  ClosingTag : TMatch;
+begin
+  Result := TemplateElement;
+
+  if FindClosingTag(Result, ClosingTag) then
+    Delete(Result, ClosingTag.Index, ClosingTag.Length);
+end;
+
+function THTMLReportBuilder.ExtractClosingTag(const TemplateElement : String) : String;
+var
+  ClosingTag : TMatch;
+begin
+  if FindClosingTag(TemplateElement, ClosingTag) then
+    Result := Copy(TemplateElement, ClosingTag.Index, ClosingTag.Length)
+  else
+    Result := String.Empty;
+end;
+
+function THTMLReportBuilder.FindClosingTag(const TemplateElement : String; out ClosingTag : TMatch) : Boolean;
+var
+  AllClosingTags : TMatchCollection;
+begin
+  Result := False;
+  AllClosingTags := TRegEx.Matches(TemplateElement, '<\/[a-z0-9]*>', [roIgnoreCase]);
+
+  if AllClosingTags.Count > 0 then
+  begin
+    ClosingTag := AllClosingTags[AllClosingTags.Count-1];
+    Exit(True);
+  end;
 end;
 
 function THTMLReportBuilder.GenerateHTMLHead : String;
