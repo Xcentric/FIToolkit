@@ -72,7 +72,12 @@
 			<Message>
 				<Element>
 					<![CDATA[
-						%MESSAGE_ELEMENT%
+			<tr class="%MESSAGE_TYPE_KEYWORD%">
+				<td>%FILE_NAME%</td>
+				<td>%LINE% (%COLUMN%)</td>
+				<td>%MESSAGE_TYPE_NAME%</td>
+				<td>%MESSAGE_TEXT%</td>
+			</tr>
 					]]>
 				</Element>
 			</Message>

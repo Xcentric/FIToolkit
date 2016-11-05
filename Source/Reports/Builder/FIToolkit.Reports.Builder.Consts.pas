@@ -26,7 +26,13 @@ const
   STR_HTML_REPORT_ROOT_ID = 'root';
 
   // Macros:
+  STR_HTML_COLUMN                       = '%COLUMN%';
+  STR_HTML_FILE_NAME                    = '%FILE_NAME%';
   STR_HTML_FINISH_TIME                  = '%FINISH_TIME%';
+  STR_HTML_LINE                         = '%LINE%';
+  STR_HTML_MESSAGE_TEXT                 = '%MESSAGE_TEXT%';
+  STR_HTML_MESSAGE_TYPE_KEYWORD         = '%MESSAGE_TYPE_KEYWORD%';
+  STR_HTML_MESSAGE_TYPE_NAME            = '%MESSAGE_TYPE_NAME%';
   STR_HTML_PROJECT_SUMMARY              = '{PROJECT_SUMMARY}';
   STR_HTML_PROJECT_SUMMARY_ITEMS        = '{PROJECT_SUMMARY_ITEMS}';
   STR_HTML_PROJECT_TITLE                = '%PROJECT_TITLE%';

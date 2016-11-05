@@ -67,6 +67,13 @@ type
           STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD + '|' +
           STR_HTML_SUMMARY_MESSAGE_TYPE_NAME + '|' +
           STR_HTML_SUMMARY_MESSAGE_COUNT;
+        STR_HTML_MESSAGE =
+          STR_HTML_MESSAGE_TYPE_KEYWORD + '|' +
+          STR_HTML_FILE_NAME + '|' +
+          STR_HTML_LINE + '|' +
+          STR_HTML_COLUMN + '|' +
+          STR_HTML_MESSAGE_TYPE_NAME + '|' +
+          STR_HTML_MESSAGE_TEXT;
         STR_TEMPLATE =
           {$REGION 'XML'}
           '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -109,7 +116,7 @@ type
           '			</Element>' +
           '			<Message>' +
           '				<Element>' +
-          '					<![CDATA[%MESSAGE_ELEMENT%]]>' +
+          '					<![CDATA[' + STR_HTML_MESSAGE + ']]>' +
           '				</Element>' +
           '			</Message>' +
           '		</ProjectMessages>' +
@@ -419,7 +426,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetMessageElement;
 
-  CheckEquals('%MESSAGE_ELEMENT%', ReturnValue, 'ReturnValue = %MESSAGE_ELEMENT%');
+  CheckEquals(STR_HTML_MESSAGE, ReturnValue, 'ReturnValue = ' + STR_HTML_MESSAGE);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectMessagesElement;
