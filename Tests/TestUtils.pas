@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  System.Generics.Defaults, System.Rtti, System.IOUtils, System.Threading,
+  System.IOUtils, System.Threading,
   Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
 

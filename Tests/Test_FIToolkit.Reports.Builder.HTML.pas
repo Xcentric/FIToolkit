@@ -164,7 +164,7 @@ implementation
 
 uses
   System.SysUtils,
-  FIToolkit.Reports.Builder.Intf, FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
+  FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Exceptions,
   TestUtils;
 
 { TestTHTMLReportBuilder }
