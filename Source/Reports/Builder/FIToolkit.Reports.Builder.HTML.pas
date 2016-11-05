@@ -13,6 +13,7 @@ type
       FOutput : TStream;
       FTemplate : ITextReportTemplate;
     private
+      function  Encode(const Value : String) : String;
       function  ExcludeClosingTag(const TemplateElement : String) : String;
       function  ExtractClosingTag(const TemplateElement : String) : String;
       function  FindClosingTag(const TemplateElement : String; out ClosingTag : TMatch) : Boolean;
@@ -79,7 +80,7 @@ type
 implementation
 
 uses
-  System.Types, System.IOUtils, Xml.XMLDoc, Winapi.ActiveX,
+  System.Types, System.IOUtils, System.NetEncoding, Xml.XMLDoc, Winapi.ActiveX,
   FIToolkit.Reports.Builder.Exceptions, FIToolkit.Reports.Builder.Consts,
   FIToolkit.Commons.Utils;
 
@@ -89,7 +90,7 @@ procedure THTMLReportBuilder.AddFooter(FinishTime : TDateTime);
 begin
   WriteLine(
     FTemplate.GetFooterElement
-      .Replace(STR_HTML_FINISH_TIME, DateTimeToStr(FinishTime))
+      .Replace(STR_HTML_FINISH_TIME, Encode(DateTimeToStr(FinishTime)))
   );
 end;
 
@@ -97,8 +98,8 @@ procedure THTMLReportBuilder.AddHeader(const Title : String; StartTime : TDateTi
 begin
   WriteLine(
     FTemplate.GetHeaderElement
-      .Replace(STR_HTML_REPORT_TITLE, Title)
-      .Replace(STR_HTML_START_TIME, DateTimeToStr(StartTime))
+      .Replace(STR_HTML_REPORT_TITLE, Encode(Title))
+      .Replace(STR_HTML_START_TIME, Encode(DateTimeToStr(StartTime)))
   );
 end;
 
@@ -111,9 +112,9 @@ begin
   begin
     sSummaryItem :=
       FTemplate.GetTotalSummaryItemElement
-        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
-        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
-        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Encode(Item.MessageTypeKeyword))
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Encode(Item.MessageTypeName))
+        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Encode(Item.MessageCount.ToString));
     sAllSummaryItems := Iff.Get<String>(
       sAllSummaryItems.IsEmpty, sSummaryItem, sAllSummaryItems + sLineBreak + sSummaryItem);
   end;
@@ -128,12 +129,12 @@ procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);
 begin
   WriteLine(
     FTemplate.GetMessageElement
-      .Replace(STR_HTML_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
-      .Replace(STR_HTML_FILE_NAME, Item.FileName)
-      .Replace(STR_HTML_LINE, Item.Line.ToString)
-      .Replace(STR_HTML_COLUMN, Item.Column.ToString)
-      .Replace(STR_HTML_MESSAGE_TYPE_NAME, Item.MessageTypeName)
-      .Replace(STR_HTML_MESSAGE_TEXT, Item.MessageText)
+      .Replace(STR_HTML_MESSAGE_TYPE_KEYWORD, Encode(Item.MessageTypeKeyword))
+      .Replace(STR_HTML_FILE_NAME, Encode(Item.FileName))
+      .Replace(STR_HTML_LINE, Encode(Item.Line.ToString))
+      .Replace(STR_HTML_COLUMN, Encode(Item.Column.ToString))
+      .Replace(STR_HTML_MESSAGE_TYPE_NAME, Encode(Item.MessageTypeName))
+      .Replace(STR_HTML_MESSAGE_TEXT, Encode(Item.MessageText))
   );
 end;
 
@@ -146,9 +147,9 @@ begin
   begin
     sSummaryItem :=
       FTemplate.GetProjectSummaryItemElement
-        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
-        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
-        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Encode(Item.MessageTypeKeyword))
+        .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Encode(Item.MessageTypeName))
+        .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Encode(Item.MessageCount.ToString));
     sAllSummaryItems := Iff.Get<String>(
       sAllSummaryItems.IsEmpty, sSummaryItem, sAllSummaryItems + sLineBreak + sSummaryItem);
   end;
@@ -156,7 +157,7 @@ begin
   sSummary := FTemplate.GetProjectSummaryElement.Replace(STR_HTML_PROJECT_SUMMARY_ITEMS, sAllSummaryItems);
   WriteLine(
     ExcludeClosingTag(FTemplate.GetProjectSectionElement)
-      .Replace(STR_HTML_PROJECT_TITLE, Title)
+      .Replace(STR_HTML_PROJECT_TITLE, Encode(Title))
       .Replace(STR_HTML_PROJECT_SUMMARY, sSummary)
   );
   WriteLine(ExcludeClosingTag(FTemplate.GetProjectMessagesElement));
@@ -176,6 +177,11 @@ begin
   inherited Create;
 
   FOutput := Output;
+end;
+
+function THTMLReportBuilder.Encode(const Value : String) : String;
+begin
+  Result := TNetEncoding.HTML.Encode(Value);
 end;
 
 procedure THTMLReportBuilder.EndProjectSection;
@@ -231,7 +237,7 @@ var
 begin
   WriteLine('<head>');
   WriteLine('<meta charset="UTF-8">');
-  WriteLine('<title>' + RSReportTitle + '</title>');
+  WriteLine('<title>' + Encode(RSReportTitle) + '</title>');
 
   if Supports(FTemplate, IHTMLReportTemplate, HTMLTemplate) then
   begin
@@ -257,8 +263,6 @@ var
 begin
   TextBytes := TEncoding.UTF8.GetBytes(Text + sLineBreak);
   FOutput.WriteData(TextBytes, Length(TextBytes));
-
-  // TODO: implement {sanitize all string params in public methods}
 end;
 
 { THTMLReportTemplate }
