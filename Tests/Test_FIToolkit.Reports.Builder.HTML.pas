@@ -56,6 +56,7 @@ type
     procedure TestEndProjectSection;
     procedure TestEndReport;
     procedure TestSetTemplate;
+    procedure TestStringEncoding;
   end;
 
   // Test methods for class THTMLReportTemplate
@@ -370,6 +371,33 @@ begin
     EInvalidReportTemplate,
     'CheckException::EInvalidReportTemplate'
   );
+end;
+
+procedure TestTHTMLReportBuilder.TestStringEncoding;
+var
+  Item : TReportRecord;
+begin
+  with Item do
+  begin
+    Column             := 0;
+    Line               := 0;
+    FileName           := 'Test&Encode';
+    MessageText        := 'Test<Encode';
+    MessageTypeKeyword := 'Test>Encode';
+    MessageTypeName    := 'Test"Encode';
+  end;
+
+  FHTMLReportBuilder.AppendRecord(Item);
+
+  CheckFalse(ReportText.Contains(Item.FileName), 'CheckTrue::Contains(%s)', [Item.FileName]);
+  CheckFalse(ReportText.Contains(Item.MessageText), 'CheckTrue::Contains(%s)', [Item.MessageText]);
+  CheckFalse(ReportText.Contains(Item.MessageTypeKeyword), 'CheckTrue::Contains(%s)', [Item.MessageTypeKeyword]);
+  CheckFalse(ReportText.Contains(Item.MessageTypeName), 'CheckTrue::Contains(%s)', [Item.MessageTypeName]);
+  //
+  CheckTrue(ReportText.Contains('Test&amp;Encode'), 'CheckTrue::Contains(Test&amp;Encod)');
+  CheckTrue(ReportText.Contains('Test&lt;Encode'), 'CheckTrue::Contains(Test&lt;Encode)');
+  CheckTrue(ReportText.Contains('Test&gt;Encode'), 'CheckTrue::Contains(Test&gt;Encode)');
+  CheckTrue(ReportText.Contains('Test&quot;Encode'), 'CheckTrue::Contains(Test&quot;Encode)');
 end;
 
 { TestTHTMLReportTemplate }
