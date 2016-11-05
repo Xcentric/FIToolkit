@@ -1,105 +1,91 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <HTMLReportTemplate>
-	<CSS>
-		<![CDATA[
-	html {
-		font-size: 10px;
-	}
-
-	body {
-		font-size: 100%;
-	}
-
-	#root {
-		margin: 2rem;
-	}
-		]]>
-	</CSS>
-	<Header>
-		<Element>
-			<![CDATA[
-	<div>
-		<div>%REPORT_TITLE%</div>
-		<div>%START_TIME%</div>
-	</div>
-			]]>
-		</Element>
-	</Header>
-	<TotalSummary>
-		<Element>
-			<![CDATA[
-	<div>
+    <CSS>
+        <![CDATA[
+    html {
+        font-size: 10px;
+    }
+    body {
+        font-size: medium;
+    }
+    #root {
+        margin: 2rem;
+    }]]>
+    </CSS>
+    <Header>
+        <Element>
+            <![CDATA[
+    <div>
+        <div>%REPORT_TITLE%</div>
+        <div>%START_TIME%</div>
+    </div>]]>
+        </Element>
+    </Header>
+    <TotalSummary>
+        <Element>
+            <![CDATA[
+    <div>
 {TOTAL_SUMMARY_ITEMS}
-	</div>
-			]]>
-		</Element>
-		<TotalSummaryItem>
-			<Element>
-				<![CDATA[
-		<div>
-			<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
-			<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
-		</div>
-				]]>
-			</Element>
-		</TotalSummaryItem>
-	</TotalSummary>
-	<ProjectSection>
-		<Element>
-			<![CDATA[
-	<div>
-		<div>%PROJECT_TITLE%</div>
-{PROJECT_SUMMARY}
-	</div>
-			]]>
-		</Element>
-		<ProjectSummary>
-			<Element>
-				<![CDATA[
-		<div>
+    </div>]]>
+        </Element>
+        <TotalSummaryItem>
+            <Element>
+                <![CDATA[
+        <div>
+            <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
+            <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
+        </div>]]>
+            </Element>
+        </TotalSummaryItem>
+    </TotalSummary>
+    <ProjectSection>
+        <Element>
+            <![CDATA[
+    <div>
+        <div>%PROJECT_TITLE%</div>
+{PROJECT_SUMMARY}</div>]]>
+        </Element>
+        <ProjectSummary>
+            <Element>
+                <![CDATA[
+        <div>
 {PROJECT_SUMMARY_ITEMS}
-		</div>
-				]]>
-			</Element>
-			<ProjectSummaryItem>
-				<Element>
-					<![CDATA[
-			<div>
-				<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
-				<div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
-			</div>
-					]]>
-				</Element>
-			</ProjectSummaryItem>
-		</ProjectSummary>
-		<ProjectMessages>
-			<Element>
-				<![CDATA[
-		<table>
-		</table>
-				]]>
-			</Element>
-			<Message>
-				<Element>
-					<![CDATA[
-			<tr class="%MESSAGE_TYPE_KEYWORD%">
-				<td>%FILE_NAME%</td>
-				<td>%LINE% (%COLUMN%)</td>
-				<td>%MESSAGE_TYPE_NAME%</td>
-				<td>%MESSAGE_TEXT%</td>
-			</tr>
-					]]>
-				</Element>
-			</Message>
-		</ProjectMessages>
-	</ProjectSection>
-	<Footer>
-		<Element>
-			<![CDATA[
-	<div>
-		<div>%FINISH_TIME%</div>
-	</div>
-			]]>
-		</Element>
-	</Footer>
+        </div>]]>
+            </Element>
+            <ProjectSummaryItem>
+                <Element>
+                    <![CDATA[
+            <div>
+                <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
+                <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
+            </div>]]>
+                </Element>
+            </ProjectSummaryItem>
+        </ProjectSummary>
+        <ProjectMessages>
+            <Element>
+                <![CDATA[
+        <table></table>]]>
+            </Element>
+            <Message>
+                <Element>
+                    <![CDATA[
+            <tr class="%MESSAGE_TYPE_KEYWORD%">
+                <td>%FILE_NAME%</td>
+                <td>%LINE% (%COLUMN%)</td>
+                <td>%MESSAGE_TYPE_NAME%</td>
+                <td>%MESSAGE_TEXT%</td>
+            </tr>]]>
+                </Element>
+            </Message>
+        </ProjectMessages>
+    </ProjectSection>
+    <Footer>
+        <Element>
+            <![CDATA[
+    <div>
+        <div>%FINISH_TIME%</div>
+    </div>]]>
+        </Element>
+    </Footer>
 </HTMLReportTemplate>
