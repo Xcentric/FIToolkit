@@ -2,7 +2,17 @@
 <HTMLReportTemplate>
 	<CSS>
 		<![CDATA[
-	{STYLE}
+	html {
+		font-size: 10px;
+	}
+
+	body {
+		font-size: 100%;
+	}
+
+	#root {
+		margin: 2rem;
+	}
 		]]>
 	</CSS>
 	<Header>
