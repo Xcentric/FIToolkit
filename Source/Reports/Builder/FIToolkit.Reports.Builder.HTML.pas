@@ -126,7 +126,15 @@ end;
 
 procedure THTMLReportBuilder.AppendRecord(Item : TReportRecord);
 begin
-  // TODO: implement {THTMLReportBuilder.AppendRecord}
+  WriteLine(
+    FTemplate.GetMessageElement
+      .Replace(STR_HTML_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
+      .Replace(STR_HTML_FILE_NAME, Item.FileName)
+      .Replace(STR_HTML_LINE, Item.Line.ToString)
+      .Replace(STR_HTML_COLUMN, Item.Column.ToString)
+      .Replace(STR_HTML_MESSAGE_TYPE_NAME, Item.MessageTypeName)
+      .Replace(STR_HTML_MESSAGE_TEXT, Item.MessageText)
+  );
 end;
 
 procedure THTMLReportBuilder.BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
