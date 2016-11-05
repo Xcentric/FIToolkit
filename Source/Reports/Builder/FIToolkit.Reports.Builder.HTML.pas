@@ -235,18 +235,18 @@ function THTMLReportBuilder.GenerateHTMLHead : String;
 var
   HTMLTemplate : IHTMLReportTemplate;
 begin
-  WriteLine('<head>');
-  WriteLine('<meta charset="UTF-8">');
-  WriteLine('<title>' + Encode(RSReportTitle) + '</title>');
+  Result :=
+    '<head>' + sLineBreak +
+    '<meta charset="UTF-8">' + sLineBreak +
+    '<title>' + Encode(RSReportTitle) + '</title>' + sLineBreak;
 
   if Supports(FTemplate, IHTMLReportTemplate, HTMLTemplate) then
-  begin
-    WriteLine('<style>');
-    WriteLine(HTMLTemplate.GetCSS);
-    WriteLine('</style>');
-  end;
+    Result := Result +
+      '<style>' + sLineBreak +
+      HTMLTemplate.GetCSS + sLineBreak +
+      '</style>' + sLineBreak;
 
-  WriteLine('</head>');
+  Result := Result + '</head>';
 end;
 
 procedure THTMLReportBuilder.SetTemplate(const Template : ITextReportTemplate);
