@@ -81,7 +81,7 @@ type
           '	</Header>' +
           '	<TotalSummary>' +
           '		<Element>' +
-          '			<![CDATA[' + STR_HTML_TOTAL_SUMMARY + ']]>' +
+          '			<![CDATA[' + STR_HTML_TOTAL_SUMMARY_ITEMS + ']]>' +
           '		</Element>' +
           '		<TotalSummaryItem>' +
           '			<Element>' +
@@ -95,7 +95,7 @@ type
           '		</Element>' +
           '		<ProjectSummary>' +
           '			<Element>' +
-          '				<![CDATA[' + STR_HTML_PROJECT_SUMMARY + ']]>' +
+          '				<![CDATA[' + STR_HTML_PROJECT_SUMMARY_ITEMS + ']]>' +
           '			</Element>' +
           '			<ProjectSummaryItem>' +
           '				<Element>' +
@@ -449,7 +449,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetProjectSummaryElement;
 
-  CheckEquals(STR_HTML_PROJECT_SUMMARY, ReturnValue, 'ReturnValue = ' + STR_HTML_PROJECT_SUMMARY);
+  CheckEquals(STR_HTML_PROJECT_SUMMARY_ITEMS, ReturnValue, 'ReturnValue = ' + STR_HTML_PROJECT_SUMMARY_ITEMS);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetProjectSummaryItemElement;
@@ -467,7 +467,7 @@ var
 begin
   ReturnValue := FHTMLReportTemplate.GetTotalSummaryElement;
 
-  CheckEquals(STR_HTML_TOTAL_SUMMARY, ReturnValue, 'ReturnValue = ' + STR_HTML_TOTAL_SUMMARY);
+  CheckEquals(STR_HTML_TOTAL_SUMMARY_ITEMS, ReturnValue, 'ReturnValue = ' + STR_HTML_TOTAL_SUMMARY_ITEMS);
 end;
 
 procedure TestTHTMLReportTemplate.TestGetTotalSummaryItemElement;

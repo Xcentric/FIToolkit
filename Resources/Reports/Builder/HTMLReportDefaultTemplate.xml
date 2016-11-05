@@ -2,7 +2,7 @@
 <HTMLReportTemplate>
 	<CSS>
 		<![CDATA[
-		{STYLE}
+	{STYLE}
 		]]>
 	</CSS>
 	<Header>
@@ -19,7 +19,7 @@
 		<Element>
 			<![CDATA[
 	<div>
-%TOTAL_SUMMARY%
+{TOTAL_SUMMARY_ITEMS}
 	</div>
 			]]>
 		</Element>
@@ -39,7 +39,7 @@
 			<![CDATA[
 	<div>
 		<div>%PROJECT_TITLE%</div>
-%PROJECT_SUMMARY%
+{PROJECT_SUMMARY}
 	</div>
 			]]>
 		</Element>
@@ -47,7 +47,7 @@
 			<Element>
 				<![CDATA[
 		<div>
-%PROJECT_SUMMARY%
+{PROJECT_SUMMARY_ITEMS}
 		</div>
 				]]>
 			</Element>

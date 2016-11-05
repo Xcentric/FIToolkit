@@ -104,7 +104,7 @@ end;
 
 procedure THTMLReportBuilder.AddTotalSummary(const Items : array of TSummaryItem);
 var
-  sSummaryItem, sSummary : String;
+  sSummaryItem, sAllSummaryItems : String;
   Item : TSummaryItem;
 begin
   for Item in Items do
@@ -114,12 +114,13 @@ begin
         .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
         .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
         .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
-    sSummary := Iff.Get<String>(sSummary.IsEmpty, sSummaryItem, sSummary + sLineBreak + sSummaryItem);
+    sAllSummaryItems := Iff.Get<String>(
+      sAllSummaryItems.IsEmpty, sSummaryItem, sAllSummaryItems + sLineBreak + sSummaryItem);
   end;
 
   WriteLine(
     FTemplate.GetTotalSummaryElement
-      .Replace(STR_HTML_TOTAL_SUMMARY, sSummary)
+      .Replace(STR_HTML_TOTAL_SUMMARY_ITEMS, sAllSummaryItems)
   );
 end;
 
@@ -130,7 +131,7 @@ end;
 
 procedure THTMLReportBuilder.BeginProjectSection(const Title : String; const ProjectSummary : array of TSummaryItem);
 var
-  sSummaryItem, sSummary : String;
+  sSummaryItem, sAllSummaryItems, sSummary : String;
   Item : TSummaryItem;
 begin
   for Item in ProjectSummary do
@@ -140,10 +141,11 @@ begin
         .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD, Item.MessageTypeKeyword)
         .Replace(STR_HTML_SUMMARY_MESSAGE_TYPE_NAME, Item.MessageTypeName)
         .Replace(STR_HTML_SUMMARY_MESSAGE_COUNT, Item.MessageCount.ToString);
-    sSummary := Iff.Get<String>(sSummary.IsEmpty, sSummaryItem, sSummary + sLineBreak + sSummaryItem);
+    sAllSummaryItems := Iff.Get<String>(
+      sAllSummaryItems.IsEmpty, sSummaryItem, sAllSummaryItems + sLineBreak + sSummaryItem);
   end;
 
-  sSummary := FTemplate.GetProjectSummaryElement.Replace(STR_HTML_PROJECT_SUMMARY, sSummary);
+  sSummary := FTemplate.GetProjectSummaryElement.Replace(STR_HTML_PROJECT_SUMMARY_ITEMS, sAllSummaryItems);
   WriteLine(
     ExcludeClosingTag(FTemplate.GetProjectSectionElement)
       .Replace(STR_HTML_PROJECT_TITLE, Title)
