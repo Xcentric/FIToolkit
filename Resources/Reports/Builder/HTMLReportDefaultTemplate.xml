@@ -15,66 +15,70 @@
     <Header>
         <Element>
             <![CDATA[
-    <div>
-        <div>%REPORT_TITLE%</div>
-        <div>%START_TIME%</div>
+    <div id="header">
+        <div id="header$report_title">Static code analysis for "%REPORT_TITLE%"</div>
+        <div id="header$start_time">(report started at %START_TIME%)</div>
     </div>]]>
         </Element>
     </Header>
     <TotalSummary>
         <Element>
             <![CDATA[
-    <div>
+    <table id="total_summary">
 {TOTAL_SUMMARY_ITEMS}
-    </div>]]>
+    </table>]]>
         </Element>
         <TotalSummaryItem>
             <Element>
                 <![CDATA[
-        <div>
-            <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
-            <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
-        </div>]]>
+        <tr class="summary_item">
+            <td class="summary_item$%SUMMARY_MESSAGE_TYPE_KEYWORD%$desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+            <td class="summary_item$arrow">→</td>
+            <td class="summary_item$%SUMMARY_MESSAGE_TYPE_KEYWORD%$count">%SUMMARY_MESSAGE_COUNT%</td>
+        </tr>]]>
             </Element>
         </TotalSummaryItem>
     </TotalSummary>
     <ProjectSection>
         <Element>
             <![CDATA[
-    <div>
-        <div>%PROJECT_TITLE%</div>
+    <div class="project_section">
+        <div class="project_section$project_title">%PROJECT_TITLE%</div>
 {PROJECT_SUMMARY}</div>]]>
         </Element>
         <ProjectSummary>
             <Element>
                 <![CDATA[
-        <div>
+        <table class="project_section$project_summary">
 {PROJECT_SUMMARY_ITEMS}
-        </div>]]>
+        </table>]]>
             </Element>
             <ProjectSummaryItem>
                 <Element>
                     <![CDATA[
-            <div>
-                <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_TYPE_NAME%</div>
-                <div class="%SUMMARY_MESSAGE_TYPE_KEYWORD%">%SUMMARY_MESSAGE_COUNT%</div>
-            </div>]]>
+            <tr class="summary_item">
+                <td class="summary_item$%SUMMARY_MESSAGE_TYPE_KEYWORD%$desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+                <td class="summary_item$arrow">→</td>
+                <td class="summary_item$%SUMMARY_MESSAGE_TYPE_KEYWORD%$count">%SUMMARY_MESSAGE_COUNT%</td>
+            </tr>]]>
                 </Element>
             </ProjectSummaryItem>
         </ProjectSummary>
         <ProjectMessages>
             <Element>
                 <![CDATA[
-        <table></table>]]>
+        <table class="project_section$project_messages"></table>]]>
             </Element>
             <Message>
                 <Element>
                     <![CDATA[
-            <tr class="%MESSAGE_TYPE_KEYWORD%">
-                <td>%FILE_NAME%</td>
-                <td>%LINE% (%COLUMN%)</td>
-                <td>%MESSAGE_TYPE_NAME%</td>
-                <td>%MESSAGE_TEXT%</td>
+            <tr class="message$%MESSAGE_TYPE_KEYWORD%">
+                <td class="message$file_name">%FILE_NAME%</td>
+                <td class="message$file_pos">
+                  (<span class="message$file_pos$line">%LINE%</span><span class="message$file_pos$column">:%COLUMN%</span>)
+                </td>
+                <td class="message$message_type_name$%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
+                <td class="message$message_text">%MESSAGE_TEXT%</td>
             </tr>]]>
                 </Element>
             </Message>
@@ -83,8 +87,8 @@
     <Footer>
         <Element>
             <![CDATA[
-    <div>
-        <div>%FINISH_TIME%</div>
+    <div id="footer">
+        <div id="footer$finish_time">(report finished at %FINISH_TIME%)</div>
     </div>]]>
         </Element>
     </Footer>
