@@ -16,8 +16,8 @@
         <Element>
             <![CDATA[
     <div id="header">
-        <div id="header→report_title">Static code analysis for "%REPORT_TITLE%"</div>
-        <div id="header→start_time">(report started at %START_TIME%)</div>
+        <div id="header-report_title">Static code analysis for "%REPORT_TITLE%"</div>
+        <div id="header-start_time">(report started at %START_TIME%)</div>
     </div>]]>
         </Element>
     </Header>
@@ -32,9 +32,9 @@
             <Element>
                 <![CDATA[
         <tr class="summary_item">
-            <td class="summary_item→%SUMMARY_MESSAGE_TYPE_KEYWORD%→desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
-            <td class="summary_item→arrow">→</td>
-            <td class="summary_item→%SUMMARY_MESSAGE_TYPE_KEYWORD%→count">%SUMMARY_MESSAGE_COUNT%</td>
+            <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+            <td class="summary_item-arrow">→</td>
+            <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-count">%SUMMARY_MESSAGE_COUNT%</td>
         </tr>]]>
             </Element>
         </TotalSummaryItem>
@@ -43,13 +43,13 @@
         <Element>
             <![CDATA[
     <div class="project_section">
-        <div class="project_section→project_title">%PROJECT_TITLE%</div>
+        <div class="project_section-project_title">%PROJECT_TITLE%</div>
 {PROJECT_SUMMARY}</div>]]>
         </Element>
         <ProjectSummary>
             <Element>
                 <![CDATA[
-        <table class="project_section→project_summary">
+        <table class="project_section-project_summary">
 {PROJECT_SUMMARY_ITEMS}
         </table>]]>
             </Element>
@@ -57,9 +57,9 @@
                 <Element>
                     <![CDATA[
             <tr class="summary_item">
-                <td class="summary_item→%SUMMARY_MESSAGE_TYPE_KEYWORD%→desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
-                <td class="summary_item→arrow">→</td>
-                <td class="summary_item→%SUMMARY_MESSAGE_TYPE_KEYWORD%→count">%SUMMARY_MESSAGE_COUNT%</td>
+                <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+                <td class="summary_item-arrow">→</td>
+                <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-count">%SUMMARY_MESSAGE_COUNT%</td>
             </tr>]]>
                 </Element>
             </ProjectSummaryItem>
@@ -67,18 +67,18 @@
         <ProjectMessages>
             <Element>
                 <![CDATA[
-        <table class="project_section→project_messages"></table>]]>
+        <table class="project_section-project_messages"></table>]]>
             </Element>
             <Message>
                 <Element>
                     <![CDATA[
-            <tr class="message→%MESSAGE_TYPE_KEYWORD%">
-                <td class="message→file_name">%FILE_NAME%</td>
-                <td class="message→file_pos">
-                  (<span class="message→file_pos→line">%LINE%</span><span class="message→file_pos→column">:%COLUMN%</span>)
+            <tr class="message-%MESSAGE_TYPE_KEYWORD%">
+                <td class="message-file_name">%FILE_NAME%</td>
+                <td class="message-file_pos">
+                  (<span class="message-file_pos-line">%LINE%</span><span class="message-file_pos-column">:%COLUMN%</span>)
                 </td>
-                <td class="message→message_type_name→%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
-                <td class="message→message_text">%MESSAGE_TEXT%</td>
+                <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
+                <td class="message-message_text">%MESSAGE_TEXT%</td>
             </tr>]]>
                 </Element>
             </Message>
@@ -88,7 +88,7 @@
         <Element>
             <![CDATA[
     <div id="footer">
-        <div id="footer→finish_time">(report finished at %FINISH_TIME%)</div>
+        <div id="footer-finish_time">(report finished at %FINISH_TIME%)</div>
     </div>]]>
         </Element>
     </Footer>
