@@ -5,11 +5,198 @@
     html {
         font-size: 10px;
     }
+
     body {
         font-size: medium;
     }
+
     #root {
         margin: 2rem;
+    }
+
+    /* Header */
+
+    #header {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        color: indigo;
+        background-color: lavender;
+    }
+
+    #header-report_title {
+        margin-bottom: 0.5rem;
+
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    #header-start_time {
+        margin-top: 0.5rem;
+
+        text-align: center;
+        font-style: italic;
+    }
+
+    /* TotalSummary && ProjectSummary */
+
+    .summary_item-arrow {
+        padding-left: 2em;
+        padding-right: 2em;
+
+        color: lightslategrey;
+    }
+
+    .summary_item-Warning-desc {
+        color: darkorange;
+    }
+
+    .summary_item-Warning-count {
+        color: darkorange;
+        font-weight: bolder;
+    }
+
+    .summary_item-Optimization-desc {
+        color: forestgreen;
+    }
+
+    .summary_item-Optimization-count {
+        color: forestgreen;
+        font-weight: bolder;
+    }
+
+    .summary_item-CodingConvention-desc {
+        color: dodgerblue;
+    }
+
+    .summary_item-CodingConvention-count {
+        color: dodgerblue;
+        font-weight: bolder;
+    }
+
+    .summary_item-Trial-desc {
+        color: slategrey;
+        font-size: 0.75em;
+    }
+
+    .summary_item-Trial-count {
+        color: slategrey;
+        font-size: 0.75em;
+        text-align: center;
+    }
+
+    /* TotalSummary */
+
+    #total_summary {
+        margin: 2rem auto 2rem auto;
+
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 1.5em;
+    }
+
+    #total_summary .summary_item-arrow {
+        font-size: 1.5em;
+    }
+
+    /* ProjectSection */
+
+    .project_section {
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+
+        background-color: #f8f8f8;
+    }
+
+    .project_section-project_title {
+        padding: 1rem 1rem 1rem 1rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.25em;
+
+        background-color: cornsilk;
+    }
+
+    .project_section-project_summary {
+        margin: 1rem 1rem 1rem 2rem;
+
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 1.125em;
+    }
+
+    /* ProjectMessages */
+
+    .project_section-project_messages {
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+
+        font-family: Consolas, monospace;
+        font-size: 0.875em;
+    }
+
+    .project_section-project_messages td {
+        padding: 0.5rem 1rem 0.5rem 1rem;
+
+        border-top: thin solid lightgrey;
+        border-bottom: thin solid lightgrey;
+    }
+
+    .message-message_text {
+        width: 100%;
+    }
+
+    .message-file_pos {
+        color: slategrey;
+    }
+
+    .message-file_pos-line {
+        color: black;
+    }
+
+    .message-file_pos-column {
+        font-size: 0.75em;
+    }
+
+    .message-message_type_name-Warning {
+        color: darkorange;
+    }
+
+    .message-message_type_name-Optimization {
+        color: forestgreen;
+    }
+
+    .message-message_type_name-CodingConvention {
+        color: dodgerblue;
+    }
+
+    .message-message_type_name-Trial {
+        color: slategrey;
+    }
+
+    .message-Trial .message-message_text {
+        font-style: italic;
+
+        color: transparent;
+    }
+
+    /* Footer */
+
+    #footer {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        color: indigo;
+        background-color: lavender;
+    }
+
+    #footer-finish_time {
+        text-align: center;
+        font-style: italic;
     }]]>
     </CSS>
     <Header>
