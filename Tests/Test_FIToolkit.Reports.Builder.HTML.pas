@@ -79,54 +79,54 @@ type
           {$REGION 'XML'}
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<HTMLReportTemplate>' +
-          '	<CSS>' +
-          '		<![CDATA[{STYLE}]]>' +
-          '	</CSS>' +
-          '	<Header>' +
-          '		<Element>' +
-          '			<![CDATA[' + STR_HTML_REPORT_TITLE + '|' + STR_HTML_START_TIME + ']]>' +
-          '		</Element>' +
-          '	</Header>' +
-          '	<TotalSummary>' +
-          '		<Element>' +
-          '			<![CDATA[' + STR_HTML_TOTAL_SUMMARY_ITEMS + ']]>' +
-          '		</Element>' +
-          '		<TotalSummaryItem>' +
-          '			<Element>' +
-          '				<![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
-          '			</Element>' +
-          '		</TotalSummaryItem>' +
-          '	</TotalSummary>' +
-          '	<ProjectSection>' +
-          '		<Element>' +
-          '			<![CDATA[<div>' + STR_HTML_PROJECT_TITLE + '|' + STR_HTML_PROJECT_SUMMARY + '</div>]]>' +
-          '		</Element>' +
-          '		<ProjectSummary>' +
-          '			<Element>' +
-          '				<![CDATA[' + STR_HTML_PROJECT_SUMMARY_ITEMS + ']]>' +
-          '			</Element>' +
-          '			<ProjectSummaryItem>' +
-          '				<Element>' +
-          '					<![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
-          '				</Element>' +
-          '			</ProjectSummaryItem>' +
-          '		</ProjectSummary>' +
-          '		<ProjectMessages>' +
-          '			<Element>' +
-          '				<![CDATA[<table></table>]]>' +
-          '			</Element>' +
-          '			<Message>' +
-          '				<Element>' +
-          '					<![CDATA[' + STR_HTML_MESSAGE + ']]>' +
-          '				</Element>' +
-          '			</Message>' +
-          '		</ProjectMessages>' +
-          '	</ProjectSection>' +
-          '	<Footer>' +
-          '		<Element>' +
-          '			<![CDATA[' + STR_HTML_FINISH_TIME + ']]>' +
-          '		</Element>' +
-          '	</Footer>' +
+          '    <CSS>' +
+          '        <![CDATA[{STYLE}]]>' +
+          '    </CSS>' +
+          '    <Header>' +
+          '        <Element>' +
+          '            <![CDATA[' + STR_HTML_REPORT_TITLE + '|' + STR_HTML_START_TIME + ']]>' +
+          '        </Element>' +
+          '    </Header>' +
+          '    <TotalSummary>' +
+          '        <Element>' +
+          '            <![CDATA[' + STR_HTML_TOTAL_SUMMARY_ITEMS + ']]>' +
+          '        </Element>' +
+          '        <TotalSummaryItem>' +
+          '            <Element>' +
+          '                <![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
+          '            </Element>' +
+          '        </TotalSummaryItem>' +
+          '    </TotalSummary>' +
+          '    <ProjectSection>' +
+          '        <Element>' +
+          '            <![CDATA[<div>' + STR_HTML_PROJECT_TITLE + '|' + STR_HTML_PROJECT_SUMMARY + '</div>]]>' +
+          '        </Element>' +
+          '        <ProjectSummary>' +
+          '            <Element>' +
+          '                <![CDATA[' + STR_HTML_PROJECT_SUMMARY_ITEMS + ']]>' +
+          '            </Element>' +
+          '            <ProjectSummaryItem>' +
+          '                <Element>' +
+          '                    <![CDATA[' + STR_HTML_SUMMARY_ITEM + ']]>' +
+          '                </Element>' +
+          '            </ProjectSummaryItem>' +
+          '        </ProjectSummary>' +
+          '        <ProjectMessages>' +
+          '            <Element>' +
+          '                <![CDATA[<table></table>]]>' +
+          '            </Element>' +
+          '            <Message>' +
+          '                <Element>' +
+          '                    <![CDATA[' + STR_HTML_MESSAGE + ']]>' +
+          '                </Element>' +
+          '            </Message>' +
+          '        </ProjectMessages>' +
+          '    </ProjectSection>' +
+          '    <Footer>' +
+          '        <Element>' +
+          '            <![CDATA[' + STR_HTML_FINISH_TIME + ']]>' +
+          '        </Element>' +
+          '    </Footer>' +
           '</HTMLReportTemplate>';
           {$ENDREGION}
     type
