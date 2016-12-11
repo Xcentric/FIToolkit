@@ -55,6 +55,7 @@ type
     procedure TestBeginReport;
     procedure TestEndProjectSection;
     procedure TestEndReport;
+    procedure TestReportOutput;
     procedure TestSetTemplate;
     procedure TestStringEncoding;
   end;
@@ -359,6 +360,129 @@ begin
   CheckTrue(ReportText.Contains('</div>'), 'CheckTrue::Contains(</div>)');
   CheckTrue(ReportText.Contains('</body>'), 'CheckTrue::Contains(</body>)');
   CheckTrue(ReportText.EndsWith('</html>'), 'CheckTrue::EndsWith(</html>)');
+end;
+
+procedure TestTHTMLReportBuilder.TestReportOutput;
+const
+  STR_MSGKEYW_WARNING           = 'Warning';
+  STR_MSGKEYW_OPTIMIZATION      = 'Optimization';
+  STR_MSGKEYW_CODING_CONVENTION = 'CodingConvention';
+  STR_MSGKEYW_TRIAL             = 'Trial';
+
+  STR_MSGTYPE_WARNING           = 'Dangerous code';
+  STR_MSGTYPE_OPTIMIZATION      = 'Slow code';
+  STR_MSGTYPE_CODING_CONVENTION = 'Ugly code';
+  STR_MSGTYPE_TRIAL             = 'Gimme $$$';
+
+  ARR_SUMMARY_ITEMS : array [0..3] of TSummaryItem = (
+    (MessageCount: 1111; MessageTypeKeyWord: STR_MSGKEYW_WARNING; MessageTypeName: STR_MSGTYPE_WARNING),
+    (MessageCount: 2222; MessageTypeKeyword: STR_MSGKEYW_OPTIMIZATION; MessageTypeName: STR_MSGTYPE_OPTIMIZATION),
+    (MessageCount: 3333; MessageTypeKeyword: STR_MSGKEYW_CODING_CONVENTION; MessageTypeName: STR_MSGTYPE_CODING_CONVENTION),
+    (MessageCount: 4444; MessageTypeKeyword: STR_MSGKEYW_TRIAL; MessageTypeName: STR_MSGTYPE_TRIAL)
+  );
+
+  INT_PROJECTS_COUNT = 2;
+
+  STR_HEADER  = 'TEST HEADER';
+  STR_PROJECT = 'TestProject';
+
+  STR_COLUMN   = '13';
+  STR_FILENAME = 'TestProjectDir\TestFileName.pas';
+  STR_LINE     = '666';
+  STR_MESSAGE  = 'Test message text.';
+
+  STR_REFERENCE =
+    {$REGION 'HTML'}
+    '<!DOCTYPE html>' + sLineBreak +
+    '<html>' + sLineBreak +
+    '<head>' + sLineBreak +
+    '<meta charset="UTF-8">' + sLineBreak +
+    '<title>FIToolkit Report</title>' + sLineBreak +
+    '<style>' + sLineBreak +
+    '{STYLE}' + sLineBreak +
+    '</style>' + sLineBreak +
+    '</head>' + sLineBreak +
+    '<body>' + sLineBreak +
+    '<div id="root">' + sLineBreak +
+    '' + STR_HEADER + '|%START_TIME%' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '<table>' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '</table>' + sLineBreak +
+    '</div>' + sLineBreak +
+    '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '<table>' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '</table>' + sLineBreak +
+    '</div>' + sLineBreak +
+    '%FINISH_TIME%' + sLineBreak +
+    '</div>' + sLineBreak +
+    '</body>' + sLineBreak +
+    '</html>';
+    {$ENDREGION}
+var
+  R : TReportRecord;
+  i : Integer;
+  sReference : String;
+begin
+  R.Column      := STR_COLUMN.ToInteger;
+  R.Line        := STR_LINE.ToInteger;
+  R.FileName    := STR_FILENAME;
+  R.MessageText := STR_MESSAGE;
+
+  with FHTMLReportBuilder do
+  begin
+    BeginReport;
+    AddHeader(STR_HEADER, START_TIME);
+    AddTotalSummary(ARR_SUMMARY_ITEMS);
+
+    for i := 1 to INT_PROJECTS_COUNT do
+    begin
+      BeginProjectSection(STR_PROJECT, ARR_SUMMARY_ITEMS);
+
+      R.MessageTypeKeyword := STR_MSGKEYW_WARNING;
+      R.MessageTypeName := STR_MSGTYPE_WARNING;
+      AppendRecord(R);
+
+      R.MessageTypeKeyword := STR_MSGKEYW_OPTIMIZATION;
+      R.MessageTypeName := STR_MSGTYPE_OPTIMIZATION;
+      AppendRecord(R);
+
+      R.MessageTypeKeyword := STR_MSGKEYW_CODING_CONVENTION;
+      R.MessageTypeName := STR_MSGTYPE_CODING_CONVENTION;
+      AppendRecord(R);
+
+      R.MessageTypeKeyword := STR_MSGKEYW_TRIAL;
+      R.MessageTypeName := STR_MSGTYPE_TRIAL;
+      AppendRecord(R);
+
+      EndProjectSection;
+    end;
+
+    AddFooter(FINISH_TIME);
+    EndReport;
+  end;
+
+  sReference := STR_REFERENCE
+    .Replace('%START_TIME%', DateTimeToStr(START_TIME))
+    .Replace('%FINISH_TIME%', DateTimeToStr(FINISH_TIME));
+  CheckEquals(sReference, ReportText, 'ReportText = sReference');
 end;
 
 procedure TestTHTMLReportBuilder.TestSetTemplate;
