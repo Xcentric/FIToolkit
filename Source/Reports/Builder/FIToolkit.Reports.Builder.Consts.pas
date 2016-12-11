@@ -2,7 +2,16 @@
 
 interface
 
+uses
+  System.SysUtils,
+  FIToolkit.Reports.Parser.Types;
+
 const
+
+  { Common consts }
+
+  ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
+    (String.Empty, 'Warning', 'Optimization', 'CodingConvention', 'Trial'); // Do not localize!
 
   { XML consts for an HTML report template format. Do not localize! }
 
@@ -46,6 +55,19 @@ const
   { Resources }
 
   STR_RES_HTML_REPORT_DEFAULT_TEMPLATE = 'HTMLReportDefaultTemplate';
+
+resourcestring
+
+  // Message type names:
+  RSWarning = 'Предупреждение';
+  RSOptimization = 'Оптимизация';
+  RSCodingConvention = 'Стиль кода';
+  RSTrial = 'Пробная версия';
+
+const
+
+  ARR_MSGTYPE_TO_MSGNAME_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
+    (String.Empty, RSWarning, RSOptimization, RSCodingConvention, RSTrial);
 
 resourcestring
 
