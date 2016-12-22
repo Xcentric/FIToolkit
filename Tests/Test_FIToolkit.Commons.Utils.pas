@@ -18,7 +18,7 @@ uses
 
 type
 
-  TestFIToolkitUtils = class (TGenericTestCase)
+  TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
       procedure TestGetFixInsightExePath;
       procedure TestIff;
@@ -111,9 +111,9 @@ uses
   System.IOUtils, System.TypInfo, System.Rtti,
   TestUtils, TestConsts;
 
-{ TestFIToolkitUtils }
+{ TestFIToolkitCommonsUtils }
 
-procedure TestFIToolkitUtils.TestGetFixInsightExePath;
+procedure TestFIToolkitCommonsUtils.TestGetFixInsightExePath;
 var
   ReturnValue : TFileName;
 begin
@@ -124,7 +124,7 @@ begin
   CheckTrue(TFile.Exists(ReturnValue) or (ReturnValue = String.Empty), 'CheckTrue::(Exists or Empty)');
 end;
 
-procedure TestFIToolkitUtils.TestIff;
+procedure TestFIToolkitCommonsUtils.TestIff;
 type
   TTestEnum = (teFirst, teSecond, teThird);
 var
@@ -422,7 +422,7 @@ end;
 
 initialization
   // Register any test cases with the test runner
-  RegisterTest(TestFIToolkitUtils.Suite);
+  RegisterTest(TestFIToolkitCommonsUtils.Suite);
   RegisterTest(TestTExceptionHelper.Suite);
   RegisterTest(TestTFileNameHelper.Suite);
   RegisterTest(TestTPathHelper.Suite);

@@ -1,7 +1,5 @@
 ﻿unit FIToolkit.Utils;
 
-//TODO: cover with tests
-
 interface
 
 uses

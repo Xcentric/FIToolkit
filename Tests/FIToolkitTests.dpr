@@ -22,6 +22,9 @@ uses
   TestInsight.Client,
   {$ENDIF}
   DUnitTestRunner,
+  FIToolkit.Consts in '..\Source\FIToolkit.Consts.pas',
+  FIToolkit.Types in '..\Source\FIToolkit.Types.pas',
+  FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   FIToolkit.CommandLine.Consts in '..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas',
   FIToolkit.CommandLine.Exceptions in '..\Source\CommandLine\FIToolkit.CommandLine.Exceptions.pas',
   FIToolkit.CommandLine.Options in '..\Source\CommandLine\FIToolkit.CommandLine.Options.pas',
@@ -72,6 +75,7 @@ uses
   Test_FIToolkit.Reports.Parser.Types in 'Test_FIToolkit.Reports.Parser.Types.pas',
   Test_FIToolkit.Reports.Parser.XMLOutputParser in 'Test_FIToolkit.Reports.Parser.XMLOutputParser.pas',
   Test_FIToolkit.Runner.Tasks in 'Test_FIToolkit.Runner.Tasks.pas',
+  Test_FIToolkit.Utils in 'Test_FIToolkit.Utils.pas',
   Test_UTF8Sources in 'Test_UTF8Sources.pas',
   TestConsts in 'TestConsts.pas',
   TestTypes in 'TestTypes.pas',
