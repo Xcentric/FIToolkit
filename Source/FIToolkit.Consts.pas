@@ -14,7 +14,7 @@ const
   STR_APP_ABOUT_STRIP = '----------------------------------------------------------------------';
   STR_APP_COPYRIGHT_HOLDER = 'Xcentric <true.xcentric@gmail.com>';
   STR_APP_COPYRIGHT_TEXT = ' Copyright (c) ' + STR_APP_COPYRIGHT_HOLDER + ', 2016';
-  STR_APP_DESCRIPTION = ' A set of tools for SourceOddity(R) FixInsight(TM).';
+  STR_APP_DESCRIPTION = ' A set of tools for TMS Software(R) FixInsight(TM).';
   STR_APP_TITLE = '                           FIToolkit';
 
   { Common consts }
