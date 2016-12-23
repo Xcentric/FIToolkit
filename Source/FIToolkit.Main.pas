@@ -234,7 +234,7 @@ begin
       Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
     end;
 
-    if FStateMachine.HasTransition(acStart) then
+    if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
       try
         FStateMachine
           .Execute(acStart)

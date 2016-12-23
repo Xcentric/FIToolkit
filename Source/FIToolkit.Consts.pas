@@ -41,6 +41,9 @@ const
     STR_CLI_OPTION_SET_CONFIG
   ];
 
+  SET_FINAL_APPSTATES : set of TApplicationState =
+    [asHelpPrinted, asVersionPrinted, asConfigGenerated, asFinal];
+
   { Resources }
 
   STR_RES_HELP = 'HelpOutput';
