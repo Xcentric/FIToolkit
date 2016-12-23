@@ -72,8 +72,8 @@ constructor TFIToolkit.Create(const FullExePath : TFileName; const CmdLineOption
 begin
   inherited Create;
 
-  InitStateMachine;
   InitOptions(CmdLineOptions);
+  InitStateMachine;
 end;
 
 destructor TFIToolkit.Destroy;
@@ -234,17 +234,18 @@ begin
       Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
     end;
 
-    try
-      FStateMachine
-        .Execute(acStart)
-        .Execute(acParseProjectGroup)
-        .Execute(acRunFixInsight)
-        .Execute(acParseReports)
-        .Execute(acBuildReport)
-        .Execute(acTerminate);
-    except
-      Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
-    end;
+    if FStateMachine.HasTransition(acStart) then
+      try
+        FStateMachine
+          .Execute(acStart)
+          .Execute(acParseProjectGroup)
+          .Execute(acRunFixInsight)
+          .Execute(acParseReports)
+          .Execute(acBuildReport)
+          .Execute(acTerminate);
+      except
+        Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
+      end;
   except
     on E: Exception do
     begin
@@ -281,10 +282,10 @@ begin
     case Instance.FNoExitBehavior of
       neDisabled:
         bCanExit := True;
-      neEnabledOnException:
-        bCanExit := not Assigned(E);
       neEnabled:
         bCanExit := False;
+      neEnabledOnException:
+        bCanExit := not Assigned(E);
     else
       Assert(False, 'Unhandled no-exit behavior while terminating application.');
       Exit;

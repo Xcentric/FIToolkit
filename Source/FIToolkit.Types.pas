@@ -16,7 +16,7 @@ type
     asProjectGroupParsed, asFixInsightRan, asReportsParsed, asReportBuilt,
     asFinal);
 
-  TNoExitBehavior = (neDisabled, neEnabledOnException, neEnabled);
+  TNoExitBehavior = (neDisabled, neEnabled, neEnabledOnException);
 
 implementation
 
