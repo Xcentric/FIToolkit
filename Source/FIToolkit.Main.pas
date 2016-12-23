@@ -6,6 +6,7 @@ uses
   System.SysUtils, System.Types;
 
   procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
+  procedure TerminateApplication(E : Exception = nil);
 
 implementation
 
@@ -36,7 +37,6 @@ type
     private
       FNoExitBehavior : TNoExitBehavior;
 
-      procedure PrintException(E : Exception);
       procedure ProcessOptions;
 
       // Application command implementations:
@@ -45,6 +45,7 @@ type
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
+      class procedure Terminate(Instance : TFIToolkit; E : Exception = nil);
 
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
@@ -57,13 +58,12 @@ type
 procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
 begin
   TFIToolkit.PrintAbout;
+  TFIToolkit.Create(FullExePath, CmdLineOptions).Run;
+end;
 
-  with TFIToolkit.Create(FullExePath, CmdLineOptions) do
-    try
-      Run;
-    finally
-      Free;
-    end;
+procedure TerminateApplication(E : Exception);
+begin
+  TFIToolkit.Terminate(nil, E);
 end;
 
 { TFIToolkit }
@@ -181,11 +181,6 @@ begin
   Writeln(RSApplicationAbout);
 end;
 
-procedure TFIToolkit.PrintException(E : Exception);
-begin
-  Writeln(E.ToString(True), sLineBreak);
-end;
-
 procedure TFIToolkit.PrintHelp;
 var
   RS : TResourceStream;
@@ -250,24 +245,15 @@ begin
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;
-
-    if FNoExitBehavior = neEnabled then
-      PressAnyKeyPrompt;
   except
     on E: Exception do
-      case FNoExitBehavior of
-        neDisabled:
-          raise;
-        neEnabledOnException, neEnabled:
-          begin
-            PrintException(E);
-            PressAnyKeyPrompt;
-            //TODO: re-raise or return exit code <> 0
-          end;
-      else
-        Assert(False, 'Unhandled no-exit behavior while handling exception.');
-      end;
+    begin
+      Terminate(Self, E);
+      Exit;
+    end;
   end;
+
+  Terminate(Self);
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
@@ -279,6 +265,45 @@ begin
     if Integer.TryParse(NoExitOption.Value, iValue) then
       if InRange(iValue, Integer(Low(TNoExitBehavior)), Integer(High(TNoExitBehavior))) then
         FNoExitBehavior := TNoExitBehavior(iValue);
+end;
+
+class procedure TFIToolkit.Terminate(Instance : TFIToolkit; E : Exception);
+var
+  bCanExit : Boolean;
+begin
+  {$IFDEF DEBUG}
+  bCanExit := False;
+  {$ELSE}
+  if not Assigned(Instance) then
+    bCanExit := True
+  else
+  begin
+    case Instance.FNoExitBehavior of
+      neDisabled:
+        bCanExit := True;
+      neEnabledOnException:
+        bCanExit := not Assigned(E);
+      neEnabled:
+        bCanExit := False;
+    else
+      Assert(False, 'Unhandled no-exit behavior while terminating application.');
+      Exit;
+    end;
+  end;
+  {$ENDIF}
+
+  try
+    if Assigned(E) then
+      Writeln(E.ToString(True), sLineBreak);
+
+    Instance.Free;
+  finally
+    if not bCanExit then
+      PressAnyKeyPrompt
+    else
+    if Assigned(E) then
+      Halt(1);
+  end;
 end;
 
 end.

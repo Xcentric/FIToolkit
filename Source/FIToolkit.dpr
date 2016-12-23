@@ -71,15 +71,6 @@ begin
     RunApplication(sFullExePath, arrCmdLineOptions);
   except
     on E: Exception do
-    begin
-      Writeln(E.ToString(True), sLineBreak);
-      {$IFDEF RELEASE}
-      Halt(1);
-      {$ENDIF}
-    end;
+      TerminateApplication(E);
   end;
-
-  {$IFDEF DEBUG}
-  PressAnyKeyPrompt;
-  {$ENDIF}
 end.
