@@ -15,7 +15,8 @@ const
   STR_APP_COPYRIGHT_HOLDER = 'Xcentric <true.xcentric@gmail.com>';
   STR_APP_COPYRIGHT_TEXT = ' Copyright (c) ' + STR_APP_COPYRIGHT_HOLDER + ', 2016';
   STR_APP_DESCRIPTION = ' A set of tools for TMS Software(R) FixInsight(TM).';
-  STR_APP_TITLE = '                           FIToolkit';
+  STR_APP_TITLE = 'FIToolkit';
+  STR_APP_TITLE_ALIGNED = '                           ' + STR_APP_TITLE;
 
   { Common consts }
 
@@ -50,13 +51,14 @@ resourcestring
 
   RSApplicationAbout =
     STR_APP_ABOUT_STRIP + sLineBreak +
-    STR_APP_TITLE + sDualBreak + STR_APP_DESCRIPTION + sDualBreak + STR_APP_COPYRIGHT_TEXT + sLineBreak +
+    STR_APP_TITLE_ALIGNED + sDualBreak + STR_APP_DESCRIPTION + sDualBreak + STR_APP_COPYRIGHT_TEXT + sLineBreak +
     STR_APP_ABOUT_STRIP + sLineBreak;
 
   { Common strings }
 
   RSConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
+  RSNoVersionInfoAvailable = '<информация о версии недоступна>';
 
   { Exceptions }
 

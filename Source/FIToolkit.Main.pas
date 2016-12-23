@@ -207,7 +207,7 @@ end;
 
 procedure TFIToolkit.PrintVersion;
 begin
-  //TODO: implement {PrintVersion}
+  Writeln(GetAppVersionInfo);
 end;
 
 procedure TFIToolkit.ProcessOptions;

@@ -19,6 +19,7 @@ type
 
   TestFIToolkitUtils = class (TGenericTestCase)
     published
+      procedure TestGetAppVersionInfo;
       procedure TestGetCLIOptionProcessingOrder;
       procedure TestIsCaseSensitiveCLIOption;
       procedure TestTryCLIOptionToAppCommand;
@@ -32,6 +33,16 @@ uses
   TestUtils;
 
 { TestFIToolkitUtils }
+
+procedure TestFIToolkitUtils.TestGetAppVersionInfo;
+var
+  ReturnValue : String;
+begin
+  ReturnValue := GetAppVersionInfo;
+
+  CheckFalse(ReturnValue.IsEmpty, 'CheckFalse::IsEmpty');
+  CheckTrue(ReturnValue.Contains(STR_APP_TITLE), 'CheckTrue::Contains(%s)', [STR_APP_TITLE]);
+end;
 
 procedure TestFIToolkitUtils.TestGetCLIOptionProcessingOrder;
 var

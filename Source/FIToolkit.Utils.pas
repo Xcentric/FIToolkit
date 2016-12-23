@@ -5,6 +5,7 @@ interface
 uses
   FIToolkit.Types;
 
+  function GetAppVersionInfo : String;
   function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
   function IsCaseSensitiveCLIOption(const OptionName : String) : Boolean;
   function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
@@ -14,7 +15,17 @@ implementation
 
 uses
   System.SysUtils,
-  FIToolkit.Consts;
+  FIToolkit.Commons.Utils, FIToolkit.Consts;
+
+function GetAppVersionInfo : String;
+var
+  iMajor, iMinor, iRelease, iBuild : Word;
+begin
+  if GetModuleVersion(HInstance, iMajor, iMinor, iRelease, iBuild) then
+    Result := Format('%s %d.%d.%d', [STR_APP_TITLE, iMajor, iMinor, iRelease])
+  else
+    Result := Format('%s %s', [STR_APP_TITLE, RSNoVersionInfoAvailable]);
+end;
 
 function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
 var
