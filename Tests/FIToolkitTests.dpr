@@ -83,8 +83,8 @@ uses
 
   {$IFDEF TESTINSIGHT}
   function IsTestInsightRunning : Boolean;
-    var
-      TIClient : ITestInsightClient;
+  var
+    TIClient : ITestInsightClient;
   begin
     TIClient := TTestInsightRestClient.Create;
     TIClient.StartedTesting(0);
