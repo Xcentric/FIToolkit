@@ -21,6 +21,7 @@ type
   TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
       procedure TestGetFixInsightExePath;
+      procedure TestGetModuleVersion;
       procedure TestIff;
   end;
 
@@ -108,7 +109,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.TypInfo, System.Rtti,
+  System.IOUtils, System.TypInfo, System.Rtti, Winapi.Windows,
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
@@ -122,6 +123,30 @@ begin
   CheckTrue(TPath.HasValidPathChars(ReturnValue, False), 'CheckTrue::HasValidPathChars');
   CheckTrue(TPath.HasValidFileNameChars(TPath.GetFileName(ReturnValue), False), 'CheckTrue::HasValidFileNameChars');
   CheckTrue(TFile.Exists(ReturnValue) or (ReturnValue = String.Empty), 'CheckTrue::(Exists or Empty)');
+end;
+
+procedure TestFIToolkitCommonsUtils.TestGetModuleVersion;
+var
+  iMajor, iMinor, iRelease, iBuild : Word;
+  ReturnValue : Boolean;
+begin
+  iMajor   := 1;
+  iMinor   := 1;
+  iRelease := 1;
+  iBuild   := 1;
+
+  ReturnValue := GetModuleVersion(INVALID_HANDLE_VALUE, iMajor, iMinor, iRelease, iBuild);
+
+  CheckFalse(ReturnValue, 'CheckFalse::ReturnValue');
+  CheckEquals<Word>(0, iMajor,   'iMajor = 0');
+  CheckEquals<Word>(0, iMinor,   'iMinor = 0');
+  CheckEquals<Word>(0, iRelease, 'iRelease = 0');
+  CheckEquals<Word>(0, iBuild,   'iBuild = 0');
+
+  ReturnValue := GetModuleVersion(GetModuleHandle(kernelbase), iMajor, iMinor, iRelease, iBuild);
+
+  CheckTrue(ReturnValue, 'CheckFalse::ReturnValue');
+  CheckNotEquals<Word>(0, iMajor, 'iMajor <> 0');
 end;
 
 procedure TestFIToolkitCommonsUtils.TestIff;

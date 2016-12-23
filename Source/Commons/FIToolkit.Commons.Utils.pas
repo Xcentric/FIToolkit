@@ -61,13 +61,14 @@ type
   { Utils }
 
   function  GetFixInsightExePath : TFileName;
+  function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
   procedure PressAnyKeyPrompt;
 
 implementation
 
 uses
-  System.Win.Registry, Winapi.Windows,
+  System.Classes, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
 
 { Utils }
@@ -90,6 +91,39 @@ begin
     end;
   finally
     R.Free;
+  end;
+end;
+
+function GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
+var
+  RS : TResourceStream;
+  FileInfo : PVSFixedFileInfo;
+  FileInfoSize : UINT;
+begin
+  Result := False;
+
+  Major   := 0;
+  Minor   := 0;
+  Release := 0;
+  Build   := 0;
+
+  if FindResource(ModuleHandle, MakeIntResource(VS_VERSION_INFO), RT_VERSION) <> 0 then
+  begin
+    RS := TResourceStream.CreateFromID(ModuleHandle, VS_VERSION_INFO, RT_VERSION);
+    try
+      Result := VerQueryValue(RS.Memory, '\', Pointer(FileInfo), FileInfoSize);
+
+      if Result then
+        with FileInfo^ do
+        begin
+          Major   := dwFileVersionMS shr 16;
+          Minor   := dwFileVersionMS and $FFFF;
+          Release := dwFileVersionLS shr 16;
+          Build   := dwFileVersionLS and $FFFF;
+        end;
+    finally
+      RS.Free;
+    end;
   end;
 end;
 
