@@ -157,12 +157,12 @@ begin
   OnEnter := OnEnterState;
   OnExit := OnExitState;
 
-  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
-      OnEnter, OnExit);
+  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
   CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
+
   CheckException(
     procedure
     begin
@@ -189,6 +189,7 @@ begin
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
   CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
+
   CheckException(
     procedure
     begin
@@ -222,12 +223,12 @@ begin
       //
     end;
 
-  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
-      OnEnter, OnExit);
+  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
   CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
+
   CheckException(
     procedure
     begin
@@ -239,18 +240,166 @@ begin
 end;
 
 procedure TestTFiniteStateMachine.TestAddTransitions_MethodEvents;
+var
+  ToState : TStateType;
+  OnCommand : TCommandType;
+  OnEnter : TOnEnterStateMethod;
+  OnExit : TOnExitStateMethod;
+  ReturnValue : IFiniteStateMachine;
 begin
+  ToState := stFinish;
+  OnCommand := ctEnd;
+  OnEnter := OnEnterState;
+  OnExit := OnExitState;
 
+  ReturnValue := FFiniteStateMachine.AddTransitions([stState1, stState2], ToState, OnCommand, OnEnter, OnExit);
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState1, OnCommand),
+    'GetReachableState(stState1) = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState2, OnCommand),
+    'GetReachableState(stState2) = ToState');
+
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState1>'
+  );
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState2], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState2>'
+  );
+
+  FFiniteStateMachine.RemoveAllTransitions;
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1, stState2, stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.InArray>'
+  );
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)<Dup.InArray>');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)<Dup.InArray>');
 end;
 
 procedure TestTFiniteStateMachine.TestAddTransitions_NoEvents;
+var
+  ToState : TStateType;
+  OnCommand : TCommandType;
+  ReturnValue : IFiniteStateMachine;
 begin
+  ToState := stFinish;
+  OnCommand := ctEnd;
 
+  ReturnValue := FFiniteStateMachine.AddTransitions([stState1, stState2], ToState, OnCommand);
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState1, OnCommand),
+    'GetReachableState(stState1) = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState2, OnCommand),
+    'GetReachableState(stState2) = ToState');
+
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState1>'
+  );
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState2], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState2>'
+  );
+
+  FFiniteStateMachine.RemoveAllTransitions;
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1, stState2, stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.InArray>'
+  );
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)<Dup.InArray>');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)<Dup.InArray>');
 end;
 
 procedure TestTFiniteStateMachine.TestAddTransitions_ProcEvents;
+var
+  ToState : TStateType;
+  OnCommand : TCommandType;
+  OnExit : TOnExitStateProc;
+  OnEnter : TOnEnterStateProc;
+  ReturnValue : IFiniteStateMachine;
 begin
+  ToState := stFinish;
+  OnCommand := ctEnd;
+  OnEnter :=
+    procedure (const PreviousState, CurrentState : TStateType; const UsedCommand : TCommandType)
+    begin
+      //
+    end;
+  OnExit :=
+    procedure (const CurrentState, NewState : TStateType; const UsedCommand : TCommandType)
+    begin
+      //
+    end;
 
+  ReturnValue := FFiniteStateMachine.AddTransitions([stState1, stState2], ToState, OnCommand, OnEnter, OnExit);
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState1, OnCommand),
+    'GetReachableState(stState1) = ToState');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(stState2, OnCommand),
+    'GetReachableState(stState2) = ToState');
+
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState1>'
+  );
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState2], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.stState2>'
+  );
+
+  FFiniteStateMachine.RemoveAllTransitions;
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransitions([stState1, stState2, stState1], ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException<Dup.InArray>'
+  );
+  CheckTrue(ReturnValue.HasTransition(stState1, OnCommand), 'CheckTrue::HasTransition(stState1)<Dup.InArray>');
+  CheckTrue(ReturnValue.HasTransition(stState2, OnCommand), 'CheckTrue::HasTransition(stState2)<Dup.InArray>');
 end;
 
 procedure TestTFiniteStateMachine.TestCreate;
