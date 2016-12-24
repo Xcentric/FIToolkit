@@ -111,8 +111,6 @@ begin
 end;
 
 procedure TFIToolkit.InitStateMachine;
-var
-  P : TOnEnterStateProc<TApplicationState, TApplicationCommand>;
 begin
   FStateMachine := TStateMachine.Create(asInitial);
 
@@ -140,27 +138,19 @@ begin
 
   { Config states }
 
-  P :=
-    procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
-    begin
-      case CurrentState of
-        asConfigGenerated:
-          if not Assigned(FConfig) then
-            InitConfig(True);
-        asConfigSet:
-          if not Assigned(FConfig) then
-            InitConfig(False);
-      else
-        Assert(False, 'Unhandled application state while initializing configuration.');
-      end;
-    end;
-
   FStateMachine
-    .AddTransition(asInitial,           asConfigGenerated, acGenerateConfig, P)
-    .AddTransition(asNoExitBehaviorSet, asConfigGenerated, acGenerateConfig, P)
-    .AddTransition(asInitial,           asConfigSet, acSetConfig, P)
-    .AddTransition(asNoExitBehaviorSet, asConfigSet, acSetConfig, P)
-    .AddTransition(asConfigGenerated,   asConfigSet, acSetConfig, P);
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigGenerated, acGenerateConfig,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        InitConfig(True);
+      end
+    )
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        InitConfig(False);
+      end
+    );
 
   { Execution states }
 
