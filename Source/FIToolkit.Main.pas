@@ -119,7 +119,19 @@ begin
   { Common states }
 
   FStateMachine
+    .AddTransition(asInitial, asNoExitBehaviorSet, acSetNoExitBehavior,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        SetNoExitBehavior;
+      end
+    )
     .AddTransition(asInitial, asHelpPrinted, acPrintHelp,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        PrintHelp;
+      end
+    )
+    .AddTransition(asNoExitBehaviorSet, asHelpPrinted, acPrintHelp,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         PrintHelp;
@@ -131,10 +143,10 @@ begin
         PrintVersion;
       end
     )
-    .AddTransition(asInitial, asNoExitBehaviorSet, acSetNoExitBehavior,
+    .AddTransition(asNoExitBehaviorSet, asVersionPrinted, acPrintVersion,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
-        SetNoExitBehavior;
+        PrintVersion;
       end
     );
 
