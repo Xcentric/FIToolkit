@@ -1,20 +1,20 @@
 ﻿Usage:
-  fitoolkit.exe (--help | --version | --set-config="<path>" [--generate-config]) [--no-exit=<N>]
- 
+  fitoolkit.exe (--help | --version | --generate-config="<path>" | --set-config="<path>") [--no-exit=<N>]
+
 Command-line options:
   --help
       Prints this information.
   --version
       Prints current application version.
+  --generate-config="<path>"
+      Produces a default configuration file located at <path>.
+      <path> value determines output file name and can be either absolute or relative.
+      The generated file contains default values and mostly is an example,
+      i.e. not applicable for real application usage.
   --set-config="<path>"
       Specifies application configuration file.
       <path> value can be either absolute or relative.
-      The file determined by a <path> value must exist or be writable.
-  --generate-config
-      This flag enables a default configuration file generation.
-      If it set then a configuration file will be created at a path determined
-      by "--set-config" option. The generated file contains default values and
-      mostly is an example, i.e. not applicable for real application usage.
+      The file determined by a <path> value must exist and provide a valid configuration.
   --no-exit=<N>
       This option prevents application termination.
       <N> is a number which can take the following values:

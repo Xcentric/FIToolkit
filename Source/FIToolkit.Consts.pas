@@ -42,7 +42,7 @@ const
   ];
 
   SET_FINAL_APPSTATES : set of TApplicationState =
-    [asHelpPrinted, asVersionPrinted, asConfigGenerated, asFinal];
+    [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 
   { Resources }
 
