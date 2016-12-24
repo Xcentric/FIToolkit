@@ -28,6 +28,14 @@ type
     function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
       const OnEnter : TOnEnterStateProc<TState, TCommand>; const OnExit : TOnExitStateProc<TState, TCommand> = nil
       ) : IFiniteStateMachine<TState, TCommand, ErrorClass>; overload;
+    function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand
+      ) : IFiniteStateMachine<TState, TCommand, ErrorClass>; overload;
+    function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+      const OnEnter : TOnEnterStateMethod<TState, TCommand>; const OnExit : TOnExitStateMethod<TState, TCommand> = nil
+      ) : IFiniteStateMachine<TState, TCommand, ErrorClass>; overload;
+    function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+      const OnEnter : TOnEnterStateProc<TState, TCommand>; const OnExit : TOnExitStateProc<TState, TCommand> = nil
+      ) : IFiniteStateMachine<TState, TCommand, ErrorClass>; overload;
     function Execute(const Command : TCommand) : IFiniteStateMachine<TState, TCommand, ErrorClass>;
     function GetCurrentState : TState;
     function GetPreviousState : TState;
@@ -132,6 +140,14 @@ type
       function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
         ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand
+        ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
+        ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
+        ) : IFiniteStateMachine; overload;
       function  Execute(const Command : TCommand) : IFiniteStateMachine;
       function  GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
       function  GetReachableState(const OnCommand : TCommand) : TState; overload;
@@ -182,6 +198,14 @@ type
         const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
         ) : IFiniteStateMachine; overload;
       function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
+        ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand
+        ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+        const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
+        ) : IFiniteStateMachine; overload;
+      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
         ) : IFiniteStateMachine; overload;
       function  Execute(const Command : TCommand) : IFiniteStateMachine;
@@ -324,6 +348,41 @@ var
 begin
   T := TTransition.Create(FromState, OnCommand, FStateComparer, FCommandComparer, OnEnter, OnExit);
   Result := AddTransition(T, ToState);
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+var
+  State : TState;
+begin
+  for State in FromStates do
+    AddTransition(State, ToState, OnCommand);
+
+  Result := Self;
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod;
+  const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
+var
+  State : TState;
+begin
+  for State in FromStates do
+    AddTransition(State, ToState, OnCommand, OnEnter, OnExit);
+
+  Result := Self;
+end;
+
+function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand; const OnEnter : TOnEnterStateProc;
+  const OnExit : TOnExitStateProc) : IFiniteStateMachine;
+var
+  State : TState;
+begin
+  for State in FromStates do
+    AddTransition(State, ToState, OnCommand, OnEnter, OnExit);
+
+  Result := Self;
 end;
 
 function TFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransition(var Transition : TTransition;
@@ -546,6 +605,47 @@ begin
   InternalLock;
   try
     FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand, OnEnter, OnExit);
+  finally
+    InternalUnlock;
+  end;
+
+  Result := Self;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+begin
+  InternalLock;
+  try
+    FFiniteStateMachine.AddTransitions(FromStates, ToState, OnCommand);
+  finally
+    InternalUnlock;
+  end;
+
+  Result := Self;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand; const OnEnter : TOnEnterStateMethod;
+  const OnExit : TOnExitStateMethod) : IFiniteStateMachine;
+begin
+  InternalLock;
+  try
+    FFiniteStateMachine.AddTransitions(FromStates, ToState, OnCommand, OnEnter, OnExit);
+  finally
+    InternalUnlock;
+  end;
+
+  Result := Self;
+end;
+
+function TThreadFiniteStateMachine<TState, TCommand, ErrorClass>.AddTransitions(const FromStates : array of TState;
+  const ToState : TState; const OnCommand : TCommand; const OnEnter : TOnEnterStateProc;
+  const OnExit : TOnExitStateProc) : IFiniteStateMachine;
+begin
+  InternalLock;
+  try
+    FFiniteStateMachine.AddTransitions(FromStates, ToState, OnCommand, OnEnter, OnExit);
   finally
     InternalUnlock;
   end;
