@@ -125,25 +125,13 @@ begin
         SetNoExitBehavior;
       end
     )
-    .AddTransition(asInitial, asHelpPrinted, acPrintHelp,
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asHelpPrinted, acPrintHelp,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         PrintHelp;
       end
     )
-    .AddTransition(asNoExitBehaviorSet, asHelpPrinted, acPrintHelp,
-      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
-      begin
-        PrintHelp;
-      end
-    )
-    .AddTransition(asInitial, asVersionPrinted, acPrintVersion,
-      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
-      begin
-        PrintVersion;
-      end
-    )
-    .AddTransition(asNoExitBehaviorSet, asVersionPrinted, acPrintVersion,
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asVersionPrinted, acPrintVersion,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         PrintVersion;
