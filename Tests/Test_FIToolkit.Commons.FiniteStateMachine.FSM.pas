@@ -84,9 +84,12 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure TestAddTransition_NoEvents;
     procedure TestAddTransition_MethodEvents;
+    procedure TestAddTransition_NoEvents;
     procedure TestAddTransition_ProcEvents;
+    procedure TestAddTransitions_MethodEvents;
+    procedure TestAddTransitions_NoEvents;
+    procedure TestAddTransitions_ProcEvents;
     procedure TestCreate;
     procedure TestExecute;
     procedure TestGetReachableState_FromSpecifiedState;
@@ -139,32 +142,6 @@ begin
   FFiniteStateMachine := nil;
 end;
 
-procedure TestTFiniteStateMachine.TestAddTransition_NoEvents;
-var
-  ReturnValue: IFiniteStateMachine;
-  OnCommand: TCommandType;
-  ToState: TStateType;
-  FromState: TStateType;
-begin
-  FromState := stStart;
-  ToState := stFinish;
-  OnCommand := ctEnd;
-
-  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
-
-  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
-  CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
-  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
-  CheckException(
-    procedure
-    begin
-      FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
-    end,
-    ETestException,
-    'CheckException::ETestException'
-  );
-end;
-
 procedure TestTFiniteStateMachine.TestAddTransition_MethodEvents;
 var
   ReturnValue: IFiniteStateMachine;
@@ -182,6 +159,32 @@ begin
 
   ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand,
       OnEnter, OnExit);
+
+  CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
+  CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
+  CheckEquals<TStateType>(ToState, ReturnValue.GetReachableState(FromState, OnCommand), 'GetReachableState = ToState');
+  CheckException(
+    procedure
+    begin
+      FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
+    end,
+    ETestException,
+    'CheckException::ETestException'
+  );
+end;
+
+procedure TestTFiniteStateMachine.TestAddTransition_NoEvents;
+var
+  ReturnValue: IFiniteStateMachine;
+  OnCommand: TCommandType;
+  ToState: TStateType;
+  FromState: TStateType;
+begin
+  FromState := stStart;
+  ToState := stFinish;
+  OnCommand := ctEnd;
+
+  ReturnValue := FFiniteStateMachine.AddTransition(FromState, ToState, OnCommand);
 
   CheckEquals(TObject(FFiniteStateMachine), TObject(ReturnValue), 'ReturnValue = FFiniteStateMachine');
   CheckTrue(ReturnValue.HasTransition(FromState, OnCommand), 'CheckTrue::HasTransition');
@@ -233,6 +236,21 @@ begin
     ETestException,
     'CheckException::ETestException'
   );
+end;
+
+procedure TestTFiniteStateMachine.TestAddTransitions_MethodEvents;
+begin
+
+end;
+
+procedure TestTFiniteStateMachine.TestAddTransitions_NoEvents;
+begin
+
+end;
+
+procedure TestTFiniteStateMachine.TestAddTransitions_ProcEvents;
+begin
+
 end;
 
 procedure TestTFiniteStateMachine.TestCreate;
