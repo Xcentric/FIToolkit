@@ -100,6 +100,7 @@
         </RcCompile>
         <DCCReference Include="FIToolkit.Consts.pas"/>
         <DCCReference Include="FIToolkit.Exceptions.pas"/>
+        <DCCReference Include="FIToolkit.ExecutionStates.pas"/>
         <DCCReference Include="FIToolkit.Main.pas"/>
         <DCCReference Include="FIToolkit.Types.pas"/>
         <DCCReference Include="FIToolkit.Utils.pas"/>

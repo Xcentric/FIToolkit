@@ -12,7 +12,7 @@ implementation
 
 uses
   System.Classes, System.IOUtils, System.Math, System.Generics.Defaults,
-  FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts, FIToolkit.Utils,
+  FIToolkit.ExecutionStates, FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts, FIToolkit.Utils,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
@@ -30,6 +30,7 @@ type
       FConfig : TConfigManager;
       FOptions : TCLIOptions;
       FStateMachine : IStateMachine;
+      FWorkflowState : TWorkflowStateHolder;
     strict private
       procedure InitConfig(GenerateFlag : Boolean);
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
@@ -78,9 +79,10 @@ end;
 
 destructor TFIToolkit.Destroy;
 begin
+  FStateMachine := nil;
+  FreeAndNil(FWorkflowState);
   FreeAndNil(FConfig);
   FreeAndNil(FOptions);
-  FStateMachine := nil;
 
   inherited Destroy;
 end;
@@ -163,7 +165,8 @@ begin
       end
     );
 
-  //TODO: implement {InitStateMachine → Execution States}
+  FWorkflowState := TWorkflowStateHolder.Create;
+  TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
 end;
 
 class procedure TFIToolkit.PrintAbout;
