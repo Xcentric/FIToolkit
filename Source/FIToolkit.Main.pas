@@ -164,9 +164,6 @@ begin
           raise ENoValidConfigSpecified.Create;
       end
     );
-
-  FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
-  TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -229,6 +226,9 @@ begin
 
     if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
       try
+        FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
+        TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
+
         FStateMachine
           .Execute(acStart)
           .Execute(acParseProjectGroup)
