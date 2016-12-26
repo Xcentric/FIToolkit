@@ -89,14 +89,16 @@ end;
 
 procedure TFIToolkit.InitConfig(GenerateFlag : Boolean);
 var
-  SetConfigOption : TCLIOption;
+  sConfigOptionName : String;
+  ConfigOption : TCLIOption;
 begin
-  if FOptions.Find(STR_CLI_OPTION_SET_CONFIG, SetConfigOption,
-                   not IsCaseSensitiveCLIOption(STR_CLI_OPTION_SET_CONFIG)) and
-     TPath.IsApplicableFileName(SetConfigOption.Value) and
-     (TFile.Exists(SetConfigOption.Value) or GenerateFlag)
+  sConfigOptionName := Iff.Get<String>(GenerateFlag, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG);
+
+  if FOptions.Find(sConfigOptionName, ConfigOption, not IsCaseSensitiveCLIOption(sConfigOptionName)) and
+     TPath.IsApplicableFileName(ConfigOption.Value) and
+     (TFile.Exists(ConfigOption.Value) or GenerateFlag)
   then
-    FConfig := TConfigManager.Create(SetConfigOption.Value, GenerateFlag, True)
+    FConfig := TConfigManager.Create(ConfigOption.Value, GenerateFlag, True)
   else
     raise ENoValidConfigSpecified.Create;
 end;
