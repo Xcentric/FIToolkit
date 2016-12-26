@@ -95,7 +95,7 @@ end;
 
 function TConfigData.GetOutputDirectory : String;
 begin
-  Result := FOutputDirectory;
+  Result := TPath.IncludeTrailingPathDelimiter(FOutputDirectory);
 end;
 
 function TConfigData.GetOutputFileName : String;
@@ -105,7 +105,7 @@ end;
 
 function TConfigData.GetTempDirectory : String;
 begin
-  Result := FTempDirectory;
+  Result := TPath.IncludeTrailingPathDelimiter(FTempDirectory);
 end;
 
 procedure TConfigData.SetFixInsightExe(const Value : TFileName);

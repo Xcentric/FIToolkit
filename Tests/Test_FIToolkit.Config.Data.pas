@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  System.SysUtils,
+  System.SysUtils, System.IOUtils,
   TestUtils, TestConsts,
   FIToolkit.Config.Exceptions;
 
@@ -185,6 +185,10 @@ begin
     nil,
     'CheckException::nil'
   );
+  CheckTrue(FConfigData.OutputDirectory.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckTrue::OutputDirectory.EndsWith(TPath.DirectorySeparatorChar)');
+  CheckTrue(FConfigData.TempDirectory.EndsWith(TPath.DirectorySeparatorChar),
+    'CheckTrue::TempDirectory.EndsWith(TPath.DirectorySeparatorChar)');
 end;
 
 initialization
