@@ -3,16 +3,25 @@
 interface
 
 uses
+  System.Classes,
   FIToolkit.Types,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
-  FIToolkit.Config.Data;
+  FIToolkit.Config.Data, FIToolkit.ProjectGroupParser.Parser, FIToolkit.Runner.Tasks,
+  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Builder.Intf;
 
 type
 
   TWorkflowStateHolder = class sealed
     private
       FConfigData : TConfigData;
+      FFixInsightXMLParser : TFixInsightXMLParser;
+      FProjectGroupParser : TProjectGroupParser;
+      FReportBuilder : IReportBuilder;
+      FReportOutput : TStreamWriter;
+      FTaskRunner : TTaskRunner;
+
+      procedure InitReportBuilder;
     public
       constructor Create(ConfigData : TConfigData);
       destructor Destroy; override;
@@ -29,6 +38,10 @@ type
 
 implementation
 
+uses
+  System.SysUtils, System.IOUtils,
+  FIToolkit.Reports.Builder.HTML;
+
 { TWorkflowStateHolder }
 
 constructor TWorkflowStateHolder.Create(ConfigData : TConfigData);
@@ -36,17 +49,37 @@ begin
   inherited Create;
 
   FConfigData := ConfigData;
+  FFixInsightXMLParser := TFixInsightXMLParser.Create;
+  FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
+  FTaskRunner := TTaskRunner.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions);
 
-  // TODO: implement {TWorkflowStateHolder.Create}
+  InitReportBuilder;
 end;
 
 destructor TWorkflowStateHolder.Destroy;
 begin
-  FConfigData := nil;
-
-  // TODO: implement {TWorkflowStateHolder.Destroy}
+  FreeAndNil(FFixInsightXMLParser);
+  FreeAndNil(FProjectGroupParser);
+  FreeAndNil(FReportOutput);
+  FreeAndNil(FTaskRunner);
+  FReportBuilder := nil;
 
   inherited Destroy;
+end;
+
+procedure TWorkflowStateHolder.InitReportBuilder;
+var
+  Template : IHTMLReportTemplate;
+  Report : THTMLReportBuilder;
+begin
+  // TODO: implement {THTMLReportCustomTemplate.Create(FConfigData.???)}
+  Template := THTMLReportDefaultTemplate.Create;
+
+  FReportOutput := TFile.CreateText(FConfigData.OutputDirectory + FConfigData.OutputFileName);
+  Report := THTMLReportBuilder.Create(FReportOutput.BaseStream);
+  Report.SetTemplate(Template);
+
+  FReportBuilder := Report;
 end;
 
 { TExecutiveTransitionsProvider }
