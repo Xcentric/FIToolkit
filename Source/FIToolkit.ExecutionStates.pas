@@ -5,15 +5,16 @@ interface
 uses
   FIToolkit.Types,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
-  FIToolkit.Commons.StateMachine;
+  FIToolkit.Commons.StateMachine,
+  FIToolkit.Config.Data;
 
 type
 
   TWorkflowStateHolder = class sealed
     private
-      //
+      FConfigData : TConfigData;
     public
-      constructor Create;
+      constructor Create(ConfigData : TConfigData);
       destructor Destroy; override;
   end;
 
@@ -30,15 +31,19 @@ implementation
 
 { TWorkflowStateHolder }
 
-constructor TWorkflowStateHolder.Create;
+constructor TWorkflowStateHolder.Create(ConfigData : TConfigData);
 begin
   inherited Create;
+
+  FConfigData := ConfigData;
 
   // TODO: implement {TWorkflowStateHolder.Create}
 end;
 
 destructor TWorkflowStateHolder.Destroy;
 begin
+  FConfigData := nil;
+
   // TODO: implement {TWorkflowStateHolder.Destroy}
 
   inherited Destroy;

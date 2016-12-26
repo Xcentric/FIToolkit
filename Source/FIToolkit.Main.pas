@@ -165,7 +165,7 @@ begin
       end
     );
 
-  FWorkflowState := TWorkflowStateHolder.Create;
+  FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
   TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
 end;
 
