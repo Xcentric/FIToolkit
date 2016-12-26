@@ -11,6 +11,7 @@ type
   THTMLReportBuilder = class (TInterfacedObject, IReportBuilder, ITemplatableTextReport)
     strict private
       FOutput : TStream;
+      FOwnsOutput : Boolean;
       FTemplate : ITextReportTemplate;
     private
       function  Encode(const Value : String) : String;
@@ -20,7 +21,8 @@ type
       function  GenerateHTMLHead : String;
       procedure WriteLine(const Text : String);
     public
-      constructor Create(Output : TStream);
+      constructor Create(Output : TStream; OwnsOutput : Boolean = False);
+      destructor Destroy; override;
 
       procedure AddFooter(FinishTime : TDateTime);
       procedure AddHeader(const Title : String; StartTime : TDateTime);
@@ -172,11 +174,20 @@ begin
   WriteLine('<div id="' + STR_HTML_REPORT_ROOT_ID + '">');
 end;
 
-constructor THTMLReportBuilder.Create(Output : TStream);
+constructor THTMLReportBuilder.Create(Output : TStream; OwnsOutput : Boolean);
 begin
   inherited Create;
 
   FOutput := Output;
+  FOwnsOutput := OwnsOutput;
+end;
+
+destructor THTMLReportBuilder.Destroy;
+begin
+  if FOwnsOutput then
+    FreeAndNil(FOutput);
+
+  inherited Destroy;
 end;
 
 function THTMLReportBuilder.Encode(const Value : String) : String;
