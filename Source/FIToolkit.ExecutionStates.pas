@@ -3,12 +3,12 @@
 interface
 
 uses
-  System.Classes, System.SysUtils,
+  System.Classes, System.SysUtils, System.Generics.Collections,
   FIToolkit.Types,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
   FIToolkit.Config.Data, FIToolkit.ProjectGroupParser.Parser, FIToolkit.Runner.Tasks,
-  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Builder.Intf;
+  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Parser.Types, FIToolkit.Reports.Builder.Intf;
 
 type
 
@@ -20,6 +20,10 @@ type
       FReportBuilder : IReportBuilder;
       FReportOutput : TStreamWriter;
       FTaskManager : TTaskManager;
+
+      FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
+      FProjects : TArray<TFileName>;
+      FReports : TArray<TPair<TFileName, TFileName>>;
 
       procedure InitReportBuilder;
     public
@@ -40,13 +44,15 @@ implementation
 
 uses
   System.IOUtils,
-  FIToolkit.Reports.Builder.HTML, FIToolkit.Reports.Parser.Types;
+  FIToolkit.Reports.Builder.HTML;
 
 { TWorkflowStateHolder }
 
 constructor TWorkflowStateHolder.Create(ConfigData : TConfigData);
 begin
   inherited Create;
+
+  FMessages := TDictionary<TFileName, TArray<TFixInsightMessage>>.Create;
 
   FConfigData := ConfigData;
   FFixInsightXMLParser := TFixInsightXMLParser.Create;
@@ -57,6 +63,8 @@ end;
 
 destructor TWorkflowStateHolder.Destroy;
 begin
+  FreeAndNil(FMessages);
+
   FreeAndNil(FFixInsightXMLParser);
   FreeAndNil(FProjectGroupParser);
   FreeAndNil(FReportOutput);
@@ -90,25 +98,43 @@ begin
     .AddTransition(asInitial, asProjectGroupParsed, acParseProjectGroup,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
-        //
+        with StateHolder do
+          FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
       end
     )
     .AddTransition(asProjectGroupParsed, asFixInsightRan, acRunFixInsight,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
-        //
+        with StateHolder do
+        begin
+          FTaskManager := TTaskManager.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions,
+            FProjects, FConfigData.TempDirectory);
+          FReports := FTaskManager.RunAndGetOutput;
+        end;
       end
     )
     .AddTransition(asFixInsightRan, asReportsParsed, acParseReports,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        R : TPair<TFileName, TFileName>;
       begin
-        //
+        with StateHolder do
+          for R in FReports do
+          begin
+            FFixInsightXMLParser.Parse(R.Value, False);
+            FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
+          end;
       end
     )
     .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        Msg : TFixInsightMessage;
       begin
-        //
+        with StateHolder do
+        begin
+          // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
+        end;
       end
     )
     .AddTransition(asReportBuilt, asFinal, acTerminate,
@@ -117,8 +143,6 @@ begin
         //
       end
     );
-
-  // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
 end;
 
 end.
