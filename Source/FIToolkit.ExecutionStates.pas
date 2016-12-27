@@ -106,10 +106,19 @@ end;
 class function TExecutiveTransitionsProvider.CalcSummary(StateHolder : TWorkflowStateHolder;
   ProjectFilter : String) : TArray<TSummaryItem>;
 var
-  MT : TFixInsightMessageType;
   arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+
+  procedure CalcProjectMessages(Project : TFileName);
+  var
+    Msg : TFixInsightMessage;
+  begin
+    for Msg in StateHolder.FMessages[Project] do
+      Inc(arrSummary[Msg.MsgType].MessageCount);
+  end;
+
+var
+  MT : TFixInsightMessageType;
   F : TFileName;
-  Msg : TFixInsightMessage;
 begin
   Result := nil;
 
@@ -121,13 +130,11 @@ begin
       MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[MT];
     end;
 
-  if ProjectFilter.IsEmpty then
-    for F in StateHolder.FProjects do
-      for Msg in StateHolder.FMessages[F] do
-        Inc(arrSummary[Msg.MsgType].MessageCount)
+  if not ProjectFilter.IsEmpty then
+    CalcProjectMessages(ProjectFilter)
   else
-    for Msg in StateHolder.FMessages[ProjectFilter] do
-      Inc(arrSummary[Msg.MsgType].MessageCount);
+    for F in StateHolder.FProjects do
+      CalcProjectMessages(F);
 
   for MT := Low(arrSummary) to High(arrSummary) do
     if arrSummary[MT].MessageCount > 0 then
