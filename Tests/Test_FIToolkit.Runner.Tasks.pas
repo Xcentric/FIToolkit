@@ -102,6 +102,10 @@ begin
   CheckTrue(S.EndsWith(STR_OUTPUT_FILENAME_EXT), 'S.EndsWith(%s)', [STR_OUTPUT_FILENAME_EXT]);
   CheckTrue(S.Contains(STR_PROJECT_FILENAME_NO_EXT), 'S.Contains(%s)', [STR_PROJECT_FILENAME_NO_EXT]);
   CheckFalse(S.Contains(STR_PROJECT_FILENAME), 'S.Contains(%s)', [STR_PROJECT_FILENAME]);
+
+  S := FTaskRunner.InputFileName;
+
+  CheckEquals(STR_PROJECT_FILENAME, S, 'InputFileName = STR_PROJECT_FILENAME');
 end;
 
 procedure TestTTaskManager.SetUp;

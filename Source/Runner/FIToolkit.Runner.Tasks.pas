@@ -15,12 +15,15 @@ type
       FOutputFileName : TFileName;
     private
       function GenerateOutputFileName : String;
+
+      function GetInputFileName : TFileName;
     public
       constructor Create(const Executable : TFileName; Options : TFixInsightOptions);
       destructor Destroy; override;
 
       function Execute : ITask;
 
+      property InputFileName : TFileName read GetInputFileName;
       property OutputFileName : TFileName read FOutputFileName;
   end;
 
@@ -110,6 +113,11 @@ begin
 
   sUniquePart := TThread.CurrentThread.ThreadID.ToString + CHR_DELIMITER + TPath.GetGUIDFileName(False);
   Result := TPath.GetFullPath(sDir + sFileName + CHR_DELIMITER + sProject + CHR_DELIMITER + sUniquePart + sFileExt);
+end;
+
+function TTaskRunner.GetInputFileName : TFileName;
+begin
+  Result := FOptions.ProjectFileName;
 end;
 
 { TTaskManager }
