@@ -27,9 +27,11 @@ type
       property OutputFileName : TFileName read FOutputFileName;
   end;
 
-  TTaskRunnerList = class (TObjectList<TTaskRunner>);
-
   TTaskManager = class sealed
+    private
+      type
+        TFilePair = TPair<TFileName, TFileName>;
+        TTaskRunnerList = class (TObjectList<TTaskRunner>);
     strict private
       FRunners : TTaskRunnerList;
     public
@@ -37,7 +39,7 @@ type
         const Files : array of TFileName; const TempDirectory : String);
       destructor Destroy; override;
 
-      function RunAndGetOutput : TArray<TFileName>;
+      function RunAndGetOutput : TArray<TFilePair>;
   end;
 
 implementation
@@ -155,7 +157,7 @@ begin
   inherited Destroy;
 end;
 
-function TTaskManager.RunAndGetOutput : TArray<TFileName>;
+function TTaskManager.RunAndGetOutput : TArray<TFilePair>;
 var
   arrTasks : TArray<ITask>;
   i : Integer;
@@ -172,7 +174,7 @@ begin
 
   SetLength(Result, FRunners.Count);
   for i := 0 to High(Result) do
-    Result[i] := FRunners[i].OutputFileName;
+    Result[i] := TFilePair.Create(FRunners[i].InputFileName, FRunners[i].OutputFileName);
 end;
 
 end.

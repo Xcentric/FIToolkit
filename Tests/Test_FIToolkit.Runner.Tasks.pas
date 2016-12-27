@@ -54,7 +54,7 @@ type
 implementation
 
 uses
-  System.Threading, System.IOUtils,
+  System.Threading, System.IOUtils, System.Generics.Collections,
   TestUtils,
   FIToolkit.Config.FixInsight, FIToolkit.Commons.Utils, FIToolkit.Runner.Exceptions;
 
@@ -127,7 +127,7 @@ end;
 
 procedure TestTTaskManager.TestRunAndGetOutput;
 var
-  ReturnValue: TArray<TFileName>;
+  ReturnValue: TArray<TPair<TFileName, TFileName>>;
 begin
   CheckException(
     procedure
