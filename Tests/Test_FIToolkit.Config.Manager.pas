@@ -50,6 +50,8 @@ var
 begin
   sFileName := GetTestIniFileName;
 
+  { File name specified }
+
   CfgMgr := TConfigManager.Create(sFileName, False, False);
   try
     CheckFalse(FileExists(sFileName), 'CheckFalse::FileExists<NonEmptyFileName,DoNotGenerateConfig>');
@@ -79,6 +81,19 @@ begin
   finally
     CfgMgr.Free;
   end;
+
+  Assert(FileExists(sFileName));
+  CfgMgr := TConfigManager.Create(sFileName, False, False);
+  try
+    CheckFalse(String.IsNullOrEmpty(CfgMgr.ConfigFileName),
+      'CheckFalse::ConfigFileName.IsEmpty<NonEmptyFileName,DoNotGenerateConfig,FileExists>');
+    CheckEquals<TFixInsightOutputFormat>(DEF_FIO_ENUM_OUTPUT_FORMAT, CfgMgr.ConfigData.FixInsightOptions.OutputFormat,
+      '(ConfigData.FixInsightOptions.OutputFormat = DEF_FIO_ENUM_OUTPUT_FORMAT)::<NonEmptyFileName,DoNotGenerateConfig,FileExists>');
+  finally
+    CfgMgr.Free;
+  end;
+
+  { File name NOT specified }
 
   CfgMgr := TConfigManager.Create(String.Empty, False, False);
   try
