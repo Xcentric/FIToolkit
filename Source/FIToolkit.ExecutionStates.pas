@@ -39,6 +39,7 @@ type
         IStateMachine = IFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
     private
       class function  CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
+      class function  CalcSummary(StateHolder : TWorkflowStateHolder; ProjectFilter : String) : TArray<TSummaryItem>;
       class function  CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
       class function  MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
     public
@@ -98,9 +99,16 @@ end;
 
 class function TExecutiveTransitionsProvider.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
   Project : TFileName) : TArray<TSummaryItem>;
+begin
+  Result := CalcSummary(StateHolder, Project);
+end;
+
+class function TExecutiveTransitionsProvider.CalcSummary(StateHolder : TWorkflowStateHolder;
+  ProjectFilter : String) : TArray<TSummaryItem>;
 var
-  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
   MT : TFixInsightMessageType;
+  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+  F : TFileName;
   Msg : TFixInsightMessage;
 begin
   Result := nil;
@@ -113,8 +121,13 @@ begin
       MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[MT];
     end;
 
-  for Msg in StateHolder.FMessages[Project] do
-    Inc(arrSummary[Msg.MsgType].MessageCount);
+  if ProjectFilter.IsEmpty then
+    for F in StateHolder.FProjects do
+      for Msg in StateHolder.FMessages[F] do
+        Inc(arrSummary[Msg.MsgType].MessageCount)
+  else
+    for Msg in StateHolder.FMessages[ProjectFilter] do
+      Inc(arrSummary[Msg.MsgType].MessageCount);
 
   for MT := Low(arrSummary) to High(arrSummary) do
     if arrSummary[MT].MessageCount > 0 then
@@ -123,12 +136,17 @@ end;
 
 class function TExecutiveTransitionsProvider.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
 begin
-  // TODO: implement {TExecutiveTransitionsProvider.CalcTotalSummary}
+  Result := CalcSummary(StateHolder, String.Empty);
 end;
 
 class function TExecutiveTransitionsProvider.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
 begin
-  // TODO: implement {TExecutiveTransitionsProvider.MakeRecord}
+  Result.Column             := Msg.Column;
+  Result.FileName           := Msg.FileName;
+  Result.Line               := Msg.Line;
+  Result.MessageText        := Msg.Text;
+  Result.MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[Msg.MsgType];
+  Result.MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[Msg.MsgType];
 end;
 
 class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine : IStateMachine;
@@ -169,7 +187,7 @@ begin
     .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
-        S : TFileName;
+        F : TFileName;
         Msg : TFixInsightMessage;
       begin
         with StateHolder do
@@ -178,11 +196,11 @@ begin
           FReportBuilder.AddHeader(FConfigData.InputFileName, Now);
           FReportBuilder.AddTotalSummary(CalcTotalSummary(StateHolder));
 
-          for S in FProjects do
+          for F in FProjects do
           begin
-            FReportBuilder.BeginProjectSection(S, CalcProjectSummary(StateHolder, S));
+            FReportBuilder.BeginProjectSection(F, CalcProjectSummary(StateHolder, F));
 
-            for Msg in FMessages[S] do
+            for Msg in FMessages[F] do
               FReportBuilder.AppendRecord(MakeRecord(Msg));
 
             FReportBuilder.EndProjectSection;
