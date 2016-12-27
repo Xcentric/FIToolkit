@@ -37,11 +37,6 @@ type
       type
         //TODO: replace when "F2084 Internal Error: URW1175" fixed
         IStateMachine = IFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
-    private
-      class function  CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
-      class function  CalcSummary(StateHolder : TWorkflowStateHolder; ProjectFilter : String) : TArray<TSummaryItem>;
-      class function  CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
-      class function  MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
     public
       class procedure PrepareWorkflow(const StateMachine : IStateMachine; StateHolder : TWorkflowStateHolder);
   end;
@@ -51,6 +46,16 @@ implementation
 uses
   System.IOUtils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
+
+type
+
+  TWorkflowHelper = class
+    private
+      class function CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
+      class function CalcSummary(StateHolder : TWorkflowStateHolder; ProjectFilter : String) : TArray<TSummaryItem>;
+      class function CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+      class function MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+  end;
 
 { TWorkflowStateHolder }
 
@@ -97,65 +102,6 @@ end;
 
 { TExecutiveTransitionsProvider }
 
-class function TExecutiveTransitionsProvider.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
-  Project : TFileName) : TArray<TSummaryItem>;
-begin
-  Result := CalcSummary(StateHolder, Project);
-end;
-
-class function TExecutiveTransitionsProvider.CalcSummary(StateHolder : TWorkflowStateHolder;
-  ProjectFilter : String) : TArray<TSummaryItem>;
-var
-  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
-
-  procedure CalcProjectMessages(Project : TFileName);
-  var
-    Msg : TFixInsightMessage;
-  begin
-    for Msg in StateHolder.FMessages[Project] do
-      Inc(arrSummary[Msg.MsgType].MessageCount);
-  end;
-
-var
-  MT : TFixInsightMessageType;
-  F : TFileName;
-begin
-  Result := nil;
-
-  for MT := Low(TFixInsightMessageType) to High(TFixInsightMessageType) do
-    with arrSummary[MT] do
-    begin
-      MessageCount       := 0;
-      MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[MT];
-      MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[MT];
-    end;
-
-  if not ProjectFilter.IsEmpty then
-    CalcProjectMessages(ProjectFilter)
-  else
-    for F in StateHolder.FProjects do
-      CalcProjectMessages(F);
-
-  for MT := Low(arrSummary) to High(arrSummary) do
-    if arrSummary[MT].MessageCount > 0 then
-      Result := Result + [arrSummary[MT]];
-end;
-
-class function TExecutiveTransitionsProvider.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
-begin
-  Result := CalcSummary(StateHolder, String.Empty);
-end;
-
-class function TExecutiveTransitionsProvider.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
-begin
-  Result.Column             := Msg.Column;
-  Result.FileName           := Msg.FileName;
-  Result.Line               := Msg.Line;
-  Result.MessageText        := Msg.Text;
-  Result.MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[Msg.MsgType];
-  Result.MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[Msg.MsgType];
-end;
-
 class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine : IStateMachine;
   StateHolder : TWorkflowStateHolder);
 begin
@@ -201,14 +147,14 @@ begin
         begin
           FReportBuilder.BeginReport;
           FReportBuilder.AddHeader(FConfigData.InputFileName, Now);
-          FReportBuilder.AddTotalSummary(CalcTotalSummary(StateHolder));
+          FReportBuilder.AddTotalSummary(TWorkflowHelper.CalcTotalSummary(StateHolder));
 
           for F in FProjects do
           begin
-            FReportBuilder.BeginProjectSection(F, CalcProjectSummary(StateHolder, F));
+            FReportBuilder.BeginProjectSection(F, TWorkflowHelper.CalcProjectSummary(StateHolder, F));
 
             for Msg in FMessages[F] do
-              FReportBuilder.AppendRecord(MakeRecord(Msg));
+              FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
 
             FReportBuilder.EndProjectSection;
           end;
@@ -224,6 +170,67 @@ begin
         //
       end
     );
+end;
+
+{ TWorkflowHelper }
+
+class function TWorkflowHelper.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
+  Project : TFileName) : TArray<TSummaryItem>;
+begin
+  Result := CalcSummary(StateHolder, Project);
+end;
+
+class function TWorkflowHelper.CalcSummary(StateHolder : TWorkflowStateHolder;
+  ProjectFilter : String) : TArray<TSummaryItem>;
+var
+  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+
+  procedure CalcProjectMessages(Project : TFileName);
+  var
+    Msg : TFixInsightMessage;
+  begin
+    for Msg in StateHolder.FMessages[Project] do
+      Inc(arrSummary[Msg.MsgType].MessageCount);
+  end;
+
+var
+  MT : TFixInsightMessageType;
+  F : TFileName;
+begin
+  Result := nil;
+
+  for MT := Low(TFixInsightMessageType) to High(TFixInsightMessageType) do
+    with arrSummary[MT] do
+    begin
+      MessageCount       := 0;
+      MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[MT];
+      MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[MT];
+    end;
+
+  if not ProjectFilter.IsEmpty then
+    CalcProjectMessages(ProjectFilter)
+  else
+    for F in StateHolder.FProjects do
+      CalcProjectMessages(F);
+
+  for MT := Low(arrSummary) to High(arrSummary) do
+    if arrSummary[MT].MessageCount > 0 then
+      Result := Result + [arrSummary[MT]];
+end;
+
+class function TWorkflowHelper.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+begin
+  Result := CalcSummary(StateHolder, String.Empty);
+end;
+
+class function TWorkflowHelper.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+begin
+  Result.Column             := Msg.Column;
+  Result.FileName           := Msg.FileName;
+  Result.Line               := Msg.Line;
+  Result.MessageText        := Msg.Text;
+  Result.MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[Msg.MsgType];
+  Result.MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[Msg.MsgType];
 end;
 
 end.
