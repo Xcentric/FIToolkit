@@ -8,7 +8,8 @@ uses
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
   FIToolkit.Config.Data, FIToolkit.ProjectGroupParser.Parser, FIToolkit.Runner.Tasks,
-  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Parser.Types, FIToolkit.Reports.Builder.Intf;
+  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Parser.Types, FIToolkit.Reports.Builder.Types,
+  FIToolkit.Reports.Builder.Intf;
 
 type
 
@@ -36,6 +37,10 @@ type
       type
         //TODO: replace when "F2084 Internal Error: URW1175" fixed
         IStateMachine = IFiniteStateMachine<TApplicationState, TApplicationCommand, EStateMachineError>;
+    private
+      class function  CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
+      class function  CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+      class function  MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
     public
       class procedure PrepareWorkflow(const StateMachine : IStateMachine; StateHolder : TWorkflowStateHolder);
   end;
@@ -44,7 +49,7 @@ implementation
 
 uses
   System.IOUtils,
-  FIToolkit.Reports.Builder.HTML;
+  FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
 
 { TWorkflowStateHolder }
 
@@ -91,6 +96,22 @@ end;
 
 { TExecutiveTransitionsProvider }
 
+class function TExecutiveTransitionsProvider.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
+  Project : TFileName) : TArray<TSummaryItem>;
+begin
+  // TODO: implement {TExecutiveTransitionsProvider.CalcProjectSummary}
+end;
+
+class function TExecutiveTransitionsProvider.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+begin
+  // TODO: implement {TExecutiveTransitionsProvider.CalcTotalSummary}
+end;
+
+class function TExecutiveTransitionsProvider.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+begin
+  // TODO: implement {TExecutiveTransitionsProvider.MakeRecord}
+end;
+
 class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine : IStateMachine;
   StateHolder : TWorkflowStateHolder);
 begin
@@ -129,11 +150,27 @@ begin
     .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
+        S : TFileName;
         Msg : TFixInsightMessage;
       begin
         with StateHolder do
         begin
-          // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
+          FReportBuilder.BeginReport;
+          FReportBuilder.AddHeader(FConfigData.InputFileName, Now);
+          FReportBuilder.AddTotalSummary(CalcTotalSummary(StateHolder));
+
+          for S in FProjects do
+          begin
+            FReportBuilder.BeginProjectSection(S, CalcProjectSummary(StateHolder, S));
+
+            for Msg in FMessages[S] do
+              FReportBuilder.AppendRecord(MakeRecord(Msg));
+
+            FReportBuilder.EndProjectSection;
+          end;
+
+          FReportBuilder.AddFooter(Now);
+          FReportBuilder.EndReport;
         end;
       end
     )
