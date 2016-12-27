@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Classes,
+  System.Classes, System.SysUtils,
   FIToolkit.Types,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
@@ -19,7 +19,7 @@ type
       FProjectGroupParser : TProjectGroupParser;
       FReportBuilder : IReportBuilder;
       FReportOutput : TStreamWriter;
-      FTaskRunner : TTaskRunner;
+      FTaskManager : TTaskManager;
 
       procedure InitReportBuilder;
     public
@@ -39,8 +39,8 @@ type
 implementation
 
 uses
-  System.SysUtils, System.IOUtils,
-  FIToolkit.Reports.Builder.HTML;
+  System.IOUtils,
+  FIToolkit.Reports.Builder.HTML, FIToolkit.Reports.Parser.Types;
 
 { TWorkflowStateHolder }
 
@@ -51,7 +51,6 @@ begin
   FConfigData := ConfigData;
   FFixInsightXMLParser := TFixInsightXMLParser.Create;
   FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
-  FTaskRunner := TTaskRunner.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions);
 
   InitReportBuilder;
 end;
@@ -61,7 +60,7 @@ begin
   FreeAndNil(FFixInsightXMLParser);
   FreeAndNil(FProjectGroupParser);
   FreeAndNil(FReportOutput);
-  FreeAndNil(FTaskRunner);
+  FreeAndNil(FTaskManager);
   FReportBuilder := nil;
 
   inherited Destroy;
