@@ -98,8 +98,27 @@ end;
 
 class function TExecutiveTransitionsProvider.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
   Project : TFileName) : TArray<TSummaryItem>;
+var
+  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+  MT : TFixInsightMessageType;
+  Msg : TFixInsightMessage;
 begin
-  // TODO: implement {TExecutiveTransitionsProvider.CalcProjectSummary}
+  Result := nil;
+
+  for MT := Low(TFixInsightMessageType) to High(TFixInsightMessageType) do
+    with arrSummary[MT] do
+    begin
+      MessageCount       := 0;
+      MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[MT];
+      MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[MT];
+    end;
+
+  for Msg in StateHolder.FMessages[Project] do
+    Inc(arrSummary[Msg.MsgType].MessageCount);
+
+  for MT := Low(arrSummary) to High(arrSummary) do
+    if arrSummary[MT].MessageCount > 0 then
+      Result := Result + [arrSummary[MT]];
 end;
 
 class function TExecutiveTransitionsProvider.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
