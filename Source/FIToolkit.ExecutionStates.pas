@@ -87,6 +87,38 @@ end;
 class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine : IStateMachine;
   StateHolder : TWorkflowStateHolder);
 begin
+  StateMachine
+    .AddTransition(asInitial, asProjectGroupParsed, acParseProjectGroup,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        //
+      end
+    )
+    .AddTransition(asProjectGroupParsed, asFixInsightRan, acRunFixInsight,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        //
+      end
+    )
+    .AddTransition(asFixInsightRan, asReportsParsed, acParseReports,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        //
+      end
+    )
+    .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        //
+      end
+    )
+    .AddTransition(asReportBuilt, asFinal, acTerminate,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        //
+      end
+    );
+
   // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
 end;
 
