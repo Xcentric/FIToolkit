@@ -34,6 +34,7 @@ const
   MSGID_WARNING = 'W123';
   MSGID_OPTIMIZATION = 'O123';
   MSGID_CODING_CONVENTION = 'C123';
+  MSGID_FATAL = 'FATAL';
   MSGID_TRIAL = 'Tria';
 var
   FIM : TFixInsightMessage;
@@ -49,6 +50,9 @@ begin
 
   FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_CODING_CONVENTION, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtCodingConvention, FIM.MsgType, 'MsgType = fimtCodingConvention');
+
+  FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_FATAL, String.Empty);
+  CheckEquals<TFixInsightMessageType>(fimtFatal, FIM.MsgType, 'MsgType = fimtFatal');
 
   FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_TRIAL, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtTrial, FIM.MsgType, 'MsgType = fimtTrial');

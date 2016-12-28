@@ -52,6 +52,9 @@ const
   '    <message line="321" col="123" id="O000">O000 Some message text</message>' + sLineBreak +
   '    <message line="456" col="654" id="Tria">Triality!!!</message>' + sLineBreak +
   '  </file>' + sLineBreak +
+  '  <file name="..\SourceFile_3.pas">' + sLineBreak +
+  '    <message line="666" col="13" id="FATAL">Fatal parser error</message>' + sLineBreak +
+  '  </file>' + sLineBreak +
   '</FixInsightReport>';
 begin
   Result := TestDataDir + STR_TEST_XML_FILE;

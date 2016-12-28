@@ -7,7 +7,7 @@ uses
 
 type
 
-  TFixInsightMessageType = (fimtUnknown, fimtWarning, fimtOptimization, fimtCodingConvention, fimtTrial);
+  TFixInsightMessageType = (fimtUnknown, fimtWarning, fimtOptimization, fimtCodingConvention, fimtFatal, fimtTrial);
 
   TFixInsightMessage = record
     strict private

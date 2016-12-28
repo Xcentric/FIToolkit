@@ -367,18 +367,21 @@ const
   STR_MSGKEYW_WARNING           = 'Warning';
   STR_MSGKEYW_OPTIMIZATION      = 'Optimization';
   STR_MSGKEYW_CODING_CONVENTION = 'CodingConvention';
+  STR_MSGKEYW_FATAL             = 'Fatal';
   STR_MSGKEYW_TRIAL             = 'Trial';
 
   STR_MSGTYPE_WARNING           = 'Dangerous code';
   STR_MSGTYPE_OPTIMIZATION      = 'Slow code';
   STR_MSGTYPE_CODING_CONVENTION = 'Ugly code';
+  STR_MSGTYPE_FATAL             = 'Abstruse code';
   STR_MSGTYPE_TRIAL             = 'Gimme $$$';
 
-  ARR_SUMMARY_ITEMS : array [0..3] of TSummaryItem = (
+  ARR_SUMMARY_ITEMS : array [0..4] of TSummaryItem = (
     (MessageCount: 1111; MessageTypeKeyWord: STR_MSGKEYW_WARNING; MessageTypeName: STR_MSGTYPE_WARNING),
     (MessageCount: 2222; MessageTypeKeyword: STR_MSGKEYW_OPTIMIZATION; MessageTypeName: STR_MSGTYPE_OPTIMIZATION),
     (MessageCount: 3333; MessageTypeKeyword: STR_MSGKEYW_CODING_CONVENTION; MessageTypeName: STR_MSGTYPE_CODING_CONVENTION),
-    (MessageCount: 4444; MessageTypeKeyword: STR_MSGKEYW_TRIAL; MessageTypeName: STR_MSGTYPE_TRIAL)
+    (MessageCount: 4444; MessageTypeKeyword: STR_MSGKEYW_FATAL; MessageTypeName: STR_MSGTYPE_FATAL),
+    (MessageCount: 5555; MessageTypeKeyword: STR_MSGKEYW_TRIAL; MessageTypeName: STR_MSGTYPE_TRIAL)
   );
 
   INT_PROJECTS_COUNT = 2;
@@ -408,26 +411,31 @@ const
     '' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
     '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
     '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
     '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
     '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
     '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
     '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
     '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_MSGTYPE_OPTIMIZATION + '|2222' + sLineBreak +
     '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_MSGTYPE_CODING_CONVENTION + '|3333' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
     '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
@@ -466,6 +474,10 @@ begin
 
       R.MessageTypeKeyword := STR_MSGKEYW_CODING_CONVENTION;
       R.MessageTypeName := STR_MSGTYPE_CODING_CONVENTION;
+      AppendRecord(R);
+
+      R.MessageTypeKeyword := STR_MSGKEYW_FATAL;
+      R.MessageTypeName := STR_MSGTYPE_FATAL;
       AppendRecord(R);
 
       R.MessageTypeKeyword := STR_MSGKEYW_TRIAL;
