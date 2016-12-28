@@ -140,7 +140,7 @@ var
   ConsoleInput : TInputRecord;
   iDummy : Cardinal;
 begin
-  Writeln(RSPressAnyKey);
+  WriteLn(RSPressAnyKey);
 
   hConsole := GetStdHandle(STD_INPUT_HANDLE);
   if hConsole <> INVALID_HANDLE_VALUE then

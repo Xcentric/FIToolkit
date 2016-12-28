@@ -147,8 +147,8 @@ begin //FI:C101
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         InitConfig(True);
-        Writeln(RSConfigWasGenerated);
-        Writeln(RSEditConfigManually);
+        WriteLn(RSConfigWasGenerated);
+        WriteLn(RSEditConfigManually);
       end
     )
     .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
@@ -172,7 +172,7 @@ end;
 
 class procedure TFIToolkit.PrintAbout;
 begin
-  Writeln(RSApplicationAbout);
+  WriteLn(RSApplicationAbout);
 end;
 
 procedure TFIToolkit.PrintHelp;
@@ -185,7 +185,7 @@ begin
     SL := TStringList.Create;
     try
       SL.LoadFromStream(RS, TEncoding.UTF8);
-      Writeln(SL.Text);
+      WriteLn(SL.Text);
     finally
       SL.Free;
     end;
@@ -196,7 +196,7 @@ end;
 
 procedure TFIToolkit.PrintVersion;
 begin
-  Writeln(GetAppVersionInfo);
+  WriteLn(GetAppVersionInfo);
 end;
 
 procedure TFIToolkit.ProcessOptions;
@@ -292,7 +292,7 @@ begin
 
   try
     if Assigned(E) then
-      Writeln(E.ToString(True), sLineBreak);
+      WriteLn(E.ToString(True), sLineBreak);
 
     Instance.Free;
   finally
