@@ -9,10 +9,10 @@ uses
 
 type
 
-  DefaultFixInsightExe = class (TDefaultFileNameValue);
-  DefaultOutputDirectory = class (TDefaultStringValue);
-  DefaultOutputFileName = class (TDefaultStringValue);
-  DefaultTempDirectory = class (TDefaultStringValue);
+  DefaultFixInsightExe = class (TDefaultFileNameValue); //FI:C104
+  DefaultOutputDirectory = class (TDefaultStringValue); //FI:C104
+  DefaultOutputFileName = class (TDefaultStringValue);  //FI:C104
+  DefaultTempDirectory = class (TDefaultStringValue);   //FI:C104
 
   TConfigData = class sealed
     strict private

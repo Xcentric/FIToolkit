@@ -346,7 +346,7 @@ end;
 procedure THTMLReportTemplate.Parse(const TemplateSource : IXMLDocument);
 var
   RootNode, TotalSummaryNode, ProjectSectionNode, ProjectSummaryNode, ProjectMessagesNode : IXMLNode;
-begin
+begin //FI:C101
   RootNode := TemplateSource.Node.ChildNodes[STR_RPTXML_ROOT_NODE];
   TotalSummaryNode := RootNode.ChildNodes[STR_RPTXML_TOTAL_SUMMARY_NODE];
   ProjectSectionNode := RootNode.ChildNodes[STR_RPTXML_PROJECT_SECTION_NODE];

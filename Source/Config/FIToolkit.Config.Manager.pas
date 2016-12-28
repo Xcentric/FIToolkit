@@ -132,7 +132,7 @@ begin
       Exit(TDefaultValueAttribute(Attr).Value);
 end;
 
-procedure TConfigManager.ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
+procedure TConfigManager.ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);  //FI:C103
 var
   Ctx : TRttiContext;
   InstanceType : TRttiInstanceType;
@@ -142,7 +142,7 @@ var
   sArray : String;
   arrS : TArray<String>;
   arrV : TArray<TValue>;
-begin
+begin //FI:C101
   Ctx := TRttiContext.Create;
   try
     InstanceType := Ctx.GetType(Instance.ClassType) as TRttiInstanceType;

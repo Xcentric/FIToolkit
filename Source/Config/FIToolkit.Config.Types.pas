@@ -17,8 +17,8 @@ type
       property Serializable : Boolean read FSerializable;
   end;
 
-  FIToolkitParam = class (TConfigAttribute);
-  FixInsightParam = class (TConfigAttribute);
+  FIToolkitParam = class (TConfigAttribute);  //FI:C104
+  FixInsightParam = class (TConfigAttribute); //FI:C104
 
 implementation
 

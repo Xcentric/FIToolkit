@@ -106,7 +106,7 @@ end;
 
 class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine : IStateMachine;
   StateHolder : TWorkflowStateHolder);
-begin
+begin //FI:C101
   StateMachine
     .AddTransition(asInitial, asProjectGroupParsed, acParseProjectGroup,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)

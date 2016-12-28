@@ -8,11 +8,11 @@ uses
 
 type
 
-  DefaultCompilerDefines = class (TDefaultStringArrayValue);
-  DefaultOutputFileName = class (TDefaultFileNameValue);
-  DefaultOutputFormat = class (TDefaultOutputFormatValue);
-  DefaultSettingsFileName = class (TDefaultFileNameValue);
-  DefaultSilent = class (TDefaultBooleanValue);
+  DefaultCompilerDefines = class (TDefaultStringArrayValue);  //FI:C104
+  DefaultOutputFileName = class (TDefaultFileNameValue);      //FI:C104
+  DefaultOutputFormat = class (TDefaultOutputFormatValue);    //FI:C104
+  DefaultSettingsFileName = class (TDefaultFileNameValue);    //FI:C104
+  DefaultSilent = class (TDefaultBooleanValue);               //FI:C104
 
   TFixInsightOptions = class sealed
     strict private

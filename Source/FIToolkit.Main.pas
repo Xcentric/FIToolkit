@@ -115,7 +115,7 @@ begin
 end;
 
 procedure TFIToolkit.InitStateMachine;
-begin
+begin //FI:C101
   FStateMachine := TStateMachine.Create(asInitial);
 
   { Common states }
@@ -147,6 +147,8 @@ begin
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         InitConfig(True);
+        Writeln(RSConfigWasGenerated);
+        Writeln(RSEditConfigManually);
       end
     )
     .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
