@@ -166,8 +166,12 @@ begin
     )
     .AddTransition(asReportBuilt, asFinal, acTerminate,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        R : TPair<TFileName, TFileName>;
       begin
-        //
+        with StateHolder do
+          for R in FReports do
+            DeleteFile(R.Value);
       end
     );
 end;
