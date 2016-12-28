@@ -64,6 +64,8 @@ type
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
   procedure PressAnyKeyPrompt;
+  function  WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
+    CheckingInterval, Timeout : Cardinal) : Boolean;
 
 implementation
 
@@ -150,6 +152,37 @@ begin
           if ConsoleInput.Event.KeyEvent.bKeyDown then
             Break;
     until False;
+end;
+
+function WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
+  CheckingInterval, Timeout : Cardinal) : Boolean;
+
+  function HasAccess : Boolean;
+  begin
+    Result := False;
+
+    if TFile.Exists(FileName) then
+      try
+        TFile.Open(FileName, TFileMode.fmOpen, DesiredAccess, TFileShare.fsRead).Free;
+        Result := True;
+      except
+        Exit;
+      end;
+  end;
+
+var
+  StartTickCount : Cardinal;
+begin
+  Result := False;
+  StartTickCount := TThread.GetTickCount;
+
+  repeat
+    if HasAccess then
+      Exit(True)
+    else
+      TThread.Sleep(CheckingInterval);
+  until TThread.GetTickCount - StartTickCount >= Timeout;
+  // TODO: implement {TEST::WaitForFileAccess}
 end;
 
 { TExceptionHelper }

@@ -44,6 +44,11 @@ const
   SET_FINAL_APPSTATES : set of TApplicationState =
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 
+  { FixInsight output file waiting }
+
+  INT_FIOFILE_WAIT_CHECK_INTERVAL = 1000;
+  INT_FIOFILE_WAIT_TIMEOUT        = 5 * INT_FIOFILE_WAIT_CHECK_INTERVAL;
+
   { Resources }
 
   STR_RES_HELP = 'HelpOutput';
