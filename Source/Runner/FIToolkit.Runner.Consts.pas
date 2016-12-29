@@ -10,11 +10,17 @@ const
 
   INT_SPIN_WAIT_ITERATIONS = 1000;
 
+  { FixInsight output file waiting }
+
+  INT_FIOFILE_WAIT_CHECK_INTERVAL = 1000;
+  INT_FIOFILE_WAIT_TIMEOUT        = 5 * INT_FIOFILE_WAIT_CHECK_INTERVAL;
+
 resourcestring
 
   { Exceptions }
 
   RSCreateProcessError = 'Не удалось создать процесс.';
+  RSNonZeroExitCode = 'Запущенный процесс вернул код ошибки.';
   RSSomeTasksFailed = 'Одна или более задач по обработке проектов завершились неудачей.';
 
 implementation

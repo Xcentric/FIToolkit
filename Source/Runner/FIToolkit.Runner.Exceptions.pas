@@ -21,13 +21,16 @@ type
 
   ECreateProcessError = class (ETaskRunnerException);
 
+  ENonZeroExitCode = class (ETaskRunnerException);
+
 implementation
 
 uses
   FIToolkit.Runner.Consts;
 
 initialization
-  RegisterExceptionMessage(ESomeTasksFailed, RSSomeTasksFailed);
   RegisterExceptionMessage(ECreateProcessError, RSCreateProcessError);
+  RegisterExceptionMessage(ENonZeroExitCode, RSNonZeroExitCode);
+  RegisterExceptionMessage(ESomeTasksFailed, RSSomeTasksFailed);
 
 end.

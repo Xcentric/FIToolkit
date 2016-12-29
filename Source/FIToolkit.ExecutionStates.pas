@@ -142,17 +142,13 @@ begin //FI:C101
       begin
         with StateHolder do
           for R in FReports do
-            if
-              WaitForFileAccess(R.Value, TFileAccess.faRead,
-                INT_FIOFILE_WAIT_CHECK_INTERVAL, INT_FIOFILE_WAIT_TIMEOUT)
-            then
+            if TFile.Exists(R.Value) then
             begin
               FFixInsightXMLParser.Parse(R.Value, False);
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
               FMessages.Add(R.Key, nil);
-              // TODO: implement {log this problem}
       end
     )
     .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,

@@ -67,6 +67,8 @@ begin
 end;
 
 function TTaskRunner.Execute : ITask;
+var
+  iExitCode : DWORD;
 begin
   Result := TTask.Run(
     procedure
@@ -87,6 +89,12 @@ begin
         try
           while WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_OBJECT_0 do
             TThread.SpinWait(INT_SPIN_WAIT_ITERATIONS);
+
+          if GetExitCodeProcess(PI.hProcess, iExitCode) and (iExitCode <> S_OK) then
+            if not WaitForFileAccess(FOutputFileName, TFileAccess.faRead,
+              INT_FIOFILE_WAIT_CHECK_INTERVAL, INT_FIOFILE_WAIT_TIMEOUT)
+            then
+              raise ENonZeroExitCode.Create;
         finally
           CloseHandle(PI.hProcess);
           CloseHandle(PI.hThread);

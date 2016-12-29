@@ -109,7 +109,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.TypInfo, System.Rtti, Winapi.Windows,
+  System.IOUtils, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
@@ -201,14 +201,45 @@ begin
       CheckEquals(E.ToString, E.ToString(False), 'E.ToString(False) = E.ToString');
 
       ReturnValue := E.ToString(True);
+
       CheckTrue(ReturnValue.Contains(ETestError1.ClassName),
         'CheckTrue::ReturnValue.Contains(%s)', [ETestError1.ClassName]);
+      CheckTrue(ReturnValue.Contains(STR_ERRMSG1),
+        'CheckTrue::ReturnValue.Contains(%s)', [STR_ERRMSG1]);
       CheckTrue(ReturnValue.Contains(ETestError2.ClassName),
         'CheckTrue::ReturnValue.Contains(%s)', [ETestError2.ClassName]);
+      CheckTrue(ReturnValue.Contains(STR_ERRMSG2),
+        'CheckTrue::ReturnValue.Contains(%s)', [STR_ERRMSG2]);
+      CheckTrue(ReturnValue.Contains(E.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [E.ClassName]);
       CheckTrue(ReturnValue.Contains(E.Message),
         'CheckTrue::ReturnValue.Contains(%s)', [E.Message]);
       CheckTrue(ReturnValue.Contains(E.InnerException.Message),
         'CheckTrue::ReturnValue.Contains(%s)', [E.InnerException.Message]);
+    end;
+  end;
+
+  try
+    raise EAggregateException.Create([ETestError1.Create(STR_ERRMSG1), ETestError2.Create(STR_ERRMSG2)]);
+  except
+    on E: Exception do
+    begin
+      CheckEquals(E.ToString, E.ToString(False), 'E.ToString(False) = E.ToString');
+
+      ReturnValue := E.ToString(True);
+
+      CheckTrue(ReturnValue.Contains(ETestError1.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [ETestError1.ClassName]);
+      CheckTrue(ReturnValue.Contains(STR_ERRMSG1),
+        'CheckTrue::ReturnValue.Contains(%s)', [STR_ERRMSG1]);
+      CheckTrue(ReturnValue.Contains(ETestError2.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [ETestError2.ClassName]);
+      CheckTrue(ReturnValue.Contains(STR_ERRMSG2),
+        'CheckTrue::ReturnValue.Contains(%s)', [STR_ERRMSG2]);
+      CheckTrue(ReturnValue.Contains(E.ClassName),
+        'CheckTrue::ReturnValue.Contains(%s)', [E.ClassName]);
+      CheckTrue(ReturnValue.Contains(E.Message),
+        'CheckTrue::ReturnValue.Contains(%s)', [E.Message]);
     end;
   end;
 end;

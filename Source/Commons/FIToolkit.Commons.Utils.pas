@@ -70,7 +70,7 @@ type
 implementation
 
 uses
-  System.Classes, System.Win.Registry, Winapi.Windows,
+  System.Classes, System.Threading, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
 
 { Utils }
@@ -190,8 +190,9 @@ end;
 function TExceptionHelper.ToString(IncludeClassName : Boolean) : String;
 const
   STR_SEPARATOR = ': ';
+  STR_INDENT = '  ';
 var
-  Inner : Exception;
+  Inner, E : Exception;
   S : String;
 begin
   if not IncludeClassName then
@@ -209,6 +210,10 @@ begin
         Result := S
       else
         Result := Result + sLineBreak + S;
+
+      if Inner is EAggregateException then
+        for E in EAggregateException(Inner) do
+          Result := Result + sLineBreak + STR_INDENT + E.ToString(IncludeClassName);
 
       Inner := Inner.InnerException;
     end;
