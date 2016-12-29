@@ -56,6 +56,7 @@ type
       class function CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
       class function CalcSummary(StateHolder : TWorkflowStateHolder; ProjectFilter : String) : TArray<TSummaryItem>;
       class function CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+      class function FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
       class function MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
   end;
 
@@ -155,7 +156,7 @@ begin //FI:C101
         with StateHolder do
         begin
           FReportBuilder.BeginReport;
-          FReportBuilder.AddHeader(FConfigData.InputFileName, Now);
+          FReportBuilder.AddHeader(TWorkflowHelper.FormatReportTitle(StateHolder), Now);
           FReportBuilder.AddTotalSummary(TWorkflowHelper.CalcTotalSummary(StateHolder));
 
           for F in FProjects do
@@ -235,6 +236,11 @@ end;
 class function TWorkflowHelper.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
 begin
   Result := CalcSummary(StateHolder, String.Empty);
+end;
+
+class function TWorkflowHelper.FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
+begin
+  Result := TPath.GetFileName(StateHolder.FConfigData.InputFileName);
 end;
 
 class function TWorkflowHelper.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
