@@ -25,6 +25,7 @@ type
       FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
       FProjects : TArray<TFileName>;
       FReports : TArray<TPair<TFileName, TFileName>>;
+      FStartTime : TDateTime;
 
       procedure InitReportBuilder;
     public
@@ -114,7 +115,10 @@ begin //FI:C101
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         with StateHolder do
+        begin
+          FStartTime := Now;
           FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
+        end;
       end
     )
     .AddTransition(asProjectGroupParsed, asFixInsightRan, acRunFixInsight,
@@ -157,7 +161,7 @@ begin //FI:C101
         with StateHolder do
         begin
           FReportBuilder.BeginReport;
-          FReportBuilder.AddHeader(TWorkflowHelper.FormatReportTitle(StateHolder), Now);
+          FReportBuilder.AddHeader(TWorkflowHelper.FormatReportTitle(StateHolder), FStartTime);
           FReportBuilder.AddTotalSummary(TWorkflowHelper.CalcTotalSummary(StateHolder));
 
           for F in FProjects do
