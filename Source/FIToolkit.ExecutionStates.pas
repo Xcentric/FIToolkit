@@ -49,7 +49,6 @@ implementation
 
 uses
   System.IOUtils,
-  FIToolkit.Consts,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
 
