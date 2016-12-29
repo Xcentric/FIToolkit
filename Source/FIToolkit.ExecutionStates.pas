@@ -53,9 +53,10 @@ type
 
   TWorkflowHelper = class
     private
-      class function CalcProjectSummary(StateHolder : TWorkflowStateHolder; Project : TFileName) : TArray<TSummaryItem>;
-      class function CalcSummary(StateHolder : TWorkflowStateHolder; ProjectFilter : String) : TArray<TSummaryItem>;
+      class function CalcProjectSummary(StateHolder : TWorkflowStateHolder; const Project : TFileName) : TArray<TSummaryItem>;
+      class function CalcSummary(StateHolder : TWorkflowStateHolder; const ProjectFilter : String) : TArray<TSummaryItem>;
       class function CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+      class function FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
       class function FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
       class function MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
   end;
@@ -162,7 +163,10 @@ begin //FI:C101
           for F in FProjects do
             if Assigned(FMessages[F]) then
             begin
-              FReportBuilder.BeginProjectSection(F, TWorkflowHelper.CalcProjectSummary(StateHolder, F));
+              FReportBuilder.BeginProjectSection(
+                TWorkflowHelper.FormatProjectTitle(StateHolder, F),
+                TWorkflowHelper.CalcProjectSummary(StateHolder, F)
+              );
 
               for Msg in FMessages[F] do
                 FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
@@ -190,13 +194,13 @@ end;
 { TWorkflowHelper }
 
 class function TWorkflowHelper.CalcProjectSummary(StateHolder : TWorkflowStateHolder;
-  Project : TFileName) : TArray<TSummaryItem>;
+  const Project : TFileName) : TArray<TSummaryItem>;
 begin
   Result := CalcSummary(StateHolder, Project);
 end;
 
 class function TWorkflowHelper.CalcSummary(StateHolder : TWorkflowStateHolder;
-  ProjectFilter : String) : TArray<TSummaryItem>;
+  const ProjectFilter : String) : TArray<TSummaryItem>;
 var
   arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
 
@@ -236,6 +240,12 @@ end;
 class function TWorkflowHelper.CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
 begin
   Result := CalcSummary(StateHolder, String.Empty);
+end;
+
+class function TWorkflowHelper.FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
+begin
+  Result := String(Project).Replace(
+    TPath.GetDirectoryName(StateHolder.FConfigData.InputFileName, True), String.Empty, [rfIgnoreCase]);
 end;
 
 class function TWorkflowHelper.FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
