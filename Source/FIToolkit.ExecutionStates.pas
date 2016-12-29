@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Classes, System.SysUtils, System.Generics.Collections,
+  System.Classes, System.SysUtils, System.Generics.Collections, System.TimeSpan,
   FIToolkit.Types,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
@@ -26,11 +26,14 @@ type
       FProjects : TArray<TFileName>;
       FReports : TArray<TPair<TFileName, TFileName>>;
       FStartTime : TDateTime;
+      FTotalDuration : TTimeSpan;
 
       procedure InitReportBuilder;
     public
       constructor Create(ConfigData : TConfigData);
       destructor Destroy; override;
+
+      property TotalDuration : TTimeSpan read FTotalDuration;
   end;
 
   TExecutiveTransitionsProvider = class sealed
@@ -189,8 +192,12 @@ begin //FI:C101
         R : TPair<TFileName, TFileName>;
       begin
         with StateHolder do
+        begin
           for R in FReports do
             DeleteFile(R.Value);
+
+          FTotalDuration := TTimeSpan.Subtract(Now, FStartTime);
+        end;
       end
     );
 end;

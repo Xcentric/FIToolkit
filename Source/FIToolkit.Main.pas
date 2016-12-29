@@ -38,6 +38,7 @@ type
     private
       FNoExitBehavior : TNoExitBehavior;
 
+      procedure PrintTotalDuration;
       procedure ProcessOptions;
 
       // Application command implementations:
@@ -194,6 +195,11 @@ begin
   end;
 end;
 
+procedure TFIToolkit.PrintTotalDuration;
+begin
+  WriteLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
+end;
+
 procedure TFIToolkit.PrintVersion;
 begin
   WriteLn(GetAppVersionInfo);
@@ -240,6 +246,8 @@ begin
           .Execute(acParseReports)
           .Execute(acBuildReport)
           .Execute(acTerminate);
+
+        PrintTotalDuration;
       except
         Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
       end;

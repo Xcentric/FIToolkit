@@ -67,6 +67,7 @@ resourcestring
   RSConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
   RSNoVersionInfoAvailable = '<информация о версии недоступна>';
+  RSTotalDuration = 'Время работы: %s';
 
   { Exceptions }
 
