@@ -90,7 +90,7 @@ begin
           while WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_OBJECT_0 do
             TThread.SpinWait(INT_SPIN_WAIT_ITERATIONS);
 
-          if GetExitCodeProcess(PI.hProcess, iExitCode) and (iExitCode <> S_OK) then
+          if GetExitCodeProcess(PI.hProcess, iExitCode) and (iExitCode <> NOERROR) then
             if not WaitForFileAccess(FOutputFileName, TFileAccess.faRead,
               INT_FIOFILE_WAIT_CHECK_INTERVAL, INT_FIOFILE_WAIT_TIMEOUT)
             then
