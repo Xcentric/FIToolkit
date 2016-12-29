@@ -159,14 +159,15 @@ begin //FI:C101
           FReportBuilder.AddTotalSummary(TWorkflowHelper.CalcTotalSummary(StateHolder));
 
           for F in FProjects do
-          begin
-            FReportBuilder.BeginProjectSection(F, TWorkflowHelper.CalcProjectSummary(StateHolder, F));
+            if Assigned(FMessages[F]) then
+            begin
+              FReportBuilder.BeginProjectSection(F, TWorkflowHelper.CalcProjectSummary(StateHolder, F));
 
-            for Msg in FMessages[F] do
-              FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
+              for Msg in FMessages[F] do
+                FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
 
-            FReportBuilder.EndProjectSection;
-          end;
+              FReportBuilder.EndProjectSection;
+            end;
 
           FReportBuilder.AddFooter(Now);
           FReportBuilder.EndReport;
