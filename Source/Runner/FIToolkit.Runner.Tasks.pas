@@ -94,7 +94,7 @@ begin
             if not WaitForFileAccess(FOutputFileName, TFileAccess.faRead,
               INT_FIOFILE_WAIT_CHECK_INTERVAL, INT_FIOFILE_WAIT_TIMEOUT)
             then
-              raise ENonZeroExitCode.Create;
+              raise ENonZeroExitCode.CreateFmt([iExitCode, sCmdLine]);
         finally
           CloseHandle(PI.hProcess);
           CloseHandle(PI.hThread);
