@@ -313,11 +313,11 @@ begin
         Free;
       end;
   finally
-    if not bCanExit then
-      PressAnyKeyPrompt
-    else
     if Assigned(E) then
       iExitCode := INT_EC_ERROR_OCCURED;
+    // TODO: implement {a place for refactoring?}
+    if not bCanExit then
+      PressAnyKeyPrompt;
   end;
 
   if iExitCode <> 0 then
