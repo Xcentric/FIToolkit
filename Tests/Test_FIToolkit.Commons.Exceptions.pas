@@ -21,12 +21,18 @@ type
   TestECustomException = class(TGenericTestCase)
   private
     type
-      ETestException = class (ECustomException);
+      ETestException    = class (ECustomException);
+      ETestExceptionFmt = class (ECustomException);
     const
       STR_TEST_ERR_MSG = 'TestExceptionMessage';
+      FMT_TEST_ERR_MSG = '%d' + STR_TEST_ERR_MSG + '%s';
+      STR_TEST_ARG_INT = '42';
+      STR_TEST_ARG_STR = 'LOL';
+      STR_TEST_ERR_MSG_FMT = STR_TEST_ARG_INT + STR_TEST_ERR_MSG + STR_TEST_ARG_STR;
   strict private
     FCustomException: ECustomException;
     FTestException : ETestException;
+    FTestExceptionFmt : ETestExceptionFmt;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -43,20 +49,26 @@ uses
 procedure TestECustomException.SetUp;
 begin
   FCustomException := ECustomException.Create;
+
   RegisterExceptionMessage(ETestException, STR_TEST_ERR_MSG);
   FTestException := ETestException.Create;
+
+  RegisterExceptionMessage(ETestExceptionFmt, STR_TEST_ERR_MSG_FMT);
+  FTestExceptionFmt := ETestExceptionFmt.CreateFmt([STR_TEST_ARG_INT.ToInteger, STR_TEST_ARG_STR]);
 end;
 
 procedure TestECustomException.TearDown;
 begin
   FreeAndNil(FCustomException);
   FreeAndNil(FTestException);
+  FreeAndNil(FTestExceptionFmt);
 end;
 
 procedure TestECustomException.TestRegisterExceptionMessage;
 begin
   CheckEquals(RSDefaultErrMsg, FCustomException.Message, 'FCustomException.Message = RSDefaultErrMsg');
   CheckEquals(STR_TEST_ERR_MSG, FTestException.Message, 'FTestException.Message = STR_TEST_ERR_MSG');
+  CheckEquals(STR_TEST_ERR_MSG_FMT, FTestExceptionFmt.Message, 'FTestExceptionFmt.Message = STR_TEST_ERR_MSG_FMT');
 end;
 
 initialization

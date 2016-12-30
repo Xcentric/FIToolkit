@@ -16,6 +16,7 @@ type
       function GetDefaultMessage : String; virtual;
     public
       constructor Create; overload;
+      constructor CreateFmt(const Args : array of const); overload;
   end;
 
   procedure RegisterExceptionMessage(AnExceptionClass : ECustomExceptionClass; const Msg : String);
@@ -51,6 +52,11 @@ end;
 constructor ECustomException.Create;
 begin
   inherited Create(GetDefaultMessage);
+end;
+
+constructor ECustomException.CreateFmt(const Args : array of const);
+begin
+  inherited CreateFmt(GetDefaultMessage, Args);
 end;
 
 function ECustomException.GetClassType : ECustomExceptionClass;
