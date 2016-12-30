@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types;
 
   procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
-  procedure TerminateApplication(E : Exception = nil);
+  procedure TerminateApplication(E : Exception);
 
 implementation
 
@@ -251,15 +251,12 @@ begin
       except
         Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
       end;
+
+    Terminate(Self);
   except
     on E: Exception do
-    begin
       Terminate(Self, E);
-      Exit;
-    end;
   end;
-
-  Terminate(Self);
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
@@ -275,49 +272,57 @@ end;
 
 class procedure TFIToolkit.Terminate(Instance : TFIToolkit; E : Exception);
 var
-  bCanExit : Boolean;
   iExitCode : Integer;
-begin
-  {$IFDEF DEBUG}
-  bCanExit := False;
-  {$ELSE}
-  if not Assigned(Instance) then
-    bCanExit := True
-  else
-  begin
-    case Instance.FNoExitBehavior of
-      neDisabled:
-        bCanExit := True;
-      neEnabled:
-        bCanExit := False;
-      neEnabledOnException:
-        bCanExit := not Assigned(E);
-    else
-      Assert(False, 'Unhandled no-exit behavior while terminating application.');
-      Exit;
-    end;
-  end;
-  {$ENDIF}
-
+  bCanExit : Boolean;
+begin //FI:C101
   iExitCode := 0;
   try
-    if Assigned(E) then
-      WriteLn(E.ToString(True), sLineBreak);
-
-    if Assigned(Instance) then
-      with Instance do
-      begin
-        if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-          iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
-
-        Free;
+    {$IFDEF DEBUG}
+    bCanExit := False;
+    {$ELSE}
+    if not Assigned(Instance) then
+      bCanExit := True
+    else
+    begin
+      case Instance.FNoExitBehavior of
+        neDisabled:
+          bCanExit := True;
+        neEnabled:
+          bCanExit := False;
+        neEnabledOnException:
+          bCanExit := not Assigned(E);
+      else
+        Assert(False, 'Unhandled no-exit behavior while terminating application.');
+        Exit;
       end;
-  finally
-    if Assigned(E) then
+    end;
+    {$ENDIF}
+
+    try
+      if Assigned(Instance) then
+        with Instance do
+        begin
+          if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+            iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+
+          Free;
+        end;
+    finally
+      if Assigned(E) then
+      begin
+        WriteLn(E.ToString(True), sLineBreak);
+        iExitCode := INT_EC_ERROR_OCCURED;
+      end;
+
+      if not bCanExit then
+        PressAnyKeyPrompt;
+    end;
+  except
+    on E: Exception do
+    begin
+      WriteLn(E.ClassName, ': ', E.Message);
       iExitCode := INT_EC_ERROR_OCCURED;
-    // TODO: implement {a place for refactoring?}
-    if not bCanExit then
-      PressAnyKeyPrompt;
+    end;
   end;
 
   if iExitCode <> 0 then
