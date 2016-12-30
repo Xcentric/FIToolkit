@@ -13,6 +13,7 @@ type
   DefaultOutputDirectory = class (TDefaultStringValue); //FI:C104
   DefaultOutputFileName = class (TDefaultStringValue);  //FI:C104
   DefaultTempDirectory = class (TDefaultStringValue);   //FI:C104
+  DefaultUseBadExitCode = class (TDefaultBooleanValue); //FI:C104
 
   TConfigData = class sealed
     strict private
@@ -21,6 +22,7 @@ type
       FOutputDirectory : TAssignableString;
       FOutputFileName : TAssignableString;
       FTempDirectory : TAssignableString;
+      FUseBadExitCode : Boolean;
       FValidate : Boolean;
 
       FFixInsightOptions : TFixInsightOptions;
@@ -57,6 +59,8 @@ type
       property OutputFileName : String read GetOutputFileName write SetOutputFileName;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read GetTempDirectory write SetTempDirectory;
+      [FIToolkitParam, DefaultUseBadExitCode(DEF_CD_BOOL_USE_BAD_EXIT_CODE)]
+      property UseBadExitCode : Boolean read FUseBadExitCode write FUseBadExitCode;
 
       property Validate : Boolean read FValidate write FValidate;
   end;

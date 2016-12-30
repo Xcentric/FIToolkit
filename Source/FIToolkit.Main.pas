@@ -276,6 +276,7 @@ end;
 class procedure TFIToolkit.Terminate(Instance : TFIToolkit; E : Exception);
 var
   bCanExit : Boolean;
+  iExitCode : Integer;
 begin
   {$IFDEF DEBUG}
   bCanExit := False;
@@ -298,18 +299,29 @@ begin
   end;
   {$ENDIF}
 
+  iExitCode := 0;
   try
     if Assigned(E) then
       WriteLn(E.ToString(True), sLineBreak);
 
-    Instance.Free;
+    if Assigned(Instance) then
+      with Instance do
+      begin
+        if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+          iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+
+        Free;
+      end;
   finally
     if not bCanExit then
       PressAnyKeyPrompt
     else
     if Assigned(E) then
-      Halt(1);
+      iExitCode := INT_EC_ERROR_OCCURED;
   end;
+
+  if iExitCode <> 0 then
+    Halt(iExitCode);
 end;
 
 end.

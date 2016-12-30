@@ -44,6 +44,11 @@ const
   SET_FINAL_APPSTATES : set of TApplicationState =
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 
+  { Exit codes }
+
+  INT_EC_ERROR_OCCURED           = 1;
+  INT_EC_ANALYSIS_MESSAGES_FOUND = 2;
+
   { Resources }
 
   STR_RES_HELP = 'HelpOutput';

@@ -27,6 +27,7 @@ type
       FReports : TArray<TPair<TFileName, TFileName>>;
       FStartTime : TDateTime;
       FTotalDuration : TTimeSpan;
+      FTotalMessages : Integer;
 
       procedure InitReportBuilder;
     public
@@ -34,6 +35,7 @@ type
       destructor Destroy; override;
 
       property TotalDuration : TTimeSpan read FTotalDuration;
+      property TotalMessages : Integer read FTotalMessages;
   end;
 
   TExecutiveTransitionsProvider = class sealed
@@ -189,7 +191,10 @@ begin //FI:C101
         with StateHolder do
         begin
           for R in FReports do
+          begin
+            Inc(FTotalMessages, Length(FMessages[R.Key]));
             DeleteFile(R.Value);
+          end;
 
           FTotalDuration := TTimeSpan.Subtract(Now, FStartTime);
         end;
