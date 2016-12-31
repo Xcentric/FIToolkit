@@ -320,11 +320,10 @@ begin //FI:C101
     try
       if Assigned(Instance) then
         with Instance do
-          try
-            iExitCode := FExitCode;
-          finally
-            Free;
-          end;
+        begin
+          iExitCode := FExitCode;
+          Free;
+        end;
     finally
       if Assigned(E) then
       begin
