@@ -325,8 +325,6 @@ begin //FI:C101
           finally
             Free;
           end;
-
-      { Any new code should be placed here }
     finally
       if Assigned(E) then
       begin
