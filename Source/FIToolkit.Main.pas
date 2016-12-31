@@ -301,12 +301,14 @@ begin //FI:C101
     try
       if Assigned(Instance) then
         with Instance do
-        begin
-          if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-            iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+          try
+            if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+              iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+          finally
+            Free;
+          end;
 
-          Free;
-        end;
+      { Any new code should be placed here }
     finally
       if Assigned(E) then
       begin
