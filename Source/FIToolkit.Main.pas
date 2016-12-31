@@ -278,7 +278,8 @@ var
   iExitCode : Integer;
   bCanExit : Boolean;
 begin //FI:C101
-  iExitCode := 0;
+  iExitCode := System.ExitCode;
+
   try
     {$IFDEF DEBUG}
     bCanExit := False;
@@ -330,8 +331,7 @@ begin //FI:C101
     end;
   end;
 
-  if iExitCode <> 0 then
-    Halt(iExitCode);
+  System.ExitCode := iExitCode;
 end;
 
 end.
