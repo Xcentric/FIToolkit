@@ -251,12 +251,15 @@ begin
       except
         Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
       end;
-
-    Terminate(Self);
   except
     on E: Exception do
+    begin
       Terminate(Self, E);
+      Exit;
+    end;
   end;
+
+  Terminate(Self);
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
