@@ -36,10 +36,12 @@ type
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
       procedure InitStateMachine;
     private
+      FExitCode : Integer;
       FNoExitBehavior : TNoExitBehavior;
 
       procedure PrintTotalDuration;
       procedure ProcessOptions;
+      procedure SetExitCode;
 
       // Application command implementations:
       procedure PrintHelp;
@@ -229,28 +231,32 @@ procedure TFIToolkit.Run;
 begin
   try
     try
-      ProcessOptions;
-    except
-      Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
-    end;
-
-    if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
       try
-        FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
-        TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
-
-        FStateMachine
-          .Execute(acStart)
-          .Execute(acParseProjectGroup)
-          .Execute(acRunFixInsight)
-          .Execute(acParseReports)
-          .Execute(acBuildReport)
-          .Execute(acTerminate);
-
-        PrintTotalDuration;
+        ProcessOptions;
       except
-        Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
+        Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
       end;
+
+      if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
+        try
+          FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
+          TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
+
+          FStateMachine
+            .Execute(acStart)
+            .Execute(acParseProjectGroup)
+            .Execute(acRunFixInsight)
+            .Execute(acParseReports)
+            .Execute(acBuildReport)
+            .Execute(acTerminate);
+
+          PrintTotalDuration;
+        except
+          Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
+        end;
+    finally
+      SetExitCode;
+    end;
   except
     on E: Exception do
     begin
@@ -260,6 +266,15 @@ begin
   end;
 
   Terminate(Self);
+end;
+
+procedure TFIToolkit.SetExitCode;
+begin
+  FExitCode := System.ExitCode;
+
+  if FStateMachine.CurrentState = asFinal then
+    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+      FExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
@@ -306,8 +321,7 @@ begin //FI:C101
       if Assigned(Instance) then
         with Instance do
           try
-            if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-              iExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+            iExitCode := FExitCode;
           finally
             Free;
           end;
