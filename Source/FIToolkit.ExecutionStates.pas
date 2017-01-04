@@ -18,6 +18,7 @@ type
       FConfigData : TConfigData;
       FFixInsightXMLParser : TFixInsightXMLParser;
       FProjectGroupParser : TProjectGroupParser;
+      FProjectParser : TProjectParser;
       FReportBuilder : IReportBuilder;
       FReportOutput : TStreamWriter;
       FTaskManager : TTaskManager;
@@ -51,6 +52,7 @@ implementation
 
 uses
   System.IOUtils,
+  FIToolkit.Exceptions, FIToolkit.Utils,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
 
@@ -76,7 +78,6 @@ begin
 
   FConfigData := ConfigData;
   FFixInsightXMLParser := TFixInsightXMLParser.Create;
-  FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
 
   InitReportBuilder;
 end;
@@ -87,6 +88,7 @@ begin
 
   FreeAndNil(FFixInsightXMLParser);
   FreeAndNil(FProjectGroupParser);
+  FreeAndNil(FProjectParser);
   FreeAndNil(FReportOutput);
   FreeAndNil(FTaskManager);
   FReportBuilder := nil;
@@ -115,17 +117,35 @@ class procedure TExecutiveTransitionsProvider.PrepareWorkflow(const StateMachine
   StateHolder : TWorkflowStateHolder);
 begin //FI:C101
   StateMachine
-    .AddTransition(asInitial, asProjectGroupParsed, acParseProjectGroup,
+    .AddTransition(asInitial, asProjectsExtracted, acExtractProjects,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         with StateHolder do
         begin
           FStartTime := Now;
-          FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
+
+          case GetInputFileType(FConfigData.InputFileName) of
+            iftDPR:
+              begin
+                FProjects := [FConfigData.InputFileName];
+              end;
+            iftDPROJ:
+              begin
+                FProjectParser := TProjectParser.Create(FConfigData.InputFileName);
+                FProjects := [FProjectParser.GetMainSourceFileName];
+              end;
+            iftGROUPPROJ:
+              begin
+                FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
+                FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
+              end;
+          else
+            raise EUnknownInputFileType.Create;
+          end;
         end;
       end
     )
-    .AddTransition(asProjectGroupParsed, asFixInsightRan, acRunFixInsight,
+    .AddTransition(asProjectsExtracted, asFixInsightRan, acRunFixInsight,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         with StateHolder do

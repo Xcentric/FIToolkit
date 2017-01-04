@@ -7,14 +7,16 @@ type
   TApplicationCommand = (
     acStart,
     acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExitBehavior,
-    acParseProjectGroup, acRunFixInsight, acParseReports, acBuildReport,
+    acExtractProjects, acRunFixInsight, acParseReports, acBuildReport,
     acTerminate);
 
   TApplicationState = (
     asInitial,
     asHelpPrinted, asVersionPrinted, asConfigGenerated, asConfigSet, asNoExitBehaviorSet,
-    asProjectGroupParsed, asFixInsightRan, asReportsParsed, asReportBuilt,
+    asProjectsExtracted, asFixInsightRan, asReportsParsed, asReportBuilt,
     asFinal);
+
+  TInputFileType = (iftUnknown, iftDPR, iftDPROJ, iftGROUPPROJ);
 
   TNoExitBehavior = (neDisabled, neEnabled, neEnabledOnException);
 

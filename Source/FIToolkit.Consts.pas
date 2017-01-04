@@ -41,6 +41,10 @@ const
     STR_CLI_OPTION_SET_CONFIG
   ];
 
+  ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING : array [Low(TInputFileType)..High(TInputFileType)] of String = (
+    String.Empty, '.dpr', '.dproj', '.groupproj'
+  );
+
   SET_FINAL_APPSTATES : set of TApplicationState =
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 
@@ -76,6 +80,7 @@ resourcestring
   RSApplicationExecutionFailed = 'Ошибка при выполнении программы.';
   RSCLIOptionsProcessingFailed = 'Ошибка при обработке параметров командной строки.';
   RSNoValidConfigSpecified = 'Не был указан существующий или генерируемый файл конфигурации.';
+  RSUnknownInputFileType = 'Неизвестный тип входного файла.';
 
 implementation
 

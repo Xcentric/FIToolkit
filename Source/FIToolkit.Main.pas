@@ -298,7 +298,7 @@ begin
 
       FStateMachine
         .Execute(acStart)
-        .Execute(acParseProjectGroup)
+        .Execute(acExtractProjects)
         .Execute(acRunFixInsight)
         .Execute(acParseReports)
         .Execute(acBuildReport)

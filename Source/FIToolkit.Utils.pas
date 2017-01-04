@@ -3,10 +3,12 @@
 interface
 
 uses
+  System.SysUtils,
   FIToolkit.Types;
 
   function GetAppVersionInfo : String;
   function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
+  function GetInputFileType(const FileName : TFileName) : TInputFileType;
   function IsCaseSensitiveCLIOption(const OptionName : String) : Boolean;
   function TryCLIOptionToAppCommand(const OptionName : String; IgnoreCase : Boolean;
     out Command : TApplicationCommand) : Boolean;
@@ -14,8 +16,9 @@ uses
 implementation
 
 uses
-  System.SysUtils,
-  FIToolkit.Commons.Utils, FIToolkit.Consts;
+  System.IOUtils,
+  FIToolkit.Consts,
+  FIToolkit.Commons.Utils;
 
 function GetAppVersionInfo : String;
 var
@@ -39,6 +42,20 @@ begin
         Exit(i);
 
   Result := -1;
+end;
+
+function GetInputFileType(const FileName : TFileName) : TInputFileType;
+var
+  sFileExt : String;
+  X : TInputFileType;
+begin
+  Result := iftUnknown;
+  sFileExt := TPath.GetExtension(FileName);
+
+  if not sFileExt.IsEmpty then
+    for X := Low(TInputFileType) to High(TInputFileType) do
+      if AnsiSameText(sFileExt, ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING[X]) then
+        Exit(X);
 end;
 
 function IsCaseSensitiveCLIOption(const OptionName : String) : Boolean;
