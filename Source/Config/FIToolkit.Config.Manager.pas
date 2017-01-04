@@ -16,6 +16,7 @@ type
       function  FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
       function  GetConfigFileName : TFileName;
       function  GetPropDefaultValue(Prop : TRttiProperty) : TValue;
+      function  PropHasDefaultValue(Prop : TRttiProperty) : Boolean;
       procedure ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
       procedure SetObjectPropsDefaults(Instance : TObject);
       procedure WriteObjectToConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
@@ -132,6 +133,17 @@ begin
       Exit(TDefaultValueAttribute(Attr).Value);
 end;
 
+function TConfigManager.PropHasDefaultValue(Prop : TRttiProperty) : Boolean;
+var
+  Attr : TCustomAttribute;
+begin
+  Result := False;
+
+  for Attr in Prop.GetAttributes do
+    if Attr is TDefaultValueAttribute then
+      Exit(True);
+end;
+
 procedure TConfigManager.ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);  //FI:C103
 var
   Ctx : TRttiContext;
@@ -231,7 +243,7 @@ begin
       if Prop.PropertyType.IsInstance then
         SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject)
       else
-      if Prop.IsWritable then
+      if Prop.IsWritable and PropHasDefaultValue(Prop) then
         Prop.SetValue(Instance, GetPropDefaultValue(Prop));
   finally
     Ctx.Free;
