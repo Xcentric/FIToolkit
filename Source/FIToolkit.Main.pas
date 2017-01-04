@@ -5,8 +5,8 @@ interface
 uses
   System.SysUtils, System.Types;
 
-  procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
-  procedure TerminateApplication(E : Exception);
+  function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
+  function TerminateApplication(E : Exception) : Integer;
 
 implementation
 
@@ -36,12 +36,11 @@ type
       procedure InitOptions(const CmdLineOptions : TStringDynArray);
       procedure InitStateMachine;
     private
-      FExitCode : Integer;
       FNoExitBehavior : TNoExitBehavior;
 
       procedure PrintTotalDuration;
       procedure ProcessOptions;
-      procedure SetExitCode;
+      procedure UpdateExitCode(var AnExitCode : Integer);
 
       // Application command implementations:
       procedure PrintHelp;
@@ -49,25 +48,84 @@ type
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
-      class procedure Terminate(Instance : TFIToolkit; E : Exception = nil);
 
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
 
-      procedure Run;
+      function Run : Integer;
   end;
 
 { Utils }
 
-procedure RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
+function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;
 begin
-  TFIToolkit.PrintAbout;
-  TFIToolkit.Create(FullExePath, CmdLineOptions).Run;
+  {$IFDEF DEBUG}
+  Result := False;
+  {$ELSE}
+  if not Assigned(Instance) then
+    Result := True
+  else
+  begin
+    case Instance.FNoExitBehavior of
+      neDisabled:
+        Result := True;
+      neEnabled:
+        Result := False;
+      neEnabledOnException:
+        Result := not Assigned(E);
+    else
+      Assert(False, 'Unhandled no-exit behavior while terminating application.');
+      raise AbortException;
+    end;
+  end;
+  {$ENDIF}
 end;
 
-procedure TerminateApplication(E : Exception);
+procedure _OnException(E : Exception; out AnExitCode : Integer);
 begin
-  TFIToolkit.Terminate(nil, E);
+  WriteLn(E.ToString(True), sLineBreak);
+  AnExitCode := INT_EC_ERROR_OCCURED;
+end;
+
+procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
+begin
+  WriteLn(Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak);
+
+  if not CanExit then
+    PressAnyKeyPrompt;
+end;
+
+function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
+var
+  App : TFIToolkit;
+begin
+  TFIToolkit.PrintAbout;
+
+  App := TFIToolkit.Create(FullExePath, CmdLineOptions);
+  try
+    try
+      Result := App.Run;
+      _OnTerminate(Result, _CanExit(App, nil));
+    except
+      on E: Exception do
+      begin
+        _OnException(E, Result);
+        _OnTerminate(Result, _CanExit(App, E));
+      end;
+    end;
+  finally
+    App.Free;
+  end;
+end;
+
+function TerminateApplication(E : Exception) : Integer;
+begin
+  if Assigned(E) then
+    _OnException(E, Result)
+  else
+    Result := INT_EC_NO_ERROR;
+
+  _OnTerminate(Result, _CanExit(nil, E));
 end;
 
 { TFIToolkit }
@@ -227,54 +285,34 @@ begin
       FStateMachine.Execute(C);
 end;
 
-procedure TFIToolkit.Run;
+function TFIToolkit.Run : Integer;
 begin
+  Result := INT_EC_NO_ERROR;
+
   try
-    try
-      try
-        ProcessOptions;
-      except
-        Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
-      end;
-
-      if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
-        try
-          FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
-          TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
-
-          FStateMachine
-            .Execute(acStart)
-            .Execute(acParseProjectGroup)
-            .Execute(acRunFixInsight)
-            .Execute(acParseReports)
-            .Execute(acBuildReport)
-            .Execute(acTerminate);
-
-          PrintTotalDuration;
-        except
-          Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
-        end;
-    finally
-      SetExitCode;
-    end;
+    ProcessOptions;
   except
-    on E: Exception do
-    begin
-      Terminate(Self, E);
-      Exit;
-    end;
+    Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
   end;
 
-  Terminate(Self);
-end;
+  if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
+    try
+      FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
+      TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
 
-procedure TFIToolkit.SetExitCode;
-begin
-  FExitCode := System.ExitCode;
+      FStateMachine
+        .Execute(acStart)
+        .Execute(acParseProjectGroup)
+        .Execute(acRunFixInsight)
+        .Execute(acParseReports)
+        .Execute(acBuildReport)
+        .Execute(acTerminate);
 
-  if FStateMachine.CurrentState = asFinal then
-    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-      FExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+      UpdateExitCode(Result);
+      PrintTotalDuration;
+    except
+      Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
+    end;
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
@@ -288,61 +326,11 @@ begin
         FNoExitBehavior := TNoExitBehavior(iValue);
 end;
 
-class procedure TFIToolkit.Terminate(Instance : TFIToolkit; E : Exception);
-var
-  iExitCode : Integer;
-  bCanExit : Boolean;
-begin //FI:C101
-  iExitCode := System.ExitCode;
-
-  try
-    {$IFDEF DEBUG}
-    bCanExit := False;
-    {$ELSE}
-    if not Assigned(Instance) then
-      bCanExit := True
-    else
-    begin
-      case Instance.FNoExitBehavior of
-        neDisabled:
-          bCanExit := True;
-        neEnabled:
-          bCanExit := False;
-        neEnabledOnException:
-          bCanExit := not Assigned(E);
-      else
-        Assert(False, 'Unhandled no-exit behavior while terminating application.');
-        Exit;
-      end;
-    end;
-    {$ENDIF}
-
-    try
-      if Assigned(Instance) then
-        with Instance do
-        begin
-          iExitCode := FExitCode;
-          Free;
-        end;
-    finally
-      if Assigned(E) then
-      begin
-        WriteLn(E.ToString(True), sLineBreak);
-        iExitCode := INT_EC_ERROR_OCCURED;
-      end;
-
-      if not bCanExit then
-        PressAnyKeyPrompt;
-    end;
-  except
-    on E: Exception do
-    begin
-      WriteLn(E.ClassName, ': ', E.Message);
-      iExitCode := INT_EC_ERROR_OCCURED;
-    end;
-  end;
-
-  System.ExitCode := iExitCode;
+procedure TFIToolkit.UpdateExitCode(var AnExitCode : Integer);
+begin
+  if FStateMachine.CurrentState = asFinal then
+    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+      AnExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
 end;
 
 end.

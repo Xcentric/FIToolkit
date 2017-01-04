@@ -69,9 +69,9 @@ begin
     for i := 0 to High(arrCmdLineOptions) do
       arrCmdLineOptions[i] := ParamStr(i + 1);
 
-    RunApplication(sFullExePath, arrCmdLineOptions);
+    System.ExitCode := RunApplication(sFullExePath, arrCmdLineOptions);
   except
     on E: Exception do
-      TerminateApplication(E);
+      System.ExitCode := TerminateApplication(E);
   end;
 end.

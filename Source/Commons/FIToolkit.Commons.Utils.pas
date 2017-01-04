@@ -60,6 +60,7 @@ type
 
   { Utils }
 
+  function  AbortException : EAbort;
   function  GetFixInsightExePath : TFileName;
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
@@ -70,10 +71,15 @@ type
 implementation
 
 uses
-  System.Classes, System.Threading, System.Win.Registry, Winapi.Windows,
+  System.Classes, System.SysConst, System.Threading, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
 
 { Utils }
+
+function AbortException : EAbort;
+begin
+  Result := EAbort.CreateRes(@SOperationAborted);
+end;
 
 function GetFixInsightExePath : TFileName;
 var

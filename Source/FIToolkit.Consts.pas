@@ -46,6 +46,7 @@ const
 
   { Exit codes }
 
+  INT_EC_NO_ERROR                = 0;
   INT_EC_ERROR_OCCURED           = 1;
   INT_EC_ANALYSIS_MESSAGES_FOUND = 2;
 
@@ -67,7 +68,8 @@ resourcestring
   RSConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
   RSNoVersionInfoAvailable = '<информация о версии недоступна>';
-  RSTotalDuration = 'Время работы: %s';
+  RSTerminatingWithExitCode = 'Приложение завершается с кодом %d';
+  RSTotalDuration = 'Общая длительность работы составила %s';
 
   { Exceptions }
 
