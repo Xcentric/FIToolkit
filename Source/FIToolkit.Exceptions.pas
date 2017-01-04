@@ -11,7 +11,9 @@ type
 
   EApplicationExecutionFailed = class (EApplicationException);
   ECLIOptionsProcessingFailed = class (EApplicationException);
+  EErroneousConfigSpecified = class (EApplicationException);
   ENoValidConfigSpecified = class (EApplicationException);
+  EUnableToGenerateConfig = class (EApplicationException);
   EUnknownInputFileType = class (EApplicationException);
 
 implementation
@@ -22,7 +24,9 @@ uses
 initialization
   RegisterExceptionMessage(EApplicationExecutionFailed, RSApplicationExecutionFailed);
   RegisterExceptionMessage(ECLIOptionsProcessingFailed, RSCLIOptionsProcessingFailed);
+  RegisterExceptionMessage(EErroneousConfigSpecified, RSErroneousConfigSpecified);
   RegisterExceptionMessage(ENoValidConfigSpecified, RSNoValidConfigSpecified);
+  RegisterExceptionMessage(EUnableToGenerateConfig, RSUnableToGenerateConfig);
   RegisterExceptionMessage(EUnknownInputFileType, RSUnknownInputFileType);
 
 end.

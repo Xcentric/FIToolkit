@@ -159,7 +159,14 @@ begin
      TPath.IsApplicableFileName(ConfigOption.Value) and
      (TFile.Exists(ConfigOption.Value) or GenerateFlag)
   then
-    FConfig := TConfigManager.Create(ConfigOption.Value, GenerateFlag, True)
+    try
+      FConfig := TConfigManager.Create(ConfigOption.Value, GenerateFlag, True)
+    except
+      if GenerateFlag then
+        Exception.RaiseOuterException(EUnableToGenerateConfig.Create)
+      else
+        Exception.RaiseOuterException(EErroneousConfigSpecified.Create);
+    end
   else
     raise ENoValidConfigSpecified.Create;
 end;

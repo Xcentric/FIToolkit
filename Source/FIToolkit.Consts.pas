@@ -79,7 +79,9 @@ resourcestring
 
   RSApplicationExecutionFailed = 'Ошибка при выполнении программы.';
   RSCLIOptionsProcessingFailed = 'Ошибка при обработке параметров командной строки.';
-  RSNoValidConfigSpecified = 'Не был указан существующий или генерируемый файл конфигурации.';
+  RSErroneousConfigSpecified = 'Указанный файл конфигурации содержит ошибки.';
+  RSNoValidConfigSpecified = 'Не был указан подходящий файл конфигурации.';
+  RSUnableToGenerateConfig = 'Не удалось сгенерировать файл конфигурации.';
   RSUnknownInputFileType = 'Неизвестный тип входного файла.';
 
 implementation
