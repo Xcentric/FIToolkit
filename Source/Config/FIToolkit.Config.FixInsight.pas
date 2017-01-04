@@ -123,20 +123,6 @@ begin
   end;
 end;
 
-function TFixInsightOptions.ToString : String;
-begin
-  if FValidate then
-  begin
-    ValidateOutputFileName(FOutputFileName);
-    ValidateProjectFileName(FProjectFileName);
-    ValidateSettingsFileName(FSettingsFileName);
-  end;
-
-  Result := Trim(Format('%s %s %s %s %s %s',
-    [FormatProjectFileName, FormatCompilerDefines, FormatSettingsFileName,
-     FormatOutputFileName, FormatOutputFormat, FormatSilent]));
-end;
-
 function TFixInsightOptions.FormatProjectFileName : String;
 begin
   Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName, TCLIOptionString.CHR_QUOTE);
@@ -144,7 +130,10 @@ end;
 
 function TFixInsightOptions.FormatSettingsFileName : String;
 begin
-  Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName, TCLIOptionString.CHR_QUOTE);
+  if String(FSettingsFileName).IsEmpty then
+    Result := String.Empty
+  else
+    Result := STR_FIPARAM_SETTINGS + TPath.GetQuotedPath(FSettingsFileName, TCLIOptionString.CHR_QUOTE);
 end;
 
 function TFixInsightOptions.FormatSilent : String;
@@ -198,6 +187,20 @@ begin
 
     FSettingsFileName := Value;
   end;
+end;
+
+function TFixInsightOptions.ToString : String;
+begin
+  if FValidate then
+  begin
+    ValidateOutputFileName(FOutputFileName);
+    ValidateProjectFileName(FProjectFileName);
+    ValidateSettingsFileName(FSettingsFileName);
+  end;
+
+  Result := Trim(Format('%s %s %s %s %s %s',
+    [FormatProjectFileName, FormatCompilerDefines, FormatSettingsFileName,
+     FormatOutputFileName, FormatOutputFormat, FormatSilent]));
 end;
 
 procedure TFixInsightOptions.ValidateOutputFileName(const Value : TFileName);

@@ -120,6 +120,11 @@ begin
   ReturnValue := FFixInsightOptions.ToString;
   CheckEquals(STR_EXPECTED_RESULT, ReturnValue, 'ReturnValue = STR_EXPECTED_RESULT');
 
+  FFixInsightOptions.SettingsFileName := String.Empty;
+  ReturnValue := FFixInsightOptions.ToString;
+  CheckFalse(ReturnValue.Contains(STR_FIPARAM_SETTINGS),
+    'CheckFalse::ReturnValue.Contains(%s)', [STR_FIPARAM_SETTINGS]);
+
   { Check validation within method call }
 
   FFixInsightOptions.Validate := True;
