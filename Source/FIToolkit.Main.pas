@@ -176,7 +176,7 @@ begin
 end;
 
 procedure TFIToolkit.InitStateMachine;
-begin //FI:C101
+begin
   FStateMachine := TStateMachine.Create(asInitial);
 
   { Common states }
@@ -221,14 +221,7 @@ begin //FI:C101
 
   { Execution states }
 
-  FStateMachine
-    .AddTransition(asConfigSet, asInitial, acStart,
-      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
-      begin
-        if not Assigned(FConfig) then
-          raise ENoValidConfigSpecified.Create;
-      end
-    );
+  FStateMachine.AddTransition(asConfigSet, asInitial, acStart);
 end;
 
 class procedure TFIToolkit.PrintAbout;
@@ -297,6 +290,9 @@ begin
 
   if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
     try
+      if not Assigned(FConfig) then
+        raise ENoValidConfigSpecified.Create;
+
       FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
       TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
 
