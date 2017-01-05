@@ -199,7 +199,7 @@ end;
 
 initialization
   RegisterDefaultValue(DefaultFixInsightExe, GetFixInsightExePath);
-  RegisterDefaultValue(DefaultOutputDirectory, TPath.GetTempPath);
+  RegisterDefaultValue(DefaultOutputDirectory, TPath.GetDocumentsPath);
   RegisterDefaultValue(DefaultTempDirectory, TPath.GetTempPath);
 
 end.
