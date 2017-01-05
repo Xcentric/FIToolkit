@@ -71,8 +71,9 @@ resourcestring
 
   RSConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
+  RSHelpSuggestion = 'Для получения помощи используйте "%s".';
   RSNoVersionInfoAvailable = '<информация о версии недоступна>';
-  RSTerminatingWithExitCode = 'Приложение завершается с кодом %d';
+  RSTerminatingWithExitCode = 'Приложение завершается с кодом %d.';
   RSTotalDuration = 'Общая длительность работы составила %s';
 
   { Exceptions }

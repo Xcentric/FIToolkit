@@ -48,6 +48,7 @@ type
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
+      class procedure PrintHelpSuggestion(const FullExePath : TFileName);
 
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
@@ -99,6 +100,14 @@ function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TS
 var
   App : TFIToolkit;
 begin
+  if Length(CmdLineOptions) = 0 then
+  begin
+    TFIToolkit.PrintHelpSuggestion(FullExePath);
+    Result := INT_EC_ERROR_OCCURED;
+    _OnTerminate(Result, _CanExit(nil, nil));
+    Exit;
+  end;
+
   TFIToolkit.PrintAbout;
 
   App := TFIToolkit.Create(FullExePath, CmdLineOptions);
@@ -253,6 +262,12 @@ begin
   finally
     RS.Free;
   end;
+end;
+
+class procedure TFIToolkit.PrintHelpSuggestion(const FullExePath : TFileName);
+begin
+  WriteLn(Format(RSHelpSuggestion,
+    [TPath.GetFileName(FullExePath) + ' ' + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
 end;
 
 procedure TFIToolkit.PrintTotalDuration;
