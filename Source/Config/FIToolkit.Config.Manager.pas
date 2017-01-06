@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Rtti,
-  FIToolkit.Config.Data, FIToolkit.Config.Storage, FIToolkit.Commons.Types;
+  FIToolkit.Config.Data, FIToolkit.Config.Storage, FIToolkit.Config.Types, FIToolkit.Commons.Types;
 
 type
 
@@ -14,17 +14,18 @@ type
       FConfigFile : TConfigFile;
     private
       function  FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
+      function  FindConfigAttribute(Prop : TRttiProperty; out Value : TConfigAttribute) : Boolean;
       function  GetConfigFileName : TFileName;
       function  GetPropDefaultValue(Prop : TRttiProperty) : TValue;
       function  PropHasDefaultValue(Prop : TRttiProperty) : Boolean;
       procedure ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
-      procedure SetObjectPropsDefaults(Instance : TObject);
+      procedure SetObjectPropsDefaults(Instance : TObject; const Filter : TObjectPropertyFilter);
       procedure WriteObjectToConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
     protected
       procedure FillDataFromFile;
       procedure FillFileFromData;
       procedure GenerateDefaultConfig;
-      procedure SetDefaults;
+      procedure SetDefaults(NonSerializableOnly : Boolean);
     public
       constructor Create(const ConfigFileName : TFileName; GenerateConfig, Validate : Boolean);
       destructor Destroy; override;
@@ -37,7 +38,7 @@ implementation
 
 uses
   System.TypInfo,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Types, FIToolkit.Config.Consts,
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Consts,
   FIToolkit.Commons.Utils;
 
 { TConfigManager }
@@ -56,9 +57,12 @@ begin
     GenerateDefaultConfig
   else
   if FConfigFile.HasFile then
-    FillDataFromFile
+  begin
+    SetDefaults(True);
+    FillDataFromFile;
+  end
   else
-    SetDefaults;
+    SetDefaults(False);
 end;
 
 destructor TConfigManager.Destroy;
@@ -93,25 +97,33 @@ end;
 
 function TConfigManager.FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
 var
+  CfgAttr : TConfigAttribute;
+begin
+  Result := False;
+
+  if FindConfigAttribute(Prop, CfgAttr) then
+    if CfgAttr.Serializable then
+      Result := ((Instance is TConfigData) and (CfgAttr is FIToolkitParam)) or
+                ((Instance is TFixInsightOptions) and (CfgAttr is FixInsightParam));
+end;
+
+function TConfigManager.FindConfigAttribute(Prop : TRttiProperty; out Value : TConfigAttribute) : Boolean;
+var
   Attr : TCustomAttribute;
 begin
   Result := False;
 
   for Attr in Prop.GetAttributes do
     if Attr is TConfigAttribute then
-      if TConfigAttribute(Attr).Serializable then
-      begin
-        Result := ((Instance is TConfigData) and (Attr is FIToolkitParam)) or
-                  ((Instance is TFixInsightOptions) and (Attr is FixInsightParam));
-
-        if Result then
-          Break;
-      end;
+    begin
+      Value := TConfigAttribute(Attr);
+      Exit(True);
+    end;
 end;
 
 procedure TConfigManager.GenerateDefaultConfig;
 begin
-  SetDefaults;
+  SetDefaults(False);
   FillFileFromData;
 end;
 
@@ -210,9 +222,10 @@ begin //FI:C101
   end;
 end;
 
-procedure TConfigManager.SetDefaults;
+procedure TConfigManager.SetDefaults(NonSerializableOnly : Boolean);
 var
   bValidateCD, bValidateFI : Boolean;
+  Filter : TObjectPropertyFilter;
 begin
   bValidateCD := FConfigData.Validate;
   bValidateFI := FConfigData.FixInsightOptions.Validate;
@@ -220,14 +233,30 @@ begin
     FConfigData.Validate := False;
     FConfigData.FixInsightOptions.Validate := False;
 
-    SetObjectPropsDefaults(FConfigData);
+    Filter := Iff.Get<TObjectPropertyFilter>(NonSerializableOnly,
+      function (Instance : TObject; Prop : TRttiProperty) : Boolean
+      var
+        CfgAttr : TConfigAttribute;
+      begin
+        Result := PropHasDefaultValue(Prop);
+
+        if Result and FindConfigAttribute(Prop, CfgAttr) then
+          Result := not CfgAttr.Serializable;
+      end,
+      function (Instance : TObject; Prop : TRttiProperty) : Boolean
+      begin
+        Result := PropHasDefaultValue(Prop);
+      end
+    );
+
+    SetObjectPropsDefaults(FConfigData, Filter);
   finally
     FConfigData.Validate := bValidateCD;
     FConfigData.FixInsightOptions.Validate := bValidateFI;
   end;
 end;
 
-procedure TConfigManager.SetObjectPropsDefaults(Instance : TObject);
+procedure TConfigManager.SetObjectPropsDefaults(Instance : TObject; const Filter : TObjectPropertyFilter);
 var
   Ctx : TRttiContext;
   InstanceType : TRttiInstanceType;
@@ -239,9 +268,9 @@ begin
 
     for Prop in InstanceType.GetProperties do
       if Prop.PropertyType.IsInstance then
-        SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject)
+        SetObjectPropsDefaults(Prop.GetValue(Instance).AsObject, Filter)
       else
-      if Prop.IsWritable and PropHasDefaultValue(Prop) then
+      if Prop.IsWritable and Filter(Instance, Prop) then
         Prop.SetValue(Instance, GetPropDefaultValue(Prop));
   finally
     Ctx.Free;
