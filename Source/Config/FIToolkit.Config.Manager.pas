@@ -25,7 +25,7 @@ type
       procedure FillDataFromFile;
       procedure FillFileFromData;
       procedure GenerateDefaultConfig;
-      procedure SetDefaults(NonSerializableOnly : Boolean);
+      procedure SetDefaults(TargetProps : TConfigPropCategory);
     public
       constructor Create(const ConfigFileName : TFileName; GenerateConfig, Validate : Boolean);
       destructor Destroy; override;
@@ -58,11 +58,11 @@ begin
   else
   if FConfigFile.HasFile then
   begin
-    SetDefaults(True);
+    SetDefaults(cpcNonSerializable);
     FillDataFromFile;
   end
   else
-    SetDefaults(False);
+    SetDefaults(cpcAny);
 end;
 
 destructor TConfigManager.Destroy;
@@ -123,7 +123,7 @@ end;
 
 procedure TConfigManager.GenerateDefaultConfig;
 begin
-  SetDefaults(False);
+  SetDefaults(cpcSerializable);
   FillFileFromData;
 end;
 
@@ -222,7 +222,7 @@ begin //FI:C101
   end;
 end;
 
-procedure TConfigManager.SetDefaults(NonSerializableOnly : Boolean);
+procedure TConfigManager.SetDefaults(TargetProps : TConfigPropCategory);
 var
   bValidateCD, bValidateFI : Boolean;
   Filter : TObjectPropertyFilter;
@@ -233,21 +233,36 @@ begin
     FConfigData.Validate := False;
     FConfigData.FixInsightOptions.Validate := False;
 
-    Filter := Iff.Get<TObjectPropertyFilter>(NonSerializableOnly,
-      function (Instance : TObject; Prop : TRttiProperty) : Boolean
-      var
-        CfgAttr : TConfigAttribute;
-      begin
-        Result := PropHasDefaultValue(Prop);
+    case TargetProps of
+      cpcAny:
+        Filter :=
+          function (Instance : TObject; Prop : TRttiProperty) : Boolean
+          begin
+            Result := PropHasDefaultValue(Prop);
+          end;
+      cpcSerializable:
+        Filter :=
+          function (Instance : TObject; Prop : TRttiProperty) : Boolean
+          var
+            CfgAttr : TConfigAttribute;
+          begin
+            Result := PropHasDefaultValue(Prop);
 
-        if Result and FindConfigAttribute(Prop, CfgAttr) then
-          Result := not CfgAttr.Serializable;
-      end,
-      function (Instance : TObject; Prop : TRttiProperty) : Boolean
-      begin
-        Result := PropHasDefaultValue(Prop);
-      end
-    );
+            if Result and FindConfigAttribute(Prop, CfgAttr) then
+              Result := CfgAttr.Serializable;
+          end;
+      cpcNonSerializable:
+        Filter :=
+          function (Instance : TObject; Prop : TRttiProperty) : Boolean
+          var
+            CfgAttr : TConfigAttribute;
+          begin
+            Result := PropHasDefaultValue(Prop);
+
+            if Result and FindConfigAttribute(Prop, CfgAttr) then
+              Result := not CfgAttr.Serializable;
+          end;
+    end;
 
     SetObjectPropsDefaults(FConfigData, Filter);
   finally

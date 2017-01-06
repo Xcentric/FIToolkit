@@ -4,6 +4,8 @@ interface
 
 type
 
+  TConfigPropCategory = (cpcAny, cpcSerializable, cpcNonSerializable);
+
   TDefaultValueKind = (dvkUndefined, dvkData, dvkCalculated);
 
   TFixInsightOutputFormat = (fiofPlainText, fiofXML);
