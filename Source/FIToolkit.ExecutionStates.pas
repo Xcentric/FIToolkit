@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  System.IOUtils,
+  System.IOUtils, System.RegularExpressions,
   FIToolkit.Exceptions, FIToolkit.Utils,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
@@ -145,7 +145,32 @@ begin //FI:C101
         end;
       end
     )
-    .AddTransition(asProjectsExtracted, asFixInsightRan, acRunFixInsight,
+    .AddTransition(asProjectsExtracted, asProjectsExcluded, acExcludeProjects,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        LProjects : TList<TFileName>;
+        sPattern, sProject : String;
+      begin
+        LProjects := TList<TFileName>.Create;
+        try
+          with StateHolder do
+          begin
+            LProjects.AddRange(FProjects);
+
+            for sPattern in FConfigData.ExcludeProjectPatterns do
+              for sProject in FProjects do
+                if TRegEx.IsMatch(sProject, sPattern, [roIgnoreCase]) then
+                  LProjects.Remove(sProject);
+
+            if LProjects.Count < Length(FProjects) then
+              FProjects := LProjects.ToArray;
+          end;
+        finally
+          LProjects.Free;
+        end;
+      end
+    )
+    .AddTransition(asProjectsExcluded, asFixInsightRan, acRunFixInsight,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         with StateHolder do

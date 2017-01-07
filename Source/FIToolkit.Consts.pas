@@ -26,7 +26,7 @@ const
     STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
     STR_CLI_OPTION_NO_EXIT,
     //
-    String.Empty, String.Empty, String.Empty, String.Empty,
+    String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
     //
     String.Empty
   );
@@ -51,7 +51,7 @@ const
   { Exit codes }
 
   INT_EC_NO_ERROR                = 0;
-  INT_EC_ERROR_OCCURED           = 1;
+  INT_EC_ERROR_OCCURRED          = 1;
   INT_EC_ANALYSIS_MESSAGES_FOUND = 2;
 
   { Resources }

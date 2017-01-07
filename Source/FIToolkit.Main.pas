@@ -85,7 +85,7 @@ end;
 procedure _OnException(E : Exception; out AnExitCode : Integer);
 begin
   WriteLn(E.ToString(True), sLineBreak);
-  AnExitCode := INT_EC_ERROR_OCCURED;
+  AnExitCode := INT_EC_ERROR_OCCURRED;
 end;
 
 procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
@@ -103,7 +103,7 @@ begin
   if Length(CmdLineOptions) = 0 then
   begin
     TFIToolkit.PrintHelpSuggestion(FullExePath);
-    Result := INT_EC_ERROR_OCCURED;
+    Result := INT_EC_ERROR_OCCURRED;
     _OnTerminate(Result, _CanExit(nil, nil));
     Exit;
   end;
@@ -321,6 +321,7 @@ begin
       FStateMachine
         .Execute(acStart)
         .Execute(acExtractProjects)
+        .Execute(acExcludeProjects)
         .Execute(acRunFixInsight)
         .Execute(acParseReports)
         .Execute(acBuildReport)
