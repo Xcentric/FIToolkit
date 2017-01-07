@@ -34,6 +34,7 @@ const
   DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
   DEF_FIO_STR_SETTINGS_FILENAME = 'FixInsightConfig.ficfg';
 
+  DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS : TStringDynArray = ['Project[0-9]+\.dpr', '\\JCL\\', '\\JVCL\\'];
   DEF_CD_BOOL_USE_BAD_EXIT_CODE = False;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
 

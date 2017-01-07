@@ -3,20 +3,22 @@
 interface
 
 uses
-  System.SysUtils,
+  System.SysUtils, System.Types,
   FIToolkit.Commons.Types, FIToolkit.Config.FixInsight, FIToolkit.Config.Types, FIToolkit.Config.TypedDefaults,
   FIToolkit.Config.Consts;
 
 type
 
-  DefaultFixInsightExe = class (TDefaultFileNameValue); //FI:C104
-  DefaultOutputDirectory = class (TDefaultStringValue); //FI:C104
-  DefaultOutputFileName = class (TDefaultStringValue);  //FI:C104
-  DefaultTempDirectory = class (TDefaultStringValue);   //FI:C104
-  DefaultUseBadExitCode = class (TDefaultBooleanValue); //FI:C104
+  DefaultExcludeProjectPatterns = class (TDefaultStringArrayValue); //FI:C104
+  DefaultFixInsightExe = class (TDefaultFileNameValue);             //FI:C104
+  DefaultOutputDirectory = class (TDefaultStringValue);             //FI:C104
+  DefaultOutputFileName = class (TDefaultStringValue);              //FI:C104
+  DefaultTempDirectory = class (TDefaultStringValue);               //FI:C104
+  DefaultUseBadExitCode = class (TDefaultBooleanValue);             //FI:C104
 
   TConfigData = class sealed
     strict private
+      FExcludeProjectPatterns : TStringDynArray;
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
       FOutputDirectory : TAssignableString;
@@ -47,6 +49,8 @@ type
       constructor Create;
       destructor Destroy; override;
 
+      [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeProjectPatterns]
+      property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write FExcludeProjectPatterns;
       [FIToolkitParam, DefaultFixInsightExe]
       property FixInsightExe : TFileName read GetFixInsightExe write SetFixInsightExe;
       [FIToolkitParam]
@@ -198,6 +202,7 @@ begin
 end;
 
 initialization
+  RegisterDefaultValue(DefaultExcludeProjectPatterns, TValue.From<TStringDynArray>(DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS));
   RegisterDefaultValue(DefaultFixInsightExe, GetFixInsightExePath);
   RegisterDefaultValue(DefaultOutputDirectory, TPath.GetDocumentsPath);
   RegisterDefaultValue(DefaultTempDirectory, TPath.GetTempPath);
