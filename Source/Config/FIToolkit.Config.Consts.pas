@@ -10,7 +10,8 @@ const
 
   { Common consts }
 
-  CHR_CONFIG_FILE_ARRAY_DELIM = Char(',');
+  STR_CFG_VALUE_ARR_DELIM_DEFAULT = ',';
+  STR_CFG_VALUE_ARR_DELIM_REGEX   = '<|>';
 
   { FixInsight command line parameters. Do not localize! }
 

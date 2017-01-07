@@ -45,7 +45,7 @@ type
       procedure Assign(Source : TFixInsightOptions; CheckValid : Boolean);
       function  ToString : String; override; final;
 
-      [FixInsightParam, DefaultCompilerDefines]
+      [FixInsightParam(STR_CFG_VALUE_ARR_DELIM_DEFAULT), DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;
       [FixInsightParam(False), DefaultOutputFileName(DEF_FIO_STR_OUTPUT_FILENAME)]
       property OutputFileName : TFileName read GetOutputFileName write SetOutputFileName;

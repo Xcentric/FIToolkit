@@ -16,6 +16,7 @@ type
       function  FilterConfigProp(Instance : TObject; Prop : TRttiProperty) : Boolean;
       function  FindConfigAttribute(Prop : TRttiProperty; out Value : TConfigAttribute) : Boolean;
       function  GetConfigFileName : TFileName;
+      function  GetConfigPropArrayDelimiter(Prop : TRttiProperty) : String;
       function  GetPropDefaultValue(Prop : TRttiProperty) : TValue;
       function  PropHasDefaultValue(Prop : TRttiProperty) : Boolean;
       procedure ReadObjectFromConfig(Instance : TObject; const Filter : TObjectPropertyFilter);
@@ -132,6 +133,19 @@ begin
   Result := FConfigFile.FileName;
 end;
 
+function TConfigManager.GetConfigPropArrayDelimiter(Prop : TRttiProperty) : String;
+var
+  CfgAttr : TConfigAttribute;
+begin
+  Result := String.Empty;
+
+  if FindConfigAttribute(Prop, CfgAttr) then
+    Result := CfgAttr.ArrayDelimiter;
+
+  Assert(not (Prop.PropertyType.IsArray and Result.IsEmpty),
+    Format('Property %s has an array type but no array delimiter.', [Prop.Name]));
+end;
+
 function TConfigManager.GetPropDefaultValue(Prop : TRttiProperty) : TValue;
 var
   Attr : TCustomAttribute;
@@ -201,7 +215,7 @@ begin //FI:C101
           else
           if Prop.PropertyType.Handle.TypeData.DynArrElType^.IsString then
           begin
-            arrS := sArray.Split([CHR_CONFIG_FILE_ARRAY_DELIM], ExcludeEmpty);
+            arrS := sArray.Split([GetConfigPropArrayDelimiter(Prop)], ExcludeEmpty);
 
             SetLength(arrV, Length(arrS));
             for i := 0 to High(arrV) do
@@ -297,7 +311,7 @@ var
   Ctx : TRttiContext;
   InstanceType : TRttiInstanceType;
   Prop : TRttiProperty;
-  S : String;
+  S, sArrDelim : String;
   V : TValue;
   i : Integer;
 begin
@@ -321,12 +335,13 @@ begin
         begin
           S := String.Empty;
           V := Prop.GetValue(Instance);
+          sArrDelim := GetConfigPropArrayDelimiter(Prop);
 
           for i := 0 to V.GetArrayLength - 1 do
             if S.IsEmpty then
               S := V.GetArrayElement(i).ToString
             else
-              S := S + CHR_CONFIG_FILE_ARRAY_DELIM + V.GetArrayElement(i).ToString;
+              S := S + sArrDelim + V.GetArrayElement(i).ToString;
 
           FConfigFile.Config.WriteString(Instance.QualifiedClassName, Prop.Name, S);
         end
