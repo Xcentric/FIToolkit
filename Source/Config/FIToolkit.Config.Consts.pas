@@ -50,6 +50,7 @@ resourcestring
 
   RSCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден.';
   RSCDInputFileNotFound = 'Входной файл не найден.';
+  RSCDInvalidExcludeProjectPattern = 'Ошибка в регулярном выражении для исключения проектов: %s';
   RSCDInvalidOutputFileName = 'Неверное имя выходного файла.';
   RSCDOutputDirectoryNotFound = 'Выходная директория не найдена.';
   RSCDTempDirectoryNotFound = 'Директория для временных файлов не найдена.';

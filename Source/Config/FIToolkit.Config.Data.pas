@@ -29,6 +29,7 @@ type
 
       FFixInsightOptions : TFixInsightOptions;
     private
+      procedure ValidateExcludeProjectPatterns(const Value : TStringDynArray);
       procedure ValidateFixInsightExe(const Value : TFileName);
       procedure ValidateInputFileName(const Value : TFileName);
       procedure ValidateOutputDirectory(const Value : String);
@@ -40,6 +41,7 @@ type
       function  GetOutputDirectory : String;
       function  GetOutputFileName : String;
       function  GetTempDirectory : String;
+      procedure SetExcludeProjectPatterns(const Value : TStringDynArray);
       procedure SetFixInsightExe(const Value : TFileName);
       procedure SetInputFileName(const Value : TFileName);
       procedure SetOutputDirectory(const Value : String);
@@ -50,7 +52,7 @@ type
       destructor Destroy; override;
 
       [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeProjectPatterns]
-      property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write FExcludeProjectPatterns;
+      property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write SetExcludeProjectPatterns;
       [FIToolkitParam, DefaultFixInsightExe]
       property FixInsightExe : TFileName read GetFixInsightExe write SetFixInsightExe;
       [FIToolkitParam]
@@ -72,7 +74,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.Rtti,
+  System.IOUtils, System.Rtti, System.RegularExpressions,
   FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils;
 
 { TConfigData }
@@ -114,6 +116,14 @@ end;
 function TConfigData.GetTempDirectory : String;
 begin
   Result := TPath.IncludeTrailingPathDelimiter(FTempDirectory);
+end;
+
+procedure TConfigData.SetExcludeProjectPatterns(const Value : TStringDynArray);
+begin
+  if FValidate then
+    ValidateExcludeProjectPatterns(Value);
+
+  FExcludeProjectPatterns := Value;
 end;
 
 procedure TConfigData.SetFixInsightExe(const Value : TFileName);
@@ -169,6 +179,20 @@ begin
 
     FTempDirectory := Value;
   end;
+end;
+
+procedure TConfigData.ValidateExcludeProjectPatterns(const Value : TStringDynArray);
+var
+  S : String;
+begin
+  for S in Value do
+    try
+      TRegEx.Create(S, [roNotEmpty, roCompiled]);
+    except
+      Exception.RaiseOuterException(ECDInvalidExcludeProjectPattern.CreateFmt([S]));
+    end;
+
+  // TODO: implement {TEST::TConfigData.ValidateExcludeProjectPatterns}
 end;
 
 procedure TConfigData.ValidateFixInsightExe(const Value : TFileName);
