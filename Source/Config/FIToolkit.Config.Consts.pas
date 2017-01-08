@@ -35,6 +35,7 @@ const
   DEF_FIO_STR_SETTINGS_FILENAME = String.Empty;
 
   DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS : TStringDynArray = ['Project[0-9]+\.dpr', '\\JCL\\', '\\JVCL\\'];
+  DEF_CD_BOOL_MAKE_ARCHIVE = False;
   DEF_CD_BOOL_USE_BAD_EXIT_CODE = False;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
 

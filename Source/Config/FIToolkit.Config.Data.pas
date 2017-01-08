@@ -11,6 +11,7 @@ type
 
   DefaultExcludeProjectPatterns = class (TDefaultStringArrayValue); //FI:C104
   DefaultFixInsightExe = class (TDefaultFileNameValue);             //FI:C104
+  DefaultMakeArchive = class (TDefaultBooleanValue);                //FI:C104
   DefaultOutputDirectory = class (TDefaultStringValue);             //FI:C104
   DefaultOutputFileName = class (TDefaultStringValue);              //FI:C104
   DefaultTempDirectory = class (TDefaultStringValue);               //FI:C104
@@ -21,6 +22,7 @@ type
       FExcludeProjectPatterns : TStringDynArray;
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
+      FMakeArchive : Boolean;
       FOutputDirectory : TAssignableString;
       FOutputFileName : TAssignableString;
       FTempDirectory : TAssignableString;
@@ -59,6 +61,8 @@ type
       property FixInsightOptions : TFixInsightOptions read FFixInsightOptions;
       [FIToolkitParam]
       property InputFileName : TFileName read GetInputFileName write SetInputFileName;
+      [FIToolkitParam, DefaultMakeArchive(DEF_CD_BOOL_MAKE_ARCHIVE)]
+      property MakeArchive : Boolean read FMakeArchive write FMakeArchive;
       [FIToolkitParam, DefaultOutputDirectory]
       property OutputDirectory : String read GetOutputDirectory write SetOutputDirectory;
       [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
