@@ -325,6 +325,7 @@ begin
         .Execute(acRunFixInsight)
         .Execute(acParseReports)
         .Execute(acBuildReport)
+        .Execute(acMakeArchive)
         .Execute(acTerminate);
 
       UpdateExitCode(Result);

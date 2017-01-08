@@ -26,7 +26,7 @@ const
     STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
     STR_CLI_OPTION_NO_EXIT,
     //
-    String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
+    String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
     //
     String.Empty
   );
@@ -47,6 +47,8 @@ const
 
   SET_FINAL_APPSTATES : set of TApplicationState =
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
+
+  STR_ARCHIVE_FILE_EXT = '.zip';
 
   { Exit codes }
 

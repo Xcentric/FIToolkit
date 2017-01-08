@@ -51,8 +51,8 @@ type
 implementation
 
 uses
-  System.IOUtils, System.RegularExpressions,
-  FIToolkit.Exceptions, FIToolkit.Utils,
+  System.IOUtils, System.RegularExpressions, System.Zip,
+  FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Consts,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
 
@@ -225,10 +225,39 @@ begin //FI:C101
 
           FReportBuilder.AddFooter(Now);
           FReportBuilder.EndReport;
+          FReportOutput.Close;
         end;
       end
     )
-    .AddTransition(asReportBuilt, asFinal, acTerminate,
+    .AddTransition(asReportBuilt, asArchiveMade, acMakeArchive,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        sReportFileName, sZipFileName : TFileName;
+        ZF : TZipFile;
+      begin
+        with StateHolder do
+          if FConfigData.MakeArchive then
+          begin
+            sReportFileName := FConfigData.OutputDirectory + FConfigData.OutputFileName;
+            sZipFileName := sReportFileName + STR_ARCHIVE_FILE_EXT;
+
+            if TFile.Exists(sZipFileName) then
+              TFile.Delete(sZipFileName);
+
+            ZF := TZipFile.Create;
+            try
+              ZF.Open(sZipFileName, zmWrite);
+              ZF.Add(sReportFileName);
+              ZF.Close;
+            finally
+              ZF.Free;
+            end;
+
+            DeleteFile(sReportFileName);
+          end;
+      end
+    )
+    .AddTransition(asArchiveMade, asFinal, acTerminate,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         R : TPair<TFileName, TFileName>;
