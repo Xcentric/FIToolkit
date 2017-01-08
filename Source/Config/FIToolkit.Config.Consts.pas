@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Types,
+  System.SysUtils, System.Types,
   FIToolkit.Config.Types;
 
 const
@@ -32,7 +32,7 @@ const
   DEF_FIO_BOOL_SILENT = False;
   DEF_FIO_ENUM_OUTPUT_FORMAT = TFixInsightOutputFormat(fiofXML);
   DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
-  DEF_FIO_STR_SETTINGS_FILENAME = 'FixInsightConfig.ficfg';
+  DEF_FIO_STR_SETTINGS_FILENAME = String.Empty;
 
   DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS : TStringDynArray = ['Project[0-9]+\.dpr', '\\JCL\\', '\\JVCL\\'];
   DEF_CD_BOOL_USE_BAD_EXIT_CODE = False;

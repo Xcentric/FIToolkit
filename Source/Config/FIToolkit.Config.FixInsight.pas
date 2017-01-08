@@ -53,7 +53,7 @@ type
       property OutputFormat : TFixInsightOutputFormat read FOutputFormat write FOutputFormat;
       [FixInsightParam(False)]
       property ProjectFileName : TFileName read GetProjectFileName write SetProjectFileName;
-      [FixInsightParam, DefaultSettingsFileName]
+      [FixInsightParam, DefaultSettingsFileName(DEF_FIO_STR_SETTINGS_FILENAME)]
       property SettingsFileName : TFileName read GetSettingsFileName write SetSettingsFileName;
       [FixInsightParam(False), DefaultSilent(DEF_FIO_BOOL_SILENT)]
       property Silent : Boolean read FSilent write FSilent;
@@ -229,6 +229,5 @@ end;
 
 initialization
   RegisterDefaultValue(DefaultCompilerDefines, TValue.From<TStringDynArray>(DEF_FIO_ARR_COMPILER_DEFINES));
-  RegisterDefaultValue(DefaultSettingsFileName, TPath.GetExePath + DEF_FIO_STR_SETTINGS_FILENAME);
 
 end.
