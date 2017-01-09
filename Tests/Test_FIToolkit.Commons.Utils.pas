@@ -389,12 +389,12 @@ const
 var
   ReturnValue, sExpected : String;
 begin
-  ReturnValue := TPath.GetFullPath(STR_ENV_VAR, True);
+  ReturnValue := TPath.GetFullPath(STR_ENV_VAR, True, True);
   CheckTrue(TDirectory.Exists(ReturnValue), 'CheckTrue::TDirectory.Exists(%s)', [ReturnValue]);
   CheckNotEquals(STR_ENV_VAR, ReturnValue, 'ReturnValue <> STR_ENV_VAR');
 
   sExpected := ParamStr(0);
-  ReturnValue := TPath.GetFullPath(sExpected, False);
+  ReturnValue := TPath.GetFullPath(sExpected, False, True);
   CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
 end;
 

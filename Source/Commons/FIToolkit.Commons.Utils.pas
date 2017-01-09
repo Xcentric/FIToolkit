@@ -33,10 +33,10 @@ type
 
   TPathHelper = record helper for TPath
     public
-      class function ExpandIfNotExists(const Path : String) : String; static;
+      class function ExpandIfNotExists(const Path : String; Check : Boolean = False) : String; static;
       class function GetDirectoryName(const FileName : TFileName; TrailingPathDelim : Boolean) : String; overload; static;
       class function GetExePath : String; static;
-      class function GetFullPath(const Path : String; ExpandVars : Boolean) : String; overload; static;
+      class function GetFullPath(Path : String; ExpandVars, Check : Boolean) : String; overload; static;
       class function GetQuotedPath(const Path : String; QuoteChar : Char) : String; static;
       class function IncludeTrailingPathDelimiter(const Path : String) : String; static;
       class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
@@ -269,12 +269,12 @@ end;
 
 { TPathHelper }
 
-class function TPathHelper.ExpandIfNotExists(const Path : String) : String;
+class function TPathHelper.ExpandIfNotExists(const Path : String; Check : Boolean) : String;
 begin
   if TFile.Exists(Path) or TDirectory.Exists(Path) then
     Result := Path
   else
-    Result := GetFullPath(Path, True);
+    Result := GetFullPath(Path, True, Check);
 end;
 
 class function TPathHelper.GetDirectoryName(const FileName : TFileName; TrailingPathDelim : Boolean) : String;
@@ -295,12 +295,15 @@ begin
   Result := GetDirectoryName(ParamStr(0), True);
 end;
 
-class function TPathHelper.GetFullPath(const Path : String; ExpandVars : Boolean) : String;
+class function TPathHelper.GetFullPath(Path : String; ExpandVars, Check : Boolean) : String;
 begin
   if ExpandVars then
-    Result := GetFullPath(ExpandEnvVars(Path))
+    Path := ExpandEnvVars(Path);
+
+  if Check then
+    Result := GetFullPath(Path)
   else
-    Result := GetFullPath(Path);
+    Result := ExpandFileName(Path);
 end;
 
 class function TPathHelper.GetQuotedPath(const Path : String; QuoteChar : Char) : String;
