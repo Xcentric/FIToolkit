@@ -51,6 +51,17 @@ procedure TestTConfigData.TestEmptyData;
 begin
   FConfigData.Validate := True;
 
+  { Check validation - empty exclude project regex }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.ExcludeProjectPatterns := [String.Empty];
+    end,
+    ECDInvalidExcludeProjectPattern,
+    'CheckException::ECDInvalidExcludeProjectPattern'
+  );
+
   { Check validation - empty FixInsight executable path }
 
   CheckException(
@@ -108,8 +119,22 @@ begin
 end;
 
 procedure TestTConfigData.TestInvalidData;
+const
+  REGEX_VALID = '^[0-9]+';
+  REGEX_INVALID = '[0-|9)';
 begin
   FConfigData.Validate := True;
+
+  { Check validation - invalid exclude project regex }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.ExcludeProjectPatterns := [REGEX_VALID, REGEX_INVALID];
+    end,
+    ECDInvalidExcludeProjectPattern,
+    'CheckException::ECDInvalidExcludeProjectPattern'
+  );
 
   { Check validation - invalid FixInsight executable path }
 
@@ -168,6 +193,9 @@ begin
 end;
 
 procedure TestTConfigData.TestValidData;
+const
+  REGEX_VALID1 = '^interface$';
+  REGEX_VALID2 = '[0-9]+[A-F]{2}';
 begin
   CheckException(
     procedure
@@ -175,6 +203,7 @@ begin
       with FConfigData do
       begin
         Validate := True;
+        ExcludeProjectPatterns := [REGEX_VALID1, REGEX_VALID2];
         FixInsightExe := ParamStr(0);
         InputFileName := ParamStr(0);
         OutputDirectory := ExtractFileDir(ParamStr(0));

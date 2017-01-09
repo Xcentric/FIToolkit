@@ -195,8 +195,6 @@ begin
     except
       Exception.RaiseOuterException(ECDInvalidExcludeProjectPattern.CreateFmt([S]));
     end;
-
-  // TODO: implement {TEST::TConfigData.ValidateExcludeProjectPatterns}
 end;
 
 procedure TConfigData.ValidateFixInsightExe(const Value : TFileName);
