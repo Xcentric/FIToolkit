@@ -20,6 +20,7 @@ type
 
   TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
+      procedure TestExpandEnvVars;
       procedure TestGetFixInsightExePath;
       procedure TestGetModuleVersion;
       procedure TestIff;
@@ -45,6 +46,7 @@ type
     published
       procedure TestGetDirectoryName;
       procedure TestGetExePath;
+      procedure TestGetFullPath;
       procedure TestGetQuotedPath;
       procedure TestIsApplicableFileName;
       procedure TestIncludeTrailingPathDelimiter;
@@ -114,6 +116,21 @@ uses
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
+
+procedure TestFIToolkitCommonsUtils.TestExpandEnvVars;
+const
+  STR_ENV_VAR = '%ProgramFiles%';
+var
+  ReturnValue, sExpected : String;
+begin
+  ReturnValue := ExpandEnvVars(STR_ENV_VAR);
+  CheckTrue(TDirectory.Exists(ReturnValue), 'CheckTrue::TDirectory.Exists(%s)', [ReturnValue]);
+  CheckNotEquals(STR_ENV_VAR, ReturnValue, 'ReturnValue <> STR_ENV_VAR');
+
+  sExpected := TPath.GetGUIDFileName.QuotedString('%');
+  ReturnValue := ExpandEnvVars(sExpected);
+  CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
+end;
 
 procedure TestFIToolkitCommonsUtils.TestGetFixInsightExePath;
 var
@@ -353,6 +370,21 @@ begin
   CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
   CheckTrue(ReturnValue.EndsWith(TPath.DirectorySeparatorChar), 'CheckTrue::EndsWith(TPath.DirectorySeparatorChar)');
   CheckTrue(TDirectory.Exists(ReturnValue), 'CheckTrue::TDirectory.Exists(ReturnValue)');
+end;
+
+procedure TestTPathHelper.TestGetFullPath;
+const
+  STR_ENV_VAR = '%ProgramFiles%';
+var
+  ReturnValue, sExpected : String;
+begin
+  ReturnValue := TPath.GetFullPath(STR_ENV_VAR, True);
+  CheckTrue(TDirectory.Exists(ReturnValue), 'CheckTrue::TDirectory.Exists(%s)', [ReturnValue]);
+  CheckNotEquals(STR_ENV_VAR, ReturnValue, 'ReturnValue <> STR_ENV_VAR');
+
+  sExpected := ParamStr(0);
+  ReturnValue := TPath.GetFullPath(sExpected, False);
+  CheckEquals(sExpected, ReturnValue, 'ReturnValue = sExpected');
 end;
 
 procedure TestTPathHelper.TestGetQuotedPath;

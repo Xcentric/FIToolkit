@@ -35,6 +35,7 @@ type
     public
       class function GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String; overload; static;
       class function GetExePath : String; static;
+      class function GetFullPath(const Path : String; ExpandVars : Boolean) : String; overload; static;
       class function GetQuotedPath(const Path : String; QuoteChar : Char) : String; static;
       class function IncludeTrailingPathDelimiter(const Path : String) : String; static;
       class function IsApplicableFileName(const FileName : TFileName) : Boolean; static;
@@ -61,6 +62,7 @@ type
   { Utils }
 
   function  AbortException : EAbort;
+  function  ExpandEnvVars(const S : String) : String;
   function  GetFixInsightExePath : TFileName;
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
@@ -79,6 +81,23 @@ uses
 function AbortException : EAbort;
 begin
   Result := EAbort.CreateRes(@SOperationAborted);
+end;
+
+function ExpandEnvVars(const S : String) : String;
+var
+  iBufferSize : Cardinal;
+begin
+  iBufferSize := ExpandEnvironmentStrings(PChar(S), nil, 0);
+
+  if iBufferSize = 0 then
+    Result := S
+  else
+  begin
+    SetLength(Result, iBufferSize - 1);
+
+    if ExpandEnvironmentStrings(PChar(S), PChar(Result), iBufferSize) = 0 then
+      RaiseLastOSError;
+  end;
 end;
 
 function GetFixInsightExePath : TFileName;
@@ -265,6 +284,14 @@ end;
 class function TPathHelper.GetExePath : String;
 begin
   Result := GetDirectoryName(ParamStr(0), True);
+end;
+
+class function TPathHelper.GetFullPath(const Path : String; ExpandVars : Boolean) : String;
+begin
+  if ExpandVars then
+    Result := GetFullPath(ExpandEnvVars(Path))
+  else
+    Result := GetFullPath(Path);
 end;
 
 class function TPathHelper.GetQuotedPath(const Path : String; QuoteChar : Char) : String;
