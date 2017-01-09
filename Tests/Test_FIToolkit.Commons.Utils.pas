@@ -44,6 +44,7 @@ type
 
   TestTPathHelper = class (TGenericTestCase)
     published
+      procedure TestExpandIfNotExists;
       procedure TestGetDirectoryName;
       procedure TestGetExePath;
       procedure TestGetFullPath;
@@ -331,6 +332,16 @@ begin
 end;
 
 { TestTPathHelper }
+
+procedure TestTPathHelper.TestExpandIfNotExists;
+const
+  STR_ENV_VAR = '%SystemRoot%';
+var
+  ReturnValue : String;
+begin
+  ReturnValue := TPath.ExpandIfNotExists(STR_ENV_VAR);
+  CheckNotEquals(STR_ENV_VAR, ReturnValue, 'ReturnValue <> STR_ENV_VAR');
+end;
 
 procedure TestTPathHelper.TestGetDirectoryName;
 const

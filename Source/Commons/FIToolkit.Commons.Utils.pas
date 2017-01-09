@@ -33,7 +33,8 @@ type
 
   TPathHelper = record helper for TPath
     public
-      class function GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String; overload; static;
+      class function ExpandIfNotExists(const Path : String) : String; static;
+      class function GetDirectoryName(const FileName : TFileName; TrailingPathDelim : Boolean) : String; overload; static;
       class function GetExePath : String; static;
       class function GetFullPath(const Path : String; ExpandVars : Boolean) : String; overload; static;
       class function GetQuotedPath(const Path : String; QuoteChar : Char) : String; static;
@@ -268,7 +269,15 @@ end;
 
 { TPathHelper }
 
-class function TPathHelper.GetDirectoryName(const FileName : String; TrailingPathDelim : Boolean) : String;
+class function TPathHelper.ExpandIfNotExists(const Path : String) : String;
+begin
+  if TFile.Exists(Path) or TDirectory.Exists(Path) then
+    Result := Path
+  else
+    Result := GetFullPath(Path, True);
+end;
+
+class function TPathHelper.GetDirectoryName(const FileName : TFileName; TrailingPathDelim : Boolean) : String;
 begin
   Result := String.Empty;
 
