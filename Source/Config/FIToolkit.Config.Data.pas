@@ -44,11 +44,11 @@ type
       function  GetOutputFileName : String;
       function  GetTempDirectory : String;
       procedure SetExcludeProjectPatterns(const Value : TStringDynArray);
-      procedure SetFixInsightExe(const Value : TFileName);
-      procedure SetInputFileName(const Value : TFileName);
-      procedure SetOutputDirectory(const Value : String);
+      procedure SetFixInsightExe(Value : TFileName);
+      procedure SetInputFileName(Value : TFileName);
+      procedure SetOutputDirectory(Value : String);
       procedure SetOutputFileName(const Value : String);
-      procedure SetTempDirectory(const Value : String);
+      procedure SetTempDirectory(Value : String);
     public
       constructor Create;
       destructor Destroy; override;
@@ -130,8 +130,10 @@ begin
   FExcludeProjectPatterns := Value;
 end;
 
-procedure TConfigData.SetFixInsightExe(const Value : TFileName);
+procedure TConfigData.SetFixInsightExe(Value : TFileName);
 begin
+  Value := TPath.ExpandIfNotExists(Value);
+
   if not FFixInsightExe.Assigned or (FFixInsightExe <> Value) then
   begin
     if FValidate then
@@ -141,8 +143,10 @@ begin
   end;
 end;
 
-procedure TConfigData.SetInputFileName(const Value : TFileName);
+procedure TConfigData.SetInputFileName(Value : TFileName);
 begin
+  Value := TPath.ExpandIfNotExists(Value);
+
   if not FInputFileName.Assigned or (FInputFileName <> Value) then
   begin
     if FValidate then
@@ -152,8 +156,10 @@ begin
   end;
 end;
 
-procedure TConfigData.SetOutputDirectory(const Value : String);
+procedure TConfigData.SetOutputDirectory(Value : String);
 begin
+  Value := TPath.ExpandIfNotExists(Value);
+
   if not FOutputDirectory.Assigned or (FOutputDirectory <> Value) then
   begin
     if FValidate then
@@ -174,8 +180,10 @@ begin
   end;
 end;
 
-procedure TConfigData.SetTempDirectory(const Value : String);
+procedure TConfigData.SetTempDirectory(Value : String);
 begin
+  Value := TPath.ExpandIfNotExists(Value);
+
   if not FTempDirectory.Assigned or (TempDirectory <> Value) then
   begin
     if FValidate then
