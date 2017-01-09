@@ -16,7 +16,7 @@ type
     asProjectsExtracted, asProjectsExcluded, asFixInsightRan, asReportsParsed, asReportBuilt, asArchiveMade,
     asFinal);
 
-  TInputFileType = (iftUnknown, iftDPR, iftDPROJ, iftGROUPPROJ);
+  TInputFileType = (iftUnknown, iftDPR, iftDPK, iftDPROJ, iftGROUPPROJ);
 
   TNoExitBehavior = (neDisabled, neEnabled, neEnabledOnException);
 

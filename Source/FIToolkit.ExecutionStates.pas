@@ -125,7 +125,7 @@ begin //FI:C101
           FStartTime := Now;
 
           case GetInputFileType(FConfigData.InputFileName) of
-            iftDPR:
+            iftDPR, iftDPK:
               begin
                 FProjects := [FConfigData.InputFileName];
               end;

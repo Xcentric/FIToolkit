@@ -42,7 +42,7 @@ const
   ];
 
   ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING : array [Low(TInputFileType)..High(TInputFileType)] of String = (
-    String.Empty, '.dpr', '.dproj', '.groupproj'
+    String.Empty, '.dpr', '.dpk', '.dproj', '.groupproj'
   );
 
   SET_FINAL_APPSTATES : set of TApplicationState =
