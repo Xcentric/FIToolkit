@@ -87,6 +87,7 @@ end;
 function ExpandEnvVars(const S : String) : String;
 var
   iBufferSize : Cardinal;
+  pBuffer : PChar;
 begin
   iBufferSize := ExpandEnvironmentStrings(PChar(S), nil, 0);
 
@@ -94,10 +95,15 @@ begin
     Result := S
   else
   begin
-    SetLength(Result, iBufferSize - 1);
+    pBuffer := StrAlloc(iBufferSize);
+    try
+      if ExpandEnvironmentStrings(PChar(S), pBuffer, iBufferSize) = 0 then
+        RaiseLastOSError;
 
-    if ExpandEnvironmentStrings(PChar(S), PChar(Result), iBufferSize) = 0 then
-      RaiseLastOSError;
+      Result := String(pBuffer);
+    finally
+      StrDispose(pBuffer);
+    end;
   end;
 end;
 
