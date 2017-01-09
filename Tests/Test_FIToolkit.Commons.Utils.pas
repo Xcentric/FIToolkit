@@ -23,6 +23,7 @@ type
       procedure TestGetFixInsightExePath;
       procedure TestGetModuleVersion;
       procedure TestIff;
+      procedure TestWaitForFileAccess;
   end;
 
   TestTExceptionHelper = class (TGenericTestCase)
@@ -109,7 +110,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
+  System.Classes, System.IOUtils, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
@@ -178,6 +179,38 @@ begin
   CheckTrue(eReturnValue = eTruePart, 'eReturnValue = eTruePart');
   eReturnValue := Iff.Get<TTestEnum>(False, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eFalsePart, 'eReturnValue = eFalsePart');
+end;
+
+procedure TestFIToolkitCommonsUtils.TestWaitForFileAccess;
+const
+  INT_CHECK_INTERVAL = 100;
+  INT_TIMEOUT = INT_CHECK_INTERVAL * 4;
+var
+  sFileName : String;
+  ReturnValue : Boolean;
+  Task : ITask;
+begin
+  sFileName := GetTestIniFileName;
+  System.SysUtils.DeleteFile(sFileName);
+
+  ReturnValue := WaitForFileAccess(sFileName, TFileAccess.faRead, 0, 0);
+  CheckFalse(ReturnValue, 'CheckFalse::ReturnValue<not FileExists(sFileName)>');
+
+  Task := TTask.Run(
+    procedure
+    begin
+      TThread.Sleep(INT_TIMEOUT);
+      TFile.Create(sFileName).Free;
+    end
+  );
+
+  ReturnValue := WaitForFileAccess(sFileName, TFileAccess.faRead, INT_CHECK_INTERVAL, INT_TIMEOUT div 2);
+  CheckTrue(not ReturnValue and (Task.Status = TTaskStatus.Running),
+    'CheckTrue::(not ReturnValue)<Task.Status = Running>');
+
+  ReturnValue := WaitForFileAccess(sFileName, TFileAccess.faRead, INT_CHECK_INTERVAL, INT_TIMEOUT);
+  CheckTrue(ReturnValue and (Task.Status = TTaskStatus.Completed),
+    'CheckTrue::(ReturnValue)<Task.Status = Completed>');
 end;
 
 { TestTExceptionHelper }

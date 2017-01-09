@@ -188,7 +188,6 @@ begin
     else
       TThread.Sleep(CheckingInterval);
   until TThread.GetTickCount - StartTickCount >= Timeout;
-  // TODO: implement {TEST::WaitForFileAccess}
 end;
 
 { TExceptionHelper }
