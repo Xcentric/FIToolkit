@@ -101,8 +101,10 @@ var
   Template : IHTMLReportTemplate;
   Report : THTMLReportBuilder;
 begin
-  // TODO: implement {THTMLReportCustomTemplate.Create(FConfigData.???)}
-  Template := THTMLReportDefaultTemplate.Create;
+  if FConfigData.CustomTemplateFileName.IsEmpty then
+    Template := THTMLReportDefaultTemplate.Create
+  else
+    Template := THTMLReportCustomTemplate.Create(FConfigData.CustomTemplateFileName);
 
   FReportOutput := TFile.CreateText(FConfigData.OutputDirectory + FConfigData.OutputFileName);
   Report := THTMLReportBuilder.Create(FReportOutput.BaseStream);

@@ -23,6 +23,7 @@ type
 
   EConfigDataException = class abstract (EConfigException);
 
+  ECDCustomTemplateFileNotFound = class (EConfigDataException);
   ECDFixInsightExeNotFound = class (EConfigDataException);
   ECDInputFileNotFound = class (EConfigDataException);
   ECDInvalidExcludeProjectPattern = class (EConfigDataException);
@@ -42,6 +43,7 @@ initialization
   RegisterExceptionMessage(EFIOProjectFileNotFound, RSFIOProjectFileNotFound);
   RegisterExceptionMessage(EFIOSettingsFileNotFound, RSFIOSettingsFileNotFound);
 
+  RegisterExceptionMessage(ECDCustomTemplateFileNotFound, RSCDCustomTemplateFileNotFound);
   RegisterExceptionMessage(ECDFixInsightExeNotFound, RSCDFixInsightExeNotFound);
   RegisterExceptionMessage(ECDInputFileNotFound, RSCDInputFileNotFound);
   RegisterExceptionMessage(ECDInvalidExcludeProjectPattern, RSCDInvalidExcludeProjectPattern);

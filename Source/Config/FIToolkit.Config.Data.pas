@@ -19,6 +19,7 @@ type
 
   TConfigData = class sealed
     strict private
+      FCustomTemplateFileName : TAssignableFileName;
       FExcludeProjectPatterns : TStringDynArray;
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
@@ -31,6 +32,7 @@ type
 
       FFixInsightOptions : TFixInsightOptions;
     private
+      procedure ValidateCustomTemplateFileName(const Value : TFileName);
       procedure ValidateExcludeProjectPatterns(const Value : TStringDynArray);
       procedure ValidateFixInsightExe(const Value : TFileName);
       procedure ValidateInputFileName(const Value : TFileName);
@@ -38,11 +40,13 @@ type
       procedure ValidateOutputFileName(const Value : String);
       procedure ValidateTempDirectory(const Value : String);
 
+      function  GetCustomTemplateFileName : TFileName;
       function  GetFixInsightExe : TFileName;
       function  GetInputFileName : TFileName;
       function  GetOutputDirectory : String;
       function  GetOutputFileName : String;
       function  GetTempDirectory : String;
+      procedure SetCustomTemplateFileName(Value : TFileName);
       procedure SetExcludeProjectPatterns(const Value : TStringDynArray);
       procedure SetFixInsightExe(Value : TFileName);
       procedure SetInputFileName(Value : TFileName);
@@ -53,6 +57,8 @@ type
       constructor Create;
       destructor Destroy; override;
 
+      [FIToolkitParam]
+      property CustomTemplateFileName : TFileName read GetCustomTemplateFileName write SetCustomTemplateFileName;
       [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeProjectPatterns]
       property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write SetExcludeProjectPatterns;
       [FIToolkitParam, DefaultFixInsightExe]
@@ -97,6 +103,11 @@ begin
   inherited Destroy;
 end;
 
+function TConfigData.GetCustomTemplateFileName : TFileName;
+begin
+  Result := FCustomTemplateFileName;
+end;
+
 function TConfigData.GetFixInsightExe : TFileName;
 begin
   Result := FFixInsightExe;
@@ -120,6 +131,19 @@ end;
 function TConfigData.GetTempDirectory : String;
 begin
   Result := TPath.IncludeTrailingPathDelimiter(FTempDirectory);
+end;
+
+procedure TConfigData.SetCustomTemplateFileName(Value : TFileName);
+begin
+  Value := TPath.ExpandIfNotExists(Value);
+
+  if not FCustomTemplateFileName.Assigned or (FCustomTemplateFileName <> Value) then
+  begin
+    if FValidate then
+      ValidateCustomTemplateFileName(Value);
+
+    FCustomTemplateFileName := Value;
+  end;
 end;
 
 procedure TConfigData.SetExcludeProjectPatterns(const Value : TStringDynArray);
@@ -191,6 +215,12 @@ begin
 
     FTempDirectory := Value;
   end;
+end;
+
+procedure TConfigData.ValidateCustomTemplateFileName(const Value : TFileName);
+begin
+  if not (Value.IsEmpty or TFile.Exists(Value)) then
+    raise ECDCustomTemplateFileNotFound.Create;
 end;
 
 procedure TConfigData.ValidateExcludeProjectPatterns(const Value : TStringDynArray);
