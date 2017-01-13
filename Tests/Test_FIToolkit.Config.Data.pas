@@ -125,6 +125,17 @@ const
 begin
   FConfigData.Validate := True;
 
+  { Check validation - invalid custom template file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.CustomTemplateFileName := STR_NON_EXISTENT_FILE;
+    end,
+    ECDCustomTemplateFileNotFound,
+    'CheckException::ECDCustomTemplateFileNotFound'
+  );
+
   { Check validation - invalid exclude project regex }
 
   CheckException(
@@ -203,6 +214,8 @@ begin
       with FConfigData do
       begin
         Validate := True;
+        CustomTemplateFileName := ParamStr(0);
+        CustomTemplateFileName := String.Empty;
         ExcludeProjectPatterns := [REGEX_VALID1, REGEX_VALID2];
         FixInsightExe := ParamStr(0);
         InputFileName := ParamStr(0);
