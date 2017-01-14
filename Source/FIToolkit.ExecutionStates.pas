@@ -15,21 +15,26 @@ type
 
   TWorkflowStateHolder = class sealed
     private
+      { Primary logical entities }
+
       FConfigData : TConfigData;
       FFixInsightXMLParser : TFixInsightXMLParser;
       FProjectGroupParser : TProjectGroupParser;
       FProjectParser : TProjectParser;
       FReportBuilder : IReportBuilder;
-      FReportOutput : TStreamWriter;
       FTaskManager : TTaskManager;
+
+      { Supporting infrastructure }
 
       FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
       FProjects : TArray<TFileName>;
+      FReportFileName : TFileName;
+      FReportOutput : TStreamWriter;
       FReports : TArray<TPair<TFileName, TFileName>>;
       FStartTime : TDateTime;
       FTotalDuration : TTimeSpan;
       FTotalMessages : Integer;
-
+    private
       procedure InitReportBuilder;
     public
       constructor Create(ConfigData : TConfigData);
@@ -75,6 +80,8 @@ begin
   inherited Create;
 
   FMessages := TDictionary<TFileName, TArray<TFixInsightMessage>>.Create;
+  FReportFileName := TPath.Combine(ConfigData.OutputDirectory, ConfigData.OutputFileName);
+  FReportOutput := TFile.CreateText(FReportFileName);
 
   FConfigData := ConfigData;
   FFixInsightXMLParser := TFixInsightXMLParser.Create;
@@ -84,14 +91,13 @@ end;
 
 destructor TWorkflowStateHolder.Destroy;
 begin
-  FreeAndNil(FMessages);
-
   FreeAndNil(FFixInsightXMLParser);
   FreeAndNil(FProjectGroupParser);
   FreeAndNil(FProjectParser);
-  FreeAndNil(FReportOutput);
   FreeAndNil(FTaskManager);
-  FReportBuilder := nil;
+
+  FreeAndNil(FMessages);
+  FreeAndNil(FReportOutput);
 
   inherited Destroy;
 end;
@@ -106,7 +112,6 @@ begin
   else
     Template := THTMLReportCustomTemplate.Create(FConfigData.CustomTemplateFileName);
 
-  FReportOutput := TFile.CreateText(FConfigData.OutputDirectory + FConfigData.OutputFileName);
   Report := THTMLReportBuilder.Create(FReportOutput.BaseStream);
   Report.SetTemplate(Template);
 
@@ -234,28 +239,27 @@ begin //FI:C101
     .AddTransition(asReportBuilt, asArchiveMade, acMakeArchive,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
-        sReportFileName, sZipFileName : TFileName;
+        sArchiveFileName : TFileName;
         ZF : TZipFile;
       begin
         with StateHolder do
           if FConfigData.MakeArchive then
           begin
-            sReportFileName := FConfigData.OutputDirectory + FConfigData.OutputFileName;
-            sZipFileName := sReportFileName + STR_ARCHIVE_FILE_EXT;
+            sArchiveFileName := FReportFileName + STR_ARCHIVE_FILE_EXT;
 
-            if TFile.Exists(sZipFileName) then
-              TFile.Delete(sZipFileName);
+            if TFile.Exists(sArchiveFileName) then
+              TFile.Delete(sArchiveFileName);
 
             ZF := TZipFile.Create;
             try
-              ZF.Open(sZipFileName, zmWrite);
-              ZF.Add(sReportFileName);
+              ZF.Open(sArchiveFileName, zmWrite);
+              ZF.Add(FReportFileName);
               ZF.Close;
             finally
               ZF.Free;
             end;
 
-            DeleteFile(sReportFileName);
+            DeleteFile(FReportFileName);
           end;
       end
     )
