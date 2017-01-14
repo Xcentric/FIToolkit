@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is an example of a properly filled report template file.
+  You may want to make your own by editing a separate copy of this one.
+-->
+<HTMLReportTemplate>
+    <!-- CSS placed inside <style>..</style> tag -->
+    <CSS>
+        <![CDATA[
+
+    /* Place your CSS here */
+
+    ]]>
+    </CSS>
+    <!-- Report header element -->
+    <Header>
+        <Element>
+            <![CDATA[
+    <div id="header">
+        <div id="header-report_title">Report title: %REPORT_TITLE%</div>
+        <div id="header-start_time">Start time info: %START_TIME%</div>
+    </div>]]>
+        </Element>
+    </Header>
+    <!-- Total summary info element -->
+    <TotalSummary>
+        <Element>
+            <![CDATA[
+    <table id="total_summary">
+        <!-- Block of total summary info -->
+{TOTAL_SUMMARY_ITEMS}
+    </table>]]>
+        </Element>
+        <!-- Element which represents a single item of total summary info -->
+        <TotalSummaryItem>
+            <Element>
+                <![CDATA[
+        <!--
+            %SUMMARY_MESSAGE_TYPE_KEYWORD% is a keyword applicable for usage in "class" attribute of HTML tags.
+            %SUMMARY_MESSAGE_TYPE_NAME% is a localized description of message type.
+            %SUMMARY_MESSAGE_COUNT% is a macro for message counter.
+        -->
+        <tr class="summary_item">
+            <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+            <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-count">%SUMMARY_MESSAGE_COUNT%</td>
+        </tr>]]>
+            </Element>
+        </TotalSummaryItem>
+    </TotalSummary>
+    <!-- A single project section element -->
+    <ProjectSection>
+        <Element>
+            <![CDATA[
+    <div class="project_section">
+        <div class="project_section-project_title">Project title: %PROJECT_TITLE%</div>
+        <!-- Block of a project section content -->
+{PROJECT_SUMMARY}</div>]]>
+        </Element>
+        <!-- Project summary info element -->
+        <ProjectSummary>
+            <Element>
+                <![CDATA[
+        <table class="project_section-project_summary">
+            <!-- Block of a project summary info -->
+{PROJECT_SUMMARY_ITEMS}
+        </table>]]>
+            </Element>
+            <!-- Element which represents a single item of project summary info -->
+            <ProjectSummaryItem>
+                <Element>
+                    <![CDATA[
+            <!--
+                %SUMMARY_MESSAGE_TYPE_KEYWORD%, %SUMMARY_MESSAGE_TYPE_NAME%, %SUMMARY_MESSAGE_COUNT% - same as above.
+            -->
+            <tr class="summary_item">
+                <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+                <td class="summary_item-arrow">→</td>
+                <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-count">%SUMMARY_MESSAGE_COUNT%</td>
+            </tr>]]>
+                </Element>
+            </ProjectSummaryItem>
+        </ProjectSummary>
+        <!-- Element which contains all messages for a particular project -->
+        <ProjectMessages>
+            <Element>
+                <![CDATA[
+        <table class="project_section-project_messages"><!-- All project messages here --></table>]]>
+            </Element>
+            <!-- Element which represents a single message -->
+            <Message>
+                <Element>
+                    <![CDATA[
+            <!--
+                %MESSAGE_TYPE_KEYWORD% is like %SUMMARY_MESSAGE_TYPE_KEYWORD% above.
+                %MESSAGE_TYPE_NAME% is like %SUMMARY_MESSAGE_TYPE_NAME% above.
+            -->
+            <tr class="message-%MESSAGE_TYPE_KEYWORD%">
+                <td class="message-file_name">Problem project's file: %FILE_NAME%</td>
+                <td class="message-file_pos">Position at that file: %LINE%,%COLUMN%</td>
+                <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%</td>
+                <td class="message-message_text">Code inspection description: %MESSAGE_TEXT%</td>
+            </tr>]]>
+                </Element>
+            </Message>
+        </ProjectMessages>
+    </ProjectSection>
+    <!-- Report footer element -->
+    <Footer>
+        <Element>
+            <![CDATA[
+    <div id="footer">
+        <div id="footer-finish_time">Finish time info: %FINISH_TIME%</div>
+    </div>]]>
+        </Element>
+    </Footer>
+</HTMLReportTemplate>
