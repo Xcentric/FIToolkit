@@ -49,6 +49,7 @@ resourcestring
   RSFIOProjectFileNotFound = 'Файл проекта не найден.';
   RSFIOSettingsFileNotFound = 'Файл настроек FixInsight не найден.';
 
+  RSCDCustomTemplateFileNotFound = 'Файл пользовательского шаблона не найден.';
   RSCDFixInsightExeNotFound = 'Исполняемый файл FixInsight не найден.';
   RSCDInputFileNotFound = 'Входной файл не найден.';
   RSCDInvalidExcludeProjectPattern = 'Ошибка в регулярном выражении для исключения проектов: %s';

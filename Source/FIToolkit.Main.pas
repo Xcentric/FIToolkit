@@ -90,7 +90,7 @@ end;
 
 procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
 begin
-  WriteLn(Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak);
+  WriteLn(sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak);
 
   if not CanExit then
     PressAnyKeyPrompt;

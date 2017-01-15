@@ -51,6 +51,17 @@ procedure TestTConfigData.TestEmptyData;
 begin
   FConfigData.Validate := True;
 
+  { Check validation - empty custom template file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.CustomTemplateFileName := String.Empty;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
   { Check validation - empty exclude project regex }
 
   CheckException(
@@ -124,6 +135,17 @@ const
   REGEX_INVALID = '[0-|9)';
 begin
   FConfigData.Validate := True;
+
+  { Check validation - invalid custom template file name }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.CustomTemplateFileName := STR_NON_EXISTENT_FILE;
+    end,
+    ECDCustomTemplateFileNotFound,
+    'CheckException::ECDCustomTemplateFileNotFound'
+  );
 
   { Check validation - invalid exclude project regex }
 
@@ -203,6 +225,7 @@ begin
       with FConfigData do
       begin
         Validate := True;
+        CustomTemplateFileName := ParamStr(0);
         ExcludeProjectPatterns := [REGEX_VALID1, REGEX_VALID2];
         FixInsightExe := ParamStr(0);
         InputFileName := ParamStr(0);

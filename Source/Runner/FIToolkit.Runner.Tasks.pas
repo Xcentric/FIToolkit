@@ -146,7 +146,7 @@ begin
   FIO := TFixInsightOptions.Create;
   try
     FIO.Assign(Options, False);
-    FIO.OutputFileName := TPath.IncludeTrailingPathDelimiter(TempDirectory) + TPath.GetFileName(FIO.OutputFileName);
+    FIO.OutputFileName := TPath.Combine(TempDirectory, TPath.GetFileName(FIO.OutputFileName));
 
     for S in Files do
     begin
