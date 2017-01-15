@@ -1,13 +1,13 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{1203C945-13B3-4252-BF16-0580D91EC0D1}</ProjectGuid>
-        <ProjectVersion>15.4</ProjectVersion>
+        <ProjectVersion>18.1</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <MainSource>FIToolkit.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Console</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -40,24 +40,34 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
+        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
+        <BRCC_OutputDir>..\Bin\$(Platform)\$(Config)</BRCC_OutputDir>
+        <BRCC_IncludePath>..\Bin\$(Platform)\$(Config);$(BRCC_IncludePath)</BRCC_IncludePath>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>FIToolkit</SanitizedProjectName>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_ExeOutput>..\Bin\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;FixInsight_XE6;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;crcontrols200;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;fmxFireDAC;dacvcl200;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;dacfmx200;IndyCore;CodeSiteExpressPkg;DBXMSSQLDriver;CloudService;IndyIPCommon;FireDACIBDriver;FmxTeeUI;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;OmniThreadLibraryRuntimeXE6;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;dac200;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;unidacvcl200;vclie;unidacfmx200;FireDACADSDriver;vcltouch;unidac200;VCLRESTComponents;FireDACMSSQLDriver;DBXInformixDriver;FireDAC;VclSmp;DataSnapConnectors;DataSnapServerMidas;DBXFirebirdDriver;dsnapcon;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;bdertl;dbexpress;DataSnapIndy10ServerTransport;FireDACMSAccDriver;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
-        <DCC_ConsoleTarget>true</DCC_ConsoleTarget>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <VerInfo_MinorVer>1</VerInfo_MinorVer>
+        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=;FileDescription=A set of tools for TMS Software® FixInsight™;FileVersion=0.1.1.0;InternalName=;LegalCopyright=© 2017 Xcentric &lt;true.xcentric@gmail.com&gt;;LegalTrademarks=;OriginalFilename=FIToolkit.exe;ProductName=FIToolkit;ProductVersion=0.1;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <Manifest_File>None</Manifest_File>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_ConsoleTarget>true</DCC_ConsoleTarget>
+        <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;FixInsight_XE6;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;crcontrols200;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;fmxFireDAC;dacvcl200;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;dacfmx200;IndyCore;CodeSiteExpressPkg;DBXMSSQLDriver;CloudService;IndyIPCommon;FireDACIBDriver;FmxTeeUI;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;OmniThreadLibraryRuntimeXE6;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;dac200;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;unidacvcl200;vclie;unidacfmx200;FireDACADSDriver;vcltouch;unidac200;VCLRESTComponents;FireDACMSSQLDriver;DBXInformixDriver;FireDAC;VclSmp;DataSnapConnectors;DataSnapServerMidas;DBXFirebirdDriver;dsnapcon;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;bdertl;dbexpress;DataSnapIndy10ServerTransport;FireDACMSAccDriver;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <DCC_ConsoleTarget>true</DCC_ConsoleTarget>
         <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;CloudService;IndyIPCommon;FireDACIBDriver;FmxTeeUI;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;vclie;FireDACADSDriver;vcltouch;VCLRESTComponents;FireDACMSSQLDriver;DBXInformixDriver;FireDAC;VclSmp;DataSnapConnectors;DataSnapServerMidas;DBXFirebirdDriver;dsnapcon;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;dbexpress;DataSnapIndy10ServerTransport;FireDACMSAccDriver;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
@@ -82,6 +92,55 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <RcCompile Include="ResourceScripts\Main\Main-Help.rc">
+            <Form>Main-Help.res</Form>
+        </RcCompile>
+        <RcCompile Include="ResourceScripts\Reports\Reports-Builder.rc">
+            <Form>Reports-Builder.res</Form>
+        </RcCompile>
+        <DCCReference Include="FIToolkit.Consts.pas"/>
+        <DCCReference Include="FIToolkit.Exceptions.pas"/>
+        <DCCReference Include="FIToolkit.ExecutionStates.pas"/>
+        <DCCReference Include="FIToolkit.Main.pas"/>
+        <DCCReference Include="FIToolkit.Types.pas"/>
+        <DCCReference Include="FIToolkit.Utils.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Consts.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Exceptions.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Options.pas"/>
+        <DCCReference Include="CommandLine\FIToolkit.CommandLine.Types.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.Consts.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.Exceptions.pas"/>
+        <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Consts.pas"/>
+        <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Exceptions.pas"/>
+        <DCCReference Include="Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.FSM.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.StateMachine.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.Types.pas"/>
+        <DCCReference Include="Commons\FIToolkit.Commons.Utils.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Consts.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Data.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Defaults.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Exceptions.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.FixInsight.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Manager.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.TypedDefaults.pas"/>
+        <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>
+        <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
+        <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
+        <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Exceptions.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.HTML.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Intf.pas"/>
+        <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Types.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
+        <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
+        <DCCReference Include="Runner\FIToolkit.Runner.Exceptions.pas"/>
+        <DCCReference Include="Runner\FIToolkit.Runner.Tasks.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -102,13 +161,17 @@
                 <Source>
                     <Source Name="MainSource">FIToolkit.dpr</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp230.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
             <UnitTesting>
-                <TestProjectName>D:\Work\Argus\FIToolkit\Tests\FIToolkitTests.dproj</TestProjectName>
+                <TestProjectName>..\Tests\FIToolkitTests.dproj</TestProjectName>
             </UnitTesting>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

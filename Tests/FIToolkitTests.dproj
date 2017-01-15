@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{5DECDE5F-6F6C-4326-AE09-40076CEB8967}</ProjectGuid>
-        <ProjectVersion>15.4</ProjectVersion>
+        <ProjectVersion>18.1</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
@@ -40,11 +40,14 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
+        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
+        <SanitizedProjectName>FIToolkitTests</SanitizedProjectName>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <DCC_UnitSearchPath>$(BDS)\Source\DUnit\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_Define>_CONSOLE_TESTRUNNER;$(DCC_Define)</DCC_Define>
-        <DCC_DcuOutput>.</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_Define>_CONSOLE_TESTRUNNER;TESTINSIGHT;$(DCC_Define)</DCC_Define>
+        <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_ExeOutput>..\Bin\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -61,6 +64,8 @@
         <DCC_UsePackage>FireDACSqliteDriver;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;DBXMSSQLDriver;CloudService;IndyIPCommon;FireDACIBDriver;FmxTeeUI;DataSnapFireDAC;FireDACDBXDriver;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;adortl;FireDACASADriver;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;Tee;DBXOdbcDriver;vclFireDAC;xmlrtl;DataSnapNativeClient;ibxpress;IndyProtocols;DBXMySQLDriver;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;vclie;FireDACADSDriver;vcltouch;VCLRESTComponents;FireDACMSSQLDriver;DBXInformixDriver;FireDAC;VclSmp;DataSnapConnectors;DataSnapServerMidas;DBXFirebirdDriver;dsnapcon;inet;fmxobj;FireDACMySQLDriver;soapmidas;vclx;DBXSybaseASADriver;FireDACOracleDriver;fmxdae;RESTComponents;dbexpress;DataSnapIndy10ServerTransport;FireDACMSAccDriver;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <DCC_Optimize>false</DCC_Optimize>
@@ -81,6 +86,64 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\Source\FIToolkit.Consts.pas"/>
+        <DCCReference Include="..\Source\FIToolkit.Types.pas"/>
+        <DCCReference Include="..\Source\FIToolkit.Utils.pas"/>
+        <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas"/>
+        <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Exceptions.pas"/>
+        <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Options.pas"/>
+        <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Types.pas"/>
+        <DCCReference Include="..\Source\Commons\FIToolkit.Commons.Consts.pas"/>
+        <DCCReference Include="..\Source\Commons\FIToolkit.Commons.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Consts.pas"/>
+        <DCCReference Include="..\Source\Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Commons\FiniteStateMachine\FIToolkit.Commons.FiniteStateMachine.FSM.pas"/>
+        <DCCReference Include="..\Source\Commons\FIToolkit.Commons.Types.pas"/>
+        <DCCReference Include="..\Source\Commons\FIToolkit.Commons.Utils.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Consts.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Data.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Defaults.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.FixInsight.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Manager.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
+        <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
+        <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Consts.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.HTML.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Intf.pas"/>
+        <DCCReference Include="..\Source\Reports\Builder\FIToolkit.Reports.Builder.Types.pas"/>
+        <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
+        <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
+        <DCCReference Include="..\Source\Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
+        <DCCReference Include="..\Source\Runner\FIToolkit.Runner.Consts.pas"/>
+        <DCCReference Include="..\Source\Runner\FIToolkit.Runner.Exceptions.pas"/>
+        <DCCReference Include="..\Source\Runner\FIToolkit.Runner.Tasks.pas"/>
+        <DCCReference Include="Test_FIToolkit.CommandLine.Options.pas"/>
+        <DCCReference Include="Test_FIToolkit.Commons.Exceptions.pas"/>
+        <DCCReference Include="Test_FIToolkit.Commons.FiniteStateMachine.FSM.pas"/>
+        <DCCReference Include="Test_FIToolkit.Commons.Types.pas"/>
+        <DCCReference Include="Test_FIToolkit.Commons.Utils.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.Data.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.Defaults.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
+        <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Test_FIToolkit.ProjectGroupParser.Parser.pas"/>
+        <DCCReference Include="Test_FIToolkit.Reports.Builder.HTML.pas"/>
+        <DCCReference Include="Test_FIToolkit.Reports.Parser.Types.pas"/>
+        <DCCReference Include="Test_FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
+        <DCCReference Include="Test_FIToolkit.Runner.Tasks.pas"/>
+        <DCCReference Include="Test_FIToolkit.Utils.pas"/>
+        <DCCReference Include="Test_UTF8Sources.pas"/>
+        <DCCReference Include="TestConsts.pas"/>
+        <DCCReference Include="TestTypes.pas"/>
+        <DCCReference Include="TestUtils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -109,7 +172,8 @@
             <UnitTesting>
                 <TestFramework>DUnit / Delphi Win32</TestFramework>
                 <TestRunner>GUI</TestRunner>
-                <SourceProjectName>D:\Work\Argus\FIToolkit\Source\FIToolkit.dproj</SourceProjectName>
+                <SourceProjectName>..\Source\FIToolkit.dproj</SourceProjectName>
+                <TestProjectName/>
             </UnitTesting>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
