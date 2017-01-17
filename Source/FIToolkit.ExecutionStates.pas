@@ -293,7 +293,7 @@ end;
 class function TWorkflowHelper.CalcSummary(StateHolder : TWorkflowStateHolder;
   const ProjectFilter : String) : TArray<TSummaryItem>;
 var
-  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+  arrSummary : array [TFixInsightMessageType] of TSummaryItem;
 
   procedure CalcProjectMessages(Project : TFileName);
   var
