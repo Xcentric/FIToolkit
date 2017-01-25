@@ -45,10 +45,10 @@ type
         FInternalMap : TInternalMap;
         FStaticInstance : TDefaultsMap;
     private
-      class procedure FreeStaticInstance; static;
-      class function  GetStaticInstance : TDefaultsMap; static;
+      class constructor Create;
+      class destructor Destroy;
     protected
-      class property StaticInstance : TDefaultsMap read GetStaticInstance;
+      class property StaticInstance : TDefaultsMap read FStaticInstance;
     public
       class procedure AddValue(DefValAttribClass : TDefaultValueAttributeClass; Value : TValue);
       class function  GetValue(DefValAttribClass : TDefaultValueAttributeClass) : TValue;
@@ -137,21 +137,16 @@ begin
   StaticInstance.FInternalMap.Add(DefValAttribClass, Value);
 end;
 
-class procedure TDefaultsMap.FreeStaticInstance;
+class constructor TDefaultsMap.Create;
+begin
+  FInternalMap := TInternalMap.Create;
+  FStaticInstance := TDefaultsMap.Create;
+end;
+
+class destructor TDefaultsMap.Destroy;
 begin
   FreeAndNil(FInternalMap);
   FreeAndNil(FStaticInstance);
-end;
-
-class function TDefaultsMap.GetStaticInstance : TDefaultsMap;
-begin
-  if not Assigned(FInternalMap) then
-    FInternalMap := TInternalMap.Create;
-
-  if not Assigned(FStaticInstance) then
-    FStaticInstance := TDefaultsMap.Create;
-
-  Result := FStaticInstance;
 end;
 
 class function TDefaultsMap.GetValue(DefValAttribClass : TDefaultValueAttributeClass) : TValue;
@@ -163,11 +158,5 @@ class function TDefaultsMap.HasValue(DefValAttribClass : TDefaultValueAttributeC
 begin
   Result := StaticInstance.FInternalMap.ContainsKey(DefValAttribClass);
 end;
-
-initialization
-  TDefaultsMap.GetStaticInstance;
-
-finalization
-  TDefaultsMap.FreeStaticInstance;
 
 end.

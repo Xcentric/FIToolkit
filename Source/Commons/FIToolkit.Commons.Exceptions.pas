@@ -34,10 +34,10 @@ type
       class var
         FStaticInstance : TExceptionMessageMap;
     private
-      class procedure FreeStaticInstance; static;
-      class function  GetStaticInstance : TExceptionMessageMap; static;
+      class constructor Create;
+      class destructor Destroy;
     protected
-      class property  StaticInstance : TExceptionMessageMap read GetStaticInstance;
+      class property  StaticInstance : TExceptionMessageMap read FStaticInstance;
   end;
 
 { Utils }
@@ -75,23 +75,14 @@ end;
 
 { TExceptionMessageMap }
 
-class procedure TExceptionMessageMap.FreeStaticInstance;
+class constructor TExceptionMessageMap.Create;
+begin
+  FStaticInstance := TExceptionMessageMap.Create;
+end;
+
+class destructor TExceptionMessageMap.Destroy;
 begin
   FreeAndNil(FStaticInstance);
 end;
-
-class function TExceptionMessageMap.GetStaticInstance : TExceptionMessageMap;
-begin
-  if not Assigned(FStaticInstance) then
-    FStaticInstance := TExceptionMessageMap.Create;
-
-  Result := FStaticInstance;
-end;
-
-initialization
-  TExceptionMessageMap.GetStaticInstance;
-
-finalization
-  TExceptionMessageMap.FreeStaticInstance;
 
 end.
