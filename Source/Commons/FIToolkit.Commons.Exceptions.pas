@@ -37,7 +37,7 @@ type
       class constructor Create;
       class destructor Destroy;
     protected
-      class property  StaticInstance : TExceptionMessageMap read FStaticInstance;
+      class property StaticInstance : TExceptionMessageMap read FStaticInstance;
   end;
 
 { Utils }
