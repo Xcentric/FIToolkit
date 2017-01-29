@@ -75,7 +75,8 @@ type
           STR_HTML_LINE + '|' +
           STR_HTML_COLUMN + '|' +
           STR_HTML_MESSAGE_TYPE_NAME + '|' +
-          STR_HTML_MESSAGE_TEXT;
+          STR_HTML_MESSAGE_TEXT + '|' +
+          STR_HTML_SNIPPET;
         STR_TEMPLATE =
           {$REGION 'XML'}
           '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -393,6 +394,7 @@ const
   STR_FILENAME = 'TestProjectDir\TestFileName.pas';
   STR_LINE     = '666';
   STR_MESSAGE  = 'Test message text.';
+  STR_SNIPPET  = 'Code snippet.';
 
   STR_REFERENCE =
     {$REGION 'HTML'}
@@ -419,11 +421,11 @@ const
     '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
-    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
     '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
@@ -432,11 +434,11 @@ const
     '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
-    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
     '%FINISH_TIME%' + sLineBreak +
@@ -453,6 +455,7 @@ begin
   R.Line        := STR_LINE.ToInteger;
   R.FileName    := STR_FILENAME;
   R.MessageText := STR_MESSAGE;
+  R.Snippet     := STR_SNIPPET;
 
   with FHTMLReportBuilder do
   begin

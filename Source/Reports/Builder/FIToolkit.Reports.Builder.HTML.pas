@@ -137,6 +137,7 @@ begin
       .Replace(STR_HTML_COLUMN, Encode(Item.Column.ToString))
       .Replace(STR_HTML_MESSAGE_TYPE_NAME, Encode(Item.MessageTypeName))
       .Replace(STR_HTML_MESSAGE_TEXT, Encode(Item.MessageText))
+      .Replace(STR_HTML_SNIPPET, Encode(Item.Snippet))
   );
 end;
 

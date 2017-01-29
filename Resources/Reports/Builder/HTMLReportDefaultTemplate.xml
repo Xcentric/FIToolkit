@@ -182,6 +182,10 @@
         color: transparent;
     }
 
+    .message-snippet {
+        font-size: 10.5pt;
+    }
+
     /* Footer */
 
     #footer {
@@ -266,6 +270,7 @@
                 </td>
                 <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
                 <td class="message-message_text">%MESSAGE_TEXT%</td>
+                <td class="message-snippet"><pre>%SNIPPET%</pre></td>
             </tr>]]>
                 </Element>
             </Message>
