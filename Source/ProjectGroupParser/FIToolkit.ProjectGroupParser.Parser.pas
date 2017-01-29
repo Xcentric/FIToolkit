@@ -95,7 +95,7 @@ begin
   sRootDir := GetProjectGroupDir;
 
   for S in GetIncludedProjects do
-    with TProjectParser.Create(sRootDir + S) do
+    with TProjectParser.Create(TPath.Combine(sRootDir, S)) do
       try
         Result := Result + [GetMainSourceFileName];
       finally

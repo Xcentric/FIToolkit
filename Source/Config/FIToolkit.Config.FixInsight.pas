@@ -125,6 +125,7 @@ end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
 begin
+  // TODO: implement {pass absolute path to FixInsight}
   Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName, TCLIOptionString.CHR_QUOTE);
 end;
 

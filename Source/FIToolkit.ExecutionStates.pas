@@ -70,7 +70,8 @@ type
       class function CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
       class function FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
       class function FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
-      class function MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+      class function MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
+        Msg : TFixInsightMessage) : TReportRecord;
   end;
 
 { TWorkflowStateHolder }
@@ -225,7 +226,7 @@ begin //FI:C101
               );
 
               for Msg in FMessages[F] do
-                FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
+                FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(StateHolder, F, Msg));
 
               FReportBuilder.EndProjectSection;
             end;
@@ -344,7 +345,8 @@ begin
   Result := TPath.GetFileName(StateHolder.FConfigData.InputFileName);
 end;
 
-class function TWorkflowHelper.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+class function TWorkflowHelper.MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
+  Msg : TFixInsightMessage) : TReportRecord;
 begin
   Result.Column             := Msg.Column;
   Result.FileName           := Msg.FileName;
