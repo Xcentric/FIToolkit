@@ -206,8 +206,32 @@ begin //FI:C101
     )
     .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        LProjectMessages : TList<TFixInsightMessage>;
+        sPattern : String;
+        F : TFileName;
+        Msg : TFixInsightMessage;
       begin
-        // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
+        LProjectMessages := TList<TFixInsightMessage>.Create(TFixInsightMessage.GetComparer);
+        try
+          with StateHolder do
+            for sPattern in FConfigData.ExcludeUnitPatterns do
+              for F in FProjects do
+                if Assigned(FMessages[F]) then
+                begin
+                  LProjectMessages.Clear;
+                  LProjectMessages.AddRange(FMessages[F]);
+
+                  for Msg in FMessages[F] do
+                    if TRegEx.IsMatch(Msg.FileName, sPattern, [roIgnoreCase]) then
+                      LProjectMessages.Remove(Msg);
+
+                  if LProjectMessages.Count < Length(FMessages[F]) then
+                    FMessages[F] := LProjectMessages.ToArray;
+                end;
+        finally
+          LProjectMessages.Free;
+        end;
       end
     )
     .AddTransition(asUnitsExcluded, asReportBuilt, acBuildReport,
