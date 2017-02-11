@@ -324,6 +324,7 @@ begin
         .Execute(acExcludeProjects)
         .Execute(acRunFixInsight)
         .Execute(acParseReports)
+        .Execute(acExcludeUnits)
         .Execute(acBuildReport)
         .Execute(acMakeArchive)
         .Execute(acTerminate);

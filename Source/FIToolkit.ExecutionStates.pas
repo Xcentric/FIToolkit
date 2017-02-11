@@ -204,7 +204,13 @@ begin //FI:C101
               FMessages.Add(R.Key, nil);
       end
     )
-    .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
+    .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        // TODO: implement {TExecutiveTransitionsProvider.PrepareWorkflow}
+      end
+    )
+    .AddTransition(asUnitsExcluded, asReportBuilt, acBuildReport,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         F : TFileName;
