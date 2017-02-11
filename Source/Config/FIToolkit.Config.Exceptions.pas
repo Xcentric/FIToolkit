@@ -27,6 +27,7 @@ type
   ECDFixInsightExeNotFound = class (EConfigDataException);
   ECDInputFileNotFound = class (EConfigDataException);
   ECDInvalidExcludeProjectPattern = class (EConfigDataException);
+  ECDInvalidExcludeUnitPattern = class (EConfigDataException);
   ECDInvalidOutputFileName = class (EConfigDataException);
   ECDOutputDirectoryNotFound = class (EConfigDataException);
   ECDTempDirectoryNotFound = class (EConfigDataException);
@@ -47,6 +48,7 @@ initialization
   RegisterExceptionMessage(ECDFixInsightExeNotFound, RSCDFixInsightExeNotFound);
   RegisterExceptionMessage(ECDInputFileNotFound, RSCDInputFileNotFound);
   RegisterExceptionMessage(ECDInvalidExcludeProjectPattern, RSCDInvalidExcludeProjectPattern);
+  RegisterExceptionMessage(ECDInvalidExcludeUnitPattern, RSCDInvalidExcludeUnitPattern);
   RegisterExceptionMessage(ECDInvalidOutputFileName, RSCDInvalidOutputFileName);
   RegisterExceptionMessage(ECDOutputDirectoryNotFound, RSCDOutputDirectoryNotFound);
   RegisterExceptionMessage(ECDTempDirectoryNotFound, RSCDTempDirectoryNotFound);
