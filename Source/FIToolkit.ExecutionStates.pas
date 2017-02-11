@@ -198,6 +198,7 @@ begin //FI:C101
             if TFile.Exists(R.Value) then
             begin
               FFixInsightXMLParser.Parse(R.Value, False);
+              FFixInsightXMLParser.Messages.Sort(TFixInsightMessage.GetComparer);
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
