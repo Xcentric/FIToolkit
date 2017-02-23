@@ -10,6 +10,7 @@ uses
 type
 
   DefaultExcludeProjectPatterns = class (TDefaultStringArrayValue); //FI:C104
+  DefaultExcludeUnitPatterns = class (TDefaultStringArrayValue);    //FI:C104
   DefaultFixInsightExe = class (TDefaultFileNameValue);             //FI:C104
   DefaultMakeArchive = class (TDefaultBooleanValue);                //FI:C104
   DefaultOutputDirectory = class (TDefaultStringValue);             //FI:C104
@@ -22,6 +23,7 @@ type
     strict private
       FCustomTemplateFileName : TAssignableFileName;
       FExcludeProjectPatterns : TStringDynArray;
+      FExcludeUnitPatterns : TStringDynArray;
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
       FMakeArchive : Boolean;
@@ -36,6 +38,7 @@ type
     private
       procedure ValidateCustomTemplateFileName(const Value : TFileName);
       procedure ValidateExcludeProjectPatterns(const Value : TStringDynArray);
+      procedure ValidateExcludeUnitPatterns(const Value : TStringDynArray);
       procedure ValidateFixInsightExe(const Value : TFileName);
       procedure ValidateInputFileName(const Value : TFileName);
       procedure ValidateOutputDirectory(const Value : String);
@@ -51,6 +54,7 @@ type
       function  GetTempDirectory : String;
       procedure SetCustomTemplateFileName(Value : TFileName);
       procedure SetExcludeProjectPatterns(const Value : TStringDynArray);
+      procedure SetExcludeUnitPatterns(const Value : TStringDynArray);
       procedure SetFixInsightExe(Value : TFileName);
       procedure SetInputFileName(Value : TFileName);
       procedure SetOutputDirectory(Value : String);
@@ -65,6 +69,8 @@ type
       property CustomTemplateFileName : TFileName read GetCustomTemplateFileName write SetCustomTemplateFileName;
       [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeProjectPatterns]
       property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write SetExcludeProjectPatterns;
+      [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeUnitPatterns]
+      property ExcludeUnitPatterns : TStringDynArray read FExcludeUnitPatterns write SetExcludeUnitPatterns;
       [FIToolkitParam, DefaultFixInsightExe]
       property FixInsightExe : TFileName read GetFixInsightExe write SetFixInsightExe;
       [FIToolkitParam]
@@ -160,6 +166,14 @@ begin
   FExcludeProjectPatterns := Value;
 end;
 
+procedure TConfigData.SetExcludeUnitPatterns(const Value : TStringDynArray);
+begin
+  if FValidate then
+    ValidateExcludeUnitPatterns(Value);
+
+  FExcludeUnitPatterns := Value;
+end;
+
 procedure TConfigData.SetFixInsightExe(Value : TFileName);
 begin
   Value := TPath.ExpandIfNotExists(Value);
@@ -249,6 +263,18 @@ begin
     end;
 end;
 
+procedure TConfigData.ValidateExcludeUnitPatterns(const Value : TStringDynArray);
+var
+  S : String;
+begin
+  for S in Value do
+    try
+      TRegEx.Create(S, [roNotEmpty, roCompiled]);
+    except
+      Exception.RaiseOuterException(ECDInvalidExcludeUnitPattern.CreateFmt([S]));
+    end;
+end;
+
 procedure TConfigData.ValidateFixInsightExe(const Value : TFileName);
 begin
   if not TFile.Exists(Value) then
@@ -287,6 +313,7 @@ end;
 
 initialization
   RegisterDefaultValue(DefaultExcludeProjectPatterns, TValue.From<TStringDynArray>(DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS));
+  RegisterDefaultValue(DefaultExcludeUnitPatterns, TValue.From<TStringDynArray>(DEF_CD_ARR_EXCLUDE_UNIT_PATTERNS));
   RegisterDefaultValue(DefaultFixInsightExe, GetFixInsightExePath);
   RegisterDefaultValue(DefaultOutputDirectory, TPath.GetDocumentsPath);
   RegisterDefaultValue(DefaultTempDirectory, TPath.GetTempPath);

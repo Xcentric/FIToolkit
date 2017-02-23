@@ -73,6 +73,17 @@ begin
     'CheckException::ECDInvalidExcludeProjectPattern'
   );
 
+  { Check validation - empty exclude unit regex }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.ExcludeUnitPatterns := [String.Empty];
+    end,
+    ECDInvalidExcludeUnitPattern,
+    'CheckException::ECDInvalidExcludeUnitPattern'
+  );
+
   { Check validation - empty FixInsight executable path }
 
   CheckException(
@@ -169,6 +180,17 @@ begin
     'CheckException::ECDInvalidExcludeProjectPattern'
   );
 
+  { Check validation - invalid exclude unit regex }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.ExcludeUnitPatterns := [REGEX_VALID, REGEX_INVALID];
+    end,
+    ECDInvalidExcludeUnitPattern,
+    'CheckException::ECDInvalidExcludeUnitPattern'
+  );
+
   { Check validation - invalid FixInsight executable path }
 
   CheckException(
@@ -249,6 +271,7 @@ begin
         Validate := True;
         CustomTemplateFileName := ParamStr(0);
         ExcludeProjectPatterns := [REGEX_VALID1, REGEX_VALID2];
+        ExcludeUnitPatterns := [REGEX_VALID1, REGEX_VALID2];
         FixInsightExe := ParamStr(0);
         InputFileName := ParamStr(0);
         OutputDirectory := ExtractFileDir(ParamStr(0));
