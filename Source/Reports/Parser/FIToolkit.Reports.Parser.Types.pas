@@ -3,13 +3,16 @@
 interface
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.Generics.Defaults;
 
 type
 
   TFixInsightMessageType = (fimtUnknown, fimtWarning, fimtOptimization, fimtCodingConvention, fimtFatal, fimtTrial);
 
   TFixInsightMessage = record
+    private
+      type
+        IFixInsightMessageComparer = IComparer<TFixInsightMessage>;
     strict private
       FColumn,
       FLine : Integer;
@@ -20,6 +23,8 @@ type
     private
       function GetMsgTypeByID(const MsgID : String) : TFixInsightMessageType;
     public
+      class function GetComparer : IFixInsightMessageComparer; static;
+
       constructor Create(const AFileName : TFileName; ALine, AColumn : Integer; const AID, AText : String);
 
       property Column : Integer read FColumn;
@@ -33,7 +38,7 @@ type
 implementation
 
 uses
-  System.RegularExpressions,
+  System.RegularExpressions, System.Types, System.StrUtils, System.Math,
   FIToolkit.Reports.Parser.Consts;
 
 { TFixInsightMessage }
@@ -47,6 +52,22 @@ begin
   FText     := AText;
 
   FMsgType := GetMsgTypeByID(FID);
+end;
+
+class function TFixInsightMessage.GetComparer : IFixInsightMessageComparer;
+begin
+  Result := TComparer<TFixInsightMessage>.Construct(
+    function (const Left, Right : TFixInsightMessage) : Integer
+    begin
+      Result := AnsiCompareText(Left.FileName, Right.FileName);
+
+      if Result = EqualsValue then
+        Result := CompareValue(Left.Line, Right.Line);
+
+      if Result = EqualsValue then
+        Result := CompareValue(Left.Column, Right.Column);
+    end
+  );
 end;
 
 function TFixInsightMessage.GetMsgTypeByID(const MsgID : String) : TFixInsightMessageType;

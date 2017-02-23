@@ -125,7 +125,12 @@ end;
 
 function TFixInsightOptions.FormatProjectFileName : String;
 begin
-  Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(FProjectFileName, TCLIOptionString.CHR_QUOTE);
+  if TFile.Exists(FProjectFileName) then
+    Result := TPath.GetFullPath(FProjectFileName)
+  else
+    Result := FProjectFileName;
+
+  Result := STR_FIPARAM_PROJECT + TPath.GetQuotedPath(Result, TCLIOptionString.CHR_QUOTE);
 end;
 
 function TFixInsightOptions.FormatSettingsFileName : String;

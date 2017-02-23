@@ -20,13 +20,13 @@ const
 
   { Common consts }
 
-  ARR_APPCOMMAND_TO_CLIOPTION_MAPPING : array [Low(TApplicationCommand)..High(TApplicationCommand)] of String = (
+  ARR_APPCOMMAND_TO_CLIOPTION_MAPPING : array [TApplicationCommand] of String = (
     String.Empty,
     //
     STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
     STR_CLI_OPTION_NO_EXIT,
     //
-    String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
+    String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
     //
     String.Empty
   );
@@ -41,7 +41,7 @@ const
     STR_CLI_OPTION_SET_CONFIG
   ];
 
-  ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING : array [Low(TInputFileType)..High(TInputFileType)] of String = (
+  ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING : array [TInputFileType] of String = (
     String.Empty, '.dpr', '.dpk', '.dproj', '.groupproj'
   );
 

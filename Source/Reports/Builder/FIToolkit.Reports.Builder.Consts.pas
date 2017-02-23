@@ -10,7 +10,7 @@ const
 
   { Common consts }
 
-  ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
+  ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING : array [TFixInsightMessageType] of String =
     (String.Empty, 'Warning', 'Optimization', 'CodingConvention', 'Fatal', 'Trial'); // Do not localize!
 
   { XML consts for an HTML report template format. Do not localize! }
@@ -67,7 +67,7 @@ resourcestring
 
 const
 
-  ARR_MSGTYPE_TO_MSGNAME_MAPPING : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of String =
+  ARR_MSGTYPE_TO_MSGNAME_MAPPING : array [TFixInsightMessageType] of String =
     (String.Empty, RSWarning, RSOptimization, RSCodingConvention, RSFatal, RSTrial);
 
 resourcestring

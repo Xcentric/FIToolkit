@@ -198,13 +198,44 @@ begin //FI:C101
             if TFile.Exists(R.Value) then
             begin
               FFixInsightXMLParser.Parse(R.Value, False);
+              FFixInsightXMLParser.Messages.Sort(TFixInsightMessage.GetComparer);
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
               FMessages.Add(R.Key, nil);
       end
     )
-    .AddTransition(asReportsParsed, asReportBuilt, acBuildReport,
+    .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        LProjectMessages : TList<TFixInsightMessage>;
+        sPattern : String;
+        F : TFileName;
+        Msg : TFixInsightMessage;
+      begin
+        LProjectMessages := TList<TFixInsightMessage>.Create(TFixInsightMessage.GetComparer);
+        try
+          with StateHolder do
+            for sPattern in FConfigData.ExcludeUnitPatterns do
+              for F in FProjects do
+                if Assigned(FMessages[F]) then
+                begin
+                  LProjectMessages.Clear;
+                  LProjectMessages.AddRange(FMessages[F]);
+
+                  for Msg in FMessages[F] do
+                    if TRegEx.IsMatch(Msg.FileName, sPattern, [roIgnoreCase]) then
+                      LProjectMessages.Remove(Msg);
+
+                  if LProjectMessages.Count < Length(FMessages[F]) then
+                    FMessages[F] := LProjectMessages.ToArray;
+                end;
+        finally
+          LProjectMessages.Free;
+        end;
+      end
+    )
+    .AddTransition(asUnitsExcluded, asReportBuilt, acBuildReport,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         F : TFileName;
@@ -293,7 +324,7 @@ end;
 class function TWorkflowHelper.CalcSummary(StateHolder : TWorkflowStateHolder;
   const ProjectFilter : String) : TArray<TSummaryItem>;
 var
-  arrSummary : array [Low(TFixInsightMessageType)..High(TFixInsightMessageType)] of TSummaryItem;
+  arrSummary : array [TFixInsightMessageType] of TSummaryItem;
 
   procedure CalcProjectMessages(Project : TFileName);
   var

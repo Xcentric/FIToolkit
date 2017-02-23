@@ -20,12 +20,13 @@ type
   TestTFixInsightMessage = class (TGenericTestCase)
     published
       procedure TestCreate;
+      procedure TestGetComparer;
   end;
 
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.Types;
 
 { TestTFixInsightMessage }
 
@@ -56,6 +57,26 @@ begin
 
   FIM := TFixInsightMessage.Create(String.Empty, 0, 0, MSGID_TRIAL, String.Empty);
   CheckEquals<TFixInsightMessageType>(fimtTrial, FIM.MsgType, 'MsgType = fimtTrial');
+end;
+
+procedure TestTFixInsightMessage.TestGetComparer;
+var
+  OrigMsg, EqualMsg, GreaterMsg1, GreaterMsg2, GreaterMsg3 : TFixInsightMessage;
+begin
+  OrigMsg := TFixInsightMessage.Create('C:\abc.pas', 100, 32, String.Empty, String.Empty);
+  EqualMsg := TFixInsightMessage.Create('C:\ABC.pas', 100, 32, 'W505', 'text');
+  GreaterMsg1 := TFixInsightMessage.Create('C:\bcd.pas', 100, 32, String.Empty, String.Empty);
+  GreaterMsg2 := TFixInsightMessage.Create('C:\abc.pas', 101, 32, String.Empty, String.Empty);
+  GreaterMsg3 := TFixInsightMessage.Create('C:\abc.pas', 100, 33, String.Empty, String.Empty);
+
+  with TFixInsightMessage.GetComparer do
+  begin
+    CheckEquals(EqualsValue, Compare(OrigMsg, OrigMsg), 'OrigMsg = OrigMsg');
+    CheckEquals(EqualsValue, Compare(OrigMsg, EqualMsg), 'OrigMsg = EqualMsg');
+    CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg1), 'OrigMsg < GreaterMsg1');
+    CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg2), 'OrigMsg < GreaterMsg2');
+    CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg3), 'OrigMsg < GreaterMsg3');
+  end;
 end;
 
 initialization
