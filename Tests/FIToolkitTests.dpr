@@ -73,6 +73,7 @@ uses
   Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
   Test_FIToolkit.ProjectGroupParser.Parser in 'Test_FIToolkit.ProjectGroupParser.Parser.pas',
   Test_FIToolkit.Reports.Builder.HTML in 'Test_FIToolkit.Reports.Builder.HTML.pas',
+  Test_FIToolkit.Reports.Parser.Messages in 'Test_FIToolkit.Reports.Parser.Messages.pas',
   Test_FIToolkit.Reports.Parser.Types in 'Test_FIToolkit.Reports.Parser.Types.pas',
   Test_FIToolkit.Reports.Parser.XMLOutputParser in 'Test_FIToolkit.Reports.Parser.XMLOutputParser.pas',
   Test_FIToolkit.Runner.Tasks in 'Test_FIToolkit.Runner.Tasks.pas',

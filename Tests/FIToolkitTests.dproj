@@ -137,6 +137,7 @@
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="Test_FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Builder.HTML.pas"/>
+        <DCCReference Include="Test_FIToolkit.Reports.Parser.Messages.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Parser.Types.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
         <DCCReference Include="Test_FIToolkit.Runner.Tasks.pas"/>
