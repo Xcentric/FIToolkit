@@ -4,14 +4,11 @@ interface
 
 uses
   System.SysUtils, System.Generics.Collections, Xml.XMLIntf,
-  FIToolkit.Reports.Parser.Types;
+  FIToolkit.Reports.Parser.Messages;
 
 type
 
   TFixInsightXMLParser = class sealed
-    private
-      type
-        TFixInsightMessages = class (TList<TFixInsightMessage>);
     strict private
       FMessages : TFixInsightMessages;
     private
@@ -31,7 +28,7 @@ implementation
 uses
   Xml.XMLDoc, Winapi.ActiveX, System.IOUtils,
   FIToolkit.Commons.Utils,
-  FIToolkit.Reports.Parser.Exceptions, FIToolkit.Reports.Parser.Consts;
+  FIToolkit.Reports.Parser.Exceptions, FIToolkit.Reports.Parser.Types, FIToolkit.Reports.Parser.Consts;
 
 { TFixInsightXMLParser }
 

@@ -55,6 +55,7 @@ uses
   FIToolkit.Reports.Builder.Types in '..\Source\Reports\Builder\FIToolkit.Reports.Builder.Types.pas',
   FIToolkit.Reports.Parser.Consts in '..\Source\Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
   FIToolkit.Reports.Parser.Exceptions in '..\Source\Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas',
+  FIToolkit.Reports.Parser.Messages in '..\Source\Reports\Parser\FIToolkit.Reports.Parser.Messages.pas',
   FIToolkit.Reports.Parser.Types in '..\Source\Reports\Parser\FIToolkit.Reports.Parser.Types.pas',
   FIToolkit.Reports.Parser.XMLOutputParser in '..\Source\Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas',
   FIToolkit.Runner.Consts in '..\Source\Runner\FIToolkit.Runner.Consts.pas',

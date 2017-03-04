@@ -136,6 +136,7 @@
         <DCCReference Include="Reports\Builder\FIToolkit.Reports.Builder.Types.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Consts.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas"/>
+        <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Messages.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.Types.pas"/>
         <DCCReference Include="Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
