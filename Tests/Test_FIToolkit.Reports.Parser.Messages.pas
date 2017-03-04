@@ -12,8 +12,8 @@
 interface
 
 uses
-  TestFramework, FIToolkit.Reports.Parser.Messages, System.Generics.Collections,
-  FIToolkit.Reports.Parser.Types;
+  TestFramework,
+  FIToolkit.Reports.Parser.Messages, FIToolkit.Reports.Parser.Types;
 
 type
   // Test methods for class TFixInsightMessages
@@ -25,6 +25,8 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure TestBeginEndUpdate;
+    procedure TestContains;
     procedure TestSorted;
   end;
 
@@ -42,6 +44,46 @@ procedure TestTFixInsightMessages.TearDown;
 begin
   FFixInsightMessages.Free;
   FFixInsightMessages := nil;
+end;
+
+procedure TestTFixInsightMessages.TestBeginEndUpdate;
+begin
+  FFixInsightMessages.Sorted := True;
+
+  FFixInsightMessages.BeginUpdate;
+  try
+    CheckEquals(1, FFixInsightMessages.UpdateCount, 'UpdateCount = 1');
+
+    FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 4, 0, String.Empty, String.Empty));
+    FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 3, 0, String.Empty, String.Empty));
+    FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 2, 0, String.Empty, String.Empty));
+    FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 1, 0, String.Empty, String.Empty));
+
+    CheckEquals(1, FFixInsightMessages.Last.Line, 'Last.Line = 1');
+  finally
+    FFixInsightMessages.EndUpdate;
+  end;
+
+  CheckEquals(0, FFixInsightMessages.UpdateCount, 'UpdateCount = 0');
+  CheckEquals(1, FFixInsightMessages.First.Line, 'First.Line = 1');
+end;
+
+procedure TestTFixInsightMessages.TestContains;
+var
+  Msg : TFixInsightMessage;
+begin
+  FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 4, 0, String.Empty, String.Empty));
+  FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 3, 0, String.Empty, String.Empty));
+  FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 2, 0, String.Empty, String.Empty));
+  FFixInsightMessages.Add(TFixInsightMessage.Create(String.Empty, 1, 0, String.Empty, String.Empty));
+  Msg := FFixInsightMessages[3];
+
+  CheckTrue(FFixInsightMessages.Contains(Msg), 'CheckTrue::Contains(Msg)<Sorted = False>');
+  FFixInsightMessages.Sorted := True;
+  CheckTrue(FFixInsightMessages.Contains(Msg), 'CheckTrue::Contains(Msg)<Sorted = True>');
+
+  FFixInsightMessages.Remove(Msg);
+  CheckFalse(FFixInsightMessages.Contains(Msg), 'CheckFalse::Contains(Msg)');
 end;
 
 procedure TestTFixInsightMessages.TestSorted;
