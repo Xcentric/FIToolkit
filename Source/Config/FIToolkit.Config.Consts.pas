@@ -23,7 +23,7 @@ const
 
   { Default config values. Do not localize! }
 
-  DEF_FIO_ARR_COMPILER_DEFINES : TStringDynArray = ['DEBUG', 'RELEASE'];
+  DEF_FIO_ARR_COMPILER_DEFINES : TStringDynArray = ['RELEASE', 'MSWINDOWS'];
   DEF_FIO_BOOL_SILENT = False;
   DEF_FIO_ENUM_OUTPUT_FORMAT = TFixInsightOutputFormat(fiofXML);
   DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
