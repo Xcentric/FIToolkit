@@ -42,7 +42,7 @@ type
 implementation
 
 uses
-  System.RegularExpressions, System.Types, System.StrUtils, System.Math,
+  System.RegularExpressions, System.Types, System.Math,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Parser.Consts;
 

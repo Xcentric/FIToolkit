@@ -39,7 +39,7 @@ implementation
 
 uses
   System.TypInfo,
-  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults, FIToolkit.Config.Consts,
+  FIToolkit.Config.FixInsight, FIToolkit.Config.Defaults,
   FIToolkit.Commons.Utils;
 
 { TConfigManager }
