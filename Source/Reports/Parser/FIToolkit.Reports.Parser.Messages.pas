@@ -25,6 +25,7 @@ type
     public
       constructor Create;
 
+      procedure AddRange(const Values : array of TFixInsightMessage);
       procedure BeginUpdate;
       function  Contains(const Value : TFixInsightMessage) : Boolean;
       procedure EndUpdate;
@@ -36,6 +37,16 @@ type
 implementation
 
 { TFixInsightMessages }
+
+procedure TFixInsightMessages.AddRange(const Values : array of TFixInsightMessage);
+begin
+  BeginUpdate;
+  try
+    inherited AddRange(Values);
+  finally
+    EndUpdate;
+  end;
+end;
 
 procedure TFixInsightMessages.BeginUpdate;
 begin
