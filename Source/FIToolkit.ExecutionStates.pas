@@ -26,6 +26,7 @@ type
 
       { Supporting infrastructure }
 
+      FDeduplicator : TFixInsightMessages;
       FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
       FProjects : TArray<TFileName>;
       FReportFileName : TFileName;
@@ -79,6 +80,7 @@ constructor TWorkflowStateHolder.Create(ConfigData : TConfigData);
 begin
   inherited Create;
 
+  FDeduplicator := TFixInsightMessages.Create;
   FMessages := TDictionary<TFileName, TArray<TFixInsightMessage>>.Create;
   FReportFileName := TPath.Combine(ConfigData.OutputDirectory, ConfigData.OutputFileName);
   FReportOutput := TFile.CreateText(FReportFileName);
@@ -96,6 +98,7 @@ begin
   FreeAndNil(FProjectParser);
   FreeAndNil(FTaskManager);
 
+  FreeAndNil(FDeduplicator);
   FreeAndNil(FMessages);
   FreeAndNil(FReportOutput);
 
@@ -192,12 +195,25 @@ begin //FI:C101
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         R : TPair<TFileName, TFileName>;
+        i : Integer;
       begin
         with StateHolder do
           for R in FReports do
             if TFile.Exists(R.Value) then
             begin
-              FFixInsightXMLParser.Parse(R.Value, False);
+              if not FConfigData.Deduplicate then
+                FFixInsightXMLParser.Parse(R.Value, False)
+              else
+              begin
+                FFixInsightXMLParser.Parse(R.Value, R.Key, False);
+
+                for i := FFixInsightXMLParser.Messages.Count - 1 downto 0 do
+                  if FDeduplicator.Contains(FFixInsightXMLParser.Messages[i]) then
+                    FFixInsightXMLParser.Messages.Delete(i);
+
+                FDeduplicator.AddRange(FFixInsightXMLParser.Messages.ToArray);
+              end;
+
               FFixInsightXMLParser.Messages.Sort;
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
