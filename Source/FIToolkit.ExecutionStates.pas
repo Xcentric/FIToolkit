@@ -147,6 +147,7 @@ begin //FI:C101
             iftGROUPPROJ:
               begin
                 if FConfigData.Deduplicate then
+                  // TODO: check {presumably not needed}
                   FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName.Expand)
                 else
                   FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
