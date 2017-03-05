@@ -56,12 +56,12 @@ end;
 procedure TFixInsightMessages.Changed;
 begin
   if UpdateCount = 0 then
-  begin
-    if FSorted and (cnAdded in FUpdateActions) then
-      Sort;
-
-    FUpdateActions := [];
-  end;
+    try
+      if FSorted and (cnAdded in FUpdateActions) then
+        Sort;
+    finally
+      FUpdateActions := [];
+    end;
 end;
 
 function TFixInsightMessages.Contains(const Value : TFixInsightMessage) : Boolean;
