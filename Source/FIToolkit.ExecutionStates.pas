@@ -148,6 +148,7 @@ begin //FI:C101
               begin
                 FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
                 FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
+                TArray.Sort<TFileName>(FProjects, TFileName.GetComparer);
               end;
           else
             raise EUnknownInputFileType.Create;

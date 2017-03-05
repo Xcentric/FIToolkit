@@ -39,6 +39,7 @@ type
   TestTFileNameHelper = class (TGenericTestCase)
     published
       procedure TestExpand;
+      procedure TestGetComparer;
       procedure TestIsApplicable;
       procedure TestIsEmpty;
   end;
@@ -114,7 +115,7 @@ type
 implementation
 
 uses
-  System.Classes, System.IOUtils, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
+  System.Classes, System.IOUtils, System.Types, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
@@ -308,6 +309,25 @@ begin
 
   CheckFalse(sExpandedFileName.StartsWith('..\'), 'CheckFalse::StartsWith("..\")');
   CheckTrue(sExpandedFileName.Length > Length(sFileName), 'CheckTrue::(Expanded.Length > Original.Length)');
+end;
+
+procedure TestTFileNameHelper.TestGetComparer;
+var
+  sFileName,
+  sLesser, sEqual, sGreater : TFileName;
+begin
+  sFileName := 'D:\work\project.doc';
+
+  sLesser  := 'C:\work\project.doc';
+  sEqual   := 'D:\WORK\project.doc';
+  sGreater := 'E:\work\project.doc';
+
+  with TFileName.GetComparer do
+  begin
+    CheckEquals(GreaterThanValue, Compare(sFileName, sLesser),  'sFileName > sLesser');
+    CheckEquals(EqualsValue,      Compare(sFileName, sEqual),   'sFileName = sEqual');
+    CheckEquals(LessThanValue,    Compare(sFileName, sGreater), 'sFileName < sGreater');
+  end;
 end;
 
 procedure TestTFileNameHelper.TestIsApplicable;
