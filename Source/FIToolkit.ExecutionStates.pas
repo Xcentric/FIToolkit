@@ -146,7 +146,11 @@ begin //FI:C101
               end;
             iftGROUPPROJ:
               begin
-                FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
+                if FConfigData.Deduplicate then
+                  FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName.Expand)
+                else
+                  FProjectGroupParser := TProjectGroupParser.Create(FConfigData.InputFileName);
+
                 FProjects := FProjectGroupParser.GetIncludedProjectsFiles;
               end;
           else

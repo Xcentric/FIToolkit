@@ -36,7 +36,7 @@ procedure TFixInsightXMLParser.AppendMessagesFromXML(const XML : IXMLDocument; c
 var
   RootNode, FileNode, MessageNode : IXMLNode;
   i, k : Integer;
-  sFileName, sFullFileName : String;
+  sFileName, sFullFileName : TFileName;
 begin
   try
     RootNode := XML.Node.ChildNodes[STR_FIXML_ROOT_NODE];
@@ -69,7 +69,7 @@ begin
                 FMessages.Add(
                   TFixInsightMessage.Create(
                     sFileName,
-                    sFullFileName,
+                    sFullFileName.Expand,
                     MessageNode.Attributes[STR_FIXML_LINE_ATTRIBUTE],
                     MessageNode.Attributes[STR_FIXML_COL_ATTRIBUTE],
                     MessageNode.Attributes[STR_FIXML_ID_ATTRIBUTE],
