@@ -9,6 +9,7 @@ uses
 
 type
 
+  DefaultDeduplicate = class (TDefaultBooleanValue);                //FI:C104
   DefaultExcludeProjectPatterns = class (TDefaultStringArrayValue); //FI:C104
   DefaultExcludeUnitPatterns = class (TDefaultStringArrayValue);    //FI:C104
   DefaultFixInsightExe = class (TDefaultFileNameValue);             //FI:C104
@@ -22,6 +23,7 @@ type
   TConfigData = class sealed
     strict private
       FCustomTemplateFileName : TAssignableFileName;
+      FDeduplicate : Boolean;
       FExcludeProjectPatterns : TStringDynArray;
       FExcludeUnitPatterns : TStringDynArray;
       FFixInsightExe : TAssignableFileName;
@@ -67,6 +69,8 @@ type
 
       [FIToolkitParam]
       property CustomTemplateFileName : TFileName read GetCustomTemplateFileName write SetCustomTemplateFileName;
+      [FIToolkitParam, DefaultDeduplicate(DEF_CD_BOOL_DEDUPLICATE)]
+      property Deduplicate : Boolean read FDeduplicate write FDeduplicate;
       [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeProjectPatterns]
       property ExcludeProjectPatterns : TStringDynArray read FExcludeProjectPatterns write SetExcludeProjectPatterns;
       [FIToolkitParam(STR_CFG_VALUE_ARR_DELIM_REGEX), DefaultExcludeUnitPatterns]

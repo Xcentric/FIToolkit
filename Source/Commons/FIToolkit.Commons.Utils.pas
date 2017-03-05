@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
+  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti, System.Generics.Defaults,
   FIToolkit.Commons.Types;
 
 type
@@ -27,6 +27,10 @@ type
 
   TFileNameHelper = record helper for TFileName
     public
+      class function GetComparer : IComparer<TFileName>; static;
+
+      function Expand(Check : Boolean = False) : TFileName; overload;
+      function Expand(ExpandVars, Check : Boolean) : TFileName; overload;
       function IsApplicable : Boolean;
       function IsEmpty : Boolean;
   end;
@@ -252,6 +256,26 @@ begin
 end;
 
 { TFileNameHelper }
+
+function TFileNameHelper.Expand(Check : Boolean) : TFileName;
+begin
+  Result := Self.Expand(False, Check);
+end;
+
+function TFileNameHelper.Expand(ExpandVars, Check : Boolean) : TFileName;
+begin
+  Result := TPath.GetFullPath(Self, ExpandVars, Check);
+end;
+
+class function TFileNameHelper.GetComparer : IComparer<TFileName>;
+begin
+  Result := TComparer<TFileName>.Construct(
+    function (const Left, Right : TFileName) : Integer
+    begin
+      Result := String.Compare(Left, Right, True);
+    end
+  );
+end;
 
 function TFileNameHelper.IsApplicable : Boolean;
 begin

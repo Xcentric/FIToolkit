@@ -24,7 +24,7 @@ const
 
   { Default config values. Do not localize! }
 
-  DEF_FIO_ARR_COMPILER_DEFINES : TStringDynArray = ['DEBUG', 'RELEASE'];
+  DEF_FIO_ARR_COMPILER_DEFINES : TStringDynArray = ['RELEASE', 'MSWINDOWS'];
   DEF_FIO_BOOL_SILENT = False;
   DEF_FIO_ENUM_OUTPUT_FORMAT = TFixInsightOutputFormat(fiofXML);
   DEF_FIO_STR_OUTPUT_FILENAME = 'FixInsightReport.xml';
@@ -32,6 +32,7 @@ const
 
   DEF_CD_ARR_EXCLUDE_PROJECT_PATTERNS : TStringDynArray = ['Project[0-9]+\.dpr', '\\JCL\\', '\\JVCL\\'];
   DEF_CD_ARR_EXCLUDE_UNIT_PATTERNS : TStringDynArray = ['Unit[0-9]+\.pas', '\\JWA\\', '\\RegExpr.pas'];
+  DEF_CD_BOOL_DEDUPLICATE = False;
   DEF_CD_BOOL_MAKE_ARCHIVE = False;
   DEF_CD_BOOL_USE_BAD_EXIT_CODE = False;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';

@@ -16,7 +16,8 @@ type
     strict private
       FColumn,
       FLine : Integer;
-      FFileName : TFileName;
+      FFileName,
+      FFullFileName : TFileName;
       FID,
       FText : String;
       FMsgType : TFixInsightMessageType;
@@ -25,10 +26,13 @@ type
     public
       class function GetComparer : IFixInsightMessageComparer; static;
 
-      constructor Create(const AFileName : TFileName; ALine, AColumn : Integer; const AID, AText : String);
+      constructor Create(const AFileName : TFileName; ALine, AColumn : Integer; const AID, AText : String); overload;
+      constructor Create(const AFileName, AFullFileName : TFileName; ALine, AColumn : Integer;
+        const AID, AText : String); overload;
 
       property Column : Integer read FColumn;
       property FileName : TFileName read FFileName;
+      property FullFileName : TFileName read FFullFileName;
       property ID : String read FID;
       property Line : Integer read FLine;
       property MsgType : TFixInsightMessageType read FMsgType;
@@ -38,7 +42,8 @@ type
 implementation
 
 uses
-  System.RegularExpressions, System.Types, System.StrUtils, System.Math,
+  System.RegularExpressions, System.Types, System.Math,
+  FIToolkit.Commons.Utils,
   FIToolkit.Reports.Parser.Consts;
 
 { TFixInsightMessage }
@@ -54,12 +59,23 @@ begin
   FMsgType := GetMsgTypeByID(FID);
 end;
 
+constructor TFixInsightMessage.Create(const AFileName, AFullFileName : TFileName; ALine, AColumn : Integer;
+  const AID, AText : String);
+begin
+  Create(AFileName, ALine, AColumn, AID, AText);
+
+  FFullFileName := AFullFileName;
+end;
+
 class function TFixInsightMessage.GetComparer : IFixInsightMessageComparer;
 begin
   Result := TComparer<TFixInsightMessage>.Construct(
     function (const Left, Right : TFixInsightMessage) : Integer
     begin
-      Result := AnsiCompareText(Left.FileName, Right.FileName);
+      if Left.FullFileName.IsEmpty or Right.FullFileName.IsEmpty then
+        Result := AnsiCompareText(Left.FileName, Right.FileName)
+      else
+        Result := AnsiCompareText(Left.FullFileName, Right.FullFileName);
 
       if Result = EqualsValue then
         Result := CompareValue(Left.Line, Right.Line);
