@@ -38,6 +38,7 @@ type
 
   TestTFileNameHelper = class (TGenericTestCase)
     published
+      procedure TestExpand;
       procedure TestIsApplicable;
       procedure TestIsEmpty;
   end;
@@ -296,6 +297,18 @@ begin
 end;
 
 { TestTFileNameHelper }
+
+procedure TestTFileNameHelper.TestExpand;
+var
+  sFileName : TFileName;
+  sExpandedFileName : String;
+begin
+  sFileName := '..\dir\file.ext';
+  sExpandedFileName := sFileName.Expand;
+
+  CheckFalse(sExpandedFileName.StartsWith('..\'), 'CheckFalse::StartsWith("..\")');
+  CheckTrue(sExpandedFileName.Length > Length(sFileName), 'CheckTrue::(Expanded.Length > Original.Length)');
+end;
 
 procedure TestTFileNameHelper.TestIsApplicable;
 var

@@ -27,7 +27,6 @@ type
 
   TFileNameHelper = record helper for TFileName
     public
-      // TODO: implement {cover with tests}
       function Expand(Check : Boolean = False) : TFileName; overload;
       function Expand(ExpandVars, Check : Boolean) : TFileName; overload;
       function IsApplicable : Boolean;
