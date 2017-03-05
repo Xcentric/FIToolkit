@@ -31,7 +31,8 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure TestParse;
+    procedure TestParse_NoProject;
+    procedure TestParse_WithProject;
   end;
 
 implementation
@@ -71,7 +72,7 @@ begin
   FreeAndNil(FFixInsightXMLParser);
 end;
 
-procedure TestTFixInsightXMLParser.TestParse;
+procedure TestTFixInsightXMLParser.TestParse_NoProject;
 var
   sXMLFileName : TFileName;
   iOldCount : Integer;
@@ -89,6 +90,39 @@ begin
     iOldCount := FFixInsightXMLParser.Messages.Count;
     FFixInsightXMLParser.Parse(sXMLFileName, True);
     CheckEquals(iOldCount * 2, FFixInsightXMLParser.Messages.Count, 'Messages.Count = 2 * iOldCount');
+  finally
+    DeleteFile(sXMLFileName);
+  end;
+end;
+
+procedure TestTFixInsightXMLParser.TestParse_WithProject;
+const
+  STR_PROJECT_DIR  = 'D:\Project\';
+  STR_PROJECT_FILE = 'ProjectFile.dpr';
+  STR_PROJECT_PATH = STR_PROJECT_DIR + STR_PROJECT_FILE;
+var
+  sXMLFileName : TFileName;
+begin
+  sXMLFileName := GenerateXMLFile;
+  try
+    FFixInsightXMLParser.Parse(sXMLFileName, False);
+    with FFixInsightXMLParser.Messages[0] do
+    begin
+      CheckEquals(String.Empty, FullFileName, 'FullFileName = String.Empty');
+      CheckNotEquals(FileName, FullFileName, 'FullFileName <> FileName');
+    end;
+
+    FFixInsightXMLParser.Parse(sXMLFileName, STR_PROJECT_PATH, False);
+    with FFixInsightXMLParser.Messages[0] do
+    begin
+      CheckNotEquals(String.Empty, FullFileName, 'FullFileName <> String.Empty');
+      CheckNotEquals(FileName, FullFileName, 'FullFileName <> FileName');
+
+      CheckTrue(String(FullFileName).StartsWith(STR_PROJECT_DIR),
+        'CheckTrue::FullFileName.StartsWith(STR_PROJECT_DIR)');
+      CheckFalse(String(FullFileName).Contains(STR_PROJECT_FILE),
+        'CheckFalse::FullFileName.Contains(STR_PROJECT_FILE)');
+    end;
   finally
     DeleteFile(sXMLFileName);
   end;

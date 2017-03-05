@@ -48,6 +48,7 @@ uses
   FIToolkit.Reports.Builder.Types in 'Reports\Builder\FIToolkit.Reports.Builder.Types.pas',
   FIToolkit.Reports.Parser.Consts in 'Reports\Parser\FIToolkit.Reports.Parser.Consts.pas',
   FIToolkit.Reports.Parser.Exceptions in 'Reports\Parser\FIToolkit.Reports.Parser.Exceptions.pas',
+  FIToolkit.Reports.Parser.Messages in 'Reports\Parser\FIToolkit.Reports.Parser.Messages.pas',
   FIToolkit.Reports.Parser.Types in 'Reports\Parser\FIToolkit.Reports.Parser.Types.pas',
   FIToolkit.Reports.Parser.XMLOutputParser in 'Reports\Parser\FIToolkit.Reports.Parser.XMLOutputParser.pas',
   FIToolkit.Runner.Consts in 'Runner\FIToolkit.Runner.Consts.pas',

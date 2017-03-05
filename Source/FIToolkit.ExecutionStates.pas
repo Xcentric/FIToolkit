@@ -8,8 +8,8 @@ uses
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine,
   FIToolkit.Config.Data, FIToolkit.ProjectGroupParser.Parser, FIToolkit.Runner.Tasks,
-  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Parser.Types, FIToolkit.Reports.Builder.Types,
-  FIToolkit.Reports.Builder.Intf;
+  FIToolkit.Reports.Parser.XMLOutputParser, FIToolkit.Reports.Parser.Messages, FIToolkit.Reports.Parser.Types,
+  FIToolkit.Reports.Builder.Types, FIToolkit.Reports.Builder.Intf;
 
 type
 
@@ -26,6 +26,7 @@ type
 
       { Supporting infrastructure }
 
+      FDeduplicator : TFixInsightMessages;
       FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
       FProjects : TArray<TFileName>;
       FReportFileName : TFileName;
@@ -79,6 +80,7 @@ constructor TWorkflowStateHolder.Create(ConfigData : TConfigData);
 begin
   inherited Create;
 
+  FDeduplicator := TFixInsightMessages.Create;
   FMessages := TDictionary<TFileName, TArray<TFixInsightMessage>>.Create;
   FReportFileName := TPath.Combine(ConfigData.OutputDirectory, ConfigData.OutputFileName);
   FReportOutput := TFile.CreateText(FReportFileName);
@@ -96,6 +98,7 @@ begin
   FreeAndNil(FProjectParser);
   FreeAndNil(FTaskManager);
 
+  FreeAndNil(FDeduplicator);
   FreeAndNil(FMessages);
   FreeAndNil(FReportOutput);
 
@@ -192,13 +195,26 @@ begin //FI:C101
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         R : TPair<TFileName, TFileName>;
+        i : Integer;
       begin
         with StateHolder do
           for R in FReports do
             if TFile.Exists(R.Value) then
             begin
-              FFixInsightXMLParser.Parse(R.Value, False);
-              FFixInsightXMLParser.Messages.Sort(TFixInsightMessage.GetComparer);
+              if not FConfigData.Deduplicate then
+                FFixInsightXMLParser.Parse(R.Value, False)
+              else
+              begin
+                FFixInsightXMLParser.Parse(R.Value, R.Key, False);
+
+                for i := FFixInsightXMLParser.Messages.Count - 1 downto 0 do
+                  if FDeduplicator.Contains(FFixInsightXMLParser.Messages[i]) then
+                    FFixInsightXMLParser.Messages.Delete(i);
+
+                FDeduplicator.AddRange(FFixInsightXMLParser.Messages.ToArray);
+              end;
+
+              FFixInsightXMLParser.Messages.Sort;
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
@@ -208,12 +224,12 @@ begin //FI:C101
     .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
-        LProjectMessages : TList<TFixInsightMessage>;
+        LProjectMessages : TFixInsightMessages;
         sPattern : String;
         F : TFileName;
         Msg : TFixInsightMessage;
       begin
-        LProjectMessages := TList<TFixInsightMessage>.Create(TFixInsightMessage.GetComparer);
+        LProjectMessages := TFixInsightMessages.Create;
         try
           with StateHolder do
             for sPattern in FConfigData.ExcludeUnitPatterns do
