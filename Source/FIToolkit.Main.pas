@@ -84,13 +84,13 @@ end;
 
 procedure _OnException(E : Exception; out AnExitCode : Integer);
 begin
-  WriteLn(E.ToString(True), sLineBreak);
+  PrintLn([E.ToString(True), sLineBreak]);
   AnExitCode := INT_EC_ERROR_OCCURRED;
 end;
 
 procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
 begin
-  WriteLn(sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak);
+  PrintLn([sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak]);
 
   if not CanExit then
     PressAnyKeyPrompt;
@@ -224,8 +224,8 @@ begin
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         InitConfig(True);
-        WriteLn(RSConfigWasGenerated);
-        WriteLn(RSEditConfigManually);
+        PrintLn(RSConfigWasGenerated);
+        PrintLn(RSEditConfigManually);
       end
     )
     .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
@@ -242,7 +242,7 @@ end;
 
 class procedure TFIToolkit.PrintAbout;
 begin
-  WriteLn(RSApplicationAbout);
+  PrintLn(RSApplicationAbout);
 end;
 
 procedure TFIToolkit.PrintHelp;
@@ -255,7 +255,7 @@ begin
     SL := TStringList.Create;
     try
       SL.LoadFromStream(RS, TEncoding.UTF8);
-      WriteLn(SL.Text);
+      PrintLn(SL.Text);
     finally
       SL.Free;
     end;
@@ -266,18 +266,18 @@ end;
 
 class procedure TFIToolkit.PrintHelpSuggestion(const FullExePath : TFileName);
 begin
-  WriteLn(Format(RSHelpSuggestion,
+  PrintLn(Format(RSHelpSuggestion,
     [TPath.GetFileName(FullExePath) + ' ' + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
 end;
 
 procedure TFIToolkit.PrintTotalDuration;
 begin
-  WriteLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
+  PrintLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
 end;
 
 procedure TFIToolkit.PrintVersion;
 begin
-  WriteLn(GetAppVersionInfo);
+  PrintLn(GetAppVersionInfo);
 end;
 
 procedure TFIToolkit.ProcessOptions;

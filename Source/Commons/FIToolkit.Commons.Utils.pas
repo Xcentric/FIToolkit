@@ -64,6 +64,11 @@ type
       function IsString : Boolean;
   end;
 
+  TVarRecHelper = record helper for TVarRec
+    public
+      function ToString : String;
+  end;
+
   { Utils }
 
   function  AbortException : EAbort;
@@ -72,14 +77,27 @@ type
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
   procedure PressAnyKeyPrompt;
+  procedure PrintLn(const Arg : Variant); overload;
+  procedure PrintLn(const Args : array of const); overload;
   function  WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
     CheckingInterval, Timeout : Cardinal) : Boolean;
 
 implementation
 
 uses
-  System.Classes, System.SysConst, System.Threading, System.Win.Registry, Winapi.Windows,
+  System.Classes, System.SysConst, System.Threading, System.Variants, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
+
+{ Internals }
+
+procedure _PrintLn(const S : String);
+begin
+  {$IFDEF CONSOLE}
+  WriteLn(S);
+  {$ELSE}
+  OutputDebugString(PChar(S));
+  {$ENDIF}
+end;
 
 { Utils }
 
@@ -176,10 +194,10 @@ var
   ConsoleInput : TInputRecord;
   iDummy : Cardinal;
 begin
-  WriteLn(RSPressAnyKey);
+  PrintLn(RSPressAnyKey);
 
   hConsole := GetStdHandle(STD_INPUT_HANDLE);
-  if hConsole <> INVALID_HANDLE_VALUE then
+  if IsConsole and (hConsole <> INVALID_HANDLE_VALUE) then
     repeat
       WaitForSingleObjectEx(hConsole, INFINITE, False);
 
@@ -188,6 +206,31 @@ begin
           if ConsoleInput.Event.KeyEvent.bKeyDown then
             Break;
     until False;
+end;
+
+procedure PrintLn(const Arg : Variant);
+var
+  S : String;
+begin
+  if VarIsStr(Arg) then
+    S := Arg
+  else
+    S := TValue.FromVariant(Arg).ToString;
+
+  _PrintLn(S);
+end;
+
+procedure PrintLn(const Args : array of const);
+var
+  S : String;
+  Arg : TVarRec;
+begin
+  S := String.Empty;
+
+  for Arg in Args do
+    S := S + Arg.ToString;
+
+  _PrintLn(S);
 end;
 
 function WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
@@ -426,6 +469,30 @@ begin
       end;
   finally
     Ctx.Free;
+  end;
+end;
+
+{ TVarRecHelper }
+
+function TVarRecHelper.ToString : String;
+begin
+  case VType of
+    vtChar:
+      Result := Char(AnsiChar(VChar));
+    vtPChar:
+      Result := String(AnsiString(PAnsiChar(VPChar)));
+    vtPWideChar:
+      Result := WideString(PWideChar(VPWideChar));
+    vtString:
+      Result := String(VString^);
+    vtAnsiString:
+      Result := String(AnsiString(VAnsiString));
+    vtWideString:
+      Result := WideString(VWideString);
+    vtUnicodeString:
+      Result := UnicodeString(VUnicodeString);
+  else
+    Result := TValue.FromVarRec(Self).ToString;
   end;
 end;
 

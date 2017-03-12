@@ -20,10 +20,13 @@ type
 
   TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
+      procedure TestAbortException;
       procedure TestExpandEnvVars;
       procedure TestGetFixInsightExePath;
       procedure TestGetModuleVersion;
       procedure TestIff;
+      procedure TestPressAnyKeyPrompt;
+      procedure TestPrintLn;
       procedure TestWaitForFileAccess;
   end;
 
@@ -112,6 +115,11 @@ type
       procedure TestIsString;
   end;
 
+  TestTVarRecHelper = class (TGenericTestCase)
+    published
+      procedure TestToString;
+  end;
+
 implementation
 
 uses
@@ -119,6 +127,18 @@ uses
   TestUtils, TestConsts;
 
 { TestFIToolkitCommonsUtils }
+
+procedure TestFIToolkitCommonsUtils.TestAbortException;
+begin
+  CheckException(
+    procedure
+    begin
+      raise AbortException;
+    end,
+    EAbort,
+    'CheckException::EAbort'
+  );
+end;
 
 procedure TestFIToolkitCommonsUtils.TestExpandEnvVars;
 const
@@ -199,6 +219,39 @@ begin
   CheckTrue(eReturnValue = eTruePart, 'eReturnValue = eTruePart');
   eReturnValue := Iff.Get<TTestEnum>(False, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eFalsePart, 'eReturnValue = eFalsePart');
+end;
+
+procedure TestFIToolkitCommonsUtils.TestPressAnyKeyPrompt;
+begin
+  CheckException(
+    procedure
+    begin
+      PressAnyKeyPrompt;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestPrintLn;
+begin
+  CheckException(
+    procedure
+    begin
+      PrintLn('test');
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
+  CheckException(
+    procedure
+    begin
+      PrintLn(['test1', 'test2', 42]);
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
 end;
 
 procedure TestFIToolkitCommonsUtils.TestWaitForFileAccess;
@@ -585,6 +638,40 @@ begin
   CheckTrue(PTypeInfo(TypeInfo(RawByteString)).Kind.IsString, 'CheckTrue::RawByteString');
 end;
 
+{ TestTVarRecHelper }
+
+procedure TestTVarRecHelper.TestToString;
+const
+  BOOL_TEST = True;
+  INT_TEST = 777;
+
+  STR_ANSI = AnsiString('AnsiString');
+  STR_DEFAULT = String('String');
+  STR_SHORT : String[11] = 'ShortString';
+  STR_UNICODE = UnicodeString('UnicodeString');
+  STR_WIDE = WideString('WideString');
+
+type
+  TVarArgProc = reference to procedure (const Args : array of const);
+var
+  P : TVarArgProc;
+begin
+  P :=
+    procedure (const Args : array of const)
+    begin
+      CheckTrue(Args[0].ToString = BoolToStr(BOOL_TEST), 'Args[0] = BOOL_TEST');
+      CheckTrue(Args[1].ToString = INT_TEST.ToString,    'Args[1] = INT_TEST');
+      CheckTrue(Args[2].ToString = STR_ANSI,             'Args[2] = STR_ANSI');
+      CheckTrue(Args[3].ToString = STR_DEFAULT,          'Args[3] = STR_DEFAULT');
+      CheckTrue(Args[4].ToString = String(STR_SHORT),    'Args[4] = STR_SHORT');
+      CheckTrue(Args[5].ToString = STR_UNICODE,          'Args[5] = STR_UNICODE');
+      CheckTrue(Args[6].ToString = STR_WIDE,             'Args[6] = STR_WIDE');
+      CheckTrue(Args[7].ToString = sLineBreak,           'Args[7] = sLineBreak');
+    end;
+
+  P([BOOL_TEST, INT_TEST, STR_ANSI, STR_DEFAULT, STR_SHORT, STR_UNICODE, STR_WIDE, sLineBreak]);
+end;
+
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestFIToolkitCommonsUtils.Suite);
@@ -594,5 +681,6 @@ initialization
   RegisterTest(TestTRttiTypeHelper.Suite);
   RegisterTest(TestTTypeInfoHelper.Suite);
   RegisterTest(TestTTypeKindHelper.Suite);
+  RegisterTest(TestTVarRecHelper.Suite);
 
 end.
