@@ -109,6 +109,10 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Storage.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
+        <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Consts.pas"/>
+        <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Intf.pas"/>
+        <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Types.pas"/>
+        <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Utils.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
         <DCCReference Include="..\Source\ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>
@@ -135,6 +139,7 @@
         <DCCReference Include="Test_FIToolkit.Config.FixInsight.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Manager.pas"/>
         <DCCReference Include="Test_FIToolkit.Config.Storage.pas"/>
+        <DCCReference Include="Test_FIToolkit.Logger.Utils.pas"/>
         <DCCReference Include="Test_FIToolkit.ProjectGroupParser.Parser.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Builder.HTML.pas"/>
         <DCCReference Include="Test_FIToolkit.Reports.Parser.Messages.pas"/>
