@@ -8,6 +8,19 @@ uses
 
 type
 
+  ILogOutput = interface
+    ['{D66F4536-61D8-481D-9055-3F063F23E0B5}']
+
+    function  GetSeverityThreshold : TLogMsgSeverity;
+    procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+
+    procedure BeginSection(const Msg : String);
+    procedure EndSection(const Msg : String);
+    procedure WriteMessage(const Msg : String);
+
+    property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
+  end;
+
   ILogger = interface
     ['{0E36214F-FFD4-4715-9631-0B6D7F12006A}']
 
@@ -15,6 +28,10 @@ type
 
     function  GetSeverityThreshold : TLogMsgSeverity;
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+
+    { Logging: output }
+
+    procedure AddOutput(const LogOutput : ILogOutput);
 
     { Logging: structure }
 
