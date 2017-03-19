@@ -13,6 +13,7 @@ type
       FOutputs : TList<ILogOutput>;
       FSeverityThreshold : TLogMsgSeverity;
     private
+      function  GetEnabled : Boolean;
       function  GetSeverityThreshold : TLogMsgSeverity;
       procedure SetSeverityThreshold(Value : TLogMsgSeverity);
     strict protected
@@ -66,7 +67,35 @@ type
       procedure FatalFmt(const Msg : String; const Args : array of const);
       procedure FatalVal(const Vals : array of TValue);
 
+      property Enabled : Boolean read GetEnabled;
       property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
+  end;
+
+  TBaseLogger = class abstract (TAbstractLogger, ILogger)
+    strict protected
+      procedure IterateOutputs(const Action : TProc<ILogOutput>);
+    protected
+      procedure DoEnterSection(const Msg : String);
+      procedure DoLeaveSection(const Msg : String);
+      procedure DoLog(Severity : TLogMsgSeverity; const Msg : String);
+    public
+      procedure EnterSection(const Msg : String = String.Empty); overload; override;
+      procedure EnterSection(const Vals : array of const); overload; override;
+      procedure EnterSectionFmt(const Msg : String; const Args : array of const); override;
+      procedure EnterSectionVal(const Vals : array of TValue); override;
+
+      procedure LeaveSection(const Msg : String = String.Empty); overload; override;
+      procedure LeaveSection(const Vals : array of const); overload; override;
+      procedure LeaveSectionFmt(const Msg : String; const Args : array of const); override;
+      procedure LeaveSectionVal(const Vals : array of TValue); override;
+
+      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); override;
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); override;
+
+      procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload; override;
+      procedure Log(Severity : TLogMsgSeverity; const Vals : array of const); overload; override;
+      procedure LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const); override;
+      procedure LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue); override;
   end;
 
   TAbstractLogOutput = class abstract (TInterfacedObject)
@@ -160,6 +189,11 @@ begin
   LogVal(ARR_MSGTYPE_TO_MSGSEVERITY_MAPPING[lmFatal], Vals);
 end;
 
+function TAbstractLogger.GetEnabled : Boolean;
+begin
+  Result := FSeverityThreshold <> SEVERITY_NONE;
+end;
+
 function TAbstractLogger.GetSeverityThreshold : TLogMsgSeverity;
 begin
   Result := FSeverityThreshold;
@@ -208,6 +242,126 @@ end;
 procedure TAbstractLogger.WarningVal(const Vals : array of TValue);
 begin
   LogVal(ARR_MSGTYPE_TO_MSGSEVERITY_MAPPING[lmWarning], Vals);
+end;
+
+{ TBaseLogger }
+
+procedure TBaseLogger.DoEnterSection(const Msg : String);
+begin
+  IterateOutputs(
+    procedure (Output : ILogOutput)
+    begin
+      Output.BeginSection(Msg);
+    end
+  );
+end;
+
+procedure TBaseLogger.DoLeaveSection(const Msg : String);
+begin
+  IterateOutputs(
+    procedure (Output : ILogOutput)
+    begin
+      Output.EndSection(Msg);
+    end
+  );
+end;
+
+procedure TBaseLogger.DoLog(Severity : TLogMsgSeverity; const Msg : String);
+begin
+  if Severity >= SeverityThreshold then
+    IterateOutputs(
+      procedure (Output : ILogOutput)
+      begin
+        if Severity >= Output.SeverityThreshold then
+          Output.WriteMessage(Severity, Msg);
+      end
+    );
+end;
+
+procedure TBaseLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
+begin
+
+end;
+
+procedure TBaseLogger.EnterSection(const Msg : String);
+begin
+  DoEnterSection(Msg);
+end;
+
+procedure TBaseLogger.EnterSection(const Vals : array of const);
+begin
+
+end;
+
+procedure TBaseLogger.EnterSectionFmt(const Msg : String; const Args : array of const);
+begin
+  EnterSection(Format(Msg, Args));
+end;
+
+procedure TBaseLogger.EnterSectionVal(const Vals : array of TValue);
+begin
+
+end;
+
+procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>);
+var
+  Output : ILogOutput;
+begin
+  if Enabled then
+  begin
+    TMonitor.Enter(Outputs);
+    try
+      for Output in Outputs do
+        Action(Output);
+    finally
+      TMonitor.Exit(Outputs);
+    end;
+  end;
+end;
+
+procedure TBaseLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
+begin
+
+end;
+
+procedure TBaseLogger.LeaveSection(const Msg : String);
+begin
+  DoLeaveSection(Msg);
+end;
+
+procedure TBaseLogger.LeaveSection(const Vals : array of const);
+begin
+
+end;
+
+procedure TBaseLogger.LeaveSectionFmt(const Msg : String; const Args : array of const);
+begin
+  LeaveSection(Format(Msg, Args));
+end;
+
+procedure TBaseLogger.LeaveSectionVal(const Vals : array of TValue);
+begin
+
+end;
+
+procedure TBaseLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
+begin
+
+end;
+
+procedure TBaseLogger.Log(Severity : TLogMsgSeverity; const Msg : String);
+begin
+  DoLog(Severity, Msg);
+end;
+
+procedure TBaseLogger.LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const);
+begin
+  Log(Severity, Format(Msg, Args));
+end;
+
+procedure TBaseLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
+begin
+
 end;
 
 end.

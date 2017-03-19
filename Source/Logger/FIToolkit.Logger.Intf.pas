@@ -16,7 +16,7 @@ type
 
     procedure BeginSection(const Msg : String);
     procedure EndSection(const Msg : String);
-    procedure WriteMessage(const Msg : String);
+    procedure WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
 
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
@@ -26,6 +26,7 @@ type
 
     { Property accessors }
 
+    function  GetEnabled : Boolean;
     function  GetSeverityThreshold : TLogMsgSeverity;
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
 
@@ -82,6 +83,7 @@ type
 
     { Properties }
 
+    property Enabled : Boolean read GetEnabled;
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
 
