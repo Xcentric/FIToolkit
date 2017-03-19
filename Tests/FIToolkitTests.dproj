@@ -110,6 +110,7 @@
         <DCCReference Include="..\Source\Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="..\Source\Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Consts.pas"/>
+        <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Impl.pas"/>
         <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Intf.pas"/>
         <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Types.pas"/>
         <DCCReference Include="..\Source\Logger\FIToolkit.Logger.Utils.pas"/>

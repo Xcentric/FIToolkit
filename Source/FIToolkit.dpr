@@ -39,6 +39,7 @@ uses
   FIToolkit.Config.Types in 'Config\FIToolkit.Config.Types.pas',
   FIToolkit.Logger.Consts in 'Logger\FIToolkit.Logger.Consts.pas',
   FIToolkit.Logger.Default in 'Logger\FIToolkit.Logger.Default.pas',
+  FIToolkit.Logger.Impl in 'Logger\FIToolkit.Logger.Impl.pas',
   FIToolkit.Logger.Intf in 'Logger\FIToolkit.Logger.Intf.pas',
   FIToolkit.Logger.Types in 'Logger\FIToolkit.Logger.Types.pas',
   FIToolkit.Logger.Utils in 'Logger\FIToolkit.Logger.Utils.pas',
