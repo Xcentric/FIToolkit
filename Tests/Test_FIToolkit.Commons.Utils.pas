@@ -21,12 +21,14 @@ type
   TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
       procedure TestAbortException;
+      procedure TestArrayOfConstToStringArray;
       procedure TestExpandEnvVars;
       procedure TestGetFixInsightExePath;
       procedure TestGetModuleVersion;
       procedure TestIff;
       procedure TestPressAnyKeyPrompt;
       procedure TestPrintLn;
+      procedure TestTValueArrayToStringArray;
       procedure TestWaitForFileAccess;
   end;
 
@@ -138,6 +140,17 @@ begin
     EAbort,
     'CheckException::EAbort'
   );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestArrayOfConstToStringArray;
+var
+  arrS : TArray<String>;
+begin
+  arrS := ArrayOfConstToStringArray([42, True, 'test']);
+
+  CheckEquals('42',   arrS[0], 'arrS[0] = 42');
+  CheckEquals('True', arrS[1], 'arrS[1] = True');
+  CheckEquals('test', arrS[2], 'arrS[2] = "test"');
 end;
 
 procedure TestFIToolkitCommonsUtils.TestExpandEnvVars;
@@ -252,6 +265,17 @@ begin
     nil,
     'CheckException::<nil>'
   );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestTValueArrayToStringArray;
+var
+  arrS : TArray<String>;
+begin
+  arrS := TValueArrayToStringArray([42, True, 'test']);
+
+  CheckEquals('42',   arrS[0], 'arrS[0] = 42');
+  CheckEquals('True', arrS[1], 'arrS[1] = True');
+  CheckEquals('test', arrS[2], 'arrS[2] = "test"');
 end;
 
 procedure TestFIToolkitCommonsUtils.TestWaitForFileAccess;

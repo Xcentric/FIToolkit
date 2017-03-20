@@ -72,6 +72,7 @@ type
   { Utils }
 
   function  AbortException : EAbort;
+  function  ArrayOfConstToStringArray(const Vals : array of const) : TArray<String>;
   function  ExpandEnvVars(const S : String) : String;
   function  GetFixInsightExePath : TFileName;
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
@@ -79,6 +80,7 @@ type
   procedure PressAnyKeyPrompt;
   procedure PrintLn(const Arg : Variant); overload;
   procedure PrintLn(const Args : array of const); overload;
+  function  TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
   function  WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
     CheckingInterval, Timeout : Cardinal) : Boolean;
 
@@ -104,6 +106,16 @@ end;
 function AbortException : EAbort;
 begin
   Result := EAbort.CreateRes(@SOperationAborted);
+end;
+
+function ArrayOfConstToStringArray(const Vals : array of const) : TArray<String>;
+var
+  i : Integer;
+begin
+  SetLength(Result, Length(Vals));
+
+  for i := 0 to High(Vals) do
+    Result[i] := Vals[i].ToString;
 end;
 
 function ExpandEnvVars(const S : String) : String;
@@ -231,6 +243,16 @@ begin
     S := S + Arg.ToString;
 
   _PrintLn(S);
+end;
+
+function TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
+var
+  i : Integer;
+begin
+  SetLength(Result, Length(Vals));
+
+  for i := 0 to High(Vals) do
+    Result[i] := Vals[i].ToString;
 end;
 
 function WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
