@@ -79,14 +79,29 @@ type
       procedure DoLeaveSection(const Msg : String);
       procedure DoLog(Severity : TLogMsgSeverity; const Msg : String);
     public
-      procedure EnterSection(const Msg : String = String.Empty); overload; override;
+      procedure EnterSection(const Msg : String = String.Empty); override;
       procedure EnterSectionFmt(const Msg : String; const Args : array of const); override;
 
-      procedure LeaveSection(const Msg : String = String.Empty); overload; override;
+      procedure LeaveSection(const Msg : String = String.Empty); override;
       procedure LeaveSectionFmt(const Msg : String; const Args : array of const); override;
 
-      procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload; override;
+      procedure Log(Severity : TLogMsgSeverity; const Msg : String); override;
       procedure LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const); override;
+  end;
+
+  TLogger = class (TBaseLogger, ILogger)
+    public
+      procedure EnterSection(const Vals : array of const); override;
+      procedure EnterSectionVal(const Vals : array of TValue); override;
+
+      procedure LeaveSection(const Vals : array of const); override;
+      procedure LeaveSectionVal(const Vals : array of TValue); override;
+
+      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); override;
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); override;
+
+      procedure Log(Severity : TLogMsgSeverity; const Vals : array of const); override;
+      procedure LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue); override;
   end;
 
   TAbstractLogOutput = class abstract (TInterfacedObject)
@@ -313,6 +328,48 @@ end;
 procedure TBaseLogger.LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const);
 begin
   Log(Severity, Format(Msg, Args));
+end;
+
+{ TLogger }
+
+procedure TLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
+begin
+
+end;
+
+procedure TLogger.EnterSection(const Vals : array of const);
+begin
+
+end;
+
+procedure TLogger.EnterSectionVal(const Vals : array of TValue);
+begin
+
+end;
+
+procedure TLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
+begin
+
+end;
+
+procedure TLogger.LeaveSection(const Vals : array of const);
+begin
+
+end;
+
+procedure TLogger.LeaveSectionVal(const Vals : array of TValue);
+begin
+
+end;
+
+procedure TLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
+begin
+
+end;
+
+procedure TLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
+begin
+
 end;
 
 end.
