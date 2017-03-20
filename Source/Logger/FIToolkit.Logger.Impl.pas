@@ -80,22 +80,13 @@ type
       procedure DoLog(Severity : TLogMsgSeverity; const Msg : String);
     public
       procedure EnterSection(const Msg : String = String.Empty); overload; override;
-      procedure EnterSection(const Vals : array of const); overload; override;
       procedure EnterSectionFmt(const Msg : String; const Args : array of const); override;
-      procedure EnterSectionVal(const Vals : array of TValue); override;
 
       procedure LeaveSection(const Msg : String = String.Empty); overload; override;
-      procedure LeaveSection(const Vals : array of const); overload; override;
       procedure LeaveSectionFmt(const Msg : String; const Args : array of const); override;
-      procedure LeaveSectionVal(const Vals : array of TValue); override;
-
-      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); override;
-      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); override;
 
       procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload; override;
-      procedure Log(Severity : TLogMsgSeverity; const Vals : array of const); overload; override;
       procedure LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const); override;
-      procedure LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue); override;
   end;
 
   TAbstractLogOutput = class abstract (TInterfacedObject)
@@ -278,29 +269,14 @@ begin
     );
 end;
 
-procedure TBaseLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
-begin
-
-end;
-
 procedure TBaseLogger.EnterSection(const Msg : String);
 begin
   DoEnterSection(Msg);
 end;
 
-procedure TBaseLogger.EnterSection(const Vals : array of const);
-begin
-
-end;
-
 procedure TBaseLogger.EnterSectionFmt(const Msg : String; const Args : array of const);
 begin
   EnterSection(Format(Msg, Args));
-end;
-
-procedure TBaseLogger.EnterSectionVal(const Vals : array of TValue);
-begin
-
 end;
 
 procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>);
@@ -319,34 +295,14 @@ begin
   end;
 end;
 
-procedure TBaseLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
-begin
-
-end;
-
 procedure TBaseLogger.LeaveSection(const Msg : String);
 begin
   DoLeaveSection(Msg);
 end;
 
-procedure TBaseLogger.LeaveSection(const Vals : array of const);
-begin
-
-end;
-
 procedure TBaseLogger.LeaveSectionFmt(const Msg : String; const Args : array of const);
 begin
   LeaveSection(Format(Msg, Args));
-end;
-
-procedure TBaseLogger.LeaveSectionVal(const Vals : array of TValue);
-begin
-
-end;
-
-procedure TBaseLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
-begin
-
 end;
 
 procedure TBaseLogger.Log(Severity : TLogMsgSeverity; const Msg : String);
@@ -357,11 +313,6 @@ end;
 procedure TBaseLogger.LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const);
 begin
   Log(Severity, Format(Msg, Args));
-end;
-
-procedure TBaseLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
-begin
-
 end;
 
 end.
