@@ -111,6 +111,7 @@ type
 implementation
 
 uses
+  FIToolkit.Commons.Utils,
   FIToolkit.Logger.Consts;
 
 { TAbstractLogger }
@@ -339,12 +340,12 @@ end;
 
 procedure TLogger.EnterSection(const Vals : array of const);
 begin
-
+  EnterSection(String.Join(String.Empty, ArrayOfConstToStringArray(Vals)));
 end;
 
 procedure TLogger.EnterSectionVal(const Vals : array of TValue);
 begin
-
+  EnterSection(String.Join(String.Empty, TValueArrayToStringArray(Vals)));
 end;
 
 procedure TLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
@@ -354,22 +355,22 @@ end;
 
 procedure TLogger.LeaveSection(const Vals : array of const);
 begin
-
+  LeaveSection(String.Join(String.Empty, ArrayOfConstToStringArray(Vals)));
 end;
 
 procedure TLogger.LeaveSectionVal(const Vals : array of TValue);
 begin
-
+  LeaveSection(String.Join(String.Empty, TValueArrayToStringArray(Vals)));
 end;
 
 procedure TLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
 begin
-
+  Log(Severity, String.Join(String.Empty, ArrayOfConstToStringArray(Vals)));
 end;
 
 procedure TLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
 begin
-
+  Log(Severity, String.Join(String.Empty, TValueArrayToStringArray(Vals)));
 end;
 
 end.
