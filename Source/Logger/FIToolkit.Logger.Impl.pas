@@ -8,16 +8,18 @@ uses
 
 type
 
+  TLogOutputList = class (TThreadList<ILogOutput>);
+
   TAbstractLogger = class abstract (TInterfacedObject, ILogger)
     strict private
-      FOutputs : TList<ILogOutput>;
+      FOutputs : TLogOutputList;
       FSeverityThreshold : TLogMsgSeverity;
     private
       function  GetEnabled : Boolean;
       function  GetSeverityThreshold : TLogMsgSeverity;
       procedure SetSeverityThreshold(Value : TLogMsgSeverity);
     strict protected
-      property Outputs : TList<ILogOutput> read FOutputs;
+      property Outputs : TLogOutputList read FOutputs;
     public
       constructor Create; virtual;
       destructor Destroy; override;
@@ -111,6 +113,7 @@ type
 implementation
 
 uses
+  System.Types,
   FIToolkit.Commons.Utils,
   FIToolkit.Logger.Consts;
 
@@ -118,15 +121,15 @@ uses
 
 procedure TAbstractLogger.AddOutput(const LogOutput : ILogOutput);
 begin
-  if not FOutputs.Contains(LogOutput) then
-    FOutputs.Add(LogOutput);
+  FOutputs.Add(LogOutput);
 end;
 
 constructor TAbstractLogger.Create;
 begin
   inherited Create;
 
-  FOutputs := TList<ILogOutput>.Create;
+  FOutputs := TLogOutputList.Create;
+  FOutputs.Duplicates := dupIgnore;
 end;
 
 procedure TAbstractLogger.Debug(const Vals : array of const);
@@ -301,15 +304,12 @@ var
   Output : ILogOutput;
 begin
   if Enabled then
-  begin
-    TMonitor.Enter(Outputs);
     try
-      for Output in Outputs do
+      for Output in Outputs.LockList do
         Action(Output);
     finally
-      TMonitor.Exit(Outputs);
+      Outputs.UnlockList;
     end;
-  end;
 end;
 
 procedure TBaseLogger.LeaveSection(const Msg : String);
