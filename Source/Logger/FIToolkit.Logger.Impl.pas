@@ -106,8 +106,27 @@ type
       procedure LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue); override;
   end;
 
-  TAbstractLogOutput = class abstract (TInterfacedObject)
-    //
+  TAbstractLogOutput = class abstract (TInterfacedObject, ILogOutput)
+    strict private
+      FSectionLevel : Integer;
+      FSeverityThreshold : TLogMsgSeverity;
+    private
+      function  GetSeverityThreshold : TLogMsgSeverity;
+      procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+    strict protected
+      procedure DoBeginSection(const Msg : String); virtual; abstract;
+      procedure DoEndSection(const Msg : String); virtual; abstract;
+      procedure DoWriteMessage(Severity : TLogMsgSeverity; const Msg : String); virtual; abstract;
+    protected
+      property SectionLevel : Integer read FSectionLevel;
+    public
+      constructor Create; virtual;
+
+      procedure BeginSection(const Msg : String);
+      procedure EndSection(const Msg : String);
+      procedure WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+
+      property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
 
 implementation
@@ -268,7 +287,6 @@ end;
 
 procedure TBaseLogger.DoLeaveSection(const Msg : String);
 begin
-  // TODO: leave section only if it was entered
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
@@ -404,6 +422,49 @@ end;
 procedure TLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
 begin
   Log(Severity, String.Join(String.Empty, TValueArrayToStringArray(Vals)));
+end;
+
+{ TAbstractLogOutput }
+
+procedure TAbstractLogOutput.BeginSection(const Msg : String);
+begin
+  if FSectionLevel >= 0 then
+  begin
+    DoBeginSection(Msg);
+    Inc(FSectionLevel);
+  end;
+end;
+
+constructor TAbstractLogOutput.Create;
+begin
+  inherited Create;
+
+  FSeverityThreshold := SEVERITY_MIN;
+end;
+
+procedure TAbstractLogOutput.EndSection(const Msg : String);
+begin
+  if FSectionLevel > 0 then
+  begin
+    Dec(FSectionLevel);
+    DoEndSection(Msg);
+  end;
+end;
+
+function TAbstractLogOutput.GetSeverityThreshold : TLogMsgSeverity;
+begin
+  Result := FSeverityThreshold;
+end;
+
+procedure TAbstractLogOutput.SetSeverityThreshold(Value : TLogMsgSeverity);
+begin
+  FSeverityThreshold := Value;
+end;
+
+procedure TAbstractLogOutput.WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+begin
+  if (FSeverityThreshold <> SEVERITY_NONE) and (Severity >= FSeverityThreshold) then
+    DoWriteMessage(Severity, Msg);
 end;
 
 end.
