@@ -265,6 +265,7 @@ end;
 
 procedure TBaseLogger.DoLeaveSection(const Msg : String);
 begin
+  // TODO: leave section only if it was entered
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
@@ -382,7 +383,7 @@ end;
 
 procedure TLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
 begin
-
+  // TODO: implement {TLogger.LeaveMethod}
 end;
 
 procedure TLogger.LeaveSection(const Vals : array of const);
