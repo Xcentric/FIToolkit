@@ -26,8 +26,10 @@ type
 
     { Property accessors }
 
+    function  GetAllowedItems : TLogItems;
     function  GetEnabled : Boolean;
     function  GetSeverityThreshold : TLogMsgSeverity;
+    procedure SetAllowedItems(Value : TLogItems);
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
 
     { Logging: output }
@@ -83,6 +85,7 @@ type
 
     { Properties }
 
+    property AllowedItems : TLogItems read GetAllowedItems write SetAllowedItems;
     property Enabled : Boolean read GetEnabled;
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;

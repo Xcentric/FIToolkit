@@ -12,14 +12,21 @@ type
 
   TAbstractLogger = class abstract (TInterfacedObject, ILogger)
     strict private
+      FAllowedItems : TLogItems;
       FOutputs : TLogOutputList;
       FSeverityThreshold : TLogMsgSeverity;
     private
+      function  GetAllowedItems : TLogItems;
       function  GetEnabled : Boolean;
       function  GetSeverityThreshold : TLogMsgSeverity;
+      procedure SetAllowedItems(Value : TLogItems);
       procedure SetSeverityThreshold(Value : TLogMsgSeverity);
     strict protected
       property Outputs : TLogOutputList read FOutputs;
+    protected
+      function GetDefaultAllowedItems : TLogItems; virtual;
+      function GetDefaultSeverityThreshold : TLogMsgSeverity; virtual;
+      function IsAllowedItem(Item : TLogItem) : Boolean; virtual;
     public
       constructor Create; virtual;
       destructor Destroy; override;
@@ -69,6 +76,7 @@ type
       procedure FatalFmt(const Msg : String; const Args : array of const);
       procedure FatalVal(const Vals : array of TValue);
 
+      property AllowedItems : TLogItems read GetAllowedItems write SetAllowedItems;
       property Enabled : Boolean read GetEnabled;
       property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
@@ -149,6 +157,9 @@ begin
 
   FOutputs := TLogOutputList.Create;
   FOutputs.Duplicates := dupIgnore;
+
+  FAllowedItems := GetDefaultAllowedItems;
+  FSeverityThreshold := GetDefaultSeverityThreshold;
 end;
 
 procedure TAbstractLogger.Debug(const Vals : array of const);
@@ -218,6 +229,21 @@ begin
   LogVal(ARR_MSGTYPE_TO_MSGSEVERITY_MAPPING[lmFatal], Vals);
 end;
 
+function TAbstractLogger.GetAllowedItems : TLogItems;
+begin
+  Result := FAllowedItems;
+end;
+
+function TAbstractLogger.GetDefaultAllowedItems : TLogItems;
+begin
+  Result := [liMessage, liSection];
+end;
+
+function TAbstractLogger.GetDefaultSeverityThreshold : TLogMsgSeverity;
+begin
+  Result := SEVERITY_MIN;
+end;
+
 function TAbstractLogger.GetEnabled : Boolean;
 begin
   Result := FSeverityThreshold <> SEVERITY_NONE;
@@ -246,6 +272,16 @@ end;
 procedure TAbstractLogger.InfoVal(const Vals : array of TValue);
 begin
   LogVal(ARR_MSGTYPE_TO_MSGSEVERITY_MAPPING[lmInfo], Vals);
+end;
+
+function TAbstractLogger.IsAllowedItem(Item : TLogItem) : Boolean;
+begin
+  Result := Item in FAllowedItems;
+end;
+
+procedure TAbstractLogger.SetAllowedItems(Value : TLogItems);
+begin
+  FAllowedItems := Value;
 end;
 
 procedure TAbstractLogger.SetSeverityThreshold(Value : TLogMsgSeverity);
