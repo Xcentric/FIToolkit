@@ -83,7 +83,8 @@ type
 
   TBaseLogger = class abstract (TAbstractLogger, ILogger)
     strict protected
-      procedure IterateOutputs(const Action : TProc<ILogOutput>);
+      procedure IterateOutputs(const Action : TProc<ILogOutput>; CheckEnabled : Boolean); overload;
+      procedure IterateOutputs(const Action : TProc<ILogOutput>; ForItem : TLogItem); overload;
     protected
       procedure DoEnterSection(const Msg : String);
       procedure DoLeaveSection(const Msg : String);
@@ -317,7 +318,8 @@ begin
     procedure (Output : ILogOutput)
     begin
       Output.BeginSection(Msg);
-    end
+    end,
+    liSection
   );
 end;
 
@@ -327,7 +329,8 @@ begin
     procedure (Output : ILogOutput)
     begin
       Output.EndSection(Msg);
-    end
+    end,
+    liSection
   );
 end;
 
@@ -339,7 +342,8 @@ begin
       begin
         if Severity >= Output.SeverityThreshold then
           Output.WriteMessage(Severity, Msg);
-      end
+      end,
+      liMessage
     );
 end;
 
@@ -353,17 +357,23 @@ begin
   EnterSection(Format(Msg, Args));
 end;
 
-procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>);
+procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>; CheckEnabled : Boolean);
 var
   Output : ILogOutput;
 begin
-  if Enabled then
+  if not CheckEnabled or Enabled then
     try
       for Output in Outputs.LockList do
         Action(Output);
     finally
       Outputs.UnlockList;
     end;
+end;
+
+procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>; ForItem : TLogItem);
+begin
+  if IsAllowedItem(ForItem) then
+    IterateOutputs(Action, True);
 end;
 
 procedure TBaseLogger.LeaveSection(const Msg : String);
