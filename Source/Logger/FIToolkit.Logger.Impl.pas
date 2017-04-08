@@ -399,40 +399,8 @@ end;
 { TLogger }
 
 procedure TLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
-var
-  Ctx : TRttiContext;
-  LClass : TRttiType;
-  Method : TRttiMethod;
-  Param : TRttiParameter;
-  i : Integer;
-  sMsg : String;
 begin
-  Ctx := TRttiContext.Create;
-  try
-    LClass := Ctx.GetType(AClass);
-
-    for Method in LClass.GetDeclaredMethods do
-      if Method.CodeAddress = MethodAddress then
-      begin
-        EnterSection(LClass.QualifiedName + ' :: ' + Method.ToString);
-
-        i := 0;
-        for Param in Method.GetParameters do
-        begin
-          if not sMsg.IsEmpty then
-            sMsg := sMsg + sLineBreak;
-
-          sMsg := sMsg + Param.Name + ' = ' + Params[i].ToString;
-          Inc(i);
-        end;
-        Debug(sMsg);
-        // TODO: implement {TLogger.EnterMethod}
-
-        Break;
-      end;
-  finally
-    Ctx.Free;
-  end;
+  // TODO: implement {TLogger.EnterMethod}
 end;
 
 procedure TLogger.EnterSection(const Vals : array of const);
