@@ -120,6 +120,11 @@ type
   end;
 
   TLogger = class (TBaseLogger, ILogger)
+    private
+      function FormatMethod(AType : TRttiType; AMethod : TRttiMethod) : String;
+    protected
+      function FormatEnterMethod(AType : TRttiType; AMethod : TRttiMethod; const Params : array of TValue) : String; override;
+      function FormatLeaveMethod(AType : TRttiType; AMethod : TRttiMethod; AResult : TValue) : String; override;
     public
       procedure EnterSection(const Vals : array of const); override;
       procedure EnterSectionVal(const Vals : array of TValue); override;
@@ -484,6 +489,51 @@ end;
 procedure TLogger.EnterSectionVal(const Vals : array of TValue);
 begin
   EnterSection(String.Join(String.Empty, TValueArrayToStringArray(Vals)));
+end;
+
+function TLogger.FormatEnterMethod(AType : TRttiType; AMethod : TRttiMethod; const Params : array of TValue) : String;
+var
+  i : Integer;
+  P : TRttiParameter;
+begin
+  Result := String.Empty;
+
+  if Assigned(AType) and Assigned(AMethod) then
+  begin
+    Result := FormatMethod(AType, AMethod);
+
+    if Length(Params) > 0 then
+    begin
+      i := 0;
+      for P in AMethod.GetParameters do
+      begin
+        if i > High(Params) then
+          Break
+        else
+          Result := Result + sLineBreak + P.Name + ' = ' + Params[i].ToString;
+
+        Inc(i);
+      end;
+    end;
+  end;
+end;
+
+function TLogger.FormatLeaveMethod(AType : TRttiType; AMethod : TRttiMethod; AResult : TValue) : String;
+begin
+  Result := String.Empty;
+
+  if Assigned(AType) and Assigned(AMethod) then
+  begin
+    if Assigned(AMethod.ReturnType) then
+      Result := 'Result = ' + AResult.ToString + sLineBreak;
+
+    Result := Result + FormatMethod(AType, AMethod);
+  end;
+end;
+
+function TLogger.FormatMethod(AType : TRttiType; AMethod : TRttiMethod) : String;
+begin
+  Result := AType.GetFullName + ' :: ' + AMethod.ToString;
 end;
 
 procedure TLogger.LeaveSection(const Vals : array of const);

@@ -48,6 +48,7 @@ type
 
   TRttiTypeHelper = class helper for TRttiType
     public
+      function GetFullName : String;
       function GetMethod(MethodAddress : Pointer) : TRttiMethod; overload;
       function IsArray : Boolean;
       function IsString : Boolean;
@@ -435,11 +436,22 @@ end;
 
 { TRttiTypeHelper }
 
+function TRttiTypeHelper.GetFullName : String;
+begin
+  // TODO: cover with test {TRttiTypeHelper.GetFullName}
+
+  if IsPublicType then
+    Result := QualifiedName
+  else
+    Result := Name;
+end;
+
 function TRttiTypeHelper.GetMethod(MethodAddress : Pointer) : TRttiMethod;
 var
   M : TRttiMethod;
 begin
   // TODO: cover with test {TRttiTypeHelper.GetMethod}
+
   Result := nil;
 
   if Assigned(MethodAddress) then
