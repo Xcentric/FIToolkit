@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Rtti, System.Generics.Collections,
+  System.SysUtils, System.Rtti, System.TypInfo, System.Generics.Collections,
   FIToolkit.Logger.Intf, FIToolkit.Logger.Types;
 
 type
@@ -43,8 +43,11 @@ type
       procedure LeaveSectionFmt(const Msg : String; const Args : array of const); virtual; abstract;
       procedure LeaveSectionVal(const Vals : array of TValue); virtual; abstract;
 
-      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); virtual; abstract;
-      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); virtual; abstract;
+      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); overload; virtual; abstract;
+      procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); overload; virtual; abstract;
+
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); overload; virtual; abstract;
+      procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); overload; virtual; abstract;
 
       procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload; virtual; abstract;
       procedure Log(Severity : TLogMsgSeverity; const Vals : array of const); overload; virtual; abstract;
@@ -82,19 +85,35 @@ type
   end;
 
   TBaseLogger = class abstract (TAbstractLogger, ILogger)
+    strict private
+      class var
+        FRttiCtx : TRttiContext;
     strict protected
       procedure IterateOutputs(const Action : TProc<ILogOutput>; CheckEnabled : Boolean); overload;
       procedure IterateOutputs(const Action : TProc<ILogOutput>; ForItem : TLogItem); overload;
     protected
       procedure DoEnterSection(const Msg : String);
       procedure DoLeaveSection(const Msg : String);
+      procedure DoEnterMethod(AType : TRttiType; AMethod : TRttiMethod; const Params : array of TValue);
+      procedure DoLeaveMethod(AType : TRttiType; AMethod : TRttiMethod; AResult : TValue);
       procedure DoLog(Severity : TLogMsgSeverity; const Msg : String);
+
+      function  FormatEnterMethod(AType : TRttiType; AMethod : TRttiMethod;
+        const Params : array of TValue) : String; virtual; abstract;
+      function  FormatLeaveMethod(AType : TRttiType; AMethod : TRttiMethod;
+        AResult : TValue) : String; virtual; abstract;
     public
       procedure EnterSection(const Msg : String = String.Empty); override;
       procedure EnterSectionFmt(const Msg : String; const Args : array of const); override;
 
       procedure LeaveSection(const Msg : String = String.Empty); override;
       procedure LeaveSectionFmt(const Msg : String; const Args : array of const); override;
+
+      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); override;
+      procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); override;
+
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); override;
+      procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); override;
 
       procedure Log(Severity : TLogMsgSeverity; const Msg : String); override;
       procedure LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const); override;
@@ -107,9 +126,6 @@ type
 
       procedure LeaveSection(const Vals : array of const); override;
       procedure LeaveSectionVal(const Vals : array of TValue); override;
-
-      procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); override;
-      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); override;
 
       procedure Log(Severity : TLogMsgSeverity; const Vals : array of const); override;
       procedure LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue); override;
@@ -312,6 +328,21 @@ end;
 
 { TBaseLogger }
 
+procedure TBaseLogger.DoEnterMethod(AType : TRttiType; AMethod : TRttiMethod; const Params : array of TValue);
+var
+  sMsg : String;
+begin
+  sMsg := FormatEnterMethod(AType, AMethod, Params);
+
+  IterateOutputs(
+    procedure (Output : ILogOutput)
+    begin
+      Output.BeginSection(sMsg);
+    end,
+    liMethod
+  );
+end;
+
 procedure TBaseLogger.DoEnterSection(const Msg : String);
 begin
   IterateOutputs(
@@ -320,6 +351,21 @@ begin
       Output.BeginSection(Msg);
     end,
     liSection
+  );
+end;
+
+procedure TBaseLogger.DoLeaveMethod(AType : TRttiType; AMethod : TRttiMethod; AResult : TValue);
+var
+  sMsg : String;
+begin
+  sMsg := FormatLeaveMethod(AType, AMethod, AResult);
+
+  IterateOutputs(
+    procedure (Output : ILogOutput)
+    begin
+      Output.EndSection(sMsg);
+    end,
+    liMethod
   );
 end;
 
@@ -345,6 +391,22 @@ begin
       end,
       liMessage
     );
+end;
+
+procedure TBaseLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
+var
+  LType : TRttiType;
+begin
+  LType := FRttiCtx.GetType(AClass);
+  DoEnterMethod(LType, LType.GetMethod(MethodAddress), Params);
+end;
+
+procedure TBaseLogger.EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue);
+var
+  LType : TRttiType;
+begin
+  LType := FRttiCtx.GetType(ARecord);
+  DoEnterMethod(LType, LType.GetMethod(MethodAddress), Params);
 end;
 
 procedure TBaseLogger.EnterSection(const Msg : String);
@@ -376,6 +438,22 @@ begin
     IterateOutputs(Action, True);
 end;
 
+procedure TBaseLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
+var
+  LType : TRttiType;
+begin
+  LType := FRttiCtx.GetType(AClass);
+  DoLeaveMethod(LType, LType.GetMethod(MethodAddress), AResult);
+end;
+
+procedure TBaseLogger.LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue);
+var
+  LType : TRttiType;
+begin
+  LType := FRttiCtx.GetType(ARecord);
+  DoLeaveMethod(LType, LType.GetMethod(MethodAddress), AResult);
+end;
+
 procedure TBaseLogger.LeaveSection(const Msg : String);
 begin
   DoLeaveSection(Msg);
@@ -398,11 +476,6 @@ end;
 
 { TLogger }
 
-procedure TLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
-begin
-  // TODO: implement {TLogger.EnterMethod}
-end;
-
 procedure TLogger.EnterSection(const Vals : array of const);
 begin
   EnterSection(String.Join(String.Empty, ArrayOfConstToStringArray(Vals)));
@@ -411,11 +484,6 @@ end;
 procedure TLogger.EnterSectionVal(const Vals : array of TValue);
 begin
   EnterSection(String.Join(String.Empty, TValueArrayToStringArray(Vals)));
-end;
-
-procedure TLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
-begin
-  // TODO: implement {TLogger.LeaveMethod}
 end;
 
 procedure TLogger.LeaveSection(const Vals : array of const);

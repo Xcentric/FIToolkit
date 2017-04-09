@@ -42,7 +42,7 @@ type
       procedure ProcessOptions;
       procedure UpdateExitCode(var AnExitCode : Integer);
 
-      // Application command implementations:
+      // Application commands implementation:
       procedure PrintHelp;
       procedure PrintVersion;
       procedure SetNoExitBehavior;

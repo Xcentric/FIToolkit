@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Rtti,
+  System.SysUtils, System.Rtti, System.TypInfo,
   FIToolkit.Logger.Types;
 
 type
@@ -48,8 +48,10 @@ type
     procedure LeaveSectionFmt(const Msg : String; const Args : array of const);
     procedure LeaveSectionVal(const Vals : array of TValue);
 
-    procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
-    procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
+    procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); overload;
+    procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); overload;
+    procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); overload;
+    procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); overload;
 
     { Logging: messages }
 
