@@ -148,6 +148,8 @@ type
       procedure DoEndSection(const Msg : String); virtual; abstract;
       procedure DoWriteMessage(Severity : TLogMsgSeverity; const Msg : String); virtual; abstract;
     protected
+      function GetDefaultSeverityThreshold : TLogMsgSeverity; virtual;
+
       property SectionLevel : Integer read FSectionLevel;
     public
       constructor Create; virtual;
@@ -571,7 +573,7 @@ constructor TAbstractLogOutput.Create;
 begin
   inherited Create;
 
-  FSeverityThreshold := SEVERITY_MIN;
+  FSeverityThreshold := GetDefaultSeverityThreshold;
 end;
 
 procedure TAbstractLogOutput.EndSection(const Msg : String);
@@ -581,6 +583,11 @@ begin
     Dec(FSectionLevel);
     DoEndSection(Msg);
   end;
+end;
+
+function TAbstractLogOutput.GetDefaultSeverityThreshold : TLogMsgSeverity;
+begin
+  Result := SEVERITY_MIN;
 end;
 
 function TAbstractLogOutput.GetSeverityThreshold : TLogMsgSeverity;
