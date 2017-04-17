@@ -14,9 +14,9 @@ type
     function  GetSeverityThreshold : TLogMsgSeverity;
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
 
-    procedure BeginSection(const Msg : String);
-    procedure EndSection(const Msg : String);
-    procedure WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+    procedure BeginSection(Instant : TLogTimestamp; const Msg : String);
+    procedure EndSection(Instant : TLogTimestamp; const Msg : String);
+    procedure WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;

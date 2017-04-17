@@ -102,6 +102,7 @@ type
         const Params : array of TValue) : String; virtual; abstract;
       function  FormatLeaveMethod(AType : TRttiType; AMethod : TRttiMethod;
         AResult : TValue) : String; virtual; abstract;
+      function  GetInstant : TLogTimestamp; virtual;
     public
       procedure EnterSection(const Msg : String = String.Empty); override;
       procedure EnterSectionFmt(const Msg : String; const Args : array of const); override;
@@ -144,9 +145,9 @@ type
       function  GetSeverityThreshold : TLogMsgSeverity;
       procedure SetSeverityThreshold(Value : TLogMsgSeverity);
     strict protected
-      procedure DoBeginSection(const Msg : String); virtual; abstract;
-      procedure DoEndSection(const Msg : String); virtual; abstract;
-      procedure DoWriteMessage(Severity : TLogMsgSeverity; const Msg : String); virtual; abstract;
+      procedure DoBeginSection(Instant : TLogTimestamp; const Msg : String); virtual; abstract;
+      procedure DoEndSection(Instant : TLogTimestamp; const Msg : String); virtual; abstract;
+      procedure DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String); virtual; abstract;
     protected
       function GetDefaultSeverityThreshold : TLogMsgSeverity; virtual;
 
@@ -154,9 +155,9 @@ type
     public
       constructor Create; virtual;
 
-      procedure BeginSection(const Msg : String);
-      procedure EndSection(const Msg : String);
-      procedure WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+      procedure BeginSection(Instant : TLogTimestamp; const Msg : String);
+      procedure EndSection(Instant : TLogTimestamp; const Msg : String);
+      procedure WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 
       property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
@@ -165,9 +166,9 @@ type
     private
       function IndentText(const Text : String; LeftPadding : Integer) : String;
     strict protected
-      procedure DoBeginSection(const Msg : String); override;
-      procedure DoEndSection(const Msg : String); override;
-      procedure DoWriteMessage(Severity : TLogMsgSeverity; const Msg : String); override;
+      procedure DoBeginSection(Instant : TLogTimestamp; const Msg : String); override;
+      procedure DoEndSection(Instant : TLogTimestamp; const Msg : String); override;
+      procedure DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String); override;
 
       procedure WriteLine(const S : String); virtual; abstract;
     protected
@@ -177,7 +178,7 @@ type
 
       function FormatCurrentThread : String; virtual;
       function FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
-      function FormatTimestamp(Timestamp : TDateTime) : String; virtual;
+      function FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
       function GetPreamble : String; virtual;
   end;
 
@@ -357,25 +358,31 @@ end;
 
 procedure TBaseLogger.DoEnterMethod(AType : TRttiType; AMethod : TRttiMethod; const Params : array of TValue);
 var
+  tsInstant : TLogTimestamp;
   sMsg : String;
 begin
+  tsInstant := GetInstant;
   sMsg := FormatEnterMethod(AType, AMethod, Params);
 
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
-      Output.BeginSection(sMsg);
+      Output.BeginSection(tsInstant, sMsg);
     end,
     liMethod
   );
 end;
 
 procedure TBaseLogger.DoEnterSection(const Msg : String);
+var
+  tsInstant : TLogTimestamp;
 begin
+  tsInstant := GetInstant;
+
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
-      Output.BeginSection(Msg);
+      Output.BeginSection(tsInstant, Msg);
     end,
     liSection
   );
@@ -383,41 +390,53 @@ end;
 
 procedure TBaseLogger.DoLeaveMethod(AType : TRttiType; AMethod : TRttiMethod; AResult : TValue);
 var
+  tsInstant : TLogTimestamp;
   sMsg : String;
 begin
+  tsInstant := GetInstant;
   sMsg := FormatLeaveMethod(AType, AMethod, AResult);
 
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
-      Output.EndSection(sMsg);
+      Output.EndSection(tsInstant, sMsg);
     end,
     liMethod
   );
 end;
 
 procedure TBaseLogger.DoLeaveSection(const Msg : String);
+var
+  tsInstant : TLogTimestamp;
 begin
+  tsInstant := GetInstant;
+
   IterateOutputs(
     procedure (Output : ILogOutput)
     begin
-      Output.EndSection(Msg);
+      Output.EndSection(tsInstant, Msg);
     end,
     liSection
   );
 end;
 
 procedure TBaseLogger.DoLog(Severity : TLogMsgSeverity; const Msg : String);
+var
+  tsInstant : TLogTimestamp;
 begin
   if Severity >= SeverityThreshold then
+  begin
+    tsInstant := GetInstant;
+
     IterateOutputs(
       procedure (Output : ILogOutput)
       begin
         if Severity >= Output.SeverityThreshold then
-          Output.WriteMessage(Severity, Msg);
+          Output.WriteMessage(tsInstant, Severity, Msg);
       end,
       liMessage
     );
+  end;
 end;
 
 procedure TBaseLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
@@ -444,6 +463,11 @@ end;
 procedure TBaseLogger.EnterSectionFmt(const Msg : String; const Args : array of const);
 begin
   EnterSection(Format(Msg, Args));
+end;
+
+function TBaseLogger.GetInstant : TLogTimestamp;
+begin
+  Result := Now;
 end;
 
 procedure TBaseLogger.IterateOutputs(const Action : TProc<ILogOutput>; CheckEnabled : Boolean);
@@ -580,11 +604,11 @@ end;
 
 { TAbstractLogOutput }
 
-procedure TAbstractLogOutput.BeginSection(const Msg : String);
+procedure TAbstractLogOutput.BeginSection(Instant : TLogTimestamp; const Msg : String);
 begin
   if FSectionLevel >= 0 then
   begin
-    DoBeginSection(Msg);
+    DoBeginSection(Instant, Msg);
     Inc(FSectionLevel);
   end;
 end;
@@ -596,12 +620,12 @@ begin
   FSeverityThreshold := GetDefaultSeverityThreshold;
 end;
 
-procedure TAbstractLogOutput.EndSection(const Msg : String);
+procedure TAbstractLogOutput.EndSection(Instant : TLogTimestamp; const Msg : String);
 begin
   if FSectionLevel > 0 then
   begin
     Dec(FSectionLevel);
-    DoEndSection(Msg);
+    DoEndSection(Instant, Msg);
   end;
 end;
 
@@ -620,25 +644,25 @@ begin
   FSeverityThreshold := Value;
 end;
 
-procedure TAbstractLogOutput.WriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+procedure TAbstractLogOutput.WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 begin
   if (FSeverityThreshold <> SEVERITY_NONE) and (Severity >= FSeverityThreshold) then
-    DoWriteMessage(Severity, Msg);
+    DoWriteMessage(Instant, Severity, Msg);
 end;
 
 { TBaseLogOutput }
 
-procedure TBaseLogOutput.DoBeginSection(const Msg : String);
+procedure TBaseLogOutput.DoBeginSection(Instant : TLogTimestamp; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoBeginSection}
 end;
 
-procedure TBaseLogOutput.DoEndSection(const Msg : String);
+procedure TBaseLogOutput.DoEndSection(Instant : TLogTimestamp; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoEndSection}
 end;
 
-procedure TBaseLogOutput.DoWriteMessage(Severity : TLogMsgSeverity; const Msg : String);
+procedure TBaseLogOutput.DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoWriteMessage}
 end;
@@ -668,7 +692,7 @@ begin
   // TODO: implement {TBaseLogOutput.FormatSeverity}
 end;
 
-function TBaseLogOutput.FormatTimestamp(Timestamp : TDateTime) : String;
+function TBaseLogOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatTimestamp}
 end;

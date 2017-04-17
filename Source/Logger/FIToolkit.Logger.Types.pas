@@ -12,6 +12,8 @@ type
 
   TLogMsgType = (lmNone, lmDebug, lmInfo, lmWarning, lmError, lmFatal);
 
+  TLogTimestamp = type TDateTime;
+
 implementation
 
 end.
