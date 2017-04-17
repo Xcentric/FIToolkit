@@ -162,7 +162,7 @@ type
       property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
 
-  TBaseLogOutput = class abstract (TAbstractLogOutput, ILogOutput)
+  TPlainTextOutput = class abstract (TAbstractLogOutput, ILogOutput)
     private
       function IndentText(const Text : String; LeftPadding : Integer) : String;
     strict protected
@@ -652,57 +652,57 @@ end;
 
 { TBaseLogOutput }
 
-procedure TBaseLogOutput.DoBeginSection(Instant : TLogTimestamp; const Msg : String);
+procedure TPlainTextOutput.DoBeginSection(Instant : TLogTimestamp; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoBeginSection}
 end;
 
-procedure TBaseLogOutput.DoEndSection(Instant : TLogTimestamp; const Msg : String);
+procedure TPlainTextOutput.DoEndSection(Instant : TLogTimestamp; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoEndSection}
 end;
 
-procedure TBaseLogOutput.DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
+procedure TPlainTextOutput.DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 begin
   // TODO: implement {TBaseLogOutput.DoWriteMessage}
 end;
 
-function TBaseLogOutput.FormatCurrentThread : String;
+function TPlainTextOutput.FormatCurrentThread : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatCurrentThread}
 end;
 
-function TBaseLogOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
+function TPlainTextOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatLogMessage}
 end;
 
-function TBaseLogOutput.FormatLogSectionBegin(const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionBegin(const Msg : String) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatLogSectionBegin}
 end;
 
-function TBaseLogOutput.FormatLogSectionEnd(const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionEnd(const Msg : String) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatLogSectionEnd}
 end;
 
-function TBaseLogOutput.FormatSeverity(Severity : TLogMsgSeverity) : String;
+function TPlainTextOutput.FormatSeverity(Severity : TLogMsgSeverity) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatSeverity}
 end;
 
-function TBaseLogOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
+function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
   // TODO: implement {TBaseLogOutput.FormatTimestamp}
 end;
 
-function TBaseLogOutput.GetPreamble : String;
+function TPlainTextOutput.GetPreamble : String;
 begin
   // TODO: implement {TBaseLogOutput.GetPreamble}
 end;
 
-function TBaseLogOutput.IndentText(const Text : String; LeftPadding : Integer) : String;
+function TPlainTextOutput.IndentText(const Text : String; LeftPadding : Integer) : String;
 begin
   // TODO: implement {TBaseLogOutput.IndentText}
 end;
