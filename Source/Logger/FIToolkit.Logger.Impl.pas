@@ -191,7 +191,7 @@ type
 implementation
 
 uses
-  System.Types, System.Math, System.StrUtils,
+  System.Classes, System.Types, System.Math, System.StrUtils,
   FIToolkit.Commons.Utils,
   FIToolkit.Logger.Consts;
 
@@ -700,7 +700,12 @@ end;
 
 function TPlainTextOutput.FormatCurrentThread : String;
 begin
-  // TODO: implement {TPlainTextOutput.FormatCurrentThread}
+  if TThread.Current.ThreadID = MainThreadID then
+    Result := RSPTOMainThreadName
+  else
+    Result := TThread.Current.ThreadID.ToString;
+
+  Result := Result.PadRight(Max(RSPTOMainThreadName.Length, High(TThreadID).ToString.Length));
 end;
 
 function TPlainTextOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
@@ -725,7 +730,7 @@ end;
 
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
-  // TODO: implement {TPlainTextOutput.FormatTimestamp}
+  Result := DateTimeToStr(Timestamp);
 end;
 
 function TPlainTextOutput.GetLogRecordPreamble(Instant : TLogTimestamp) : String;

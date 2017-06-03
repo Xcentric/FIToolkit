@@ -25,6 +25,12 @@ const
     SEVERITY_NONE, SEVERITY_DEBUG, SEVERITY_INFO, SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL
   );
 
+resourcestring
+
+  { Plain text output }
+
+  RSPTOMainThreadName = 'MAIN';
+
 implementation
 
 end.
