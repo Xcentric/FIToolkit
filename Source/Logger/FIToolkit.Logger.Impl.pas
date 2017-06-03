@@ -163,11 +163,15 @@ type
   end;
 
   TPlainTextOutput = class abstract (TAbstractLogOutput, ILogOutput)
+    strict private
+      FStringBuilder : TStringBuilder;
     strict protected
       procedure DoBeginSection(Instant : TLogTimestamp; const Msg : String); override;
       procedure DoEndSection(Instant : TLogTimestamp; const Msg : String); override;
       procedure DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String); override;
 
+      function  AcquireBuilder(Capacity : Integer = 0) : TStringBuilder;
+      procedure ReleaseBuilder;
       procedure WriteLine(const S : String); virtual; abstract;
     protected
       function FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
@@ -178,13 +182,16 @@ type
       function FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
       function FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
       function GetLogRecordPreamble(Instant : TLogTimestamp) : String; virtual;
-      function IndentText(const Text, PaddingStr : String; LeftPadding : Integer; ExceptFirstLine : Boolean) : String;
+      function IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String;
+    public
+      constructor Create; override;
+      destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  System.Types,
+  System.Types, System.Math, System.StrUtils,
   FIToolkit.Commons.Utils,
   FIToolkit.Logger.Consts;
 
@@ -651,59 +658,112 @@ end;
 
 { TPlainTextOutput }
 
+function TPlainTextOutput.AcquireBuilder(Capacity : Integer) : TStringBuilder;
+begin
+  TMonitor.Enter(FStringBuilder);
+
+  FStringBuilder.Clear;
+  if Capacity > 0 then
+    FStringBuilder.Capacity := Capacity;
+
+  Result := FStringBuilder;
+end;
+
+constructor TPlainTextOutput.Create;
+begin
+  inherited Create;
+
+  FStringBuilder := TStringBuilder.Create;
+end;
+
+destructor TPlainTextOutput.Destroy;
+begin
+  FreeAndNil(FStringBuilder);
+
+  inherited Destroy;
+end;
+
 procedure TPlainTextOutput.DoBeginSection(Instant : TLogTimestamp; const Msg : String);
 begin
-
+  WriteLine(GetLogRecordPreamble(Instant) + FormatLogSectionBeginning(Msg));
 end;
 
 procedure TPlainTextOutput.DoEndSection(Instant : TLogTimestamp; const Msg : String);
 begin
-
+  WriteLine(GetLogRecordPreamble(Instant) + FormatLogSectionEnding(Msg));
 end;
 
 procedure TPlainTextOutput.DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
 begin
-
+  WriteLine(GetLogRecordPreamble(Instant) + FormatLogMessage(Severity, Msg));
 end;
 
 function TPlainTextOutput.FormatCurrentThread : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatCurrentThread}
 end;
 
 function TPlainTextOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatLogMessage}
 end;
 
 function TPlainTextOutput.FormatLogSectionBeginning(const Msg : String) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatLogSectionBeginning}
 end;
 
 function TPlainTextOutput.FormatLogSectionEnding(const Msg : String) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatLogSectionEnding}
 end;
 
 function TPlainTextOutput.FormatSeverity(Severity : TLogMsgSeverity) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatSeverity}
 end;
 
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.FormatTimestamp}
 end;
 
 function TPlainTextOutput.GetLogRecordPreamble(Instant : TLogTimestamp) : String;
 begin
-
+  // TODO: implement {TPlainTextOutput.GetLogRecordPreamble}
 end;
 
-function TPlainTextOutput.IndentText(const Text, PaddingStr : String; LeftPadding : Integer; ExceptFirstLine : Boolean) : String;
+function TPlainTextOutput.IndentText(const Text, PaddingStr : String; LeftPadding : Word;
+  ExceptFirstLine : Boolean) : String;
+var
+  arrText : TArray<String>;
+  i : Integer;
 begin
+  arrText := Text.Split([sLineBreak]);
 
+  with AcquireBuilder(Length(Text) + Length(PaddingStr) * LeftPadding * Max(Length(arrText), 1)) do
+    try
+      for i := 0 to High(arrText) do
+      begin
+        if (i = 0) and ExceptFirstLine then
+          Append(arrText[i])
+        else
+          Append(DupeString(PaddingStr, LeftPadding)).Append(arrText[i]);
+
+        if i < High(arrText) then
+          AppendLine;
+      end;
+
+      Result := ToString;
+    finally
+      ReleaseBuilder;
+    end;
+end;
+
+procedure TPlainTextOutput.ReleaseBuilder;
+begin
+  FStringBuilder.Clear;
+  TMonitor.Exit(FStringBuilder);
 end;
 
 end.
