@@ -174,15 +174,15 @@ type
       procedure ReleaseBuilder;
       procedure WriteLine(const S : String); virtual; abstract;
     protected
-      function FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
-      function FormatLogSectionBeginning(const Msg : String) : String; virtual;
-      function FormatLogSectionEnding(const Msg : String) : String; virtual;
+      function  FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
+      function  FormatLogSectionBeginning(PreambleLength : Word; const Msg : String) : String; virtual;
+      function  FormatLogSectionEnding(PreambleLength : Word; const Msg : String) : String; virtual;
 
-      function FormatCurrentThread : String; virtual;
-      function FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
-      function FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
-      function GetLogRecordPreamble(Instant : TLogTimestamp) : String; virtual;
-      function IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String;
+      function  FormatCurrentThread : String; virtual;
+      function  FormatPreamble(Instant : TLogTimestamp) : String; virtual;
+      function  FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
+      function  FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
+      function  IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String;
     public
       constructor Create; override;
       destructor Destroy; override;
@@ -684,18 +684,27 @@ begin
 end;
 
 procedure TPlainTextOutput.DoBeginSection(Instant : TLogTimestamp; const Msg : String);
+var
+  sPreamble : String;
 begin
-  WriteLine(GetLogRecordPreamble(Instant) + FormatLogSectionBeginning(Msg));
+  sPreamble := FormatPreamble(Instant);
+  WriteLine(sPreamble + FormatLogSectionBeginning(sPreamble.Length, Msg));
 end;
 
 procedure TPlainTextOutput.DoEndSection(Instant : TLogTimestamp; const Msg : String);
+var
+  sPreamble : String;
 begin
-  WriteLine(GetLogRecordPreamble(Instant) + FormatLogSectionEnding(Msg));
+  sPreamble := FormatPreamble(Instant);
+  WriteLine(sPreamble + FormatLogSectionEnding(sPreamble.Length, Msg));
 end;
 
 procedure TPlainTextOutput.DoWriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
+var
+  sPreamble : String;
 begin
-  WriteLine(GetLogRecordPreamble(Instant) + FormatLogMessage(Severity, Msg));
+  sPreamble := FormatPreamble(Instant);
+  WriteLine(sPreamble + FormatLogMessage(sPreamble.Length, Severity, Msg));
 end;
 
 function TPlainTextOutput.FormatCurrentThread : String;
@@ -708,19 +717,24 @@ begin
   Result := Result.PadRight(Max(RSPTOMainThreadName.Length, High(TThreadID).ToString.Length));
 end;
 
-function TPlainTextOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
+function TPlainTextOutput.FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String;
 begin
   // TODO: implement {TPlainTextOutput.FormatLogMessage}
 end;
 
-function TPlainTextOutput.FormatLogSectionBeginning(const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionBeginning(PreambleLength : Word; const Msg : String) : String;
 begin
   // TODO: implement {TPlainTextOutput.FormatLogSectionBeginning}
 end;
 
-function TPlainTextOutput.FormatLogSectionEnding(const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionEnding(PreambleLength : Word; const Msg : String) : String;
 begin
   // TODO: implement {TPlainTextOutput.FormatLogSectionEnding}
+end;
+
+function TPlainTextOutput.FormatPreamble(Instant : TLogTimestamp) : String;
+begin
+  // TODO: implement {TPlainTextOutput.FormatPreamble}
 end;
 
 function TPlainTextOutput.FormatSeverity(Severity : TLogMsgSeverity) : String;
@@ -731,11 +745,6 @@ end;
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
   Result := DateTimeToStr(Timestamp);
-end;
-
-function TPlainTextOutput.GetLogRecordPreamble(Instant : TLogTimestamp) : String;
-begin
-  // TODO: implement {TPlainTextOutput.GetLogRecordPreamble}
 end;
 
 function TPlainTextOutput.IndentText(const Text, PaddingStr : String; LeftPadding : Word;
