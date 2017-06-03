@@ -170,9 +170,9 @@ type
 
       procedure WriteLine(const S : String); virtual; abstract;
     protected
-      function FormatLogMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
-      function FormatLogSectionBeginning(Instant : TLogTimestamp; const Msg : String) : String; virtual;
-      function FormatLogSectionEnding(Instant : TLogTimestamp; const Msg : String) : String; virtual;
+      function FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
+      function FormatLogSectionBeginning(const Msg : String) : String; virtual;
+      function FormatLogSectionEnding(const Msg : String) : String; virtual;
 
       function FormatCurrentThread : String; virtual;
       function FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
@@ -671,17 +671,17 @@ begin
 
 end;
 
-function TPlainTextOutput.FormatLogMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String) : String;
+function TPlainTextOutput.FormatLogMessage(Severity : TLogMsgSeverity; const Msg : String) : String;
 begin
 
 end;
 
-function TPlainTextOutput.FormatLogSectionBeginning(Instant : TLogTimestamp; const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionBeginning(const Msg : String) : String;
 begin
 
 end;
 
-function TPlainTextOutput.FormatLogSectionEnding(Instant : TLogTimestamp; const Msg : String) : String;
+function TPlainTextOutput.FormatLogSectionEnding(const Msg : String) : String;
 begin
 
 end;
