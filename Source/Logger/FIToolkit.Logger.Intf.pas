@@ -11,12 +11,18 @@ type
   ILogOutput = interface
     ['{D66F4536-61D8-481D-9055-3F063F23E0B5}']
 
+    { Property accessors }
+
     function  GetSeverityThreshold : TLogMsgSeverity;
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+
+    { Methods }
 
     procedure BeginSection(Instant : TLogTimestamp; const Msg : String);
     procedure EndSection(Instant : TLogTimestamp; const Msg : String);
     procedure WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
+
+    { Properties }
 
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
