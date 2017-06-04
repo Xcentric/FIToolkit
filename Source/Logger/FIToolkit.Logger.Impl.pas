@@ -182,7 +182,11 @@ type
       function  FormatPreamble(Instant : TLogTimestamp) : String; virtual;
       function  FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
       function  FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
-      function  IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String;
+      function  GetPreambleCompensatorFiller : Char; virtual;
+      function  GetSectionIndentStr : String; virtual;
+      function  GetSeverityDescriptions : TLogMsgTypeDescriptions; virtual;
+      function  IndentText(const Text : String) : String; overload;
+      function  IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String; overload;
     public
       constructor Create; override;
       destructor Destroy; override;
@@ -745,6 +749,35 @@ end;
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
   Result := DateTimeToStr(Timestamp);
+end;
+
+function TPlainTextOutput.GetPreambleCompensatorFiller : Char;
+begin
+  // TODO: make const {TPlainTextOutput.GetPreambleCompensatorFiller}
+  Result := ' ';
+end;
+
+function TPlainTextOutput.GetSectionIndentStr : String;
+begin
+  // TODO: make const {TPlainTextOutput.GetSectionIndentStr}
+  Result := '  ';
+end;
+
+function TPlainTextOutput.GetSeverityDescriptions : TLogMsgTypeDescriptions;
+begin
+  // TODO: make consts {TPlainTextOutput.GetSeverityDescriptions}
+  Result := TLogMsgTypeDescriptions.Create([
+    TLogMsgTypeDescription.Create(lmDebug,   '( DEBUG ) '),
+    TLogMsgTypeDescription.Create(lmInfo,    '( INFO  ) '),
+    TLogMsgTypeDescription.Create(lmWarning, '(WARNING) '),
+    TLogMsgTypeDescription.Create(lmError,   '( ERROR ) '),
+    TLogMsgTypeDescription.Create(lmFatal,   '( FATAL ) ')
+  ]);
+end;
+
+function TPlainTextOutput.IndentText(const Text : String) : String;
+begin
+  Result := IndentText(Text, GetSectionIndentStr, SectionLevel, False);
 end;
 
 function TPlainTextOutput.IndentText(const Text, PaddingStr : String; LeftPadding : Word;
