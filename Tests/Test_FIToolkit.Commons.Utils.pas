@@ -101,6 +101,8 @@ type
       [IsStringProp]
       property PropWideString : WideString read FWideString;
     published
+      procedure TestGetFullName;
+      procedure TestGetMethod;
       procedure TestIsArray;
       procedure TestIsString;
   end;
@@ -127,6 +129,10 @@ implementation
 uses
   System.Classes, System.IOUtils, System.Types, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
   TestUtils, TestConsts;
+
+type
+
+  TDummyClass = class (TObject);
 
 { TestFIToolkitCommonsUtils }
 
@@ -577,6 +583,39 @@ begin
 end;
 
 { TestTRttiTypeHelper }
+
+procedure TestTRttiTypeHelper.TestGetFullName;
+var
+  Ctx : TRttiContext;
+  ReturnValue : String;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    ReturnValue := Ctx.GetType(Self.ClassType).GetFullName;
+    CheckEquals(Self.QualifiedClassName, ReturnValue, 'ReturnValue = Self.QualifiedClassName');
+
+    ReturnValue := Ctx.GetType(TDummyClass).GetFullName;
+    CheckEquals(TDummyClass.ClassName, ReturnValue, 'ReturnValue = TDummyClass.ClassName');
+  finally
+    Ctx.Free;
+  end;
+end;
+
+procedure TestTRttiTypeHelper.TestGetMethod;
+var
+  Ctx : TRttiContext;
+  ReturnValue : TRttiMethod;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    ReturnValue := Ctx.GetType(Self.ClassType).GetMethod(@TestTRttiTypeHelper.TestGetMethod);
+
+    CheckTrue(Assigned(ReturnValue), 'CheckTrue::Assigned(ReturnValue)');
+    CheckEquals('TestGetMethod', ReturnValue.Name, 'ReturnValue.Name = TestGetMethod');
+  finally
+    Ctx.Free;
+  end;
+end;
 
 procedure TestTRttiTypeHelper.TestIsArray;
 var

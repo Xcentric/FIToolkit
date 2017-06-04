@@ -438,8 +438,6 @@ end;
 
 function TRttiTypeHelper.GetFullName : String;
 begin
-  // TODO: cover with test {TRttiTypeHelper.GetFullName}
-
   if IsPublicType then
     Result := QualifiedName
   else
@@ -450,8 +448,6 @@ function TRttiTypeHelper.GetMethod(MethodAddress : Pointer) : TRttiMethod;
 var
   M : TRttiMethod;
 begin
-  // TODO: cover with test {TRttiTypeHelper.GetMethod}
-
   Result := nil;
 
   if Assigned(MethodAddress) then
