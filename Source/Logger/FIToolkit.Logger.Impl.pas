@@ -785,11 +785,13 @@ end;
 
 function TPlainTextOutput.GetSectionBeginningPrefix : String;
 begin
+  // TODO: make const {TPlainTextOutput.GetSectionBeginningPrefix}
   Result := '->'.PadRight(GetSeverityDescriptions.MaxItemLength);
 end;
 
 function TPlainTextOutput.GetSectionEndingPrefix : String;
 begin
+  // TODO: make const {TPlainTextOutput.GetSectionEndingPrefix}
   Result := '<-'.PadRight(GetSeverityDescriptions.MaxItemLength);
 end;
 
