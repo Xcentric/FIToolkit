@@ -183,6 +183,8 @@ type
       function  FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
       function  FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
       function  GetPreambleCompensatorFiller : Char; virtual;
+      function  GetSectionBeginningPrefix : String; virtual;
+      function  GetSectionEndingPrefix : String; virtual;
       function  GetSectionIndentStr : String; virtual;
       function  GetSeverityDescriptions : TLogMsgTypeDescriptions; virtual;
       function  IndentText(const Text : String) : String; overload;
@@ -195,7 +197,7 @@ type
 implementation
 
 uses
-  System.Classes, System.Types, System.Math, System.StrUtils,
+  System.Classes, System.Types, System.Math, System.StrUtils, System.Character,
   FIToolkit.Commons.Utils,
   FIToolkit.Logger.Utils, FIToolkit.Logger.Consts;
 
@@ -722,18 +724,42 @@ begin
 end;
 
 function TPlainTextOutput.FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String;
+var
+  sSeverity : String;
+  cFiller : Char;
 begin
-  // TODO: implement {TPlainTextOutput.FormatLogMessage}
+  sSeverity := FormatSeverity(Severity);
+  Result := sSeverity + IndentText(Msg);
+
+  cFiller := GetPreambleCompensatorFiller;
+  if not cFiller.IsControl then
+    Result := IndentText(Result, cFiller, PreambleLength + sSeverity.Length, True);
 end;
 
 function TPlainTextOutput.FormatLogSectionBeginning(PreambleLength : Word; const Msg : String) : String;
+var
+  sPrefix : String;
+  cFiller : Char;
 begin
-  // TODO: implement {TPlainTextOutput.FormatLogSectionBeginning}
+  sPrefix := GetSectionBeginningPrefix;
+  Result := sPrefix + IndentText(Msg);
+
+  cFiller := GetPreambleCompensatorFiller;
+  if not cFiller.IsControl then
+    Result := IndentText(Result, cFiller, PreambleLength + sPrefix.Length, True);
 end;
 
 function TPlainTextOutput.FormatLogSectionEnding(PreambleLength : Word; const Msg : String) : String;
+var
+  sPrefix : String;
+  cFiller : Char;
 begin
-  // TODO: implement {TPlainTextOutput.FormatLogSectionEnding}
+  sPrefix := GetSectionEndingPrefix;
+  Result := sPrefix + IndentText(Msg);
+
+  cFiller := GetPreambleCompensatorFiller;
+  if not cFiller.IsControl then
+    Result := IndentText(Result, cFiller, PreambleLength + sPrefix.Length, True);
 end;
 
 function TPlainTextOutput.FormatPreamble(Instant : TLogTimestamp) : String;
@@ -755,6 +781,16 @@ function TPlainTextOutput.GetPreambleCompensatorFiller : Char;
 begin
   // TODO: make const {TPlainTextOutput.GetPreambleCompensatorFiller}
   Result := ' ';
+end;
+
+function TPlainTextOutput.GetSectionBeginningPrefix : String;
+begin
+  Result := '->'.PadRight(GetSeverityDescriptions.MaxItemLength);
+end;
+
+function TPlainTextOutput.GetSectionEndingPrefix : String;
+begin
+  Result := '<-'.PadRight(GetSeverityDescriptions.MaxItemLength);
 end;
 
 function TPlainTextOutput.GetSectionIndentStr : String;
