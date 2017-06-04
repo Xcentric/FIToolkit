@@ -197,7 +197,7 @@ implementation
 uses
   System.Classes, System.Types, System.Math, System.StrUtils,
   FIToolkit.Commons.Utils,
-  FIToolkit.Logger.Consts;
+  FIToolkit.Logger.Utils, FIToolkit.Logger.Consts;
 
 { TAbstractLogger }
 
@@ -738,12 +738,12 @@ end;
 
 function TPlainTextOutput.FormatPreamble(Instant : TLogTimestamp) : String;
 begin
-  // TODO: implement {TPlainTextOutput.FormatPreamble}
+  Result := Format('[%s] {%s} ', [FormatTimestamp(Instant), FormatCurrentThread]);
 end;
 
 function TPlainTextOutput.FormatSeverity(Severity : TLogMsgSeverity) : String;
 begin
-  // TODO: implement {TPlainTextOutput.FormatSeverity}
+  Result := GetSeverityDescriptions[InferLogMsgType(Severity)];
 end;
 
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
