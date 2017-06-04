@@ -120,6 +120,7 @@ type
       procedure LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const); override;
   end;
 
+  // TODO: cover with tests {TLogger}
   TLogger = class (TBaseLogger, ILogger)
     private
       function FormatMethod(AType : TRttiType; AMethod : TRttiMethod) : String;
@@ -162,6 +163,7 @@ type
       property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
 
+  // TODO: cover with tests {TPlainTextOutput}
   TPlainTextOutput = class abstract (TAbstractLogOutput, ILogOutput)
     strict private
       FStringBuilder : TStringBuilder;

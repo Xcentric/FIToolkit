@@ -19,7 +19,7 @@ type
 
   TLogMsgTypeDescription = TPair<TLogMsgType, String>;
 
-  // TODO: cover with tests TLogMsgTypeDescriptions
+  // TODO: cover with tests {TLogMsgTypeDescriptions}
   TLogMsgTypeDescriptions = record
     strict private
       FItems : array [TLogMsgType] of String;
