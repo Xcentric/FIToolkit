@@ -25,11 +25,25 @@ const
     SEVERITY_NONE, SEVERITY_DEBUG, SEVERITY_INFO, SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL
   );
 
+  { Plain text output }
+
+  CHR_PTO_PREAMBLE_COMPENSATOR_FILLER = Char(' ');
+
 resourcestring
 
   { Plain text output }
 
   RSPTOMainThreadName = 'MAIN';
+
+  RSPTOMsgTypeDescDebug   = '( DEBUG ) ';
+  RSPTOMsgTypeDescInfo    = '( INFO  ) ';
+  RSPTOMsgTypeDescWarning = '(WARNING) ';
+  RSPTOMsgTypeDescError   = '( ERROR ) ';
+  RSPTOMsgTypeDescFatal   = '( FATAL ) ';
+
+  RSPTOSectionBeginningPrefix = '->';
+  RSPTOSectionEndingPrefix = '<-';
+  RSPTOSectionIndentStr = '  ';
 
 implementation
 

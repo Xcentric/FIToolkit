@@ -781,37 +781,32 @@ end;
 
 function TPlainTextOutput.GetPreambleCompensatorFiller : Char;
 begin
-  // TODO: make const {TPlainTextOutput.GetPreambleCompensatorFiller}
-  Result := ' ';
+  Result := CHR_PTO_PREAMBLE_COMPENSATOR_FILLER;
 end;
 
 function TPlainTextOutput.GetSectionBeginningPrefix : String;
 begin
-  // TODO: make const {TPlainTextOutput.GetSectionBeginningPrefix}
-  Result := '->'.PadRight(GetSeverityDescriptions.MaxItemLength);
+  Result := RSPTOSectionBeginningPrefix.PadRight(GetSeverityDescriptions.MaxItemLength);
 end;
 
 function TPlainTextOutput.GetSectionEndingPrefix : String;
 begin
-  // TODO: make const {TPlainTextOutput.GetSectionEndingPrefix}
-  Result := '<-'.PadRight(GetSeverityDescriptions.MaxItemLength);
+  Result := RSPTOSectionEndingPrefix.PadRight(GetSeverityDescriptions.MaxItemLength);
 end;
 
 function TPlainTextOutput.GetSectionIndentStr : String;
 begin
-  // TODO: make const {TPlainTextOutput.GetSectionIndentStr}
-  Result := '  ';
+  Result := RSPTOSectionIndentStr;
 end;
 
 function TPlainTextOutput.GetSeverityDescriptions : TLogMsgTypeDescriptions;
 begin
-  // TODO: make consts {TPlainTextOutput.GetSeverityDescriptions}
   Result := TLogMsgTypeDescriptions.Create([
-    TLogMsgTypeDescription.Create(lmDebug,   '( DEBUG ) '),
-    TLogMsgTypeDescription.Create(lmInfo,    '( INFO  ) '),
-    TLogMsgTypeDescription.Create(lmWarning, '(WARNING) '),
-    TLogMsgTypeDescription.Create(lmError,   '( ERROR ) '),
-    TLogMsgTypeDescription.Create(lmFatal,   '( FATAL ) ')
+    TLogMsgTypeDescription.Create(lmDebug,   RSPTOMsgTypeDescDebug),
+    TLogMsgTypeDescription.Create(lmInfo,    RSPTOMsgTypeDescInfo),
+    TLogMsgTypeDescription.Create(lmWarning, RSPTOMsgTypeDescWarning),
+    TLogMsgTypeDescription.Create(lmError,   RSPTOMsgTypeDescError),
+    TLogMsgTypeDescription.Create(lmFatal,   RSPTOMsgTypeDescFatal)
   ]);
 end;
 
