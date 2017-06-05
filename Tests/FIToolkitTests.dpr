@@ -76,6 +76,7 @@ uses
   Test_FIToolkit.Config.FixInsight in 'Test_FIToolkit.Config.FixInsight.pas',
   Test_FIToolkit.Config.Manager in 'Test_FIToolkit.Config.Manager.pas',
   Test_FIToolkit.Config.Storage in 'Test_FIToolkit.Config.Storage.pas',
+  Test_FIToolkit.Logger.Types in 'Test_FIToolkit.Logger.Types.pas',
   Test_FIToolkit.Logger.Utils in 'Test_FIToolkit.Logger.Utils.pas',
   Test_FIToolkit.ProjectGroupParser.Parser in 'Test_FIToolkit.ProjectGroupParser.Parser.pas',
   Test_FIToolkit.Reports.Builder.HTML in 'Test_FIToolkit.Reports.Builder.HTML.pas',
