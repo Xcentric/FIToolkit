@@ -16,7 +16,6 @@ uses
   FIToolkit.Logger.Utils;
 
 type
-  // Test methods for class TDummy
 
   TestFIToolkitLoggerUtils = class (TGenericTestCase)
   published
