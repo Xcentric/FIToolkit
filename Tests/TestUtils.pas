@@ -8,6 +8,20 @@ uses
 
 type
 
+  TInterfaceTestCase<T : IInterface> = class abstract (TGenericTestCase)
+    strict private
+      FSUT : T;
+    strict protected
+      property SUT : T read FSUT;
+    protected
+      procedure DoSetUp; virtual;
+      procedure DoTearDown; virtual;
+      function  MakeSUT : T; virtual; abstract;
+    public
+      procedure SetUp; override; final;
+      procedure TearDown; override; final;
+  end;
+
   TTestCaseHelper = class helper for TTestCase
     private
       const
@@ -36,6 +50,30 @@ uses
   System.IOUtils, System.Threading,
   Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
+
+{ TInterfaceTestCase<T> }
+
+procedure TInterfaceTestCase<T>.DoSetUp;
+begin
+  {NOP}
+end;
+
+procedure TInterfaceTestCase<T>.DoTearDown;
+begin
+  {NOP}
+end;
+
+procedure TInterfaceTestCase<T>.SetUp;
+begin
+  FSUT := MakeSUT;
+  DoSetUp;
+end;
+
+procedure TInterfaceTestCase<T>.TearDown;
+begin
+  DoTearDown;
+  FSUT := nil;
+end;
 
 { TTestCaseHelper }
 

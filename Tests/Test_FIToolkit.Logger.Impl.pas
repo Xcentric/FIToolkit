@@ -13,18 +13,17 @@ interface
 
 uses
   TestFramework,
-  System.SysUtils, System.Generics.Collections, System.Rtti, System.TypInfo,
-  FIToolkit.Logger.Intf, FIToolkit.Logger.Impl, FIToolkit.Logger.Types;
+  System.Rtti, System.TypInfo,
+  FIToolkit.Logger.Intf, FIToolkit.Logger.Impl, FIToolkit.Logger.Types,
+  TestUtils;
 
 type
+
+  { Interfaces }
+
   // Test methods for interface ILogger
 
-  TestILogger = class(TGenericTestCase)
-  strict protected
-    FLogger: ILogger;
-  public
-    procedure SetUp; override;
-    procedure TearDown; override;
+  TestILogger = class abstract (TInterfaceTestCase<ILogger>)
   published
     procedure TestAddOutput;
     procedure TestEnterSection;
@@ -67,36 +66,35 @@ type
 
   // Test methods for interface ILogOutput
 
-  TestILogOutput = class(TGenericTestCase)
-  strict protected
-    FLogOutput: ILogOutput;
-  public
-    procedure SetUp; override;
-    procedure TearDown; override;
+  TestILogOutput = class abstract (TInterfaceTestCase<ILogOutput>)
   published
     procedure TestBeginSection;
     procedure TestEndSection;
     procedure TestWriteMessage;
   end;
 
+  { Interfaces implementers }
+
+  TestTLogger = class (TestILogger)
+  protected
+    function MakeSUT : ILogger; override;
+  end;
+
+  TestTPlainTextOutput = class (TestILogOutput)
+  protected
+    function MakeSUT : ILogOutput; override;
+  end;
+
 implementation
 
-procedure TestILogger.SetUp;
-begin
-  FLogger := TLogger.Create;
-end;
-
-procedure TestILogger.TearDown;
-begin
-  FLogger := nil;
-end;
+{ TestILogger }
 
 procedure TestILogger.TestAddOutput;
 var
   LogOutput: ILogOutput;
 begin
   // TODO: Setup method call parameters
-  FLogger.AddOutput(LogOutput);
+  SUT.AddOutput(LogOutput);
   // TODO: Validate method results
 end;
 
@@ -105,7 +103,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.EnterSection(Msg);
+  SUT.EnterSection(Msg);
   // TODO: Validate method results
 end;
 
@@ -142,7 +140,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.LeaveSection(Msg);
+  SUT.LeaveSection(Msg);
   // TODO: Validate method results
 end;
 
@@ -203,7 +201,7 @@ var
   AClass: TClass;
 begin
   // TODO: Setup method call parameters
-  FLogger.LeaveMethod(AClass, MethodAddress, AResult);
+  SUT.LeaveMethod(AClass, MethodAddress, AResult);
   // TODO: Validate method results
 end;
 
@@ -214,7 +212,7 @@ var
   ARecord: PTypeInfo;
 begin
   // TODO: Setup method call parameters
-  FLogger.LeaveMethod(ARecord, MethodAddress, AResult);
+  SUT.LeaveMethod(ARecord, MethodAddress, AResult);
   // TODO: Validate method results
 end;
 
@@ -224,7 +222,7 @@ var
   Severity: TLogMsgSeverity;
 begin
   // TODO: Setup method call parameters
-  FLogger.Log(Severity, Msg);
+  SUT.Log(Severity, Msg);
   // TODO: Validate method results
 end;
 
@@ -264,7 +262,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.Debug(Msg);
+  SUT.Debug(Msg);
   // TODO: Validate method results
 end;
 
@@ -301,7 +299,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.Info(Msg);
+  SUT.Info(Msg);
   // TODO: Validate method results
 end;
 
@@ -338,7 +336,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.Warning(Msg);
+  SUT.Warning(Msg);
   // TODO: Validate method results
 end;
 
@@ -375,7 +373,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.Error(Msg);
+  SUT.Error(Msg);
   // TODO: Validate method results
 end;
 
@@ -412,7 +410,7 @@ var
   Msg: string;
 begin
   // TODO: Setup method call parameters
-  FLogger.Fatal(Msg);
+  SUT.Fatal(Msg);
   // TODO: Validate method results
 end;
 
@@ -444,15 +442,7 @@ begin
   // TODO: Validate method results
 end;
 
-procedure TestILogOutput.SetUp;
-begin
-  FLogOutput := TPlainTextOutput.Create;
-end;
-
-procedure TestILogOutput.TearDown;
-begin
-  FLogOutput := nil;
-end;
+{ TestILogOutput }
 
 procedure TestILogOutput.TestBeginSection;
 var
@@ -460,7 +450,7 @@ var
   Instant: TLogTimestamp;
 begin
   // TODO: Setup method call parameters
-  FLogOutput.BeginSection(Instant, Msg);
+  SUT.BeginSection(Instant, Msg);
   // TODO: Validate method results
 end;
 
@@ -470,7 +460,7 @@ var
   Instant: TLogTimestamp;
 begin
   // TODO: Setup method call parameters
-  FLogOutput.EndSection(Instant, Msg);
+  SUT.EndSection(Instant, Msg);
   // TODO: Validate method results
 end;
 
@@ -481,12 +471,26 @@ var
   Instant: TLogTimestamp;
 begin
   // TODO: Setup method call parameters
-  FLogOutput.WriteMessage(Instant, Severity, Msg);
+  SUT.WriteMessage(Instant, Severity, Msg);
   // TODO: Validate method results
+end;
+
+{ TestTLogger }
+
+function TestTLogger.MakeSUT : ILogger;
+begin
+  Result := TLogger.Create;
+end;
+
+{ TestTPlainTextOutput }
+
+function TestTPlainTextOutput.MakeSUT : ILogOutput;
+begin
+  Result := TPlainTextOutput.Create;
 end;
 
 initialization
   // Register any test cases with the test runner
-  RegisterTest(TestILogger.Suite);
-  RegisterTest(TestILogOutput.Suite);
+  RegisterTest(TestTLogger.Suite);
+  RegisterTest(TestTPlainTextOutput.Suite);
 end.
