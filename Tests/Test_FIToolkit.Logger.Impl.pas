@@ -24,10 +24,12 @@ type
   TTestTextOutput = class (TPlainTextOutput)
     strict private
       FLastWrittenLine : String;
+      FWrittenLinesCount : Integer;
     strict protected
       procedure WriteLine(const S : String); override;
     public
       property LastWrittenLine : String read FLastWrittenLine;
+      property WrittenLinesCount : Integer read FWrittenLinesCount;
   end;
 
   { SUT }
@@ -95,13 +97,15 @@ type
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  FIToolkit.Logger.Consts;
 
 { TTestTextOutput }
 
 procedure TTestTextOutput.WriteLine(const S : String);
 begin
   FLastWrittenLine := S;
+  Inc(FWrittenLinesCount);
 end;
 
 { TestTLogger }
@@ -483,22 +487,105 @@ end;
 
 procedure TestTPlainTextOutput.TestBeginSection;
 var
-  Msg: string;
-  Instant: TLogTimestamp;
+  Msg : String;
+  Instant : TLogTimestamp;
+
+  procedure RunLocalChecks;
+  begin
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMainThreadName),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMainThreadName]);
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOSectionBeginningPrefix),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOSectionBeginningPrefix]);
+
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(Msg),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [Msg]);
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(DateTimeToStr(Instant)),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [DateTimeToStr(Instant)]);
+  end;
+
 begin
-  // TODO: Setup method call parameters
+  CheckEquals(0, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 0');
+  CheckEquals(0, SUTAsClass<TTestTextOutput>.WrittenLinesCount, 'WrittenLinesCount = 0');
+  CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.IsEmpty, 'CheckTrue::LastWrittenLine.IsEmpty');
+
+  Msg := 'BeginSection1';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_NONE;
   SUT.BeginSection(Instant, Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 1');
+  RunLocalChecks;
+
+  Msg := 'BeginSection2';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.BeginSection(Instant, Msg);
+
+  CheckEquals(2, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 2');
+  RunLocalChecks;
+
+  Msg := 'BeginSection3';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  SUT.BeginSection(Instant, Msg);
+
+  CheckEquals(3, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 3');
+  RunLocalChecks;
+
+  CheckEquals(3, SUTAsClass<TTestTextOutput>.WrittenLinesCount, 'WrittenLinesCount = 3');
 end;
 
 procedure TestTPlainTextOutput.TestEndSection;
 var
-  Msg: string;
-  Instant: TLogTimestamp;
+  Msg : String;
+  Instant : TLogTimestamp;
+
+  procedure RunLocalChecks;
+  begin
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMainThreadName),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMainThreadName]);
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOSectionEndingPrefix),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOSectionEndingPrefix]);
+
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(Msg),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [Msg]);
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(DateTimeToStr(Instant)),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [DateTimeToStr(Instant)]);
+  end;
+
 begin
-  // TODO: Setup method call parameters
+  SUT.BeginSection(Now, 'BeginSection1');
+  SUT.BeginSection(Now, 'BeginSection2');
+  SUT.BeginSection(Now, 'BeginSection3');
+
+  Assert(SUTAsClass<TTestTextOutput>.SectionLevel = 3, 'SectionLevel <> 3');
+  Assert(SUTAsClass<TTestTextOutput>.WrittenLinesCount = 3, 'WrittenLinesCount <> 3');
+
+  Msg := 'EndSection3';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_MAX;
   SUT.EndSection(Instant, Msg);
-  // TODO: Validate method results
+
+  CheckEquals(2, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 2');
+  RunLocalChecks;
+
+  Msg := 'EndSection2';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.EndSection(Instant, Msg);
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 1');
+  RunLocalChecks;
+
+  Msg := 'EndSection1';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.EndSection(Instant, Msg);
+
+  CheckEquals(0, SUTAsClass<TTestTextOutput>.SectionLevel, 'SectionLevel = 0');
+  RunLocalChecks;
+
+  CheckEquals(6, SUTAsClass<TTestTextOutput>.WrittenLinesCount, 'WrittenLinesCount = 6');
 end;
 
 procedure TestTPlainTextOutput.TestWriteMessage;
