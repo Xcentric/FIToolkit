@@ -8,15 +8,17 @@ uses
 
 type
 
-  TInterfaceTestCase<T : IInterface> = class abstract (TGenericTestCase)
+  TInterfaceTestCase<I : IInterface> = class abstract (TGenericTestCase)
     strict private
-      FSUT : T;
+      FSUT : I;
     strict protected
-      property SUT : T read FSUT;
+      function SUTAsClass<T : class> : T;
+
+      property SUT : I read FSUT;
     protected
       procedure DoSetUp; virtual;
       procedure DoTearDown; virtual;
-      function  MakeSUT : T; virtual; abstract;
+      function  MakeSUT : I; virtual; abstract;
     public
       procedure SetUp; override; final;
       procedure TearDown; override; final;
@@ -51,25 +53,34 @@ uses
   Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
 
-{ TInterfaceTestCase<T> }
+{ TInterfaceTestCase<I> }
 
-procedure TInterfaceTestCase<T>.DoSetUp;
+procedure TInterfaceTestCase<I>.DoSetUp;
 begin
   {NOP}
 end;
 
-procedure TInterfaceTestCase<T>.DoTearDown;
+procedure TInterfaceTestCase<I>.DoTearDown;
 begin
   {NOP}
 end;
 
-procedure TInterfaceTestCase<T>.SetUp;
+procedure TInterfaceTestCase<I>.SetUp;
 begin
   FSUT := MakeSUT;
   DoSetUp;
 end;
 
-procedure TInterfaceTestCase<T>.TearDown;
+function TInterfaceTestCase<I>.SUTAsClass<T> : T;
+begin
+  Result := nil;
+
+  if FSUT <> nil then
+    if TObject(IInterface(FSUT)).InheritsFrom(T) then
+      Result := TObject(IInterface(FSUT)) as T;
+end;
+
+procedure TInterfaceTestCase<I>.TearDown;
 begin
   DoTearDown;
   FSUT := nil;

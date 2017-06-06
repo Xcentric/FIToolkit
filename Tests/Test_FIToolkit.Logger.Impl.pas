@@ -73,6 +73,17 @@ type
     procedure TestWriteMessage;
   end;
 
+  { Testing helpers }
+
+  TTestTextOutput = class (TPlainTextOutput)
+    strict private
+      FLastWrittenLine : String;
+    strict protected
+      procedure WriteLine(const S : String); override;
+    public
+      property LastWrittenLine : String read FLastWrittenLine;
+  end;
+
   { Interfaces implementers }
 
   TestTLogger = class (TestILogger)
@@ -475,6 +486,13 @@ begin
   // TODO: Validate method results
 end;
 
+{ TTestTextOutput }
+
+procedure TTestTextOutput.WriteLine(const S : String);
+begin
+  FLastWrittenLine := S;
+end;
+
 { TestTLogger }
 
 function TestTLogger.MakeSUT : ILogger;
@@ -486,7 +504,7 @@ end;
 
 function TestTPlainTextOutput.MakeSUT : ILogOutput;
 begin
-  Result := TPlainTextOutput.Create;
+  Result := TTestTextOutput.Create;
 end;
 
 initialization
