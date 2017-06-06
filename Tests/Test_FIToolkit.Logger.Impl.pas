@@ -19,11 +19,28 @@ uses
 
 type
 
-  { Interfaces }
+  { Testing helpers }
 
-  // Test methods for interface ILogger
+  TTestTextOutput = class (TPlainTextOutput)
+    strict private
+      FLastWrittenLine : String;
+    strict protected
+      procedure WriteLine(const S : String); override;
+    public
+      property LastWrittenLine : String read FLastWrittenLine;
+  end;
 
-  TestILogger = class abstract (TInterfaceTestCase<ILogger>)
+  { SUT }
+
+  // Test methods for class TLogger
+
+  TestTLogger = class (TInterfaceTestCase<ILogger>)
+  strict private
+    FOutput : TTestTextOutput;
+  protected
+    procedure DoSetUp; override;
+    procedure DoTearDown; override;
+    function  MakeSUT : ILogger; override;
   published
     procedure TestAddOutput;
     procedure TestEnterSection;
@@ -64,427 +81,21 @@ type
     procedure TestFatalVal;
   end;
 
-  // Test methods for interface ILogOutput
+  // Test methods for class TPlainTextOutput
 
-  TestILogOutput = class abstract (TInterfaceTestCase<ILogOutput>)
+  TestTPlainTextOutput = class (TInterfaceTestCase<ILogOutput>)
+  protected
+    function  MakeSUT : ILogOutput; override;
   published
     procedure TestBeginSection;
     procedure TestEndSection;
     procedure TestWriteMessage;
   end;
 
-  { Testing helpers }
-
-  TTestTextOutput = class (TPlainTextOutput)
-    strict private
-      FLastWrittenLine : String;
-    strict protected
-      procedure WriteLine(const S : String); override;
-    public
-      property LastWrittenLine : String read FLastWrittenLine;
-  end;
-
-  { Interfaces implementers }
-
-  TestTLogger = class (TestILogger)
-  protected
-    function MakeSUT : ILogger; override;
-  end;
-
-  TestTPlainTextOutput = class (TestILogOutput)
-  protected
-    function MakeSUT : ILogOutput; override;
-  end;
-
 implementation
 
-{ TestILogger }
-
-procedure TestILogger.TestAddOutput;
-var
-  LogOutput: ILogOutput;
-begin
-  // TODO: Setup method call parameters
-  SUT.AddOutput(LogOutput);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterSection;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.EnterSection(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterSection1;
-//var
-//  Vals: $1;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSection(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterSectionFmt;
-//var
-//  Args: $3;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSectionFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterSectionVal;
-//var
-//  Vals: $5;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSectionVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveSection;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.LeaveSection(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveSection1;
-//var
-//  Vals: $7;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSection(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveSectionFmt;
-//var
-//  Args: $9;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSectionFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveSectionVal;
-//var
-//  Vals: $11;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSectionVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterMethod;
-//var
-//  Params: $13;
-//  MethodAddress: Pointer;
-//  AClass: TClass;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterMethod(AClass, MethodAddress, Params);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestEnterMethod1;
-//var
-//  Params: $15;
-//  MethodAddress: Pointer;
-//  ARecord: PTypeInfo;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterMethod(ARecord, MethodAddress, Params);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveMethod;
-var
-  AResult: TValue;
-  MethodAddress: Pointer;
-  AClass: TClass;
-begin
-  // TODO: Setup method call parameters
-  SUT.LeaveMethod(AClass, MethodAddress, AResult);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLeaveMethod1;
-var
-  AResult: TValue;
-  MethodAddress: Pointer;
-  ARecord: PTypeInfo;
-begin
-  // TODO: Setup method call parameters
-  SUT.LeaveMethod(ARecord, MethodAddress, AResult);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLog;
-var
-  Msg: string;
-  Severity: TLogMsgSeverity;
-begin
-  // TODO: Setup method call parameters
-  SUT.Log(Severity, Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLog1;
-//var
-//  Vals: $17;
-//  Severity: TLogMsgSeverity;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Log(Severity, Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLogFmt;
-//var
-//  Args: $19;
-//  Msg: string;
-//  Severity: TLogMsgSeverity;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LogFmt(Severity, Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestLogVal;
-//var
-//  Vals: $21;
-//  Severity: TLogMsgSeverity;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LogVal(Severity, Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestDebug;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.Debug(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestDebug1;
-//var
-//  Vals: $23;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Debug(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestDebugFmt;
-//var
-//  Args: $25;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.DebugFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestDebugVal;
-//var
-//  Vals: $27;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.DebugVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestInfo;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.Info(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestInfo1;
-//var
-//  Vals: $29;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Info(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestInfoFmt;
-//var
-//  Args: $31;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.InfoFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestInfoVal;
-//var
-//  Vals: $33;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.InfoVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestWarning;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.Warning(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestWarning1;
-//var
-//  Vals: $35;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Warning(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestWarningFmt;
-//var
-//  Args: $37;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.WarningFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestWarningVal;
-//var
-//  Vals: $39;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.WarningVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestError;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.Error(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestError1;
-//var
-//  Vals: $41;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Error(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestErrorFmt;
-//var
-//  Args: $43;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.ErrorFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestErrorVal;
-//var
-//  Vals: $45;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.ErrorVal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestFatal;
-var
-  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  SUT.Fatal(Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestFatal1;
-//var
-//  Vals: $47;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Fatal(Vals);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestFatalFmt;
-//var
-//  Args: $49;
-//  Msg: string;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.FatalFmt(Msg, Args);
-  // TODO: Validate method results
-end;
-
-procedure TestILogger.TestFatalVal;
-//var
-//  Vals: $51;
-begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.FatalVal(Vals);
-  // TODO: Validate method results
-end;
-
-{ TestILogOutput }
-
-procedure TestILogOutput.TestBeginSection;
-var
-  Msg: string;
-  Instant: TLogTimestamp;
-begin
-  // TODO: Setup method call parameters
-  SUT.BeginSection(Instant, Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogOutput.TestEndSection;
-var
-  Msg: string;
-  Instant: TLogTimestamp;
-begin
-  // TODO: Setup method call parameters
-  SUT.EndSection(Instant, Msg);
-  // TODO: Validate method results
-end;
-
-procedure TestILogOutput.TestWriteMessage;
-var
-  Msg: string;
-  Severity: TLogMsgSeverity;
-  Instant: TLogTimestamp;
-begin
-  // TODO: Setup method call parameters
-  SUT.WriteMessage(Instant, Severity, Msg);
-  // TODO: Validate method results
-end;
+uses
+  System.SysUtils;
 
 { TTestTextOutput }
 
@@ -495,9 +106,372 @@ end;
 
 { TestTLogger }
 
+procedure TestTLogger.DoSetUp;
+begin
+  FOutput := TTestTextOutput.Create;
+end;
+
+procedure TestTLogger.DoTearDown;
+begin
+  FreeAndNil(FOutput);
+end;
+
 function TestTLogger.MakeSUT : ILogger;
 begin
   Result := TLogger.Create;
+end;
+
+procedure TestTLogger.TestAddOutput;
+var
+  LogOutput: ILogOutput;
+begin
+  // TODO: Setup method call parameters
+  SUT.AddOutput(LogOutput);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterSection;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.EnterSection(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterSection1;
+//var
+//  Vals: $1;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.EnterSection(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterSectionFmt;
+//var
+//  Args: $3;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.EnterSectionFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterSectionVal;
+//var
+//  Vals: $5;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.EnterSectionVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveSection;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.LeaveSection(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveSection1;
+//var
+//  Vals: $7;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.LeaveSection(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveSectionFmt;
+//var
+//  Args: $9;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.LeaveSectionFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveSectionVal;
+//var
+//  Vals: $11;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.LeaveSectionVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterMethod;
+//var
+//  Params: $13;
+//  MethodAddress: Pointer;
+//  AClass: TClass;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.EnterMethod(AClass, MethodAddress, Params);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestEnterMethod1;
+//var
+//  Params: $15;
+//  MethodAddress: Pointer;
+//  ARecord: PTypeInfo;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.EnterMethod(ARecord, MethodAddress, Params);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveMethod;
+var
+  AResult: TValue;
+  MethodAddress: Pointer;
+  AClass: TClass;
+begin
+  // TODO: Setup method call parameters
+  SUT.LeaveMethod(AClass, MethodAddress, AResult);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLeaveMethod1;
+var
+  AResult: TValue;
+  MethodAddress: Pointer;
+  ARecord: PTypeInfo;
+begin
+  // TODO: Setup method call parameters
+  SUT.LeaveMethod(ARecord, MethodAddress, AResult);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLog;
+var
+  Msg: string;
+  Severity: TLogMsgSeverity;
+begin
+  // TODO: Setup method call parameters
+  SUT.Log(Severity, Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLog1;
+//var
+//  Vals: $17;
+//  Severity: TLogMsgSeverity;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Log(Severity, Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLogFmt;
+//var
+//  Args: $19;
+//  Msg: string;
+//  Severity: TLogMsgSeverity;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.LogFmt(Severity, Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestLogVal;
+//var
+//  Vals: $21;
+//  Severity: TLogMsgSeverity;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.LogVal(Severity, Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestDebug;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.Debug(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestDebug1;
+//var
+//  Vals: $23;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Debug(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestDebugFmt;
+//var
+//  Args: $25;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.DebugFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestDebugVal;
+//var
+//  Vals: $27;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.DebugVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestInfo;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.Info(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestInfo1;
+//var
+//  Vals: $29;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Info(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestInfoFmt;
+//var
+//  Args: $31;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.InfoFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestInfoVal;
+//var
+//  Vals: $33;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.InfoVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestWarning;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.Warning(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestWarning1;
+//var
+//  Vals: $35;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Warning(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestWarningFmt;
+//var
+//  Args: $37;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.WarningFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestWarningVal;
+//var
+//  Vals: $39;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.WarningVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestError;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.Error(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestError1;
+//var
+//  Vals: $41;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Error(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestErrorFmt;
+//var
+//  Args: $43;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.ErrorFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestErrorVal;
+//var
+//  Vals: $45;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.ErrorVal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestFatal;
+var
+  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  SUT.Fatal(Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestFatal1;
+//var
+//  Vals: $47;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.Fatal(Vals);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestFatalFmt;
+//var
+//  Args: $49;
+//  Msg: string;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.FatalFmt(Msg, Args);
+  // TODO: Validate method results
+end;
+
+procedure TestTLogger.TestFatalVal;
+//var
+//  Vals: $51;
+begin
+  // TODO: Setup method call parameters
+  //FAbstractLogger.FatalVal(Vals);
+  // TODO: Validate method results
 end;
 
 { TestTPlainTextOutput }
@@ -505,6 +479,37 @@ end;
 function TestTPlainTextOutput.MakeSUT : ILogOutput;
 begin
   Result := TTestTextOutput.Create;
+end;
+
+procedure TestTPlainTextOutput.TestBeginSection;
+var
+  Msg: string;
+  Instant: TLogTimestamp;
+begin
+  // TODO: Setup method call parameters
+  SUT.BeginSection(Instant, Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTPlainTextOutput.TestEndSection;
+var
+  Msg: string;
+  Instant: TLogTimestamp;
+begin
+  // TODO: Setup method call parameters
+  SUT.EndSection(Instant, Msg);
+  // TODO: Validate method results
+end;
+
+procedure TestTPlainTextOutput.TestWriteMessage;
+var
+  Msg: string;
+  Severity: TLogMsgSeverity;
+  Instant: TLogTimestamp;
+begin
+  // TODO: Setup method call parameters
+  SUT.WriteMessage(Instant, Severity, Msg);
+  // TODO: Validate method results
 end;
 
 initialization
