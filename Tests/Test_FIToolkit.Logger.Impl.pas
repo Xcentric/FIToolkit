@@ -98,7 +98,7 @@ implementation
 
 uses
   System.SysUtils,
-  FIToolkit.Logger.Consts;
+  FIToolkit.Logger.Utils, FIToolkit.Logger.Consts;
 
 { TTestTextOutput }
 
@@ -590,13 +590,152 @@ end;
 
 procedure TestTPlainTextOutput.TestWriteMessage;
 var
-  Msg: string;
-  Severity: TLogMsgSeverity;
-  Instant: TLogTimestamp;
+  Msg : String;
+  Severity : TLogMsgSeverity;
+  Instant : TLogTimestamp;
+
+  procedure RunLocalChecks;
+  begin
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMainThreadName),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMainThreadName]);
+
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(Msg),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [Msg]);
+    CheckTrue((Severity in [SEVERITY_NONE, SEVERITY_MIN]) or
+      SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(
+      SUTAsClass<TTestTextOutput>.GetSeverityDescriptions[InferLogMsgType(Severity)]),
+      'CheckTrue::LastWrittenLine.Contains(<SeverityDesc>)');
+    CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(DateTimeToStr(Instant)),
+      'CheckTrue::LastWrittenLine.Contains(%s)', [DateTimeToStr(Instant)]);
+
+    case InferLogMsgType(Severity) of
+      lmNone:
+        begin {NOP} end;
+      lmDebug:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescDebug),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescDebug]);
+      lmInfo:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescInfo),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescInfo]);
+      lmWarning:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescWarning),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescWarning]);
+      lmError:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescError),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescError]);
+      lmFatal:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescFatal),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescFatal]);
+    else
+      Fail('Unhandled log message type.');
+    end;
+  end;
+
 begin
-  // TODO: Setup method call parameters
+  { Case #1 }
+
+  Msg := 'Message1';
+  Instant := Now;
+  Severity := SUT.SeverityThreshold;
   SUT.WriteMessage(Instant, Severity, Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #1>');
+  RunLocalChecks;
+
+  { Case #2 }
+
+  Msg := 'Message2';
+  Instant := Now;
+  Severity := SEVERITY_NONE;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #2>');
+
+  { Case #3 }
+
+  Msg := 'Message3';
+  Instant := Now;
+  Severity := SEVERITY_MAX;
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #3>');
+
+  { Case #4 }
+
+  Msg := 'Message4';
+  Instant := Now;
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  Severity := Pred(SUT.SeverityThreshold);
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(1, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #4>');
+
+  { Case #5 }
+
+  Msg := 'Message5';
+  Instant := Now;
+  Severity := SEVERITY_DEBUG;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(2, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 2)::<Case #5>');
+  RunLocalChecks;
+
+  { Case #6 }
+
+  Msg := 'Message6';
+  Instant := Now;
+  Severity := SEVERITY_INFO;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(3, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 3)::<Case #6>');
+  RunLocalChecks;
+
+  { Case #7 }
+
+  Msg := 'Message7';
+  Instant := Now;
+  Severity := SEVERITY_WARNING;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(4, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 4)::<Case #7>');
+  RunLocalChecks;
+
+  { Case #8 }
+
+  Msg := 'Message8';
+  Instant := Now;
+  Severity := SEVERITY_ERROR;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(5, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 5)::<Case #8>');
+  RunLocalChecks;
+
+  { Case #9 }
+
+  Msg := 'Message9';
+  Instant := Now;
+  Severity := SEVERITY_FATAL;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(6, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 6)::<Case #9>');
+  RunLocalChecks;
+
+  { Case #10 }
+
+  Msg := 'Message10';
+  Instant := Now;
+  Severity := SEVERITY_MAX;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(7, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 7)::<Case #10>');
+  RunLocalChecks;
 end;
 
 initialization
