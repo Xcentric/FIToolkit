@@ -237,6 +237,8 @@ var
   AClass: TClass;
 begin
   // TODO: Setup method call parameters
+  MethodAddress := nil;
+  AClass := nil;
   SUT.LeaveMethod(AClass, MethodAddress, AResult);
   // TODO: Validate method results
 end;
@@ -248,6 +250,8 @@ var
   ARecord: PTypeInfo;
 begin
   // TODO: Setup method call parameters
+  MethodAddress := nil;
+  ARecord := nil;
   SUT.LeaveMethod(ARecord, MethodAddress, AResult);
   // TODO: Validate method results
 end;
@@ -258,6 +262,7 @@ var
   Severity: TLogMsgSeverity;
 begin
   // TODO: Setup method call parameters
+  Severity := Default(TLogMsgSeverity);
   SUT.Log(Severity, Msg);
   // TODO: Validate method results
 end;
