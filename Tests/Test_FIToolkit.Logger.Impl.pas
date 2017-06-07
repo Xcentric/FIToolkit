@@ -113,6 +113,8 @@ end;
 procedure TestTLogger.DoSetUp;
 begin
   FOutput := TTestTextOutput.Create;
+  // TODO: implement {TestTLogger.DoSetUp}
+  //SUT.AddOutput(FOutput);
 end;
 
 procedure TestTLogger.DoTearDown;
@@ -126,86 +128,117 @@ begin
 end;
 
 procedure TestTLogger.TestAddOutput;
+const
+  STR_MSG = '<TestAddOutput>';
 var
-  LogOutput: ILogOutput;
+  LogOutput : ILogOutput;
 begin
-  // TODO: Setup method call parameters
+  LogOutput := TTestTextOutput.Create;
+
   SUT.AddOutput(LogOutput);
-  // TODO: Validate method results
+  SUT.Debug(STR_MSG);
+
+  with LogOutput as TTestTextOutput do
+  begin
+    CheckEquals(1, WrittenLinesCount, 'WrittenLinesCount = 1');
+    CheckTrue(LastWrittenLine.Contains(STR_MSG), 'LastWrittenLine.Contains(STR_MSG)');
+  end;
 end;
 
 procedure TestTLogger.TestEnterSection;
-var
-  Msg: string;
+const
+  STR_MSG = '<TestEnterSection>';
 begin
-  // TODO: Setup method call parameters
-  SUT.EnterSection(Msg);
-  // TODO: Validate method results
+  SUT.EnterSection(STR_MSG);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_MSG), 'CheckTrue::LastWrittenLine.Contains(STR_MSG)');
 end;
 
 procedure TestTLogger.TestEnterSection1;
-//var
-//  Vals: $1;
+const
+  STR_VAL = String('<TestEnterSection1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSection(Vals);
-  // TODO: Validate method results
+  SUT.EnterSection([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestEnterSectionFmt;
-//var
-//  Args: $3;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestEnterSectionFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSectionFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.EnterSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestEnterSectionVal;
-//var
-//  Vals: $5;
+const
+  STR_VAL = String('<TestEnterSectionVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterSectionVal(Vals);
-  // TODO: Validate method results
+  SUT.EnterSectionVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(%s)', [ToString]);
 end;
 
 procedure TestTLogger.TestLeaveSection;
-var
-  Msg: string;
+const
+  STR_MSG = '<TestLeaveSection>';
 begin
-  // TODO: Setup method call parameters
-  SUT.LeaveSection(Msg);
-  // TODO: Validate method results
+  SUT.LeaveSection(STR_MSG);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_MSG), 'CheckTrue::LastWrittenLine.Contains(STR_MSG)');
 end;
 
 procedure TestTLogger.TestLeaveSection1;
-//var
-//  Vals: $7;
+const
+  STR_VAL = String('<TestLeaveSection1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSection(Vals);
-  // TODO: Validate method results
+  SUT.LeaveSection([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestLeaveSectionFmt;
-//var
-//  Args: $9;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestLeaveSectionFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSectionFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.LeaveSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestLeaveSectionVal;
-//var
-//  Vals: $11;
+const
+  STR_VAL = String('<TestLeaveSectionVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LeaveSectionVal(Vals);
-  // TODO: Validate method results
+  SUT.LeaveSectionVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(%s)', [ToString]);
 end;
 
 procedure TestTLogger.TestEnterMethod;
