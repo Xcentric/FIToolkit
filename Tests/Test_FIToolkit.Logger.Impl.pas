@@ -237,8 +237,8 @@ var
   AClass: TClass;
 begin
   // TODO: Setup method call parameters
-  MethodAddress := nil;
-  AClass := nil;
+  MethodAddress := @TestTLogger.TestLeaveMethod;
+  AClass := TestTLogger;
   SUT.LeaveMethod(AClass, MethodAddress, AResult);
   // TODO: Validate method results
 end;
