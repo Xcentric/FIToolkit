@@ -176,6 +176,7 @@ const
 begin
   SUT.EnterSection(STR_MSG);
 
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
   CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_MSG), 'CheckTrue::LastWrittenLine.Contains(STR_MSG)');
 end;
@@ -187,6 +188,7 @@ const
 begin
   SUT.EnterSection([STR_VAL, INT_VAL]);
 
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
   CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
@@ -200,6 +202,7 @@ const
 begin
   SUT.EnterSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
 
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
   CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
@@ -212,10 +215,11 @@ const
 begin
   SUT.EnterSectionVal([STR_VAL, INT_VAL, Self]);
 
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
   CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
-  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(%s)', [ToString]);
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestLeaveSection;
@@ -224,7 +228,14 @@ const
 begin
   SUT.LeaveSection(STR_MSG);
 
-  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#1>');
+  CheckEquals(0, FOutput.WrittenLinesCount, 'WrittenLinesCount = 0');
+
+  SUT.EnterSection(STR_MSG);
+  SUT.LeaveSection(STR_MSG);
+
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#2>');
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_MSG), 'CheckTrue::LastWrittenLine.Contains(STR_MSG)');
 end;
 
@@ -235,7 +246,14 @@ const
 begin
   SUT.LeaveSection([STR_VAL, INT_VAL]);
 
-  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#1>');
+  CheckEquals(0, FOutput.WrittenLinesCount, 'WrittenLinesCount = 0');
+
+  SUT.EnterSection([STR_VAL, INT_VAL]);
+  SUT.LeaveSection([STR_VAL, INT_VAL]);
+
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#2>');
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
@@ -248,7 +266,14 @@ const
 begin
   SUT.LeaveSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
 
-  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#1>');
+  CheckEquals(0, FOutput.WrittenLinesCount, 'WrittenLinesCount = 0');
+
+  SUT.EnterSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+  SUT.LeaveSectionFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#2>');
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
@@ -260,10 +285,17 @@ const
 begin
   SUT.LeaveSectionVal([STR_VAL, INT_VAL, Self]);
 
-  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#1>');
+  CheckEquals(0, FOutput.WrittenLinesCount, 'WrittenLinesCount = 0');
+
+  SUT.EnterSectionVal([STR_VAL, INT_VAL, Self]);
+  SUT.LeaveSectionVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(0, FOutput.SectionLevel, '(SectionLevel = 0)::<#2>');
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
-  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(%s)', [ToString]);
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestEnterMethod;
