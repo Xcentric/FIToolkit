@@ -13,7 +13,7 @@ interface
 
 uses
   TestFramework,
-  System.Rtti, System.TypInfo,
+  System.Classes, System.Rtti, System.TypInfo,
   FIToolkit.Logger.Intf, FIToolkit.Logger.Impl, FIToolkit.Logger.Types,
   TestUtils;
 
@@ -30,6 +30,20 @@ type
     public
       property LastWrittenLine : String read FLastWrittenLine;
       property WrittenLinesCount : Integer read FWrittenLinesCount;
+  end;
+
+  TMethodHolderObj = class abstract (TPersistent)
+    published
+      function  FuncMethod(const StrParam : String; IntParam : Integer;
+        out ObjParam : TObject) : TTypeKind; virtual; abstract;
+      procedure ProcMethod(const StrParam : String; IntParam : Integer;
+        out ObjParam : TObject); virtual; abstract;
+  end;
+
+  TMethodHolderRec = record
+    public
+      function  FuncMethod(const StrParam : String; IntParam : Integer; out ObjParam : TObject) : TTypeKind;
+      procedure ProcMethod(const StrParam : String; IntParam : Integer; out ObjParam : TObject);
   end;
 
   { SUT }
@@ -106,6 +120,18 @@ procedure TTestTextOutput.WriteLine(const S : String);
 begin
   FLastWrittenLine := S;
   Inc(FWrittenLinesCount);
+end;
+
+{ TMethodHolderRec }
+
+function TMethodHolderRec.FuncMethod(const StrParam : String; IntParam : Integer; out ObjParam : TObject) : TTypeKind;
+begin
+  Result := Default(TTypeKind);
+end;
+
+procedure TMethodHolderRec.ProcMethod(const StrParam : String; IntParam : Integer; out ObjParam : TObject);
+begin
+  {NOP}
 end;
 
 { TestTLogger }
@@ -242,51 +268,129 @@ begin
 end;
 
 procedure TestTLogger.TestEnterMethod;
-//var
-//  Params: $13;
-//  MethodAddress: Pointer;
-//  AClass: TClass;
+const
+  STR_VAL = String('<TestEnterMethod>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterMethod(AClass, MethodAddress, Params);
-  // TODO: Validate method results
+  { Case #1 }
+
+  SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.ProcMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)<Case #1>');
+
+  { Case #2 }
+
+  SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.FuncMethod, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
+  CheckEquals(2, FOutput.SectionLevel, 'SectionLevel = 2');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.FuncMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)<Case #2>');
 end;
 
 procedure TestTLogger.TestEnterMethod1;
-//var
-//  Params: $15;
-//  MethodAddress: Pointer;
-//  ARecord: PTypeInfo;
+const
+  STR_VAL = String('<TestEnterMethod1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.EnterMethod(ARecord, MethodAddress, Params);
-  // TODO: Validate method results
+  { Case #1 }
+
+  SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('ProcMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)<Case #1>');
+
+  { Case #2 }
+
+  SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.FuncMethod, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
+  CheckEquals(2, FOutput.SectionLevel, 'SectionLevel = 2');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('ProcMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)<Case #2>');
 end;
 
 procedure TestTLogger.TestLeaveMethod;
-var
-  AResult: TValue;
-  MethodAddress: Pointer;
-  AClass: TClass;
+const
+  STR_VAL = String('<TestLeaveMethod>');
 begin
-  // TODO: Setup method call parameters
-  MethodAddress := @TestTLogger.TestLeaveMethod;
-  AClass := TestTLogger;
-  SUT.LeaveMethod(AClass, MethodAddress, AResult);
-  // TODO: Validate method results
+  { Case #1 }
+
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, STR_VAL);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.ProcMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #1>');
+
+  { Case #2 }
+
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.FuncMethod, STR_VAL);
+
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
+  CheckEquals(2, FOutput.SectionLevel, 'SectionLevel = 2');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.FuncMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #2>');
 end;
 
 procedure TestTLogger.TestLeaveMethod1;
-var
-  AResult: TValue;
-  MethodAddress: Pointer;
-  ARecord: PTypeInfo;
+const
+  STR_VAL = String('<TestLeaveMethod1>');
 begin
-  // TODO: Setup method call parameters
-  MethodAddress := nil;
-  ARecord := nil;
-  SUT.LeaveMethod(ARecord, MethodAddress, AResult);
-  // TODO: Validate method results
+  { Case #1 }
+
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, STR_VAL);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('ProcMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #1>');
+
+  { Case #2 }
+
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.FuncMethod, STR_VAL);
+
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
+  CheckEquals(2, FOutput.SectionLevel, 'SectionLevel = 2');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('ProcMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)<Case #2>');
 end;
 
 procedure TestTLogger.TestLog;
