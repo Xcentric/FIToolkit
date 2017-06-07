@@ -139,13 +139,12 @@ end;
 procedure TestTLogger.DoSetUp;
 begin
   FOutput := TTestTextOutput.Create;
-  // TODO: implement {TestTLogger.DoSetUp}
-  //SUT.AddOutput(FOutput);
+  SUT.AddOutput(FOutput);
 end;
 
 procedure TestTLogger.DoTearDown;
 begin
-  FreeAndNil(FOutput);
+  FOutput := nil;
 end;
 
 function TestTLogger.MakeSUT : ILogger;
