@@ -59,6 +59,8 @@ type
     function  MakeSUT : ILogger; override;
   published
     procedure TestAddOutput;
+    procedure TestAllowedItems;
+    procedure TestEnabled;
     procedure TestEnterSection;
     procedure TestEnterSection1;
     procedure TestEnterSectionFmt;
@@ -168,6 +170,31 @@ begin
     CheckEquals(1, WrittenLinesCount, 'WrittenLinesCount = 1');
     CheckTrue(LastWrittenLine.Contains(STR_MSG), 'LastWrittenLine.Contains(STR_MSG)');
   end;
+end;
+
+procedure TestTLogger.TestAllowedItems;
+const
+  STR_MSG = '<TestAllowedItems>';
+begin
+  CheckEquals<TLogItems>([liMessage, liSection], SUT.AllowedItems, 'AllowedItems = [liMessage, liSection]');
+
+  SUT.AllowedItems := [];
+  SUT.EnterSection(STR_MSG);
+  SUT.EnterMethod(ClassType, @TestTLogger.TestAllowedItems, []);
+  SUT.Debug(STR_MSG);
+  CheckEquals(0, FOutput.WrittenLinesCount, 'WrittenLinesCount = 0');
+
+  SUT.AllowedItems := [liMessage];
+  SUT.Debug(STR_MSG);
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+
+  SUT.AllowedItems := [liSection];
+  SUT.EnterSection(STR_MSG);
+  CheckEquals(2, FOutput.WrittenLinesCount, 'WrittenLinesCount = 2');
+
+  SUT.AllowedItems := [liMethod];
+  SUT.EnterMethod(ClassType, @TestTLogger.TestAllowedItems, []);
+  CheckEquals(3, FOutput.WrittenLinesCount, 'WrittenLinesCount = 3');
 end;
 
 procedure TestTLogger.TestEnterSection;
@@ -296,6 +323,17 @@ begin
   CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
   CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
+end;
+
+procedure TestTLogger.TestEnabled;
+begin
+  CheckTrue(SUT.Enabled, 'CheckTrue::Enabled<after set up>');
+
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  CheckFalse(SUT.Enabled, 'CheckFalse::Enabled<after SEVERITY_NONE>');
+
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  CheckTrue(SUT.Enabled, 'CheckTrue::Enabled<after SEVERITY_MAX');
 end;
 
 procedure TestTLogger.TestEnterMethod;
@@ -441,41 +479,129 @@ var
   Msg: string;
   Severity: TLogMsgSeverity;
 begin
-  // TODO: Setup method call parameters
-  Severity := Default(TLogMsgSeverity);
+  Msg := 'TestLog';
+  Severity := SEVERITY_MIN;
+
+  { Case #1 }
+
   SUT.Log(Severity, Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
+
+  { Case #2 }
+
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  SUT.Log(Severity, Msg);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #2>');
+
+  { Case #3 }
+
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.Log(Severity, Msg);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #3>');
 end;
 
 procedure TestTLogger.TestLog1;
-//var
-//  Vals: $17;
-//  Severity: TLogMsgSeverity;
+const
+  STR_VAL = String('<TestLog1>');
+  INT_VAL = Integer(777);
+var
+  Severity: TLogMsgSeverity;
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Log(Severity, Vals);
-  // TODO: Validate method results
+  Severity := SEVERITY_MIN;
+
+  { Case #1 }
+
+  SUT.Log(Severity, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+
+  { Case #2 }
+
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  SUT.Log(Severity, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #2>');
+
+  { Case #3 }
+
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.Log(Severity, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #3>');
 end;
 
 procedure TestTLogger.TestLogFmt;
-//var
-//  Args: $19;
-//  Msg: string;
-//  Severity: TLogMsgSeverity;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestLogFmt>');
+  INT_VAL = Integer(777);
+var
+  Msg: String;
+  Severity: TLogMsgSeverity;
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LogFmt(Severity, Msg, Args);
-  // TODO: Validate method results
+  Msg := FMT_MSG;
+  Severity := SEVERITY_MIN;
+
+  { Case #1 }
+
+  SUT.LogFmt(Severity, Msg, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+
+  { Case #2 }
+
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  SUT.LogFmt(Severity, Msg, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #2>');
+
+  { Case #3 }
+
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.LogFmt(Severity, Msg, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #3>');
 end;
 
 procedure TestTLogger.TestLogVal;
-//var
-//  Vals: $21;
-//  Severity: TLogMsgSeverity;
+const
+  STR_VAL = String('<TestLogVal>');
+  INT_VAL = Integer(777);
+var
+  Severity: TLogMsgSeverity;
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.LogVal(Severity, Vals);
-  // TODO: Validate method results
+  Severity := SEVERITY_MIN;
+
+  { Case #1 }
+
+  SUT.LogVal(Severity, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
+
+  { Case #2 }
+
+  SUT.SeverityThreshold := SEVERITY_MAX;
+  SUT.LogVal(Severity, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #2>');
+
+  { Case #3 }
+
+  SUT.SeverityThreshold := SEVERITY_NONE;
+  SUT.LogVal(Severity, [STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, '(WrittenLinesCount = 1)::<Case #3>');
 end;
 
 procedure TestTLogger.TestDebug;
