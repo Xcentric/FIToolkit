@@ -618,31 +618,47 @@ begin
 end;
 
 procedure TestTLogger.TestDebug1;
-//var
-//  Vals: $23;
+const
+  STR_VAL = String('<TestDebug1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Debug(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_DEBUG;
+
+  SUT.Debug([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestDebugFmt;
-//var
-//  Args: $25;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestDebugFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.DebugFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_DEBUG;
+
+  SUT.DebugFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestDebugVal;
-//var
-//  Vals: $27;
+const
+  STR_VAL = String('<TestDebugVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.DebugVal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_DEBUG;
+
+  SUT.DebugVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestInfo;
@@ -659,31 +675,47 @@ begin
 end;
 
 procedure TestTLogger.TestInfo1;
-//var
-//  Vals: $29;
+const
+  STR_VAL = String('<TestInfo1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Info(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_INFO;
+
+  SUT.Info([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestInfoFmt;
-//var
-//  Args: $31;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestInfoFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.InfoFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_INFO;
+
+  SUT.InfoFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestInfoVal;
-//var
-//  Vals: $33;
+const
+  STR_VAL = String('<TestInfoVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.InfoVal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_INFO;
+
+  SUT.InfoVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestWarning;
@@ -700,31 +732,47 @@ begin
 end;
 
 procedure TestTLogger.TestWarning1;
-//var
-//  Vals: $35;
+const
+  STR_VAL = String('<TestWarning1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Warning(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_WARNING;
+
+  SUT.Warning([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestWarningFmt;
-//var
-//  Args: $37;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestWarningFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.WarningFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_WARNING;
+
+  SUT.WarningFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestWarningVal;
-//var
-//  Vals: $39;
+const
+  STR_VAL = String('<TestWarningVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.WarningVal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_WARNING;
+
+  SUT.WarningVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestError;
@@ -741,31 +789,47 @@ begin
 end;
 
 procedure TestTLogger.TestError1;
-//var
-//  Vals: $41;
+const
+  STR_VAL = String('<TestError1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Error(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_ERROR;
+
+  SUT.Error([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestErrorFmt;
-//var
-//  Args: $43;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestErrorFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.ErrorFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_ERROR;
+
+  SUT.ErrorFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestErrorVal;
-//var
-//  Vals: $45;
+const
+  STR_VAL = String('<TestErrorVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.ErrorVal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_ERROR;
+
+  SUT.ErrorVal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 procedure TestTLogger.TestFatal;
@@ -782,31 +846,47 @@ begin
 end;
 
 procedure TestTLogger.TestFatal1;
-//var
-//  Vals: $47;
+const
+  STR_VAL = String('<TestFatal1>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.Fatal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_FATAL;
+
+  SUT.Fatal([STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestFatalFmt;
-//var
-//  Args: $49;
-//  Msg: string;
+const
+  FMT_MSG = 'Message with string arg "%s" and integer arg "%d".';
+  STR_VAL = String('<TestFatalFmt>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.FatalFmt(Msg, Args);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_FATAL;
+
+  SUT.FatalFmt(FMT_MSG, [STR_VAL, INT_VAL]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
 end;
 
 procedure TestTLogger.TestFatalVal;
-//var
-//  Vals: $51;
+const
+  STR_VAL = String('<TestFatalVal>');
+  INT_VAL = Integer(777);
 begin
-  // TODO: Setup method call parameters
-  //FAbstractLogger.FatalVal(Vals);
-  // TODO: Validate method results
+  SUT.SeverityThreshold := SEVERITY_FATAL;
+
+  SUT.Fatal([STR_VAL, INT_VAL, Self]);
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(STR_VAL), 'CheckTrue::LastWrittenLine.Contains(STR_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(INT_VAL.ToString), 'CheckTrue::LastWrittenLine.Contains(INT_VAL)');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
 { TestTPlainTextOutput }
