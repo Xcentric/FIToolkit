@@ -608,9 +608,13 @@ procedure TestTLogger.TestDebug;
 var
   Msg: string;
 begin
-  // TODO: Setup method call parameters
+  Msg := 'TestDebug';
+  SUT.SeverityThreshold := SEVERITY_DEBUG;
+
   SUT.Debug(Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
 end;
 
 procedure TestTLogger.TestDebug1;
@@ -645,9 +649,13 @@ procedure TestTLogger.TestInfo;
 var
   Msg: string;
 begin
-  // TODO: Setup method call parameters
+  Msg := 'TestInfo';
+  SUT.SeverityThreshold := SEVERITY_INFO;
+
   SUT.Info(Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
 end;
 
 procedure TestTLogger.TestInfo1;
@@ -682,9 +690,13 @@ procedure TestTLogger.TestWarning;
 var
   Msg: string;
 begin
-  // TODO: Setup method call parameters
+  Msg := 'TestWarning';
+  SUT.SeverityThreshold := SEVERITY_WARNING;
+
   SUT.Warning(Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
 end;
 
 procedure TestTLogger.TestWarning1;
@@ -719,9 +731,13 @@ procedure TestTLogger.TestError;
 var
   Msg: string;
 begin
-  // TODO: Setup method call parameters
+  Msg := 'TestError';
+  SUT.SeverityThreshold := SEVERITY_ERROR;
+
   SUT.Error(Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
 end;
 
 procedure TestTLogger.TestError1;
@@ -756,9 +772,13 @@ procedure TestTLogger.TestFatal;
 var
   Msg: string;
 begin
-  // TODO: Setup method call parameters
+  Msg := 'TestFatal';
+  SUT.SeverityThreshold := SEVERITY_FATAL;
+
   SUT.Fatal(Msg);
-  // TODO: Validate method results
+
+  CheckEquals(1, FOutput.WrittenLinesCount, 'WrittenLinesCount = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(Msg), 'CheckTrue::LastWrittenLine.Contains(Msg)');
 end;
 
 procedure TestTLogger.TestFatal1;
