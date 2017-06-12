@@ -174,21 +174,21 @@ type
       procedure ReleaseBuilder;
       procedure WriteLine(const S : String); virtual; abstract;
     protected
-      function  FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
-      function  FormatLogSectionBeginning(PreambleLength : Word; const Msg : String) : String; virtual;
-      function  FormatLogSectionEnding(PreambleLength : Word; const Msg : String) : String; virtual;
+      function FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String; virtual;
+      function FormatLogSectionBeginning(PreambleLength : Word; const Msg : String) : String; virtual;
+      function FormatLogSectionEnding(PreambleLength : Word; const Msg : String) : String; virtual;
 
-      function  FormatCurrentThread : String; virtual;
-      function  FormatPreamble(Instant : TLogTimestamp) : String; virtual;
-      function  FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
-      function  FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
-      function  GetPreambleCompensatorFiller : Char; virtual;
-      function  GetSectionBeginningPrefix : String; virtual;
-      function  GetSectionEndingPrefix : String; virtual;
-      function  GetSectionIndentStr : String; virtual;
-      function  GetSeverityDescriptions : TLogMsgTypeDescriptions; virtual;
-      function  IndentText(const Text : String) : String; overload;
-      function  IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String; overload;
+      function FormatCurrentThread : String; virtual;
+      function FormatPreamble(Instant : TLogTimestamp) : String; virtual;
+      function FormatSeverity(Severity : TLogMsgSeverity) : String; virtual;
+      function FormatTimestamp(Timestamp : TLogTimestamp) : String; virtual;
+      function GetPreambleCompensatorFiller : Char; virtual;
+      function GetSectionBeginningPrefix : String; virtual;
+      function GetSectionEndingPrefix : String; virtual;
+      function GetSectionIndentStr : String; virtual;
+      function GetSeverityDescriptions : TLogMsgTypeDescriptions; virtual;
+      function IndentText(const Text : String) : String; overload;
+      function IndentText(const Text, PaddingStr : String; LeftPadding : Word; ExceptFirstLine : Boolean) : String; overload;
     public
       constructor Create; override;
       destructor Destroy; override;
