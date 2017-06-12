@@ -680,7 +680,7 @@ end;
 
 procedure TMetaLogger.AddLogger(const Logger : ILogger);
 begin
-
+  FLoggers.Add(Logger);
 end;
 
 constructor TMetaLogger.Create;
@@ -693,22 +693,42 @@ end;
 
 procedure TMetaLogger.Debug(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Debug(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.DebugFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.DebugVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 destructor TMetaLogger.Destroy;
@@ -720,92 +740,182 @@ end;
 
 procedure TMetaLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.EnterSection(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.EnterSection(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.EnterSectionFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.EnterSectionVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Error(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Error(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.ErrorFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.ErrorVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Fatal(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Fatal(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.FatalFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.FatalVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Info(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Info(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.InfoFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.InfoVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.IterateLoggers(const Action : TProc<ILogger>);
@@ -822,72 +932,142 @@ end;
 
 procedure TMetaLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LeaveSection(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LeaveSection(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LeaveSectionFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LeaveSectionVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Log(Severity : TLogMsgSeverity; const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Warning(const Vals : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.Warning(const Msg : String);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.WarningFmt(const Msg : String; const Args : array of const);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 procedure TMetaLogger.WarningVal(const Vals : array of TValue);
 begin
-
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      //
+    end
+  );
 end;
 
 { TAbstractLogOutput }
