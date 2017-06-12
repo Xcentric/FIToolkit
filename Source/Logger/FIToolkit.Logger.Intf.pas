@@ -8,39 +8,7 @@ uses
 
 type
 
-  ILogOutput = interface
-    ['{D66F4536-61D8-481D-9055-3F063F23E0B5}']
-
-    { Property accessors }
-
-    function  GetSeverityThreshold : TLogMsgSeverity;
-    procedure SetSeverityThreshold(Value : TLogMsgSeverity);
-
-    { Methods }
-
-    procedure BeginSection(Instant : TLogTimestamp; const Msg : String);
-    procedure EndSection(Instant : TLogTimestamp; const Msg : String);
-    procedure WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
-
-    { Properties }
-
-    property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
-  end;
-
-  ILogger = interface
-    ['{0E36214F-FFD4-4715-9631-0B6D7F12006A}']
-
-    { Property accessors }
-
-    function  GetAllowedItems : TLogItems;
-    function  GetEnabled : Boolean;
-    function  GetSeverityThreshold : TLogMsgSeverity;
-    procedure SetAllowedItems(Value : TLogItems);
-    procedure SetSeverityThreshold(Value : TLogMsgSeverity);
-
-    { Logging: output }
-
-    procedure AddOutput(const LogOutput : ILogOutput);
+  IAbstractLogger = interface
 
     { Logging: structure }
 
@@ -90,12 +58,55 @@ type
     procedure Fatal(const Vals : array of const); overload;
     procedure FatalFmt(const Msg : String; const Args : array of const);
     procedure FatalVal(const Vals : array of TValue);
+  end;
+
+  ILogOutput = interface
+    ['{D66F4536-61D8-481D-9055-3F063F23E0B5}']
+
+    { Property accessors }
+
+    function  GetSeverityThreshold : TLogMsgSeverity;
+    procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+
+    { Methods }
+
+    procedure BeginSection(Instant : TLogTimestamp; const Msg : String);
+    procedure EndSection(Instant : TLogTimestamp; const Msg : String);
+    procedure WriteMessage(Instant : TLogTimestamp; Severity : TLogMsgSeverity; const Msg : String);
+
+    { Properties }
+
+    property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
+  end;
+
+  ILogger = interface (IAbstractLogger)
+    ['{0E36214F-FFD4-4715-9631-0B6D7F12006A}']
+
+    { Property accessors }
+
+    function  GetAllowedItems : TLogItems;
+    function  GetEnabled : Boolean;
+    function  GetSeverityThreshold : TLogMsgSeverity;
+    procedure SetAllowedItems(Value : TLogItems);
+    procedure SetSeverityThreshold(Value : TLogMsgSeverity);
+
+    { Logging: output }
+
+    procedure AddOutput(const LogOutput : ILogOutput);
 
     { Properties }
 
     property AllowedItems : TLogItems read GetAllowedItems write SetAllowedItems;
     property Enabled : Boolean read GetEnabled;
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
+  end;
+
+  IMetaLogger = interface (IAbstractLogger)
+    ['{BF283586-7040-4468-ADB2-FD2C62EFD996}']
+
+    { Methods }
+
+    procedure AddLogger(const Logger : ILogger);
   end;
 
 implementation
