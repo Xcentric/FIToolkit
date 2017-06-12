@@ -88,7 +88,7 @@ begin
   AnExitCode := INT_EC_ERROR_OCCURRED;
 end;
 
-procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
+procedure _OnTerminate(AnExitCode : Integer; CanExit : Boolean);
 begin
   PrintLn([sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak]);
 

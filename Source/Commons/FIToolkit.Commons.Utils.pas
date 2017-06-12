@@ -10,10 +10,10 @@ type
 
   TIff = record
     public
-      class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
+      class function Get<T>(Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
   end;
 
-  TObjectProperties<T:class> = record
+  TObjectProperties<T : class> = record
     public
       class procedure Copy(Source, Destination : T; const Filter : TObjectPropertyFilter = nil); static;
   end;
@@ -356,7 +356,7 @@ end;
 
 { TIff }
 
-class function TIff.Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T;
+class function TIff.Get<T>(Condition : Boolean; const TruePart, FalsePart : T) : T;
 begin
   if Condition then
     Result := TruePart
