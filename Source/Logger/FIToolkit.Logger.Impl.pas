@@ -144,6 +144,7 @@ type
       FLoggers : TLoggerList;
     strict protected
       procedure IterateLoggers(const Action : TProc<ILogger>);
+      procedure UnsafeCopyOpenArray<T>(const Source : array of T; var Dest : TArray<T>);
 
       property Loggers : TLoggerList read FLoggers;
     public
@@ -692,11 +693,15 @@ begin
 end;
 
 procedure TMetaLogger.Debug(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Debug(LVals);
     end
   );
 end;
@@ -706,27 +711,35 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Debug(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.DebugFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.DebugFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.DebugVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.DebugVal(LVals);
     end
   );
 end;
@@ -739,21 +752,29 @@ begin
 end;
 
 procedure TMetaLogger.EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue);
+var
+  LParams : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Params, LParams);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterMethod(AClass, MethodAddress, LParams);
     end
   );
 end;
 
 procedure TMetaLogger.EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue);
+var
+  LParams : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Params, LParams);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterMethod(ARecord, MethodAddress, LParams);
     end
   );
 end;
@@ -763,37 +784,49 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterSection(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.EnterSection(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterSection(LVals);
     end
   );
 end;
 
 procedure TMetaLogger.EnterSectionFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterSectionFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.EnterSectionVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.EnterSectionVal(LVals);
     end
   );
 end;
@@ -803,47 +836,63 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Error(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.Error(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Error(LVals);
     end
   );
 end;
 
 procedure TMetaLogger.ErrorFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.ErrorFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.ErrorVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.ErrorVal(LVals);
     end
   );
 end;
 
 procedure TMetaLogger.Fatal(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Fatal(LVals);
     end
   );
 end;
@@ -853,27 +902,35 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Fatal(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.FatalFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.FatalFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.FatalVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.FatalVal(LVals);
     end
   );
 end;
@@ -883,37 +940,49 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Info(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.Info(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Info(LVals);
     end
   );
 end;
 
 procedure TMetaLogger.InfoFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.InfoFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.InfoVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.InfoVal(LVals);
     end
   );
 end;
@@ -935,7 +1004,7 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveMethod(AClass, MethodAddress, AResult);
     end
   );
 end;
@@ -945,17 +1014,21 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveMethod(ARecord, MethodAddress, AResult);
     end
   );
 end;
 
 procedure TMetaLogger.LeaveSection(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveSection(LVals);
     end
   );
 end;
@@ -965,27 +1038,35 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveSection(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.LeaveSectionFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveSectionFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.LeaveSectionVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LeaveSectionVal(LVals);
     end
   );
 end;
@@ -995,47 +1076,73 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Log(Severity, Msg);
     end
   );
 end;
 
 procedure TMetaLogger.Log(Severity : TLogMsgSeverity; const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Log(Severity, LVals);
     end
   );
 end;
 
 procedure TMetaLogger.LogFmt(Severity : TLogMsgSeverity; const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LogFmt(Severity, Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.LogVal(Severity : TLogMsgSeverity; const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.LogVal(Severity, LVals);
     end
   );
 end;
 
-procedure TMetaLogger.Warning(const Vals : array of const);
+procedure TMetaLogger.UnsafeCopyOpenArray<T>(const Source : array of T; var Dest : TArray<T>);
+var
+  i : Integer;
 begin
+  SetLength(Dest, Length(Source));
+
+  for i := 0 to High(Source) do
+    Dest[i] := Source[i];
+end;
+
+procedure TMetaLogger.Warning(const Vals : array of const);
+var
+  LVals : TArray<TVarRec>;
+begin
+  UnsafeCopyOpenArray<TVarRec>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Warning(LVals);
     end
   );
 end;
@@ -1045,27 +1152,35 @@ begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.Warning(Msg);
     end
   );
 end;
 
 procedure TMetaLogger.WarningFmt(const Msg : String; const Args : array of const);
+var
+  LArgs : TArray<TVarRec>;
 begin
+  UnsafeCopyOpenArray<TVarRec>(Args, LArgs);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.WarningFmt(Msg, LArgs);
     end
   );
 end;
 
 procedure TMetaLogger.WarningVal(const Vals : array of TValue);
+var
+  LVals : TArray<TValue>;
 begin
+  UnsafeCopyOpenArray<TValue>(Vals, LVals);
+
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
-      //
+      Logger.WarningVal(LVals);
     end
   );
 end;
