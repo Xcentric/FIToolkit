@@ -8,7 +8,7 @@ uses
 
 type
 
-  IAbstractLogger = interface
+  IAbstractLogger = interface //FI:W523
 
     { Logging: structure }
 
