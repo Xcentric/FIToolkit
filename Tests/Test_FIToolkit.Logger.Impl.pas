@@ -99,6 +99,56 @@ type
     procedure TestFatalVal;
   end;
 
+  // Test methods for class TMetaLogger
+
+  TestTMetaLogger = class (TInterfaceTestCase<IMetaLogger>)
+  strict private
+    FOutput : TTestTextOutput;
+  private
+    procedure CheckWasOutput;
+  protected
+    procedure DoSetUp; override;
+    procedure DoTearDown; override;
+    function  MakeSUT : IMetaLogger; override;
+  published
+    procedure TestEnterSection;
+    procedure TestEnterSection1;
+    procedure TestEnterSectionFmt;
+    procedure TestEnterSectionVal;
+    procedure TestLeaveSection;
+    procedure TestLeaveSection1;
+    procedure TestLeaveSectionFmt;
+    procedure TestLeaveSectionVal;
+    procedure TestEnterMethod;
+    procedure TestEnterMethod1;
+    procedure TestLeaveMethod;
+    procedure TestLeaveMethod1;
+    procedure TestLog;
+    procedure TestLog1;
+    procedure TestLogFmt;
+    procedure TestLogVal;
+    procedure TestDebug;
+    procedure TestDebug1;
+    procedure TestDebugFmt;
+    procedure TestDebugVal;
+    procedure TestInfo;
+    procedure TestInfo1;
+    procedure TestInfoFmt;
+    procedure TestInfoVal;
+    procedure TestWarning;
+    procedure TestWarning1;
+    procedure TestWarningFmt;
+    procedure TestWarningVal;
+    procedure TestError;
+    procedure TestError1;
+    procedure TestErrorFmt;
+    procedure TestErrorVal;
+    procedure TestFatal;
+    procedure TestFatal1;
+    procedure TestFatalFmt;
+    procedure TestFatalVal;
+  end;
+
   // Test methods for class TPlainTextOutput
 
   TestTPlainTextOutput = class (TInterfaceTestCase<ILogOutput>)
@@ -889,6 +939,256 @@ begin
   CheckTrue(FOutput.LastWrittenLine.Contains(Self.ToString), 'CheckTrue::LastWrittenLine.Contains(Self)');
 end;
 
+{ TestTMetaLogger }
+
+procedure TestTMetaLogger.CheckWasOutput;
+begin
+  CheckTrue(FOutput.WrittenLinesCount > 0, 'CheckTrue::(WrittenLinesCount > 0)');
+end;
+
+procedure TestTMetaLogger.DoSetUp;
+var
+  Logger : ILogger;
+begin
+  Logger := TLogger.Create;
+  Logger.AllowedItems := [liMessage, liSection, liMethod];
+  FOutput := TTestTextOutput.Create;
+  Logger.AddOutput(FOutput);
+  SUT.AddLogger(Logger);
+end;
+
+procedure TestTMetaLogger.DoTearDown;
+begin
+  FOutput := nil;
+end;
+
+function TestTMetaLogger.MakeSUT : IMetaLogger;
+begin
+  Result := TMetaLogger.Create;
+end;
+
+procedure TestTMetaLogger.TestDebug;
+begin
+  SUT.Debug('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestDebug1;
+begin
+  SUT.Debug([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestDebugFmt;
+begin
+  SUT.DebugFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestDebugVal;
+begin
+  SUT.DebugVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterMethod;
+begin
+  SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterMethod1;
+begin
+  SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterSection;
+begin
+  SUT.EnterSection('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterSection1;
+begin
+  SUT.EnterSection([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterSectionFmt;
+begin
+  SUT.EnterSectionFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnterSectionVal;
+begin
+  SUT.EnterSectionVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestError;
+begin
+  SUT.Error('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestError1;
+begin
+  SUT.Error([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestErrorFmt;
+begin
+  SUT.ErrorFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestErrorVal;
+begin
+  SUT.ErrorVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestFatal;
+begin
+  SUT.Fatal('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestFatal1;
+begin
+  SUT.Fatal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestFatalFmt;
+begin
+  SUT.FatalFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestFatalVal;
+begin
+  SUT.FatalVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestInfo;
+begin
+  SUT.Info('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestInfo1;
+begin
+  SUT.Info([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestInfoFmt;
+begin
+  SUT.InfoFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestInfoVal;
+begin
+  SUT.InfoVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveMethod;
+begin
+  SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, []);
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, TValue.Empty);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveMethod1;
+begin
+  SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, []);
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, TValue.Empty);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveSection;
+begin
+  SUT.EnterSection('');
+  SUT.LeaveSection('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveSection1;
+begin
+  SUT.EnterSection([]);
+  SUT.LeaveSection([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveSectionFmt;
+begin
+  SUT.EnterSectionFmt('', []);
+  SUT.LeaveSectionFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLeaveSectionVal;
+begin
+  SUT.EnterSectionVal([]);
+  SUT.LeaveSectionVal([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLog;
+begin
+  SUT.Log(SEVERITY_MAX, '');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLog1;
+begin
+  SUT.Log(SEVERITY_MAX, []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLogFmt;
+begin
+  SUT.LogFmt(SEVERITY_MAX, '', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestLogVal;
+begin
+  SUT.LogVal(SEVERITY_MAX, []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestWarning;
+begin
+  SUT.Warning('');
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestWarning1;
+begin
+  SUT.Warning([]);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestWarningFmt;
+begin
+  SUT.WarningFmt('', []);
+  CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestWarningVal;
+begin
+  SUT.WarningVal([]);
+  CheckWasOutput;
+end;
+
 { TestTPlainTextOutput }
 
 function TestTPlainTextOutput.MakeSUT : ILogOutput;
@@ -1152,5 +1452,6 @@ end;
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestTLogger.Suite);
+  RegisterTest(TestTMetaLogger.Suite);
   RegisterTest(TestTPlainTextOutput.Suite);
 end.
