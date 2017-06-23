@@ -27,8 +27,8 @@ type
       FWriter : TStreamWriter;
     strict protected
       procedure WriteLine(const S : String); override;
-    protected
-      constructor Create(Writer : TStreamWriter; OwnsWriter : Boolean); overload;
+    public
+      constructor Create(Writer : TStreamWriter; OwnsWriter : Boolean); reintroduce;
       destructor Destroy; override;
   end;
 
