@@ -92,7 +92,7 @@ type
 
     { Logging: output }
 
-    procedure AddOutput(const LogOutput : ILogOutput);
+    function  AddOutput(const LogOutput : ILogOutput) : ILogOutput;
 
     { Properties }
 
@@ -106,7 +106,7 @@ type
 
     { Methods }
 
-    procedure AddLogger(const Logger : ILogger);
+    function AddLogger(const Logger : ILogger) : ILogger;
   end;
 
 implementation

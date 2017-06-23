@@ -950,11 +950,10 @@ procedure TestTMetaLogger.DoSetUp;
 var
   Logger : ILogger;
 begin
-  Logger := TLogger.Create;
-  Logger.AllowedItems := [liMessage, liSection, liMethod];
   FOutput := TTestTextOutput.Create;
+  Logger := SUT.AddLogger(TLogger.Create);
   Logger.AddOutput(FOutput);
-  SUT.AddLogger(Logger);
+  Logger.AllowedItems := [liMessage, liSection, liMethod];
 end;
 
 procedure TestTMetaLogger.DoTearDown;

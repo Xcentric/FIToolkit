@@ -3,16 +3,22 @@
 interface
 
 uses
+  System.SysUtils,
   FIToolkit.Logger.Intf;
 
-  function Log : IAbstractLogger;
+  procedure InitConsoleLog;
+  procedure InitFileLog(const FileName : TFileName);
+  function  Log : IAbstractLogger;
 
 implementation
 
 uses
-  System.Classes, System.SysUtils,
-  FIToolkit.Logger.Impl,
+  System.Classes, System.IOUtils,
+  FIToolkit.Logger.Impl, FIToolkit.Logger.Types, FIToolkit.Logger.Consts,
   FIToolkit.Commons.Utils;
+
+var
+  LoggingFacility : IMetaLogger;
 
 type
 
@@ -32,12 +38,31 @@ type
       destructor Destroy; override;
   end;
 
-{ Utils }
+{ Export }
+
+procedure InitConsoleLog;
+begin
+  with LoggingFacility.AddLogger(TLogger.Create) do
+  begin
+    AllowedItems := [liMessage, liSection];
+    SeverityThreshold := SEVERITY_INFO;
+    AddOutput(TConsoleOutput.Create);
+  end;
+end;
+
+procedure InitFileLog(const FileName : TFileName);
+begin
+  with LoggingFacility.AddLogger(TLogger.Create) do
+  begin
+    AllowedItems := [liMessage, liSection, liMethod];
+    SeverityThreshold := SEVERITY_DEBUG;
+    AddOutput(TTextStreamOutput.Create(TFile.CreateText(FileName), True));
+  end;
+end;
 
 function Log : IAbstractLogger;
 begin
-  // TODO: implement {Log}
-  Result := nil;
+  Result := LoggingFacility;
 end;
 
 { TConsoleOutput }
@@ -69,5 +94,11 @@ procedure TTextStreamOutput.WriteLine(const S : String);
 begin
   FWriter.WriteLine(S);
 end;
+
+initialization
+  LoggingFacility := TMetaLogger.Create;
+
+finalization
+  LoggingFacility := nil;
 
 end.

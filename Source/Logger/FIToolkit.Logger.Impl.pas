@@ -31,7 +31,7 @@ type
       constructor Create; virtual;
       destructor Destroy; override;
 
-      procedure AddOutput(const LogOutput : ILogOutput);
+      function  AddOutput(const LogOutput : ILogOutput) : ILogOutput;
 
       procedure EnterSection(const Msg : String = String.Empty); overload; virtual; abstract;
       procedure EnterSection(const Vals : array of const); overload; virtual; abstract;
@@ -151,7 +151,7 @@ type
       constructor Create; virtual;
       destructor Destroy; override;
 
-      procedure AddLogger(const Logger : ILogger);
+      function  AddLogger(const Logger : ILogger) : ILogger;
 
       procedure EnterSection(const Msg : String = String.Empty); overload;
       procedure EnterSection(const Vals : array of const); overload;
@@ -266,9 +266,10 @@ uses
 
 { TAbstractLogger }
 
-procedure TAbstractLogger.AddOutput(const LogOutput : ILogOutput);
+function TAbstractLogger.AddOutput(const LogOutput : ILogOutput) : ILogOutput;
 begin
   FOutputs.Add(LogOutput);
+  Result := LogOutput;
 end;
 
 constructor TAbstractLogger.Create;
@@ -679,9 +680,10 @@ end;
 
 { TMetaLogger }
 
-procedure TMetaLogger.AddLogger(const Logger : ILogger);
+function TMetaLogger.AddLogger(const Logger : ILogger) : ILogger;
 begin
   FLoggers.Add(Logger);
+  Result := Logger;
 end;
 
 constructor TMetaLogger.Create;
