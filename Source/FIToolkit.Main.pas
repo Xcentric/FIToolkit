@@ -38,9 +38,8 @@ type
     private
       FNoExitBehavior : TNoExitBehavior;
 
-      procedure PrintTotalDuration;
+      procedure ActualizeExitCode(var CurrentExitCode : Integer);
       procedure ProcessOptions;
-      procedure UpdateExitCode(var AnExitCode : Integer);
 
       // Application commands implementation:
       procedure PrintHelp;
@@ -134,6 +133,13 @@ begin
 end;
 
 { TFIToolkit }
+
+procedure TFIToolkit.ActualizeExitCode(var CurrentExitCode : Integer);
+begin
+  if FStateMachine.CurrentState = asFinal then
+    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+      CurrentExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+end;
 
 constructor TFIToolkit.Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
 begin
@@ -266,11 +272,6 @@ begin
     [TPath.GetFileName(FullExePath) + ' ' + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
 end;
 
-procedure TFIToolkit.PrintTotalDuration;
-begin
-  PrintLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
-end;
-
 procedure TFIToolkit.PrintVersion;
 begin
   PrintLn(GetAppVersionInfo);
@@ -325,8 +326,8 @@ begin
         .Execute(acMakeArchive)
         .Execute(acTerminate);
 
-      UpdateExitCode(Result);
-      PrintTotalDuration;
+      ActualizeExitCode(Result);
+      PrintLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;
@@ -341,13 +342,6 @@ begin
     if Integer.TryParse(NoExitOption.Value, iValue) then
       if InRange(iValue, Integer(Low(TNoExitBehavior)), Integer(High(TNoExitBehavior))) then
         FNoExitBehavior := TNoExitBehavior(iValue);
-end;
-
-procedure TFIToolkit.UpdateExitCode(var AnExitCode : Integer);
-begin
-  if FStateMachine.CurrentState = asFinal then
-    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-      AnExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
 end;
 
 end.
