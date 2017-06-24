@@ -60,9 +60,6 @@ type
 
 function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;
 begin
-  {$IFDEF DEBUG}
-  Result := False;
-  {$ELSE}
   if not Assigned(Instance) then
     Result := True
   else
@@ -79,7 +76,6 @@ begin
       raise AbortException;
     end;
   end;
-  {$ENDIF}
 end;
 
 procedure _OnException(E : Exception; out AnExitCode : Integer);

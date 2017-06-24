@@ -182,8 +182,8 @@ type
       FFiniteStateMachine : IFiniteStateMachine;
       FLock : TObject;
     private
-      procedure InternalLock; inline;
-      procedure InternalUnlock; inline;
+      procedure InternalLock;
+      procedure InternalUnlock;
 
       function  GetCurrentState : TState;
       function  GetPreviousState : TState;
