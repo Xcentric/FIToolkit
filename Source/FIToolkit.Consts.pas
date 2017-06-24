@@ -52,9 +52,9 @@ const
 
   { Exit codes }
 
-  INT_EC_NO_ERROR                = 0;
-  INT_EC_ERROR_OCCURRED          = 1;
-  INT_EC_ANALYSIS_MESSAGES_FOUND = 2;
+  UINT_EC_NO_ERROR                = 0;
+  UINT_EC_ERROR_OCCURRED          = 1;
+  UINT_EC_ANALYSIS_MESSAGES_FOUND = 2;
 
   { Resources }
 

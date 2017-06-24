@@ -5,8 +5,12 @@ interface
 uses
   System.SysUtils, System.Types;
 
-  function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
-  function TerminateApplication(E : Exception) : Integer;
+type
+
+  TExitCode = type LongWord;
+
+  function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : TExitCode;
+  function TerminateApplication(E : Exception) : TExitCode;
 
 implementation
 
@@ -38,7 +42,7 @@ type
     private
       FNoExitBehavior : TNoExitBehavior;
 
-      procedure ActualizeExitCode(var CurrentExitCode : Integer);
+      procedure ActualizeExitCode(var CurrentCode : TExitCode);
       procedure ProcessOptions;
 
       // Application commands implementation:
@@ -52,13 +56,16 @@ type
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
 
-      function Run : Integer;
+      function Run : TExitCode;
   end;
 
 { Utils }
 
-function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;
+function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;  //FI:O804
 begin
+  {$IFDEF DEBUG}
+  Result := False;
+  {$ELSE}
   if not Assigned(Instance) then
     Result := True
   else
@@ -75,15 +82,16 @@ begin
       raise AbortException;
     end;
   end;
+  {$ENDIF}
 end;
 
-procedure _OnException(E : Exception; out AnExitCode : Integer);
+procedure _OnException(E : Exception; out AnExitCode : TExitCode);
 begin
   PrintLn([E.ToString(True), sLineBreak]);
-  AnExitCode := INT_EC_ERROR_OCCURRED;
+  AnExitCode := UINT_EC_ERROR_OCCURRED;
 end;
 
-procedure _OnTerminate(AnExitCode : Integer; CanExit : Boolean);
+procedure _OnTerminate(AnExitCode : TExitCode; CanExit : Boolean);
 begin
   PrintLn([sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak]);
 
@@ -91,14 +99,16 @@ begin
     PressAnyKeyPrompt;
 end;
 
-function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
+{ Export }
+
+function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : TExitCode;
 var
   App : TFIToolkit;
 begin
   if Length(CmdLineOptions) = 0 then
   begin
     TFIToolkit.PrintHelpSuggestion(FullExePath);
-    Result := INT_EC_ERROR_OCCURRED;
+    Result := UINT_EC_ERROR_OCCURRED;
     _OnTerminate(Result, _CanExit(nil, nil));
     Exit;
   end;
@@ -122,23 +132,23 @@ begin
   end;
 end;
 
-function TerminateApplication(E : Exception) : Integer;
+function TerminateApplication(E : Exception) : TExitCode;
 begin
   if Assigned(E) then
     _OnException(E, Result)
   else
-    Result := INT_EC_NO_ERROR;
+    Result := UINT_EC_NO_ERROR;
 
   _OnTerminate(Result, _CanExit(nil, E));
 end;
 
 { TFIToolkit }
 
-procedure TFIToolkit.ActualizeExitCode(var CurrentExitCode : Integer);
+procedure TFIToolkit.ActualizeExitCode(var CurrentCode : TExitCode);
 begin
   if FStateMachine.CurrentState = asFinal then
     if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-      CurrentExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+      CurrentCode := UINT_EC_ANALYSIS_MESSAGES_FOUND;
 end;
 
 constructor TFIToolkit.Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
@@ -297,9 +307,9 @@ begin
       FStateMachine.Execute(C);
 end;
 
-function TFIToolkit.Run : Integer;
+function TFIToolkit.Run : TExitCode;
 begin
-  Result := INT_EC_NO_ERROR;
+  Result := UINT_EC_NO_ERROR;
 
   try
     ProcessOptions;
@@ -327,7 +337,7 @@ begin
         .Execute(acTerminate);
 
       ActualizeExitCode(Result);
-      PrintLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
+      PrintLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)])); // TODO: replace with a log output
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;
