@@ -264,7 +264,7 @@ type
 implementation
 
 uses
-  System.Classes, System.Types, System.Math, System.StrUtils, System.Character,
+  System.Classes, System.Math, System.DateUtils, System.StrUtils, System.Character,
   FIToolkit.Commons.Utils,
   FIToolkit.Logger.Utils, FIToolkit.Logger.Consts;
 
@@ -1366,7 +1366,7 @@ end;
 
 function TPlainTextOutput.FormatTimestamp(Timestamp : TLogTimestamp) : String;
 begin
-  Result := DateTimeToStr(Timestamp);
+  Result := Format('%s.%.3d', [DateTimeToStr(Timestamp), MilliSecondOfTheSecond(Timestamp)]);
 end;
 
 function TPlainTextOutput.GetPreambleCompensatorFiller : Char;
