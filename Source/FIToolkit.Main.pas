@@ -20,7 +20,8 @@ uses
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
-  FIToolkit.Config.Manager;
+  FIToolkit.Config.Manager,
+  FIToolkit.Logger.Default;
 
 type
 
@@ -114,6 +115,7 @@ begin
   end;
 
   TFIToolkit.PrintAbout;
+  InitConsoleLog;
 
   App := TFIToolkit.Create(FullExePath, CmdLineOptions);
   try
