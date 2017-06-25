@@ -10,6 +10,10 @@ type
 
   IAbstractLogger = interface //FI:W523
 
+    { Property accessors }
+
+    function  GetEnabled : Boolean;
+
     { Logging: structure }
 
     procedure EnterSection(const Msg : String = String.Empty); overload;
@@ -58,6 +62,10 @@ type
     procedure Fatal(const Vals : array of const); overload;
     procedure FatalFmt(const Msg : String; const Args : array of const);
     procedure FatalVal(const Vals : array of TValue);
+
+    { Properties }
+
+    property Enabled : Boolean read GetEnabled;
   end;
 
   ILogOutput = interface
@@ -85,7 +93,6 @@ type
     { Property accessors }
 
     function  GetAllowedItems : TLogItems;
-    function  GetEnabled : Boolean;
     function  GetSeverityThreshold : TLogMsgSeverity;
     procedure SetAllowedItems(Value : TLogItems);
     procedure SetSeverityThreshold(Value : TLogMsgSeverity);
@@ -97,7 +104,6 @@ type
     { Properties }
 
     property AllowedItems : TLogItems read GetAllowedItems write SetAllowedItems;
-    property Enabled : Boolean read GetEnabled;
     property SeverityThreshold : TLogMsgSeverity read GetSeverityThreshold write SetSeverityThreshold;
   end;
 

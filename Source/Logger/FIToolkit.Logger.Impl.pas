@@ -142,6 +142,8 @@ type
   TMetaLogger = class (TInterfacedObject, IMetaLogger)
     strict private
       FLoggers : TLoggerList;
+    private
+      function GetEnabled : Boolean;
     strict protected
       procedure IterateLoggers(const Action : TProc<ILogger>);
       procedure UnsafeCopyOpenArray<T>(const Source : array of T; var Dest : TArray<T>);
@@ -198,6 +200,8 @@ type
       procedure Fatal(const Vals : array of const); overload;
       procedure FatalFmt(const Msg : String; const Args : array of const);
       procedure FatalVal(const Vals : array of TValue);
+
+      property Enabled : Boolean read GetEnabled;
   end;
 
   TAbstractLogOutput = class abstract (TInterfacedObject, ILogOutput)
@@ -935,6 +939,21 @@ begin
       Logger.FatalVal(LVals);
     end
   );
+end;
+
+function TMetaLogger.GetEnabled : Boolean;
+var
+  Logger : ILogger;
+begin
+  Result := False;
+
+  try
+    for Logger in Loggers.LockList do
+      if Logger.Enabled then
+        Exit(True);
+  finally
+    Loggers.UnlockList;
+  end;
 end;
 
 procedure TMetaLogger.Info(const Msg : String);

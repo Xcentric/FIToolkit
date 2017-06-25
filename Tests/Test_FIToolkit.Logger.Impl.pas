@@ -111,6 +111,7 @@ type
     procedure DoTearDown; override;
     function  MakeSUT : IMetaLogger; override;
   published
+    procedure TestEnabled;
     procedure TestEnterSection;
     procedure TestEnterSection1;
     procedure TestEnterSectionFmt;
@@ -988,6 +989,16 @@ procedure TestTMetaLogger.TestDebugVal;
 begin
   SUT.DebugVal([]);
   CheckWasOutput;
+end;
+
+procedure TestTMetaLogger.TestEnabled;
+var
+  LocalSUT : IMetaLogger;
+begin
+  CheckTrue(SUT.Enabled, 'CheckTrue::SUT.Enabled');
+
+  LocalSUT := TMetaLogger.Create;
+  CheckFalse(LocalSUT.Enabled, 'CheckFalse::LocalSUT.Enabled');
 end;
 
 procedure TestTMetaLogger.TestEnterMethod;
