@@ -24,7 +24,7 @@ const
     String.Empty,
     //
     STR_CLI_OPTION_HELP, STR_CLI_OPTION_VERSION, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG,
-    STR_CLI_OPTION_NO_EXIT,
+    STR_CLI_OPTION_NO_EXIT, STR_CLI_OPTION_LOG_FILE,
     //
     String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
     //
@@ -34,7 +34,10 @@ const
   ARR_CASE_SENSITIVE_CLI_OPTIONS : TArray<String> = [];
 
   ARR_CLIOPTION_PROCESSING_ORDER : TArray<String> = [
+    // Fixed order. Do not change!
     STR_CLI_OPTION_NO_EXIT,
+    STR_CLI_OPTION_LOG_FILE,
+    // Changeable order below.
     STR_CLI_OPTION_HELP,
     STR_CLI_OPTION_VERSION,
     STR_CLI_OPTION_GENERATE_CONFIG,
@@ -45,6 +48,7 @@ const
     String.Empty, '.dpr', '.dpk', '.dproj', '.groupproj'
   );
 
+  ARR_INITIAL_APPSTATES : TArray<TApplicationState> = [asInitial, asNoExitBehaviorSet, asLogFileSet];
   SET_FINAL_APPSTATES : set of TApplicationState =
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 

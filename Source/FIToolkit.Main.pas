@@ -49,6 +49,7 @@ type
       // Application commands implementation:
       procedure PrintHelp;
       procedure PrintVersion;
+      procedure SetLogFile;
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
@@ -206,7 +207,7 @@ begin
 end;
 
 procedure TFIToolkit.InitStateMachine;
-begin
+begin //FI:C101
   FStateMachine := TStateMachine.Create(asInitial);
 
   { Common states }
@@ -218,13 +219,19 @@ begin
         SetNoExitBehavior;
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asHelpPrinted, acPrintHelp,
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asLogFileSet, acSetLogFile,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        SetLogFile;
+      end
+    )
+    .AddTransitions(ARR_INITIAL_APPSTATES, asHelpPrinted, acPrintHelp,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         PrintHelp;
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asVersionPrinted, acPrintVersion,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asVersionPrinted, acPrintVersion,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         PrintVersion;
@@ -234,7 +241,7 @@ begin
   { Config states }
 
   FStateMachine
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigGenerated, acGenerateConfig,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asConfigGenerated, acGenerateConfig,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         InitConfig(True);
@@ -242,7 +249,7 @@ begin
         PrintLn(RSEditConfigManually);
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asConfigSet, acSetConfig,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
         InitConfig(False);
@@ -343,6 +350,15 @@ begin
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;
+end;
+
+procedure TFIToolkit.SetLogFile;
+var
+  LogFileOption : TCLIOption;
+begin
+  if FOptions.Find(STR_CLI_OPTION_LOG_FILE, LogFileOption, not IsCaseSensitiveCLIOption(STR_CLI_OPTION_LOG_FILE)) then
+    if TPath.IsApplicableFileName(LogFileOption.Value) then
+      InitFileLog(LogFileOption.Value);
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
