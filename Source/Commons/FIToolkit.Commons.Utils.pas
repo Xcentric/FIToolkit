@@ -80,6 +80,7 @@ type
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
   procedure PressAnyKeyPrompt;
+  procedure PrintLn; overload;
   procedure PrintLn(const Arg : Variant); overload;
   procedure PrintLn(const Args : array of const); overload;
   function  TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
@@ -220,6 +221,11 @@ begin
           if ConsoleInput.Event.KeyEvent.bKeyDown then
             Break;
     until False;
+end;
+
+procedure PrintLn;
+begin
+  _PrintLn(sLineBreak);
 end;
 
 procedure PrintLn(const Arg : Variant);

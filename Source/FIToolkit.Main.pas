@@ -89,16 +89,35 @@ end;
 
 procedure _OnException(E : Exception; out AnExitCode : TExitCode);
 begin
-  PrintLn([E.ToString(True), sLineBreak]);
+  if Log.Enabled then
+    Log.Fatal(E.ToString(True) + sLineBreak)
+  else
+    PrintLn(E.ToString(True) + sLineBreak);
+
   AnExitCode := UINT_EC_ERROR_OCCURRED;
 end;
 
 procedure _OnTerminate(AnExitCode : TExitCode; CanExit : Boolean);
 begin
-  PrintLn([sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak]);
+  PrintLn;
+
+  if not Log.Enabled then
+    PrintLn(Format(RSTerminatingWithExitCode, [AnExitCode]))
+  else
+    case AnExitCode of
+      UINT_EC_NO_ERROR:
+        Log.InfoFmt(RSTerminatingWithExitCode, [AnExitCode]);
+      UINT_EC_ERROR_OCCURRED:
+        Log.FatalFmt(RSTerminatingWithExitCode, [AnExitCode]);
+    else
+      Log.WarningFmt(RSTerminatingWithExitCode, [AnExitCode]);
+    end;
 
   if not CanExit then
+  begin
+    PrintLn;
     PressAnyKeyPrompt;
+  end;
 end;
 
 { Export }

@@ -257,6 +257,15 @@ begin
   CheckException(
     procedure
     begin
+      PrintLn;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
+  CheckException(
+    procedure
+    begin
       PrintLn('test');
     end,
     nil,
