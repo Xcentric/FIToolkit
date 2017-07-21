@@ -1470,7 +1470,12 @@ begin
 
   CheckEquals(8, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 8)::<Case #11>');
   CheckEquals(LinesCount(Msg), LinesCount(SUTAsClass<TTestTextOutput>.LastWrittenLine),
-    'LinesCount(LastWrittenLine) = LinesCount(Msg)');
+    'LinesCount(LastWrittenLine) = LinesCount(Msg)::<Case #11.1>');
+
+  Msg := Msg + 'Message11_Line4';
+  SUT.WriteMessage(Instant, Severity, Msg);
+  CheckEquals(LinesCount(Msg), LinesCount(SUTAsClass<TTestTextOutput>.LastWrittenLine),
+    'LinesCount(LastWrittenLine) = LinesCount(Msg)::<Case #11.2>');
 end;
 
 initialization

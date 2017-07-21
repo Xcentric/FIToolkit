@@ -1422,7 +1422,7 @@ begin
         else
           Append(DupeString(PaddingStr, LeftPadding)).Append(arrText[i]);
 
-        if i < High(arrText) then
+        if i <= High(arrText) then
           AppendLine;
       end;
 
