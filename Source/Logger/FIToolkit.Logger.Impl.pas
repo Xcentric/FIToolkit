@@ -1411,7 +1411,7 @@ var
   arrText : TArray<String>;
   i : Integer;
 begin
-  arrText := Text.Split([sLineBreak]);
+  arrText := Text.Split([sLineBreak], None);
 
   with AcquireBuilder(Length(Text) + Length(PaddingStr) * LeftPadding * Max(Length(arrText), 1)) do
     try

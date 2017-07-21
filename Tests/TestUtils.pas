@@ -46,12 +46,26 @@ type
       function  GetTestIniFileName : TFileName;
   end;
 
+  { Utils }
+
+  function LinesCount(const S : String) : Integer;
+
 implementation
 
 uses
   System.IOUtils, System.Threading,
   Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
+
+{ Utils }
+
+function LinesCount(const S : String) : Integer;
+begin
+  if S.IsEmpty then
+    Result := 0
+  else
+    Result := Length(S.Split([sLineBreak], None)) + 1;
+end;
 
 { TInterfaceTestCase<I> }
 

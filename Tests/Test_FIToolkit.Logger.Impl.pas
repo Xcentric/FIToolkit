@@ -1457,6 +1457,20 @@ begin
 
   CheckEquals(7, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 7)::<Case #10>');
   RunLocalChecks;
+
+  { Case #11 }
+
+  Msg := 'Message11_Line1' + sLineBreak +
+         'Message11_Line2' + sLineBreak + sLineBreak +
+         'Message11_Line3' + sLineBreak + sLineBreak + sLineBreak;
+  Instant := Now;
+  Severity := SEVERITY_MIN;
+  SUT.SeverityThreshold := SEVERITY_MIN;
+  SUT.WriteMessage(Instant, Severity, Msg);
+
+  CheckEquals(8, SUTAsClass<TTestTextOutput>.WrittenLinesCount, '(WrittenLinesCount = 8)::<Case #11>');
+  CheckEquals(LinesCount(Msg), LinesCount(SUTAsClass<TTestTextOutput>.LastWrittenLine),
+    'LinesCount(LastWrittenLine) = LinesCount(Msg)');
 end;
 
 initialization
