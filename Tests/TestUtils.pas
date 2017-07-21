@@ -64,7 +64,7 @@ begin
   if S.IsEmpty then
     Result := 0
   else
-    Result := Length(S.Split([sLineBreak], None)) + 1;
+    Result := S.CountChar(#10) + 1;
 end;
 
 { TInterfaceTestCase<I> }

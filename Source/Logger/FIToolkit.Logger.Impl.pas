@@ -1412,6 +1412,8 @@ var
   i : Integer;
 begin
   arrText := Text.Split([sLineBreak], None);
+  if Text.EndsWith(sLineBreak) then
+    arrText := arrText + [String.Empty];
 
   with AcquireBuilder(Length(Text) + Length(PaddingStr) * LeftPadding * Max(Length(arrText), 1)) do
     try
@@ -1422,7 +1424,7 @@ begin
         else
           Append(DupeString(PaddingStr, LeftPadding)).Append(arrText[i]);
 
-        if i <= High(arrText) then
+        if i < High(arrText) then
           AppendLine;
       end;
 
