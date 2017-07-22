@@ -73,6 +73,8 @@ type
     procedure TestEnterMethod1;
     procedure TestLeaveMethod;
     procedure TestLeaveMethod1;
+    procedure TestLeaveMethod2;
+    procedure TestLeaveMethod3;
     procedure TestLog;
     procedure TestLog1;
     procedure TestLogFmt;
@@ -105,7 +107,7 @@ type
   strict private
     FOutput : TTestTextOutput;
   private
-    procedure CheckWasOutput;
+    procedure CheckWasOutput(ExpectedLinesCount : Integer = 1);
   protected
     procedure DoSetUp; override;
     procedure DoTearDown; override;
@@ -124,6 +126,8 @@ type
     procedure TestEnterMethod1;
     procedure TestLeaveMethod;
     procedure TestLeaveMethod1;
+    procedure TestLeaveMethod2;
+    procedure TestLeaveMethod3;
     procedure TestLog;
     procedure TestLog1;
     procedure TestLogFmt;
@@ -523,6 +527,76 @@ begin
   CheckTrue(FOutput.LastWrittenLine.Contains('FuncMethod'),
     'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #2>');
   CheckTrue(FOutput.LastWrittenLine.Contains(RESULT_VALUE), 'CheckTrue::LastWrittenLine.Contains(RESULT_VALUE)<Case #2>');
+end;
+
+procedure TestTLogger.TestLeaveMethod2;
+var
+  VoidResult : String;
+begin
+  VoidResult := TValue.Empty.ToString;
+
+  SUT.AllowedItems := SUT.AllowedItems + [liMethod];
+  SUT.EnterSection('MethodSection1');
+  SUT.EnterSection('MethodSection2');
+
+  { Case #1 }
+
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod);
+
+  CheckEquals(3, FOutput.WrittenLinesCount, 'WrittenLinesCount = 3');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.ProcMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #1>');
+  CheckFalse(FOutput.LastWrittenLine.Contains(VoidResult), 'CheckFalse::LastWrittenLine.Contains(VoidResult)<Case #1>');
+
+  { Case #2 }
+
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.FuncMethod);
+
+  CheckEquals(4, FOutput.WrittenLinesCount, 'WrittenLinesCount = 4');
+  CheckEquals(0, FOutput.SectionLevel, 'SectionLevel = 0');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.ClassName),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.ClassName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(TMethodHolderObj.MethodName(@TMethodHolderObj.FuncMethod)),
+    'CheckTrue::LastWrittenLine.Contains(TMethodHolderObj.MethodName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(VoidResult), 'CheckTrue::LastWrittenLine.Contains(VoidResult)<Case #2>');
+end;
+
+procedure TestTLogger.TestLeaveMethod3;
+var
+  VoidResult : String;
+begin
+  VoidResult := TValue.Empty.ToString;
+
+  SUT.AllowedItems := SUT.AllowedItems + [liMethod];
+  SUT.EnterSection('MethodSection1');
+  SUT.EnterSection('MethodSection2');
+
+  { Case #1 }
+
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod);
+
+  CheckEquals(3, FOutput.WrittenLinesCount, 'WrittenLinesCount = 3');
+  CheckEquals(1, FOutput.SectionLevel, 'SectionLevel = 1');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #1>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('ProcMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #1>');
+  CheckFalse(FOutput.LastWrittenLine.Contains(VoidResult), 'CheckFalse::LastWrittenLine.Contains(VoidResult)<Case #1>');
+
+  { Case #2 }
+
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.FuncMethod);
+
+  CheckEquals(4, FOutput.WrittenLinesCount, 'WrittenLinesCount = 4');
+  CheckEquals(0, FOutput.SectionLevel, 'SectionLevel = 0');
+  CheckTrue(FOutput.LastWrittenLine.Contains(GetTypeName(TypeInfo(TMethodHolderRec))),
+    'CheckTrue::LastWrittenLine.Contains(GetTypeName)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains('FuncMethod'),
+    'CheckTrue::LastWrittenLine.Contains(<MethodName>)<Case #2>');
+  CheckTrue(FOutput.LastWrittenLine.Contains(VoidResult), 'CheckTrue::LastWrittenLine.Contains(VoidResult)<Case #2>');
 end;
 
 procedure TestTLogger.TestLog;
@@ -942,9 +1016,9 @@ end;
 
 { TestTMetaLogger }
 
-procedure TestTMetaLogger.CheckWasOutput;
+procedure TestTMetaLogger.CheckWasOutput(ExpectedLinesCount : Integer);
 begin
-  CheckTrue(FOutput.WrittenLinesCount > 0, 'CheckTrue::(WrittenLinesCount > 0)');
+  CheckEquals(ExpectedLinesCount, FOutput.WrittenLinesCount, 'WrittenLinesCount = ExpectedLinesCount');
 end;
 
 procedure TestTMetaLogger.DoSetUp;
@@ -1113,42 +1187,56 @@ procedure TestTMetaLogger.TestLeaveMethod;
 begin
   SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, []);
   SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, TValue.Empty);
-  CheckWasOutput;
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLeaveMethod1;
 begin
   SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, []);
   SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, TValue.Empty);
-  CheckWasOutput;
+  CheckWasOutput(2);
+end;
+
+procedure TestTMetaLogger.TestLeaveMethod2;
+begin
+  SUT.EnterMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod, []);
+  SUT.LeaveMethod(TMethodHolderObj, @TMethodHolderObj.ProcMethod);
+  CheckWasOutput(2);
+end;
+
+procedure TestTMetaLogger.TestLeaveMethod3;
+begin
+  SUT.EnterMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod, []);
+  SUT.LeaveMethod(TypeInfo(TMethodHolderRec), @TMethodHolderRec.ProcMethod);
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLeaveSection;
 begin
   SUT.EnterSection('');
   SUT.LeaveSection('');
-  CheckWasOutput;
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLeaveSection1;
 begin
   SUT.EnterSection([]);
   SUT.LeaveSection([]);
-  CheckWasOutput;
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLeaveSectionFmt;
 begin
   SUT.EnterSectionFmt('', []);
   SUT.LeaveSectionFmt('', []);
-  CheckWasOutput;
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLeaveSectionVal;
 begin
   SUT.EnterSectionVal([]);
   SUT.LeaveSectionVal([]);
-  CheckWasOutput;
+  CheckWasOutput(2);
 end;
 
 procedure TestTMetaLogger.TestLog;

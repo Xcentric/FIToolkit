@@ -46,7 +46,9 @@ type
       procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); overload; virtual; abstract;
       procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); overload; virtual; abstract;
 
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer); overload;
       procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); overload; virtual; abstract;
+      procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer); overload;
       procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); overload; virtual; abstract;
 
       procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload; virtual; abstract;
@@ -168,7 +170,9 @@ type
       procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); overload;
       procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); overload;
 
+      procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer); overload;
       procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); overload;
+      procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer); overload;
       procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); overload;
 
       procedure Log(Severity : TLogMsgSeverity; const Msg : String); overload;
@@ -402,6 +406,16 @@ end;
 function TAbstractLogger.IsAllowedItem(Item : TLogItem) : Boolean;
 begin
   Result := Item in FAllowedItems;
+end;
+
+procedure TAbstractLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer);
+begin
+  LeaveMethod(AClass, MethodAddress, TValue.Empty);
+end;
+
+procedure TAbstractLogger.LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer);
+begin
+  LeaveMethod(ARecord, MethodAddress, TValue.Empty);
 end;
 
 procedure TAbstractLogger.SetAllowedItems(Value : TLogItems);
@@ -1020,12 +1034,32 @@ begin
   end;
 end;
 
+procedure TMetaLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer);
+begin
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      Logger.LeaveMethod(AClass, MethodAddress);
+    end
+  );
+end;
+
 procedure TMetaLogger.LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue);
 begin
   IterateLoggers(
     procedure (Logger : ILogger)
     begin
       Logger.LeaveMethod(AClass, MethodAddress, AResult);
+    end
+  );
+end;
+
+procedure TMetaLogger.LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer);
+begin
+  IterateLoggers(
+    procedure (Logger : ILogger)
+    begin
+      Logger.LeaveMethod(ARecord, MethodAddress);
     end
   );
 end;

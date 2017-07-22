@@ -28,7 +28,9 @@ type
 
     procedure EnterMethod(AClass : TClass; MethodAddress : Pointer; const Params : array of TValue); overload;
     procedure EnterMethod(ARecord : PTypeInfo; MethodAddress : Pointer; const Params : array of TValue); overload;
+    procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer); overload;
     procedure LeaveMethod(AClass : TClass; MethodAddress : Pointer; AResult : TValue); overload;
+    procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer); overload;
     procedure LeaveMethod(ARecord : PTypeInfo; MethodAddress : Pointer; AResult : TValue); overload;
 
     { Logging: messages }
