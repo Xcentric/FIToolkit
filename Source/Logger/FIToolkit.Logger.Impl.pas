@@ -1306,13 +1306,16 @@ begin
 end;
 
 function TPlainTextOutput.FormatCurrentThread : String;
+var
+  iResultWidth : Integer;
 begin
   if TThread.Current.ThreadID = MainThreadID then
     Result := RSPTOMainThreadName
   else
     Result := TThread.Current.ThreadID.ToString;
 
-  Result := Result.PadRight(Max(RSPTOMainThreadName.Length, High(TThreadID).ToString.Length));
+  iResultWidth := Max(RSPTOMainThreadName.Length, High(TThreadID).ToString.Length);
+  Result := Result.PadLeft(iResultWidth div 2 + Result.Length div 2).PadRight(iResultWidth);
 end;
 
 function TPlainTextOutput.FormatLogMessage(PreambleLength : Word; Severity : TLogMsgSeverity; const Msg : String) : String;
