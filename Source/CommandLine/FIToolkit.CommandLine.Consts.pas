@@ -8,6 +8,7 @@ const
 
   STR_CLI_OPTION_PREFIX = '--';
   STR_CLI_OPTION_DELIMITER = '=';
+  STR_CLI_OPTIONS_DELIMITER = ' ';
 
   { Supported command-line options }
 

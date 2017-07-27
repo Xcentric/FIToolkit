@@ -6,6 +6,22 @@ uses
   System.SysUtils,
   FIToolkit.Types;
 
+type
+
+  { Helpers }
+
+  TApplicationCommandHelper = record helper for TApplicationCommand
+    public
+      function ToString : String;
+  end;
+
+  TApplicationStateHelper = record helper for TApplicationState
+    public
+      function ToString : String;
+  end;
+
+  { Utils }
+
   function GetAppVersionInfo : String;
   function GetCLIOptionProcessingOrder(const OptionName : String; IgnoreCase : Boolean) : Integer;
   function GetInputFileType(const FileName : TFileName) : TInputFileType;
@@ -16,9 +32,11 @@ uses
 implementation
 
 uses
-  System.IOUtils,
+  System.IOUtils, System.Rtti,
   FIToolkit.Consts,
   FIToolkit.Commons.Utils;
+
+{ Utils }
 
 function GetAppVersionInfo : String;
 var
@@ -85,6 +103,20 @@ begin
         Command := C;
         Exit(True);
       end;
+end;
+
+{ TApplicationCommandHelper }
+
+function TApplicationCommandHelper.ToString : String;
+begin
+  Result := TValue.From<TApplicationCommand>(Self).ToString;
+end;
+
+{ TApplicationStateHelper }
+
+function TApplicationStateHelper.ToString : String;
+begin
+  Result := TValue.From<TApplicationState>(Self).ToString;
 end;
 
 end.

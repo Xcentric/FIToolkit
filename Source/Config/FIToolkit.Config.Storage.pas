@@ -19,6 +19,7 @@ type
       destructor Destroy; override;
 
       procedure AfterConstruction; override;
+
       function  Load : Boolean;
       function  Save : Boolean;
 
