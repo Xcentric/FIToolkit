@@ -27,7 +27,7 @@ type
   TTestCaseHelper = class helper for TTestCase
     private
       const
-        STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\';
+        STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\..\';
     public
       procedure CheckAggregateException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty);
