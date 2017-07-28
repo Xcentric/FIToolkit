@@ -408,13 +408,17 @@ begin
     Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
   end;
 
+  Log.Debug('FStateMachine.CurrentState = ' + FStateMachine.CurrentState.ToString);
+
   if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
     try
       if not Assigned(FConfig) then
         raise ENoValidConfigSpecified.Create;
 
+      Log.EnterSection(RSPreparingWorkflow);
       FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
       TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
+      Log.LeaveSection(RSWorkflowPrepared);
 
       FStateMachine
         .Execute(acStart)

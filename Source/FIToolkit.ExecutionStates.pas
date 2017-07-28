@@ -60,7 +60,8 @@ uses
   System.IOUtils, System.RegularExpressions, System.Zip,
   FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Consts,
   FIToolkit.Commons.Utils,
-  FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
+  FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML,
+  FIToolkit.Logger.Default;
 
 type
 

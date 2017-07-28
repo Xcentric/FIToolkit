@@ -80,8 +80,10 @@ resourcestring
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
   RSHelpSuggestion = 'Для получения помощи используйте "%s".';
   RSNoVersionInfoAvailable = '<информация о версии недоступна>';
+  RSPreparingWorkflow = 'Подготовка к запуску...';
   RSTerminatingWithExitCode = 'Приложение завершается с кодом %d.';
   RSTotalDuration = 'Общая длительность работы составила %s';
+  RSWorkflowPrepared = 'Подготовка к запуску завершена.';
 
   { Exceptions }
 
