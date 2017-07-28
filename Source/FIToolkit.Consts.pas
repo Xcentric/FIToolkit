@@ -45,7 +45,7 @@ const
   ];
 
   ARR_INPUT_FILE_TYPE_TO_EXT_MAPPING : array [TInputFileType] of String = (
-    String.Empty, '.dpr', '.dpk', '.dproj', '.groupproj'
+    String.Empty, '.dpr', '.dpk', '.dproj', '.groupproj'  // Do not localize!
   );
 
   ARR_INITIAL_APPSTATES : TArray<TApplicationState> = [asInitial, asNoExitBehaviorSet, asLogFileSet];
@@ -61,7 +61,7 @@ const
   UINT_EC_ERROR_OCCURRED          = 1;
   UINT_EC_ANALYSIS_MESSAGES_FOUND = 2;
 
-  { Resources }
+  { Resources. Do not localize! }
 
   STR_RES_HELP = 'HelpOutput';
 
