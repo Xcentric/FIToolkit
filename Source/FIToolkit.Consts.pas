@@ -53,6 +53,7 @@ const
     [asFinal, asHelpPrinted, asVersionPrinted, asConfigGenerated];
 
   STR_ARCHIVE_FILE_EXT = '.zip';
+  STR_CMD_LINE_SWITCH_DEBUG = 'debug';
 
   { Exit codes }
 

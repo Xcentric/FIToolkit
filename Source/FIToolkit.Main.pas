@@ -63,11 +63,13 @@ type
 
 { Utils }
 
-function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;  //FI:O804
+function _IsInDebugMode : Boolean;
 begin
-  {$IFDEF DEBUG}
-  Result := False;
-  {$ELSE}
+  Result := FindCmdLineSwitch(STR_CMD_LINE_SWITCH_DEBUG, True);
+end;
+
+function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;
+begin
   if not Assigned(Instance) then
     Result := True
   else
@@ -84,7 +86,6 @@ begin
       raise AbortException;
     end;
   end;
-  {$ENDIF}
 end;
 
 procedure _OnException(E : Exception; out AnExitCode : TExitCode);
@@ -126,7 +127,7 @@ function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TS
 var
   App : TFIToolkit;
 begin
-  InitConsoleLog({$IFDEF DEBUG}True{$ELSE}False{$ENDIF});
+  InitConsoleLog(_IsInDebugMode);
 
   if Length(CmdLineOptions) = 0 then
   begin
