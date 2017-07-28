@@ -41,8 +41,8 @@ resourcestring
   RSPTOMsgTypeDescError   = '( ERROR ) ';
   RSPTOMsgTypeDescFatal   = '( FATAL ) ';
 
-  RSPTOSectionBeginningPrefix = '->';
-  RSPTOSectionEndingPrefix = '<-';
+  RSPTOSectionBeginningPrefix = '   -> ';
+  RSPTOSectionEndingPrefix = '   <- ';
   RSPTOSectionIndentStr = '  ';
 
 implementation

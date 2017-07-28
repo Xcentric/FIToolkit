@@ -27,9 +27,16 @@ var
 
 type
 
-  TConsoleOutput = class (TPlainTextOutput)
+  TConsoleOutput = class abstract (TPlainTextOutput)
     strict protected
       procedure WriteLine(const S : String); override;
+  end;
+
+  TDebugConsoleOutput = class (TConsoleOutput);
+
+  TPrettyConsoleOutput = class (TConsoleOutput)
+    protected
+      function FormatPreamble(Instant : TLogTimestamp) : String; override;
   end;
 
   TTextStreamOutput = class (TPlainTextOutput)
@@ -48,20 +55,18 @@ type
 procedure InitConsoleLog(DebugMode : Boolean);
 begin
   with LoggingFacility.AddLogger(TLogger.Create) do
-  begin
     if DebugMode then
     begin
       AllowedItems := [liMessage, liSection, liMethod];
       SeverityThreshold := SEVERITY_DEBUG;
+      AddOutput(TDebugConsoleOutput.Create);
     end
     else
     begin
       AllowedItems := [liMessage, liSection];
       SeverityThreshold := SEVERITY_INFO;
+      AddOutput(TPrettyConsoleOutput.Create);
     end;
-
-    AddOutput(TConsoleOutput.Create);
-  end;
 end;
 
 procedure InitFileLog(const FileName : TFileName);
@@ -84,6 +89,13 @@ end;
 procedure TConsoleOutput.WriteLine(const S : String);
 begin
   PrintLn(S);
+end;
+
+{ TPrettyConsoleOutput }
+
+function TPrettyConsoleOutput.FormatPreamble(Instant : TLogTimestamp) : String;
+begin
+  Result := String.Empty;
 end;
 
 { TTextStreamOutput }
