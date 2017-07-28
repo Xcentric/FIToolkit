@@ -10,6 +10,11 @@ uses
   procedure InitFileLog(const FileName : TFileName);
   function  Log : IAbstractLogger;
 
+type
+
+  {$RTTI EXPLICIT METHODS([vcPrivate, vcProtected, vcPublic, vcPublished])}
+  TLoggable = class abstract (TObject);
+
 implementation
 
 uses

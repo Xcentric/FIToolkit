@@ -307,7 +307,7 @@ end;
 class procedure TFIToolkit.PrintHelpSuggestion(const FullExePath : TFileName);
 begin
   PrintLn(Format(RSHelpSuggestion,
-    [TPath.GetFileName(FullExePath) + ' ' + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
+    [TPath.GetFileName(FullExePath) + STR_CLI_OPTIONS_DELIMITER + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
 end;
 
 procedure TFIToolkit.PrintVersion;

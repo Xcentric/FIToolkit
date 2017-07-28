@@ -79,6 +79,9 @@ type
           private
             function GetCombinedHashCode(const HashCodes : array of Integer) : Integer;
           public
+            function Equals(Obj : TObject) : Boolean; override; final;
+            function GetHashCode : Integer; override; final;
+          public
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer); overload;
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
@@ -87,9 +90,6 @@ type
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
               const OnEnterState : TOnEnterStateProc; const OnExitState : TOnExitStateProc); overload;
-
-            function  Equals(Obj : TObject) : Boolean; override; final;
-            function  GetHashCode : Integer; override; final;
 
             procedure PerformEnterStateAction(const CurrentState : TState);
             procedure PerformExitStateAction(const NewState : TState);
