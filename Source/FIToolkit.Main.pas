@@ -126,6 +126,8 @@ function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TS
 var
   App : TFIToolkit;
 begin
+  InitConsoleLog({$IFDEF DEBUG}True{$ELSE}False{$ENDIF});
+
   if Length(CmdLineOptions) = 0 then
   begin
     TFIToolkit.PrintHelpSuggestion(FullExePath);
@@ -135,7 +137,6 @@ begin
   end;
 
   TFIToolkit.PrintAbout;
-  InitConsoleLog;
 
   App := TFIToolkit.Create(FullExePath, CmdLineOptions);
   try

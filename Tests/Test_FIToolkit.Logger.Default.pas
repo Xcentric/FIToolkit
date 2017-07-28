@@ -35,7 +35,8 @@ uses
 
 procedure TestFIToolkitLoggerDefault.TestInitConsoleLog;
 begin
-  InitConsoleLog;
+  InitConsoleLog(True);
+  InitConsoleLog(False);
 
   CheckException(
     procedure

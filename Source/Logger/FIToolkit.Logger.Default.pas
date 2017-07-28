@@ -6,7 +6,7 @@ uses
   System.SysUtils,
   FIToolkit.Logger.Intf;
 
-  procedure InitConsoleLog;
+  procedure InitConsoleLog(DebugMode : Boolean);
   procedure InitFileLog(const FileName : TFileName);
   function  Log : IAbstractLogger;
 
@@ -45,12 +45,21 @@ type
 
 { Export }
 
-procedure InitConsoleLog;
+procedure InitConsoleLog(DebugMode : Boolean);
 begin
   with LoggingFacility.AddLogger(TLogger.Create) do
   begin
-    AllowedItems := [liMessage, liSection];
-    SeverityThreshold := SEVERITY_INFO;
+    if DebugMode then
+    begin
+      AllowedItems := [liMessage, liSection, liMethod];
+      SeverityThreshold := SEVERITY_DEBUG;
+    end
+    else
+    begin
+      AllowedItems := [liMessage, liSection];
+      SeverityThreshold := SEVERITY_INFO;
+    end;
+
     AddOutput(TConsoleOutput.Create);
   end;
 end;
