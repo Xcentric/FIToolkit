@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.RegularExpressions, System.Zip,
+  System.IOUtils, System.RegularExpressions, System.Zip, System.Rtti,
   FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Consts,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML,
@@ -130,14 +130,19 @@ begin //FI:C101
   StateMachine
     .AddTransition(asInitial, asProjectsExtracted, acExtractProjects,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        LInputFileType : TInputFileType;
       begin
         Log.EnterSection(RSExtractingProjects);
 
         with StateHolder do
         begin
           FStartTime := Now;
+          LInputFileType := GetInputFileType(FConfigData.InputFileName);
 
-          case GetInputFileType(FConfigData.InputFileName) of
+          Log.DebugVal(['LInputFileType = ', TValue.From<TInputFileType>(LInputFileType)]);
+
+          case LInputFileType of
             iftDPR, iftDPK:
               begin
                 FProjects := [FConfigData.InputFileName];
@@ -178,7 +183,10 @@ begin //FI:C101
             for sPattern in FConfigData.ExcludeProjectPatterns do
               for sProject in FProjects do
                 if TRegEx.IsMatch(sProject, sPattern, [roIgnoreCase]) then
+                begin
                   LProjects.Remove(sProject);
+                  Log.InfoFmt(RSProjectExcluded, [sProject]);
+                end;
 
             if LProjects.Count < Length(FProjects) then
               FProjects := LProjects.ToArray;
@@ -197,6 +205,8 @@ begin //FI:C101
 
         with StateHolder do
         begin
+          Log.DebugFmt('Length(FProjects) = %d', [Length(FProjects)]);
+
           FTaskManager := TTaskManager.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions,
             FProjects, FConfigData.TempDirectory);
           FReports := FTaskManager.RunAndGetOutput;
@@ -217,6 +227,8 @@ begin //FI:C101
           for R in FReports do
             if TFile.Exists(R.Value) then
             begin
+              Log.DebugVal(['FConfigData.Deduplicate = ', FConfigData.Deduplicate]);
+
               if not FConfigData.Deduplicate then
                 FFixInsightXMLParser.Parse(R.Value, False)
               else
@@ -234,7 +246,10 @@ begin //FI:C101
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
+            begin
               FMessages.Add(R.Key, nil);
+              Log.ErrorFmt(RSReportNotFound, [R.Key]);
+            end;
 
         Log.LeaveSection(RSReportsParsed);
       end

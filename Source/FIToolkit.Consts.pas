@@ -91,12 +91,14 @@ resourcestring
   RSProjectsExtracted = 'Список проектов составлен.';
   //
   RSExcludingProjects = 'Исключение проектов...';
+  RSProjectExcluded = 'Исключён проект: %s';
   RSProjectsExcluded = 'Список проектов актуализирован.';
   //
   RSRunningFixInsight = 'Статический анализ кода...';
   RSFixInsightRan = 'Анализ завершён.';
   //
   RSParsingReports = 'Разбор отчётов статического анализа кода...';
+  RSReportNotFound = 'Не найден отчёт для проекта: %s';
   RSReportsParsed = 'Разбор завершён.';
   //
   RSExcludingUnits = 'Фильтрация результатов статического анализа кода от исключаемых модулей...';
