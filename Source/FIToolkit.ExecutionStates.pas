@@ -131,6 +131,8 @@ begin //FI:C101
     .AddTransition(asInitial, asProjectsExtracted, acExtractProjects,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.EnterSection(RSExtractingProjects);
+
         with StateHolder do
         begin
           FStartTime := Now;
@@ -155,6 +157,8 @@ begin //FI:C101
             raise EUnknownInputFileType.Create;
           end;
         end;
+
+        Log.LeaveSection(RSProjectsExtracted);
       end
     )
     .AddTransition(asProjectsExtracted, asProjectsExcluded, acExcludeProjects,
@@ -163,6 +167,8 @@ begin //FI:C101
         LProjects : TList<TFileName>;
         sPattern, sProject : String;
       begin
+        Log.EnterSection(RSExcludingProjects);
+
         LProjects := TList<TFileName>.Create;
         try
           with StateHolder do
@@ -180,17 +186,23 @@ begin //FI:C101
         finally
           LProjects.Free;
         end;
+
+        Log.LeaveSection(RSProjectsExcluded);
       end
     )
     .AddTransition(asProjectsExcluded, asFixInsightRan, acRunFixInsight,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.EnterSection(RSRunningFixInsight);
+
         with StateHolder do
         begin
           FTaskManager := TTaskManager.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions,
             FProjects, FConfigData.TempDirectory);
           FReports := FTaskManager.RunAndGetOutput;
         end;
+
+        Log.LeaveSection(RSFixInsightRan);
       end
     )
     .AddTransition(asFixInsightRan, asReportsParsed, acParseReports,
@@ -199,6 +211,8 @@ begin //FI:C101
         R : TPair<TFileName, TFileName>;
         i : Integer;
       begin
+        Log.EnterSection(RSParsingReports);
+
         with StateHolder do
           for R in FReports do
             if TFile.Exists(R.Value) then
@@ -221,6 +235,8 @@ begin //FI:C101
             end
             else
               FMessages.Add(R.Key, nil);
+
+        Log.LeaveSection(RSReportsParsed);
       end
     )
     .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
@@ -231,6 +247,8 @@ begin //FI:C101
         F : TFileName;
         Msg : TFixInsightMessage;
       begin
+        Log.EnterSection(RSExcludingUnits);
+
         LProjectMessages := TFixInsightMessages.Create;
         try
           with StateHolder do
@@ -251,6 +269,8 @@ begin //FI:C101
         finally
           LProjectMessages.Free;
         end;
+
+        Log.LeaveSection(RSUnitsExcluded);
       end
     )
     .AddTransition(asUnitsExcluded, asReportBuilt, acBuildReport,
@@ -259,6 +279,8 @@ begin //FI:C101
         F : TFileName;
         Msg : TFixInsightMessage;
       begin
+        Log.EnterSection(RSBuildingReport);
+
         with StateHolder do
         begin
           FReportBuilder.BeginReport;
@@ -283,6 +305,8 @@ begin //FI:C101
           FReportBuilder.EndReport;
           FReportOutput.Close;
         end;
+
+        Log.LeaveSection(RSReportBuilt);
       end
     )
     .AddTransition(asReportBuilt, asArchiveMade, acMakeArchive,
@@ -291,6 +315,8 @@ begin //FI:C101
         sArchiveFileName : TFileName;
         ZF : TZipFile;
       begin
+        Log.EnterSection(RSMakingArchive);
+
         with StateHolder do
           if FConfigData.MakeArchive then
           begin
@@ -310,6 +336,8 @@ begin //FI:C101
 
             DeleteFile(FReportFileName);
           end;
+
+        Log.LeaveSection(RSArchiveMade);
       end
     )
     .AddTransition(asArchiveMade, asFinal, acTerminate,
@@ -317,6 +345,8 @@ begin //FI:C101
       var
         R : TPair<TFileName, TFileName>;
       begin
+        Log.EnterSection(RSTerminating);
+
         with StateHolder do
         begin
           for R in FReports do
@@ -327,6 +357,8 @@ begin //FI:C101
 
           FTotalDuration := TTimeSpan.Subtract(Now, FStartTime);
         end;
+
+        Log.LeaveSection(RSTerminated);
       end
     );
 end;

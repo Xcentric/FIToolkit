@@ -85,6 +85,32 @@ resourcestring
   RSTotalDuration = 'Общая длительность работы составила %s';
   RSWorkflowPrepared = 'Подготовка к запуску завершена.';
 
+  { Execution states }
+
+  RSExtractingProjects = 'Определение проектов...';
+  RSProjectsExtracted = 'Список проектов составлен.';
+  //
+  RSExcludingProjects = 'Исключение проектов...';
+  RSProjectsExcluded = 'Список проектов актуализирован.';
+  //
+  RSRunningFixInsight = 'Статический анализ кода...';
+  RSFixInsightRan = 'Анализ завершён.';
+  //
+  RSParsingReports = 'Разбор отчётов статического анализа кода...';
+  RSReportsParsed = 'Разбор завершён.';
+  //
+  RSExcludingUnits = 'Фильтрация результатов статического анализа кода от исключаемых модулей...';
+  RSUnitsExcluded = 'Результаты актуализированы.';
+  //
+  RSBuildingReport = 'Построение отчёта...';
+  RSReportBuilt = 'Отчёт построен.';
+  //
+  RSMakingArchive = 'Этап упаковки отчёта в архив...';
+  RSArchiveMade = 'Этап пройден.';
+  //
+  RSTerminating = 'Завершение работы...';
+  RSTerminated = 'Работа завершена.';
+
   { Exceptions }
 
   RSApplicationExecutionFailed = 'Ошибка при выполнении программы.';
