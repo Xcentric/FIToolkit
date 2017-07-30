@@ -432,8 +432,10 @@ begin
         .Execute(acMakeArchive)
         .Execute(acTerminate);
 
-      ActualizeExitCode(Result);
       Log.InfoFmt(RSTotalDuration, [String(FWorkflowState.TotalDuration)]);
+      Log.InfoFmt(RSTotalMessages, [FWorkflowState.TotalMessages]);
+
+      ActualizeExitCode(Result);
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;

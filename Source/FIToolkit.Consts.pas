@@ -83,6 +83,7 @@ resourcestring
   RSPreparingWorkflow = 'Подготовка к запуску...';
   RSTerminatingWithExitCode = 'Приложение завершается с кодом %d.';
   RSTotalDuration = 'Общая длительность работы составила %s';
+  RSTotalMessages = 'Итого сообщений статического анализа: %d';
   RSWorkflowPrepared = 'Подготовка к запуску завершена.';
 
   { Execution states }
