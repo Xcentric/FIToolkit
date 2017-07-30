@@ -222,13 +222,12 @@ begin //FI:C101
         i : Integer;
       begin
         Log.EnterSection(RSParsingReports);
+        Log.DebugVal(['FConfigData.Deduplicate = ', StateHolder.FConfigData.Deduplicate]);
 
         with StateHolder do
           for R in FReports do
             if TFile.Exists(R.Value) then
             begin
-              Log.DebugVal(['FConfigData.Deduplicate = ', FConfigData.Deduplicate]);
-
               if not FConfigData.Deduplicate then
                 FFixInsightXMLParser.Parse(R.Value, False)
               else

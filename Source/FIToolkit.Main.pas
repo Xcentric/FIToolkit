@@ -176,6 +176,7 @@ begin
     if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
       CurrentCode := UINT_EC_ANALYSIS_MESSAGES_FOUND;
 
+  Log.DebugFmt('CurrentCode = %d', [CurrentCode]);
   Log.LeaveMethod(TFIToolkit, @TFIToolkit.ActualizeExitCode);
 end;
 
