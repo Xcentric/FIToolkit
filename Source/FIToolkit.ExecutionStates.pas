@@ -258,6 +258,7 @@ begin //FI:C101
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         LProjectMessages : TFixInsightMessages;
+        LExcludedUnits : TList<TFileName>;
         sPattern : String;
         F : TFileName;
         Msg : TFixInsightMessage;
@@ -265,6 +266,7 @@ begin //FI:C101
         Log.EnterSection(RSExcludingUnits);
 
         LProjectMessages := TFixInsightMessages.Create;
+        LExcludedUnits := TList<TFileName>.Create;
         try
           with StateHolder do
             for sPattern in FConfigData.ExcludeUnitPatterns do
@@ -276,12 +278,21 @@ begin //FI:C101
 
                   for Msg in FMessages[F] do
                     if TRegEx.IsMatch(Msg.FileName, sPattern, [roIgnoreCase]) then
+                    begin
                       LProjectMessages.Remove(Msg);
+
+                      if not LExcludedUnits.Contains(Msg.FileName) then
+                        LExcludedUnits.Add(Msg.FileName);
+                    end;
 
                   if LProjectMessages.Count < Length(FMessages[F]) then
                     FMessages[F] := LProjectMessages.ToArray;
                 end;
+
+          for F in LExcludedUnits do
+            Log.InfoFmt(RSUnitExcluded, [F]);
         finally
+          LExcludedUnits.Free;
           LProjectMessages.Free;
         end;
 
@@ -331,11 +342,15 @@ begin //FI:C101
         ZF : TZipFile;
       begin
         Log.EnterSection(RSMakingArchive);
+        Log.DebugVal(['FConfigData.MakeArchive = ', StateHolder.FConfigData.MakeArchive]);
 
         with StateHolder do
           if FConfigData.MakeArchive then
           begin
             sArchiveFileName := FReportFileName + STR_ARCHIVE_FILE_EXT;
+
+            Log.DebugFmt('sArchiveFileName = "%s"', [sArchiveFileName]);
+            Log.DebugVal(['TFile.Exists(sArchiveFileName) = ', TFile.Exists(sArchiveFileName)]);
 
             if TFile.Exists(sArchiveFileName) then
               TFile.Delete(sArchiveFileName);

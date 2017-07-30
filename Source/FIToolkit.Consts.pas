@@ -102,6 +102,7 @@ resourcestring
   RSReportsParsed = 'Разбор завершён.';
   //
   RSExcludingUnits = 'Фильтрация результатов статического анализа кода от исключаемых модулей...';
+  RSUnitExcluded = 'Исключён модуль: %s';
   RSUnitsExcluded = 'Результаты актуализированы.';
   //
   RSBuildingReport = 'Построение отчёта...';
