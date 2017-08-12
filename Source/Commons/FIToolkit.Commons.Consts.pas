@@ -8,7 +8,7 @@ const
 
   sDualBreak = sLineBreak + sLineBreak;
 
-  { FixInsight registry consts }
+  { FixInsight registry consts. Do not localize! }
 
   STR_FIXINSIGHT_REGKEY   = 'Software\FixInsight';
   STR_FIXINSIGHT_REGVALUE = 'Path';

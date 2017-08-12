@@ -61,8 +61,13 @@ end;
 
 procedure TestTFixInsightMessage.TestGetComparer;
 var
+  // case #1
   OrigMsg, EqualMsg, GreaterMsg1, GreaterMsg2, GreaterMsg3 : TFixInsightMessage;
+  // case #2
+  OrigMsg2, EqualMsg2, EqualMsg3, GreaterMsg4 : TFixInsightMessage;
 begin
+  { Case #1 - constructor with NO full file name }
+
   OrigMsg := TFixInsightMessage.Create('C:\abc.pas', 100, 32, String.Empty, String.Empty);
   EqualMsg := TFixInsightMessage.Create('C:\ABC.pas', 100, 32, 'W505', 'text');
   GreaterMsg1 := TFixInsightMessage.Create('C:\bcd.pas', 100, 32, String.Empty, String.Empty);
@@ -76,6 +81,20 @@ begin
     CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg1), 'OrigMsg < GreaterMsg1');
     CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg2), 'OrigMsg < GreaterMsg2');
     CheckEquals(LessThanValue, Compare(OrigMsg, GreaterMsg3), 'OrigMsg < GreaterMsg3');
+  end;
+
+  { Case #2 - constructor WITH full file name }
+
+  OrigMsg2 := TFixInsightMessage.Create('..\TestUnit.pas', 'C:\TestUnit.pas', 100, 32, String.Empty, String.Empty);
+  EqualMsg2 := TFixInsightMessage.Create('..\TestUnit.pas', 100, 32, String.Empty, String.Empty);
+  EqualMsg3 := TFixInsightMessage.Create('..\TestUnit.pas', 'c:\testunit.pas', 100, 32, String.Empty, String.Empty);
+  GreaterMsg4 := TFixInsightMessage.Create('..\TestUnit.pas', 'X:\TestUnit.pas', 100, 32, String.Empty, String.Empty);
+
+  with TFixInsightMessage.GetComparer do
+  begin
+    CheckEquals(EqualsValue, Compare(OrigMsg2, EqualMsg2), 'OrigMsg2 = EqualMsg2');
+    CheckEquals(EqualsValue, Compare(OrigMsg2, EqualMsg3), 'OrigMsg2 = EqualMsg3');
+    CheckEquals(LessThanValue, Compare(OrigMsg2, GreaterMsg4), 'OrigMsg2 < GreaterMsg4');
   end;
 end;
 

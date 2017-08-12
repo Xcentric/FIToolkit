@@ -1,5 +1,5 @@
 ﻿Usage:
-  fitoolkit.exe (--help | --version | --generate-config="<path>" | --set-config="<path>") [--no-exit=<N>]
+  fitoolkit.exe (--help | --version | --generate-config="<path>" | --set-config="<path>") [--no-exit=<N>] [--log-file="<path>"] [/debug]
 
 Command-line options:
   --help
@@ -22,3 +22,9 @@ Command-line options:
         1 - enabled, application won't terminate automatically.
         2 - enabled, application won't terminate automatically only in case
             of exception.
+  --log-file="<path>"
+      Specifies application log file.
+      <path> value determines output file name and can be either absolute or relative.
+      The file determined by a <path> value will be created or overwritten but never appended.
+  /debug
+      This switch enables application debug mode.

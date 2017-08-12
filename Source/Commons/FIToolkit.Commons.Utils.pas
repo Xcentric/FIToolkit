@@ -3,17 +3,17 @@
 interface
 
 uses
-  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti,
+  System.SysUtils, System.IOUtils, System.TypInfo, System.Rtti, System.Generics.Defaults,
   FIToolkit.Commons.Types;
 
 type
 
   TIff = record
     public
-      class function Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
+      class function Get<T>(Condition : Boolean; const TruePart, FalsePart : T) : T; static; inline;
   end;
 
-  TObjectProperties<T:class> = record
+  TObjectProperties<T : class> = record
     public
       class procedure Copy(Source, Destination : T; const Filter : TObjectPropertyFilter = nil); static;
   end;
@@ -27,6 +27,10 @@ type
 
   TFileNameHelper = record helper for TFileName
     public
+      class function GetComparer : IComparer<TFileName>; static;
+
+      function Expand(Check : Boolean = False) : TFileName; overload;
+      function Expand(ExpandVars, Check : Boolean) : TFileName; overload;
       function IsApplicable : Boolean;
       function IsEmpty : Boolean;
   end;
@@ -44,6 +48,8 @@ type
 
   TRttiTypeHelper = class helper for TRttiType
     public
+      function GetFullName : String;
+      function GetMethod(MethodAddress : Pointer) : TRttiMethod; overload;
       function IsArray : Boolean;
       function IsString : Boolean;
   end;
@@ -60,28 +66,59 @@ type
       function IsString : Boolean;
   end;
 
+  TVarRecHelper = record helper for TVarRec
+    public
+      function ToString : String;
+  end;
+
   { Utils }
 
   function  AbortException : EAbort;
+  function  ArrayOfConstToStringArray(const Vals : array of const) : TArray<String>;
   function  ExpandEnvVars(const S : String) : String;
   function  GetFixInsightExePath : TFileName;
   function  GetModuleVersion(ModuleHandle : THandle; out Major, Minor, Release, Build : Word) : Boolean;
   function  Iff : TIff; inline;
   procedure PressAnyKeyPrompt;
+  procedure PrintLn; overload;
+  procedure PrintLn(const Arg : Variant); overload;
+  procedure PrintLn(const Args : array of const); overload;
+  function  TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
   function  WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
     CheckingInterval, Timeout : Cardinal) : Boolean;
 
 implementation
 
 uses
-  System.Classes, System.SysConst, System.Threading, System.Win.Registry, Winapi.Windows,
+  System.Classes, System.SysConst, System.Threading, System.Variants, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
+
+{ Internals }
+
+procedure _PrintLn(const S : String);
+begin
+  {$IFDEF CONSOLE}
+  WriteLn(S);
+  {$ELSE}
+  OutputDebugString(PChar(S));
+  {$ENDIF}
+end;
 
 { Utils }
 
 function AbortException : EAbort;
 begin
   Result := EAbort.CreateRes(@SOperationAborted);
+end;
+
+function ArrayOfConstToStringArray(const Vals : array of const) : TArray<String>;
+var
+  i : Integer;
+begin
+  SetLength(Result, Length(Vals));
+
+  for i := 0 to High(Vals) do
+    Result[i] := Vals[i].ToString;
 end;
 
 function ExpandEnvVars(const S : String) : String;
@@ -172,10 +209,10 @@ var
   ConsoleInput : TInputRecord;
   iDummy : Cardinal;
 begin
-  WriteLn(RSPressAnyKey);
+  PrintLn(RSPressAnyKey);
 
   hConsole := GetStdHandle(STD_INPUT_HANDLE);
-  if hConsole <> INVALID_HANDLE_VALUE then
+  if IsConsole and (hConsole <> INVALID_HANDLE_VALUE) then
     repeat
       WaitForSingleObjectEx(hConsole, INFINITE, False);
 
@@ -184,6 +221,46 @@ begin
           if ConsoleInput.Event.KeyEvent.bKeyDown then
             Break;
     until False;
+end;
+
+procedure PrintLn;
+begin
+  _PrintLn(sLineBreak);
+end;
+
+procedure PrintLn(const Arg : Variant);
+var
+  S : String;
+begin
+  if VarIsStr(Arg) then
+    S := Arg
+  else
+    S := TValue.FromVariant(Arg).ToString;
+
+  _PrintLn(S);
+end;
+
+procedure PrintLn(const Args : array of const);
+var
+  S : String;
+  Arg : TVarRec;
+begin
+  S := String.Empty;
+
+  for Arg in Args do
+    S := S + Arg.ToString;
+
+  _PrintLn(S);
+end;
+
+function TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
+var
+  i : Integer;
+begin
+  SetLength(Result, Length(Vals));
+
+  for i := 0 to High(Vals) do
+    Result[i] := Vals[i].ToString;
 end;
 
 function WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
@@ -253,6 +330,26 @@ end;
 
 { TFileNameHelper }
 
+function TFileNameHelper.Expand(Check : Boolean) : TFileName;
+begin
+  Result := Self.Expand(False, Check);
+end;
+
+function TFileNameHelper.Expand(ExpandVars, Check : Boolean) : TFileName;
+begin
+  Result := TPath.GetFullPath(Self, ExpandVars, Check);
+end;
+
+class function TFileNameHelper.GetComparer : IComparer<TFileName>;
+begin
+  Result := TComparer<TFileName>.Construct(
+    function (const Left, Right : TFileName) : Integer
+    begin
+      Result := String.Compare(Left, Right, True);
+    end
+  );
+end;
+
 function TFileNameHelper.IsApplicable : Boolean;
 begin
   Result := TPath.IsApplicableFileName(Self);
@@ -265,7 +362,7 @@ end;
 
 { TIff }
 
-class function TIff.Get<T>(const Condition : Boolean; const TruePart, FalsePart : T) : T;
+class function TIff.Get<T>(Condition : Boolean; const TruePart, FalsePart : T) : T;
 begin
   if Condition then
     Result := TruePart
@@ -345,6 +442,26 @@ end;
 
 { TRttiTypeHelper }
 
+function TRttiTypeHelper.GetFullName : String;
+begin
+  if IsPublicType then
+    Result := QualifiedName
+  else
+    Result := Name;
+end;
+
+function TRttiTypeHelper.GetMethod(MethodAddress : Pointer) : TRttiMethod;
+var
+  M : TRttiMethod;
+begin
+  Result := nil;
+
+  if Assigned(MethodAddress) then
+    for M in GetMethods do
+      if M.CodeAddress = MethodAddress then
+        Exit(M);
+end;
+
 function TRttiTypeHelper.IsArray : Boolean;
 begin
   Result := TypeKind.IsArray;
@@ -402,6 +519,30 @@ begin
       end;
   finally
     Ctx.Free;
+  end;
+end;
+
+{ TVarRecHelper }
+
+function TVarRecHelper.ToString : String;
+begin
+  case VType of
+    vtChar:
+      Result := Char(AnsiChar(VChar));
+    vtPChar:
+      Result := String(AnsiString(PAnsiChar(VPChar)));
+    vtPWideChar:
+      Result := WideString(PWideChar(VPWideChar));
+    vtString:
+      Result := String(VString^);
+    vtAnsiString:
+      Result := String(AnsiString(VAnsiString));
+    vtWideString:
+      Result := WideString(VWideString);
+    vtUnicodeString:
+      Result := UnicodeString(VUnicodeString);
+  else
+    Result := TValue.FromVarRec(Self).ToString;
   end;
 end;
 

@@ -52,7 +52,7 @@ const
   STR_HTML_SUMMARY_MESSAGE_TYPE_NAME    = '%SUMMARY_MESSAGE_TYPE_NAME%';
   STR_HTML_TOTAL_SUMMARY_ITEMS          = '{TOTAL_SUMMARY_ITEMS}';
 
-  { Resources }
+  { Resources. Do not localize! }
 
   STR_RES_HTML_REPORT_DEFAULT_TEMPLATE = 'HTMLReportDefaultTemplate';
 

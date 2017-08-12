@@ -20,10 +20,15 @@ type
 
   TestFIToolkitCommonsUtils = class (TGenericTestCase)
     published
+      procedure TestAbortException;
+      procedure TestArrayOfConstToStringArray;
       procedure TestExpandEnvVars;
       procedure TestGetFixInsightExePath;
       procedure TestGetModuleVersion;
       procedure TestIff;
+      procedure TestPressAnyKeyPrompt;
+      procedure TestPrintLn;
+      procedure TestTValueArrayToStringArray;
       procedure TestWaitForFileAccess;
   end;
 
@@ -38,6 +43,8 @@ type
 
   TestTFileNameHelper = class (TGenericTestCase)
     published
+      procedure TestExpand;
+      procedure TestGetComparer;
       procedure TestIsApplicable;
       procedure TestIsEmpty;
   end;
@@ -94,6 +101,8 @@ type
       [IsStringProp]
       property PropWideString : WideString read FWideString;
     published
+      procedure TestGetFullName;
+      procedure TestGetMethod;
       procedure TestIsArray;
       procedure TestIsString;
   end;
@@ -110,13 +119,45 @@ type
       procedure TestIsString;
   end;
 
+  TestTVarRecHelper = class (TGenericTestCase)
+    published
+      procedure TestToString;
+  end;
+
 implementation
 
 uses
-  System.Classes, System.IOUtils, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
+  System.Classes, System.IOUtils, System.Types, System.TypInfo, System.Rtti, System.Threading, Winapi.Windows,
   TestUtils, TestConsts;
 
+type
+
+  TDummyClass = class (TObject);
+
 { TestFIToolkitCommonsUtils }
+
+procedure TestFIToolkitCommonsUtils.TestAbortException;
+begin
+  CheckException(
+    procedure
+    begin
+      raise AbortException;
+    end,
+    EAbort,
+    'CheckException::EAbort'
+  );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestArrayOfConstToStringArray;
+var
+  arrS : TArray<String>;
+begin
+  arrS := ArrayOfConstToStringArray([42, True, 'test']);
+
+  CheckEquals('42',   arrS[0], 'arrS[0] = 42');
+  CheckEquals('True', arrS[1], 'arrS[1] = True');
+  CheckEquals('test', arrS[2], 'arrS[2] = "test"');
+end;
 
 procedure TestFIToolkitCommonsUtils.TestExpandEnvVars;
 const
@@ -197,6 +238,59 @@ begin
   CheckTrue(eReturnValue = eTruePart, 'eReturnValue = eTruePart');
   eReturnValue := Iff.Get<TTestEnum>(False, eTruePart, eFalsePart);
   CheckTrue(eReturnValue = eFalsePart, 'eReturnValue = eFalsePart');
+end;
+
+procedure TestFIToolkitCommonsUtils.TestPressAnyKeyPrompt;
+begin
+  CheckException(
+    procedure
+    begin
+      PressAnyKeyPrompt;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestPrintLn;
+begin
+  CheckException(
+    procedure
+    begin
+      PrintLn;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
+  CheckException(
+    procedure
+    begin
+      PrintLn('test');
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
+  CheckException(
+    procedure
+    begin
+      PrintLn(['test1', 'test2', 42]);
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestTValueArrayToStringArray;
+var
+  arrS : TArray<String>;
+begin
+  arrS := TValueArrayToStringArray([42, True, 'test']);
+
+  CheckEquals('42',   arrS[0], 'arrS[0] = 42');
+  CheckEquals('True', arrS[1], 'arrS[1] = True');
+  CheckEquals('test', arrS[2], 'arrS[2] = "test"');
 end;
 
 procedure TestFIToolkitCommonsUtils.TestWaitForFileAccess;
@@ -296,6 +390,37 @@ begin
 end;
 
 { TestTFileNameHelper }
+
+procedure TestTFileNameHelper.TestExpand;
+var
+  sFileName : TFileName;
+  sExpandedFileName : String;
+begin
+  sFileName := '..\dir\file.ext';
+  sExpandedFileName := sFileName.Expand;
+
+  CheckFalse(sExpandedFileName.StartsWith('..\'), 'CheckFalse::StartsWith("..\")');
+  CheckTrue(sExpandedFileName.Length > Length(sFileName), 'CheckTrue::(Expanded.Length > Original.Length)');
+end;
+
+procedure TestTFileNameHelper.TestGetComparer;
+var
+  sFileName,
+  sLesser, sEqual, sGreater : TFileName;
+begin
+  sFileName := 'D:\work\project.doc';
+
+  sLesser  := 'C:\work\project.doc';
+  sEqual   := 'D:\WORK\project.doc';
+  sGreater := 'E:\work\project.doc';
+
+  with TFileName.GetComparer do
+  begin
+    CheckEquals(GreaterThanValue, Compare(sFileName, sLesser),  'sFileName > sLesser');
+    CheckEquals(EqualsValue,      Compare(sFileName, sEqual),   'sFileName = sEqual');
+    CheckEquals(LessThanValue,    Compare(sFileName, sGreater), 'sFileName < sGreater');
+  end;
+end;
 
 procedure TestTFileNameHelper.TestIsApplicable;
 var
@@ -468,6 +593,39 @@ end;
 
 { TestTRttiTypeHelper }
 
+procedure TestTRttiTypeHelper.TestGetFullName;
+var
+  Ctx : TRttiContext;
+  ReturnValue : String;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    ReturnValue := Ctx.GetType(Self.ClassType).GetFullName;
+    CheckEquals(Self.QualifiedClassName, ReturnValue, 'ReturnValue = Self.QualifiedClassName');
+
+    ReturnValue := Ctx.GetType(TDummyClass).GetFullName;
+    CheckEquals(TDummyClass.ClassName, ReturnValue, 'ReturnValue = TDummyClass.ClassName');
+  finally
+    Ctx.Free;
+  end;
+end;
+
+procedure TestTRttiTypeHelper.TestGetMethod;
+var
+  Ctx : TRttiContext;
+  ReturnValue : TRttiMethod;
+begin
+  Ctx := TRttiContext.Create;
+  try
+    ReturnValue := Ctx.GetType(Self.ClassType).GetMethod(@TestTRttiTypeHelper.TestGetMethod);
+
+    CheckTrue(Assigned(ReturnValue), 'CheckTrue::Assigned(ReturnValue)');
+    CheckEquals('TestGetMethod', ReturnValue.Name, 'ReturnValue.Name = TestGetMethod');
+  finally
+    Ctx.Free;
+  end;
+end;
+
 procedure TestTRttiTypeHelper.TestIsArray;
 var
   Ctx : TRttiContext;
@@ -552,6 +710,40 @@ begin
   CheckTrue(PTypeInfo(TypeInfo(RawByteString)).Kind.IsString, 'CheckTrue::RawByteString');
 end;
 
+{ TestTVarRecHelper }
+
+procedure TestTVarRecHelper.TestToString;
+const
+  BOOL_TEST = True;
+  INT_TEST = 777;
+
+  STR_ANSI = AnsiString('AnsiString');
+  STR_DEFAULT = String('String');
+  STR_SHORT : String[11] = 'ShortString';
+  STR_UNICODE = UnicodeString('UnicodeString');
+  STR_WIDE = WideString('WideString');
+
+type
+  TVarArgProc = reference to procedure (const Args : array of const);
+var
+  P : TVarArgProc;
+begin
+  P :=
+    procedure (const Args : array of const)
+    begin
+      CheckTrue(Args[0].ToString = BoolToStr(BOOL_TEST), 'Args[0] = BOOL_TEST');
+      CheckTrue(Args[1].ToString = INT_TEST.ToString,    'Args[1] = INT_TEST');
+      CheckTrue(Args[2].ToString = STR_ANSI,             'Args[2] = STR_ANSI');
+      CheckTrue(Args[3].ToString = STR_DEFAULT,          'Args[3] = STR_DEFAULT');
+      CheckTrue(Args[4].ToString = String(STR_SHORT),    'Args[4] = STR_SHORT');
+      CheckTrue(Args[5].ToString = STR_UNICODE,          'Args[5] = STR_UNICODE');
+      CheckTrue(Args[6].ToString = STR_WIDE,             'Args[6] = STR_WIDE');
+      CheckTrue(Args[7].ToString = sLineBreak,           'Args[7] = sLineBreak');
+    end;
+
+  P([BOOL_TEST, INT_TEST, STR_ANSI, STR_DEFAULT, STR_SHORT, STR_UNICODE, STR_WIDE, sLineBreak]);
+end;
+
 initialization
   // Register any test cases with the test runner
   RegisterTest(TestFIToolkitCommonsUtils.Suite);
@@ -561,5 +753,6 @@ initialization
   RegisterTest(TestTRttiTypeHelper.Suite);
   RegisterTest(TestTTypeInfoHelper.Suite);
   RegisterTest(TestTTypeKindHelper.Suite);
+  RegisterTest(TestTVarRecHelper.Suite);
 
 end.
