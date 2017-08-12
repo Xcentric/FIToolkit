@@ -1435,6 +1435,9 @@ var
       lmFatal:
         CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescFatal),
           'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescFatal]);
+      lmExtreme:
+        CheckTrue(SUTAsClass<TTestTextOutput>.LastWrittenLine.Contains(RSPTOMsgTypeDescExtreme),
+          'CheckTrue::LastWrittenLine.Contains(%s)', [RSPTOMsgTypeDescExtreme]);
     else
       Fail('Unhandled log message type.');
     end;

@@ -22,7 +22,7 @@ const
   { Common consts }
 
   ARR_MSGTYPE_TO_MSGSEVERITY_MAPPING : array [TLogMsgType] of TLogMsgSeverity = (
-    SEVERITY_NONE, SEVERITY_DEBUG, SEVERITY_INFO, SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL
+    SEVERITY_NONE, SEVERITY_DEBUG, SEVERITY_INFO, SEVERITY_WARNING, SEVERITY_ERROR, SEVERITY_FATAL, SEVERITY_MAX
   );
 
   { Plain text output }
@@ -40,6 +40,7 @@ resourcestring
   RSPTOMsgTypeDescWarning = '(WARNING) ';
   RSPTOMsgTypeDescError   = '( ERROR ) ';
   RSPTOMsgTypeDescFatal   = '( FATAL ) ';
+  RSPTOMsgTypeDescExtreme = '(EXTREME) ';
 
   RSPTOSectionBeginningPrefix = '   -> ';
   RSPTOSectionEndingPrefix = '   <- ';

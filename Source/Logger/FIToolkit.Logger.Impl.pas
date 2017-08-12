@@ -1433,7 +1433,8 @@ begin
     TLogMsgTypeDescription.Create(lmInfo,    RSPTOMsgTypeDescInfo),
     TLogMsgTypeDescription.Create(lmWarning, RSPTOMsgTypeDescWarning),
     TLogMsgTypeDescription.Create(lmError,   RSPTOMsgTypeDescError),
-    TLogMsgTypeDescription.Create(lmFatal,   RSPTOMsgTypeDescFatal)
+    TLogMsgTypeDescription.Create(lmFatal,   RSPTOMsgTypeDescFatal),
+    TLogMsgTypeDescription.Create(lmExtreme, RSPTOMsgTypeDescExtreme)
   ]);
 end;
 

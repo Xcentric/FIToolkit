@@ -15,7 +15,11 @@ type
 
   TLogMsgSeverity = type Word;
 
-  TLogMsgType = (lmNone, lmDebug, lmInfo, lmWarning, lmError, lmFatal);
+  TLogMsgType = (
+    lmNone,     // lower bound
+    lmDebug, lmInfo, lmWarning, lmError, lmFatal,
+    lmExtreme   // upper bound
+  );
 
   TLogMsgTypeDescription = TPair<TLogMsgType, String>;
 
