@@ -76,6 +76,7 @@ resourcestring
 
   { Common strings }
 
+  RSAcceptableMessageCountThreshold = 'Порог допустимого кол-ва сообщений статического анализа: %d';
   RSConfigWasGenerated = 'Файл конфигурации был сгенерирован.';
   RSEditConfigManually = 'Рекомендуется вручную отредактировать файл конфигурации.';
   RSHelpSuggestion = 'Для получения помощи используйте "%s".';

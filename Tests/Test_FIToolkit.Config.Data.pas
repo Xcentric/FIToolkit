@@ -202,6 +202,17 @@ begin
     'CheckException::ECDInputFileNotFound'
   );
 
+  { Check validation - invalid message count threshold }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.NonZeroExitCodeMsgCount := -1;
+    end,
+    ECDInvalidNonZeroExitCodeMsgCount,
+    'CheckException::ECDInvalidNonZeroExitCodeMsgCount'
+  );
+
   { Check validation - invalid output directory }
 
   CheckException(
@@ -252,6 +263,7 @@ begin
         ExcludeUnitPatterns := [REGEX_VALID1, REGEX_VALID2];
         FixInsightExe := ParamStr(0);
         InputFileName := ParamStr(0);
+        NonZeroExitCodeMsgCount := 1;
         OutputDirectory := ExtractFileDir(ParamStr(0));
         OutputFileName := ExtractFileName(ParamStr(0));
         TempDirectory := ExtractFileDir(ParamStr(0));
