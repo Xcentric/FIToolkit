@@ -46,7 +46,9 @@ type
 
   TCLIOptions = class (TList<TCLIOption>)
     public
-      function AddUnique(const Value : TCLIOption; IgnoreCase : Boolean) : Integer;
+      function ToString : String; override; final;
+    public
+      function AddUnique(Value : TCLIOption; IgnoreCase : Boolean) : Integer;
       function Contains(const OptionName : String; IgnoreCase : Boolean) : Boolean; overload;
       function Find(const OptionName : String; out Value : TCLIOption; IgnoreCase : Boolean) : Boolean;
   end;
@@ -156,7 +158,7 @@ end;
 
 { TCLIOptions }
 
-function TCLIOptions.AddUnique(const Value : TCLIOption; IgnoreCase : Boolean) : Integer;
+function TCLIOptions.AddUnique(Value : TCLIOption; IgnoreCase : Boolean) : Integer;
 var
   Option : TCLIOption;
 begin
@@ -185,6 +187,18 @@ begin
       Value := Option;
       Exit(True);
     end;
+end;
+
+function TCLIOptions.ToString : String;
+var
+  Option : TCLIOption;
+begin
+  Result := String.Empty;
+
+  for Option in Self do
+    Result := Result + Option + STR_CLI_OPTIONS_DELIMITER;
+
+  Result := Result.TrimRight;
 end;
 
 end.

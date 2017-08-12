@@ -42,8 +42,9 @@ type
       procedure SetProjectFileName(const Value : TFileName);
       procedure SetSettingsFileName(const Value : TFileName);
     public
+      function ToString : String; override; final;
+    public
       procedure Assign(Source : TFixInsightOptions; CheckValid : Boolean);
-      function  ToString : String; override; final;
 
       [FixInsightParam(STR_CFG_VALUE_ARR_DELIM_DEFAULT), DefaultCompilerDefines]
       property CompilerDefines : TStringDynArray read FCompilerDefines write FCompilerDefines;

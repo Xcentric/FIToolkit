@@ -27,7 +27,7 @@ type
 
       procedure AddRange(const Values : array of TFixInsightMessage);
       procedure BeginUpdate;
-      function  Contains(const Value : TFixInsightMessage) : Boolean;
+      function  Contains(Value : TFixInsightMessage) : Boolean;
       procedure EndUpdate;
 
       property Sorted : Boolean read FSorted write SetSorted;
@@ -64,7 +64,7 @@ begin
     end;
 end;
 
-function TFixInsightMessages.Contains(const Value : TFixInsightMessage) : Boolean;
+function TFixInsightMessages.Contains(Value : TFixInsightMessage) : Boolean;
 var
   i : Integer;
 begin

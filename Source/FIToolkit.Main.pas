@@ -5,22 +5,27 @@ interface
 uses
   System.SysUtils, System.Types;
 
-  function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
-  function TerminateApplication(E : Exception) : Integer;
+type
+
+  TExitCode = type LongWord;
+
+  function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : TExitCode;
+  function TerminateApplication(E : Exception) : TExitCode;
 
 implementation
 
 uses
-  System.Classes, System.IOUtils, System.Math, System.Generics.Defaults,
+  System.Classes, System.IOUtils, System.Math, System.Generics.Defaults, System.Rtti,
   FIToolkit.ExecutionStates, FIToolkit.Exceptions, FIToolkit.Types, FIToolkit.Consts, FIToolkit.Utils,
   FIToolkit.Commons.FiniteStateMachine.FSM, //TODO: remove when "F2084 Internal Error: URW1175" fixed
   FIToolkit.Commons.StateMachine, FIToolkit.Commons.Utils,
   FIToolkit.CommandLine.Options, FIToolkit.CommandLine.Consts,
-  FIToolkit.Config.Manager;
+  FIToolkit.Config.Manager,
+  FIToolkit.Logger.Default;
 
 type
 
-  TFIToolkit = class sealed
+  TFIToolkit = class sealed (TLoggable)
     private
       type
         //TODO: replace when "F2084 Internal Error: URW1175" fixed
@@ -38,13 +43,13 @@ type
     private
       FNoExitBehavior : TNoExitBehavior;
 
-      procedure PrintTotalDuration;
+      procedure ActualizeExitCode(var CurrentCode : TExitCode);
       procedure ProcessOptions;
-      procedure UpdateExitCode(var AnExitCode : Integer);
 
-      // Application command implementations:
+      // Application commands implementation:
       procedure PrintHelp;
       procedure PrintVersion;
+      procedure SetLogFile;
       procedure SetNoExitBehavior;
     public
       class procedure PrintAbout;
@@ -53,16 +58,18 @@ type
       constructor Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
       destructor Destroy; override;
 
-      function Run : Integer;
+      function Run : TExitCode;
   end;
 
 { Utils }
 
+function _IsInDebugMode : Boolean;
+begin
+  Result := FindCmdLineSwitch(STR_CMD_LINE_SWITCH_DEBUG, True);
+end;
+
 function _CanExit(Instance : TFIToolkit; E : Exception) : Boolean;
 begin
-  {$IFDEF DEBUG}
-  Result := False;
-  {$ELSE}
   if not Assigned(Instance) then
     Result := True
   else
@@ -79,31 +86,53 @@ begin
       raise AbortException;
     end;
   end;
-  {$ENDIF}
 end;
 
-procedure _OnException(E : Exception; out AnExitCode : Integer);
+procedure _OnException(E : Exception; out AnExitCode : TExitCode);
 begin
-  WriteLn(E.ToString(True), sLineBreak);
-  AnExitCode := INT_EC_ERROR_OCCURRED;
+  if Log.Enabled then
+    Log.Fatal(E.ToString(True) + sLineBreak)
+  else
+    PrintLn(E.ToString(True) + sLineBreak);
+
+  AnExitCode := UINT_EC_ERROR_OCCURRED;
 end;
 
-procedure _OnTerminate(const AnExitCode : Integer; CanExit : Boolean);
+procedure _OnTerminate(AnExitCode : TExitCode; CanExit : Boolean);
 begin
-  WriteLn(sLineBreak, Format(RSTerminatingWithExitCode, [AnExitCode]), sLineBreak);
+  PrintLn;
+
+  if not Log.Enabled then
+    PrintLn(Format(RSTerminatingWithExitCode, [AnExitCode]))
+  else
+    case AnExitCode of
+      UINT_EC_NO_ERROR:
+        Log.InfoFmt(RSTerminatingWithExitCode, [AnExitCode]);
+      UINT_EC_ERROR_OCCURRED:
+        Log.FatalFmt(RSTerminatingWithExitCode, [AnExitCode]);
+    else
+      Log.WarningFmt(RSTerminatingWithExitCode, [AnExitCode]);
+    end;
 
   if not CanExit then
+  begin
+    PrintLn;
     PressAnyKeyPrompt;
+  end;
 end;
 
-function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : Integer;
+{ Export }
+
+function RunApplication(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray) : TExitCode;
 var
   App : TFIToolkit;
 begin
+  InitConsoleLog(_IsInDebugMode);
+
   if Length(CmdLineOptions) = 0 then
   begin
     TFIToolkit.PrintHelpSuggestion(FullExePath);
-    Result := INT_EC_ERROR_OCCURRED;
+    Result := UINT_EC_ERROR_OCCURRED;
     _OnTerminate(Result, _CanExit(nil, nil));
     Exit;
   end;
@@ -127,17 +156,29 @@ begin
   end;
 end;
 
-function TerminateApplication(E : Exception) : Integer;
+function TerminateApplication(E : Exception) : TExitCode;
 begin
   if Assigned(E) then
     _OnException(E, Result)
   else
-    Result := INT_EC_NO_ERROR;
+    Result := UINT_EC_NO_ERROR;
 
   _OnTerminate(Result, _CanExit(nil, E));
 end;
 
 { TFIToolkit }
+
+procedure TFIToolkit.ActualizeExitCode(var CurrentCode : TExitCode);
+begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.ActualizeExitCode, [CurrentCode]);
+
+  if FStateMachine.CurrentState = asFinal then
+    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
+      CurrentCode := UINT_EC_ANALYSIS_MESSAGES_FOUND;
+
+  Log.DebugFmt('CurrentCode = %d', [CurrentCode]);
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.ActualizeExitCode);
+end;
 
 constructor TFIToolkit.Create(const FullExePath : TFileName; const CmdLineOptions : TStringDynArray);
 begin
@@ -162,6 +203,8 @@ var
   sConfigOptionName : String;
   ConfigOption : TCLIOption;
 begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.InitConfig, [GenerateFlag]);
+
   sConfigOptionName := Iff.Get<String>(GenerateFlag, STR_CLI_OPTION_GENERATE_CONFIG, STR_CLI_OPTION_SET_CONFIG);
 
   if FOptions.Find(sConfigOptionName, ConfigOption, not IsCaseSensitiveCLIOption(sConfigOptionName)) and
@@ -169,6 +212,8 @@ begin
      (TFile.Exists(ConfigOption.Value) or GenerateFlag)
   then
     try
+      Log.DebugFmt('ConfigOption.Value = "%s"', [ConfigOption.Value]);
+
       FConfig := TConfigManager.Create(ConfigOption.Value, GenerateFlag, True)
     except
       if GenerateFlag then
@@ -177,22 +222,34 @@ begin
         Exception.RaiseOuterException(EErroneousConfigSpecified.Create);
     end
   else
+  begin
+    Log.DebugFmt('ConfigOption.Value = "%s"', [ConfigOption.Value]);
+
     raise ENoValidConfigSpecified.Create;
+  end;
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.InitConfig);
 end;
 
 procedure TFIToolkit.InitOptions(const CmdLineOptions : TStringDynArray);
 var
   S : String;
 begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.InitOptions, [String.Join(STR_CLI_OPTIONS_DELIMITER, CmdLineOptions)]);
+
   FOptions := TCLIOptions.Create;
   FOptions.Capacity := Length(CmdLineOptions);
 
   for S in CmdLineOptions do
     FOptions.AddUnique(S, not IsCaseSensitiveCLIOption(TCLIOption(S).Name));
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.InitOptions);
 end;
 
 procedure TFIToolkit.InitStateMachine;
-begin
+begin //FI:C101
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.InitStateMachine, []);
+
   FStateMachine := TStateMachine.Create(asInitial);
 
   { Common states }
@@ -201,18 +258,32 @@ begin
     .AddTransition(asInitial, asNoExitBehaviorSet, acSetNoExitBehavior,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
         SetNoExitBehavior;
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asHelpPrinted, acPrintHelp,
+    .AddTransitions([asInitial, asNoExitBehaviorSet], asLogFileSet, acSetLogFile,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
+        SetLogFile;
+      end
+    )
+    .AddTransitions(ARR_INITIAL_APPSTATES, asHelpPrinted, acPrintHelp,
+      procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
         PrintHelp;
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asVersionPrinted, acPrintVersion,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asVersionPrinted, acPrintVersion,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
         PrintVersion;
       end
     );
@@ -220,17 +291,20 @@ begin
   { Config states }
 
   FStateMachine
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigGenerated, acGenerateConfig,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asConfigGenerated, acGenerateConfig,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
         InitConfig(True);
-        WriteLn(RSConfigWasGenerated);
-        WriteLn(RSEditConfigManually);
+        Log.Info(RSConfigWasGenerated + sLineBreak + RSEditConfigManually);
       end
     )
-    .AddTransitions([asInitial, asNoExitBehaviorSet], asConfigSet, acSetConfig,
+    .AddTransitions(ARR_INITIAL_APPSTATES, asConfigSet, acSetConfig,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.DebugFmt('%s: %s → %s', [UsedCommand.ToString, PreviousState.ToString, CurrentState.ToString]);
+
         InitConfig(False);
       end
     );
@@ -238,11 +312,17 @@ begin
   { Execution states }
 
   FStateMachine.AddTransition(asConfigSet, asInitial, acStart);
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.InitStateMachine);
 end;
 
 class procedure TFIToolkit.PrintAbout;
 begin
-  WriteLn(RSApplicationAbout);
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.PrintAbout, []);
+
+  PrintLn(RSApplicationAbout);
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.PrintAbout);
 end;
 
 procedure TFIToolkit.PrintHelp;
@@ -250,41 +330,50 @@ var
   RS : TResourceStream;
   SL : TStringList;
 begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.PrintHelp, []);
+
   RS := TResourceStream.Create(HInstance, STR_RES_HELP, RT_RCDATA);
   try
     SL := TStringList.Create;
     try
       SL.LoadFromStream(RS, TEncoding.UTF8);
-      WriteLn(SL.Text);
+      PrintLn(SL.Text);
     finally
       SL.Free;
     end;
   finally
     RS.Free;
   end;
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.PrintHelp);
 end;
 
 class procedure TFIToolkit.PrintHelpSuggestion(const FullExePath : TFileName);
 begin
-  WriteLn(Format(RSHelpSuggestion,
-    [TPath.GetFileName(FullExePath) + ' ' + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
-end;
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.PrintHelpSuggestion, [FullExePath]);
 
-procedure TFIToolkit.PrintTotalDuration;
-begin
-  WriteLn(Format(RSTotalDuration, [String(FWorkflowState.TotalDuration)]));
+  PrintLn(Format(RSHelpSuggestion,
+    [TPath.GetFileName(FullExePath) + STR_CLI_OPTIONS_DELIMITER + STR_CLI_OPTION_PREFIX + STR_CLI_OPTION_HELP]));
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.PrintHelpSuggestion);
 end;
 
 procedure TFIToolkit.PrintVersion;
 begin
-  WriteLn(GetAppVersionInfo);
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.PrintVersion, []);
+
+  PrintLn(GetAppVersionInfo);
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.PrintVersion);
 end;
 
 procedure TFIToolkit.ProcessOptions;
 var
-  O : TCLIOption;
-  C : TApplicationCommand;
+  Opt : TCLIOption;
+  Cmd : TApplicationCommand;
 begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.ProcessOptions, []);
+
   FOptions.Sort(TComparer<TCLIOption>.Construct(
     function (const Left, Right : TCLIOption) : Integer
     begin
@@ -295,14 +384,24 @@ begin
     end
   ));
 
-  for O in FOptions do
-    if TryCLIOptionToAppCommand(O.Name, not IsCaseSensitiveCLIOption(O.Name), C) then
-      FStateMachine.Execute(C);
+  Log.Debug('FOptions.ToString = ' + FOptions.ToString);
+
+  for Opt in FOptions do
+    if TryCLIOptionToAppCommand(Opt.Name, not IsCaseSensitiveCLIOption(Opt.Name), Cmd) then
+    begin
+      Log.DebugFmt('Opt.Name = "%s" → Cmd = "%s"', [Opt.Name, Cmd.ToString]);
+
+      FStateMachine.Execute(Cmd);
+    end;
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.ProcessOptions);
 end;
 
-function TFIToolkit.Run : Integer;
+function TFIToolkit.Run : TExitCode;
 begin
-  Result := INT_EC_NO_ERROR;
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.Run, []);
+
+  Result := UINT_EC_NO_ERROR;
 
   try
     ProcessOptions;
@@ -310,13 +409,17 @@ begin
     Exception.RaiseOuterException(ECLIOptionsProcessingFailed.Create);
   end;
 
+  Log.Debug('FStateMachine.CurrentState = ' + FStateMachine.CurrentState.ToString);
+
   if not (FStateMachine.CurrentState in SET_FINAL_APPSTATES) then
     try
       if not Assigned(FConfig) then
         raise ENoValidConfigSpecified.Create;
 
+      Log.EnterSection(RSPreparingWorkflow);
       FWorkflowState := TWorkflowStateHolder.Create(FConfig.ConfigData);
       TExecutiveTransitionsProvider.PrepareWorkflow(FStateMachine, FWorkflowState);
+      Log.LeaveSection(RSWorkflowPrepared);
 
       FStateMachine
         .Execute(acStart)
@@ -329,11 +432,32 @@ begin
         .Execute(acMakeArchive)
         .Execute(acTerminate);
 
-      UpdateExitCode(Result);
-      PrintTotalDuration;
+      Log.InfoFmt(RSTotalDuration, [String(FWorkflowState.TotalDuration)]);
+      Log.InfoFmt(RSTotalMessages, [FWorkflowState.TotalMessages]);
+
+      ActualizeExitCode(Result);
     except
       Exception.RaiseOuterException(EApplicationExecutionFailed.Create);
     end;
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.Run, Result);
+end;
+
+procedure TFIToolkit.SetLogFile;
+var
+  LogFileOption : TCLIOption;
+begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.SetLogFile, []);
+
+  if FOptions.Find(STR_CLI_OPTION_LOG_FILE, LogFileOption, not IsCaseSensitiveCLIOption(STR_CLI_OPTION_LOG_FILE)) then
+  begin
+    Log.DebugFmt('LogFileOption.Value = "%s"', [LogFileOption.Value]);
+
+    if TPath.IsApplicableFileName(LogFileOption.Value) then
+      InitFileLog(LogFileOption.Value);
+  end;
+
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.SetLogFile);
 end;
 
 procedure TFIToolkit.SetNoExitBehavior;
@@ -341,17 +465,19 @@ var
   NoExitOption : TCLIOption;
   iValue : Integer;
 begin
+  Log.EnterMethod(TFIToolkit, @TFIToolkit.SetNoExitBehavior, []);
+
   if FOptions.Find(STR_CLI_OPTION_NO_EXIT, NoExitOption, not IsCaseSensitiveCLIOption(STR_CLI_OPTION_NO_EXIT)) then
+  begin
+    Log.DebugFmt('NoExitOption.Value = "%s"', [NoExitOption.Value]);
+
     if Integer.TryParse(NoExitOption.Value, iValue) then
       if InRange(iValue, Integer(Low(TNoExitBehavior)), Integer(High(TNoExitBehavior))) then
         FNoExitBehavior := TNoExitBehavior(iValue);
-end;
+  end;
 
-procedure TFIToolkit.UpdateExitCode(var AnExitCode : Integer);
-begin
-  if FStateMachine.CurrentState = asFinal then
-    if FConfig.ConfigData.UseBadExitCode and (FWorkflowState.TotalMessages > 0) then
-      AnExitCode := INT_EC_ANALYSIS_MESSAGES_FOUND;
+  Log.DebugVal(['FNoExitBehavior = ', TValue.From<TNoExitBehavior>(FNoExitBehavior)]);
+  Log.LeaveMethod(TFIToolkit, @TFIToolkit.SetNoExitBehavior);
 end;
 
 end.
