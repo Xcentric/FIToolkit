@@ -46,7 +46,9 @@ implementation
 
 uses
   System.IOUtils, System.Classes, Winapi.Windows,
-  FIToolkit.Commons.Utils, FIToolkit.CommandLine.Types, FIToolkit.Runner.Exceptions, FIToolkit.Runner.Consts;
+  FIToolkit.Commons.Utils, FIToolkit.CommandLine.Types,
+  FIToolkit.Runner.Exceptions, FIToolkit.Runner.Consts,
+  FIToolkit.Logger.Default;
 
 { TTaskRunner }
 
@@ -84,6 +86,8 @@ begin
       FillChar(SI, SizeOf(TStartupInfo), 0);
       SI.cb := SizeOf(TStartupInfo);
       SI.wShowWindow := SW_HIDE;
+
+      Log.Debug('sCmdLine = ' + sCmdLine);
 
       if CreateProcess(PChar(FExecutable), PChar(sCmdLine), nil, nil, False, CREATE_NO_WINDOW, nil, nil, SI, PI) then
         try
