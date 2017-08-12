@@ -173,11 +173,13 @@ begin
   Log.EnterMethod(TFIToolkit, @TFIToolkit.ActualizeExitCode, [CurrentCode]);
 
   if FStateMachine.CurrentState = asFinal then
-    if
-      (FConfig.ConfigData.NonZeroExitCodeMsgCount > 0) and
-      (FWorkflowState.TotalMessages >= FConfig.ConfigData.NonZeroExitCodeMsgCount)
-    then
-      CurrentCode := UINT_EC_ANALYSIS_MESSAGES_FOUND;
+    if FConfig.ConfigData.NonZeroExitCodeMsgCount > 0 then
+    begin
+      Log.InfoFmt(RSAcceptableMessageCountThreshold, [FConfig.ConfigData.NonZeroExitCodeMsgCount]);
+
+      if FWorkflowState.TotalMessages >= FConfig.ConfigData.NonZeroExitCodeMsgCount then
+        CurrentCode := UINT_EC_ANALYSIS_MESSAGES_FOUND;
+    end;
 
   Log.DebugFmt('CurrentCode = %d', [CurrentCode]);
   Log.LeaveMethod(TFIToolkit, @TFIToolkit.ActualizeExitCode);
