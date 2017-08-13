@@ -106,6 +106,17 @@ begin
     'CheckException::ECDInputFileNotFound'
   );
 
+  { Check validation - zero message count threshold }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.NonZeroExitCodeMsgCount := 0;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
   { Check validation - empty output directory }
 
   CheckException(
