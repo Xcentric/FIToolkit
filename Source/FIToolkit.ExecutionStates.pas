@@ -57,10 +57,11 @@ type
 implementation
 
 uses
-  System.IOUtils, System.RegularExpressions, System.Zip,
+  System.IOUtils, System.RegularExpressions, System.Zip, System.Rtti,
   FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Consts,
   FIToolkit.Commons.Utils,
-  FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML;
+  FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML,
+  FIToolkit.Logger.Default;
 
 type
 
@@ -130,12 +131,19 @@ begin //FI:C101
   StateMachine
     .AddTransition(asInitial, asProjectsExtracted, acExtractProjects,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
+      var
+        LInputFileType : TInputFileType;
       begin
+        Log.EnterSection(RSExtractingProjects);
+
         with StateHolder do
         begin
           FStartTime := Now;
+          LInputFileType := GetInputFileType(FConfigData.InputFileName);
 
-          case GetInputFileType(FConfigData.InputFileName) of
+          Log.DebugVal(['LInputFileType = ', TValue.From<TInputFileType>(LInputFileType)]);
+
+          case LInputFileType of
             iftDPR, iftDPK:
               begin
                 FProjects := [FConfigData.InputFileName];
@@ -155,6 +163,8 @@ begin //FI:C101
             raise EUnknownInputFileType.Create;
           end;
         end;
+
+        Log.LeaveSection(RSProjectsExtracted);
       end
     )
     .AddTransition(asProjectsExtracted, asProjectsExcluded, acExcludeProjects,
@@ -163,6 +173,8 @@ begin //FI:C101
         LProjects : TList<TFileName>;
         sPattern, sProject : String;
       begin
+        Log.EnterSection(RSExcludingProjects);
+
         LProjects := TList<TFileName>.Create;
         try
           with StateHolder do
@@ -172,7 +184,10 @@ begin //FI:C101
             for sPattern in FConfigData.ExcludeProjectPatterns do
               for sProject in FProjects do
                 if TRegEx.IsMatch(sProject, sPattern, [roIgnoreCase]) then
+                begin
                   LProjects.Remove(sProject);
+                  Log.InfoFmt(RSProjectExcluded, [sProject]);
+                end;
 
             if LProjects.Count < Length(FProjects) then
               FProjects := LProjects.ToArray;
@@ -180,17 +195,25 @@ begin //FI:C101
         finally
           LProjects.Free;
         end;
+
+        Log.LeaveSection(RSProjectsExcluded);
       end
     )
     .AddTransition(asProjectsExcluded, asFixInsightRan, acRunFixInsight,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       begin
+        Log.EnterSection(RSRunningFixInsight);
+
         with StateHolder do
         begin
+          Log.DebugFmt('Length(FProjects) = %d', [Length(FProjects)]);
+
           FTaskManager := TTaskManager.Create(FConfigData.FixInsightExe, FConfigData.FixInsightOptions,
             FProjects, FConfigData.TempDirectory);
           FReports := FTaskManager.RunAndGetOutput;
         end;
+
+        Log.LeaveSection(RSFixInsightRan);
       end
     )
     .AddTransition(asFixInsightRan, asReportsParsed, acParseReports,
@@ -199,6 +222,9 @@ begin //FI:C101
         R : TPair<TFileName, TFileName>;
         i : Integer;
       begin
+        Log.EnterSection(RSParsingReports);
+        Log.DebugVal(['FConfigData.Deduplicate = ', StateHolder.FConfigData.Deduplicate]);
+
         with StateHolder do
           for R in FReports do
             if TFile.Exists(R.Value) then
@@ -220,18 +246,27 @@ begin //FI:C101
               FMessages.Add(R.Key, FFixInsightXMLParser.Messages.ToArray);
             end
             else
+            begin
               FMessages.Add(R.Key, nil);
+              Log.ErrorFmt(RSReportNotFound, [R.Key]);
+            end;
+
+        Log.LeaveSection(RSReportsParsed);
       end
     )
     .AddTransition(asReportsParsed, asUnitsExcluded, acExcludeUnits,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
       var
         LProjectMessages : TFixInsightMessages;
+        LExcludedUnits : TList<TFileName>;
         sPattern : String;
         F : TFileName;
         Msg : TFixInsightMessage;
       begin
+        Log.EnterSection(RSExcludingUnits);
+
         LProjectMessages := TFixInsightMessages.Create;
+        LExcludedUnits := TList<TFileName>.Create;
         try
           with StateHolder do
             for sPattern in FConfigData.ExcludeUnitPatterns do
@@ -243,14 +278,25 @@ begin //FI:C101
 
                   for Msg in FMessages[F] do
                     if TRegEx.IsMatch(Msg.FileName, sPattern, [roIgnoreCase]) then
+                    begin
                       LProjectMessages.Remove(Msg);
+
+                      if not LExcludedUnits.Contains(Msg.FileName) then
+                        LExcludedUnits.Add(Msg.FileName);
+                    end;
 
                   if LProjectMessages.Count < Length(FMessages[F]) then
                     FMessages[F] := LProjectMessages.ToArray;
                 end;
+
+          for F in LExcludedUnits do
+            Log.InfoFmt(RSUnitExcluded, [F]);
         finally
+          LExcludedUnits.Free;
           LProjectMessages.Free;
         end;
+
+        Log.LeaveSection(RSUnitsExcluded);
       end
     )
     .AddTransition(asUnitsExcluded, asReportBuilt, acBuildReport,
@@ -259,6 +305,8 @@ begin //FI:C101
         F : TFileName;
         Msg : TFixInsightMessage;
       begin
+        Log.EnterSection(RSBuildingReport);
+
         with StateHolder do
         begin
           FReportBuilder.BeginReport;
@@ -283,6 +331,8 @@ begin //FI:C101
           FReportBuilder.EndReport;
           FReportOutput.Close;
         end;
+
+        Log.LeaveSection(RSReportBuilt);
       end
     )
     .AddTransition(asReportBuilt, asArchiveMade, acMakeArchive,
@@ -291,10 +341,16 @@ begin //FI:C101
         sArchiveFileName : TFileName;
         ZF : TZipFile;
       begin
+        Log.EnterSection(RSMakingArchive);
+        Log.DebugVal(['FConfigData.MakeArchive = ', StateHolder.FConfigData.MakeArchive]);
+
         with StateHolder do
           if FConfigData.MakeArchive then
           begin
             sArchiveFileName := FReportFileName + STR_ARCHIVE_FILE_EXT;
+
+            Log.DebugFmt('sArchiveFileName = "%s"', [sArchiveFileName]);
+            Log.DebugVal(['TFile.Exists(sArchiveFileName) = ', TFile.Exists(sArchiveFileName)]);
 
             if TFile.Exists(sArchiveFileName) then
               TFile.Delete(sArchiveFileName);
@@ -310,6 +366,8 @@ begin //FI:C101
 
             DeleteFile(FReportFileName);
           end;
+
+        Log.LeaveSection(RSArchiveMade);
       end
     )
     .AddTransition(asArchiveMade, asFinal, acTerminate,
@@ -317,6 +375,8 @@ begin //FI:C101
       var
         R : TPair<TFileName, TFileName>;
       begin
+        Log.EnterSection(RSTerminating);
+
         with StateHolder do
         begin
           for R in FReports do
@@ -327,6 +387,8 @@ begin //FI:C101
 
           FTotalDuration := TTimeSpan.Subtract(Now, FStartTime);
         end;
+
+        Log.LeaveSection(RSTerminated);
       end
     );
 end;

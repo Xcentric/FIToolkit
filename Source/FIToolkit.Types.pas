@@ -6,13 +6,13 @@ type
 
   TApplicationCommand = (
     acStart,
-    acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExitBehavior,
+    acPrintHelp, acPrintVersion, acGenerateConfig, acSetConfig, acSetNoExitBehavior, acSetLogFile,
     acExtractProjects, acExcludeProjects, acRunFixInsight, acParseReports, acExcludeUnits, acBuildReport, acMakeArchive,
     acTerminate);
 
   TApplicationState = (
     asInitial,
-    asHelpPrinted, asVersionPrinted, asConfigGenerated, asConfigSet, asNoExitBehaviorSet,
+    asHelpPrinted, asVersionPrinted, asConfigGenerated, asConfigSet, asNoExitBehaviorSet, asLogFileSet,
     asProjectsExtracted, asProjectsExcluded, asFixInsightRan, asReportsParsed, asUnitsExcluded, asReportBuilt, asArchiveMade,
     asFinal);
 

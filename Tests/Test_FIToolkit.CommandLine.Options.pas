@@ -65,6 +65,7 @@ type
     procedure TestAddUnique;
     procedure TestContains;
     procedure TestFind;
+    procedure TestToString;
   end;
 
 implementation
@@ -285,6 +286,17 @@ begin
   CheckEquals(STR_OPTION1_NAME, Opt.Name, '(Opt.Name = STR_OPTION1_NAME)::<case sensitive>');
   CheckFalse(FCLIOptions.Find(String(STR_OPTION2_NAME).ToLower, Opt, False),
     'CheckFalse::<case sensitive (%s vs %s)>', [STR_OPTION2_NAME, STR_OPTION2]);
+end;
+
+procedure TestTCLIOptions.TestToString;
+var
+  sOptions : String;
+begin
+  sOptions := STR_OPTION1 + STR_CLI_OPTIONS_DELIMITER +
+    STR_CLI_OPTION_PREFIX + STR_OPTION2_NAME + STR_CLI_OPTION_DELIMITER +
+    TCLIOptionString.CHR_QUOTE + STR_OPTION2_VALUE + TCLIOptionString.CHR_QUOTE;
+
+  CheckEquals(sOptions, FCLIOptions.ToString, 'FCLIOptions.ToString = sOptions');
 end;
 
 initialization

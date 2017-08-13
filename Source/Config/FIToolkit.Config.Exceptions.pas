@@ -28,6 +28,7 @@ type
   ECDInputFileNotFound = class (EConfigDataException);
   ECDInvalidExcludeProjectPattern = class (EConfigDataException);
   ECDInvalidExcludeUnitPattern = class (EConfigDataException);
+  ECDInvalidNonZeroExitCodeMsgCount = class (EConfigDataException);
   ECDInvalidOutputFileName = class (EConfigDataException);
   ECDOutputDirectoryNotFound = class (EConfigDataException);
   ECDSnippetSizeOutOfRange = class (EConfigDataException);
@@ -50,6 +51,7 @@ initialization
   RegisterExceptionMessage(ECDInputFileNotFound, RSCDInputFileNotFound);
   RegisterExceptionMessage(ECDInvalidExcludeProjectPattern, RSCDInvalidExcludeProjectPattern);
   RegisterExceptionMessage(ECDInvalidExcludeUnitPattern, RSCDInvalidExcludeUnitPattern);
+  RegisterExceptionMessage(ECDInvalidNonZeroExitCodeMsgCount, RSCDInvalidNonZeroExitCodeMsgCount);
   RegisterExceptionMessage(ECDInvalidOutputFileName, RSCDInvalidOutputFileName);
   RegisterExceptionMessage(ECDOutputDirectoryNotFound, RSCDOutputDirectoryNotFound);
   RegisterExceptionMessage(ECDSnippetSizeOutOfRange, RSCDSnippetSizeOutOfRange);

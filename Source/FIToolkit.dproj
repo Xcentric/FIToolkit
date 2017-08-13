@@ -42,12 +42,12 @@
     <PropertyGroup Condition="'$(Base)'!=''">
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <BRCC_OutputDir>..\Bin\$(Platform)\$(Config)</BRCC_OutputDir>
-        <BRCC_IncludePath>..\Bin\$(Platform)\$(Config);$(BRCC_IncludePath)</BRCC_IncludePath>
+        <BRCC_OutputDir>..\Bin\Project\$(Platform)\$(Config)</BRCC_OutputDir>
+        <BRCC_IncludePath>..\Bin\Project\$(Platform)\$(Config);$(BRCC_IncludePath)</BRCC_IncludePath>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>FIToolkit</SanitizedProjectName>
-        <DCC_DcuOutput>..\Bin\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>..\Bin\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_DcuOutput>..\Bin\Project\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_ExeOutput>..\Bin\Project\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -55,9 +55,9 @@
         <DCC_K>false</DCC_K>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>2</VerInfo_MinorVer>
+        <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=;FileDescription=A set of tools for TMS Software® FixInsight™;FileVersion=0.2.1.0;InternalName=;LegalCopyright=© 2017 Xcentric &lt;true.xcentric@gmail.com&gt;;LegalTrademarks=;OriginalFilename=FIToolkit.exe;ProductName=FIToolkit;ProductVersion=0.2;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=A set of tools for TMS Software® FixInsight™;FileVersion=0.3.1.0;InternalName=;LegalCopyright=© 2017 Xcentric &lt;true.xcentric@gmail.com&gt;;LegalTrademarks=;OriginalFilename=FIToolkit.exe;ProductName=FIToolkit;ProductVersion=0.3;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -126,6 +126,11 @@
         <DCCReference Include="Config\FIToolkit.Config.TypedDefaults.pas"/>
         <DCCReference Include="Config\FIToolkit.Config.Types.pas"/>
         <DCCReference Include="Logger\FIToolkit.Logger.Consts.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Default.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Impl.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Intf.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Types.pas"/>
+        <DCCReference Include="Logger\FIToolkit.Logger.Utils.pas"/>
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Consts.pas"/>
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Exceptions.pas"/>
         <DCCReference Include="ProjectGroupParser\FIToolkit.ProjectGroupParser.Parser.pas"/>

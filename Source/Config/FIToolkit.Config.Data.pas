@@ -14,11 +14,11 @@ type
   DefaultExcludeUnitPatterns = class (TDefaultStringArrayValue);    //FI:C104
   DefaultFixInsightExe = class (TDefaultFileNameValue);             //FI:C104
   DefaultMakeArchive = class (TDefaultBooleanValue);                //FI:C104
+  DefaultNonZeroExitCodeMsgCount = class (TDefaultIntegerValue);    //FI:C104
   DefaultOutputDirectory = class (TDefaultStringValue);             //FI:C104
   DefaultOutputFileName = class (TDefaultStringValue);              //FI:C104
   DefaultSnippetSize = class (TDefaultIntegerValue);                //FI:C104
   DefaultTempDirectory = class (TDefaultStringValue);               //FI:C104
-  DefaultUseBadExitCode = class (TDefaultBooleanValue);             //FI:C104
 
   TConfigData = class sealed
     strict private
@@ -29,11 +29,11 @@ type
       FFixInsightExe : TAssignableFileName;
       FInputFileName : TAssignableFileName;
       FMakeArchive : Boolean;
+      FNonZeroExitCodeMsgCount : Integer;
       FOutputDirectory : TAssignableString;
       FOutputFileName : TAssignableString;
       FSnippetSize : Integer;
       FTempDirectory : TAssignableString;
-      FUseBadExitCode : Boolean;
       FValidate : Boolean;
 
       FFixInsightOptions : TFixInsightOptions;
@@ -43,6 +43,7 @@ type
       procedure ValidateExcludeUnitPatterns(const Value : TStringDynArray);
       procedure ValidateFixInsightExe(const Value : TFileName);
       procedure ValidateInputFileName(const Value : TFileName);
+      procedure ValidateNonZeroExitCodeMsgCount(Value : Integer);
       procedure ValidateOutputDirectory(const Value : String);
       procedure ValidateOutputFileName(const Value : String);
       procedure ValidateSnippetSize(Value : Integer);
@@ -59,6 +60,7 @@ type
       procedure SetExcludeUnitPatterns(const Value : TStringDynArray);
       procedure SetFixInsightExe(Value : TFileName);
       procedure SetInputFileName(Value : TFileName);
+      procedure SetNonZeroExitCodeMsgCount(Value : Integer);
       procedure SetOutputDirectory(Value : String);
       procedure SetOutputFileName(const Value : String);
       procedure SetSnippetSize(Value : Integer);
@@ -83,6 +85,8 @@ type
       property InputFileName : TFileName read GetInputFileName write SetInputFileName;
       [FIToolkitParam, DefaultMakeArchive(DEF_CD_BOOL_MAKE_ARCHIVE)]
       property MakeArchive : Boolean read FMakeArchive write FMakeArchive;
+      [FIToolkitParam, DefaultNonZeroExitCodeMsgCount(DEF_CD_INT_NONZERO_EXIT_CODE_MSG_COUNT)]
+      property NonZeroExitCodeMsgCount : Integer read FNonZeroExitCodeMsgCount write SetNonZeroExitCodeMsgCount;
       [FIToolkitParam, DefaultOutputDirectory]
       property OutputDirectory : String read GetOutputDirectory write SetOutputDirectory;
       [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
@@ -91,8 +95,6 @@ type
       property SnippetSize : Integer read FSnippetSize write SetSnippetSize;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read GetTempDirectory write SetTempDirectory;
-      [FIToolkitParam, DefaultUseBadExitCode(DEF_CD_BOOL_USE_BAD_EXIT_CODE)]
-      property UseBadExitCode : Boolean read FUseBadExitCode write FUseBadExitCode;
 
       property Validate : Boolean read FValidate write FValidate;
   end;
@@ -204,6 +206,14 @@ begin
   end;
 end;
 
+procedure TConfigData.SetNonZeroExitCodeMsgCount(Value : Integer);
+begin
+  if FValidate then
+    ValidateNonZeroExitCodeMsgCount(Value);
+
+  FNonZeroExitCodeMsgCount := Value;
+end;
+
 procedure TConfigData.SetOutputDirectory(Value : String);
 begin
   Value := TPath.ExpandIfNotExists(Value);
@@ -289,6 +299,12 @@ procedure TConfigData.ValidateInputFileName(const Value : TFileName);
 begin
   if not TFile.Exists(Value) then
     raise ECDInputFileNotFound.Create;
+end;
+
+procedure TConfigData.ValidateNonZeroExitCodeMsgCount(Value : Integer);
+begin
+  if Value < 0 then
+    raise ECDInvalidNonZeroExitCodeMsgCount.Create;
 end;
 
 procedure TConfigData.ValidateOutputDirectory(const Value : String);

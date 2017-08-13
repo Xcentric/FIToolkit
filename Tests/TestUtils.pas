@@ -8,10 +8,26 @@ uses
 
 type
 
+  TInterfaceTestCase<I : IInterface> = class abstract (TGenericTestCase)
+    strict private
+      FSUT : I;
+    strict protected
+      function SUTAsClass<T : class> : T;
+
+      property SUT : I read FSUT;
+    protected
+      procedure DoSetUp; virtual;
+      procedure DoTearDown; virtual;
+      function  MakeSUT : I; virtual; abstract;
+    public
+      procedure SetUp; override; final;
+      procedure TearDown; override; final;
+  end;
+
   TTestCaseHelper = class helper for TTestCase
     private
       const
-        STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\';
+        STR_PROJECT_GROUP_DIR_RELATIVE_PATH = '..\..\..\..\';
     public
       procedure CheckAggregateException(const AProc : TProc; AExceptionClass : ExceptClass;
         const Msg : String = String.Empty);
@@ -30,12 +46,59 @@ type
       function  GetTestIniFileName : TFileName;
   end;
 
+  { Utils }
+
+  function LinesCount(const S : String) : Integer;
+
 implementation
 
 uses
   System.IOUtils, System.Threading,
   Winapi.Windows, Vcl.Dialogs,
   DUnitConsts;
+
+{ Utils }
+
+function LinesCount(const S : String) : Integer;
+begin
+  if S.IsEmpty then
+    Result := 0
+  else
+    Result := S.CountChar(#10) + 1;
+end;
+
+{ TInterfaceTestCase<I> }
+
+procedure TInterfaceTestCase<I>.DoSetUp;
+begin
+  {NOP}
+end;
+
+procedure TInterfaceTestCase<I>.DoTearDown;
+begin
+  {NOP}
+end;
+
+procedure TInterfaceTestCase<I>.SetUp;
+begin
+  FSUT := MakeSUT;
+  DoSetUp;
+end;
+
+function TInterfaceTestCase<I>.SUTAsClass<T> : T;
+begin
+  Result := nil;
+
+  if FSUT <> nil then
+    if TObject(IInterface(FSUT)).InheritsFrom(T) then
+      Result := TObject(IInterface(FSUT)) as T;
+end;
+
+procedure TInterfaceTestCase<I>.TearDown;
+begin
+  DoTearDown;
+  FSUT := nil;
+end;
 
 { TTestCaseHelper }
 

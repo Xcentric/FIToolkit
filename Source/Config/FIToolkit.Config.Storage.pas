@@ -12,19 +12,20 @@ type
       FConfig : TMemIniFile;
       FConfigFile : TFileStream;
     private
-      function  GetFileName : TFileName;
-      function  GetHasFile : Boolean;
+      function GetFileName : TFileName;
+      function GetHasFile : Boolean;
+    public
+      procedure AfterConstruction; override;
     public
       constructor Create(const FileName : TFileName; Writable : Boolean);
       destructor Destroy; override;
 
-      procedure AfterConstruction; override;
-      function  Load : Boolean;
-      function  Save : Boolean;
+      function Load : Boolean;
+      function Save : Boolean;
 
-      property  Config : TMemIniFile read FConfig;
-      property  FileName : TFileName read GetFileName;
-      property  HasFile : Boolean read GetHasFile;
+      property Config : TMemIniFile read FConfig;
+      property FileName : TFileName read GetFileName;
+      property HasFile : Boolean read GetHasFile;
   end;
 
 implementation

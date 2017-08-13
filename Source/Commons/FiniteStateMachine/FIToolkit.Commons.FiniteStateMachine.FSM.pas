@@ -79,6 +79,9 @@ type
           private
             function GetCombinedHashCode(const HashCodes : array of Integer) : Integer;
           public
+            function Equals(Obj : TObject) : Boolean; override; final;
+            function GetHashCode : Integer; override; final;
+          public
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer); overload;
             constructor Create(const AFromState : TState; const AOnCommand : TCommand;
@@ -88,14 +91,11 @@ type
               const StateComparer : IStateComparer; const CommandComparer : ICommandComparer;
               const OnEnterState : TOnEnterStateProc; const OnExitState : TOnExitStateProc); overload;
 
-            function  Equals(Obj : TObject) : Boolean; override; final;
-            function  GetHashCode : Integer; override; final;
-
             procedure PerformEnterStateAction(const CurrentState : TState);
             procedure PerformExitStateAction(const NewState : TState);
 
-            property  FromState : TState read FFromState;
-            property  OnCommand : TCommand read FOnCommand;
+            property FromState : TState read FFromState;
+            property OnCommand : TCommand read FOnCommand;
         end;
 
         TTransitionTable = class (TObjectDictionary<TTransition, TState>);
@@ -107,15 +107,15 @@ type
       FStateComparer : IStateComparer;
       FTransitionTable : TTransitionTable;
     private
-      function  AddTransition(var Transition : TTransition; const ToState : TState) : IFiniteStateMachine; overload;
-      function  FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
-      function  GetReachableState(const FromState : TState; const OnCommand : TCommand;
+      function AddTransition(var Transition : TTransition; const ToState : TState) : IFiniteStateMachine; overload;
+      function FindTransition(const FromState : TState; const OnCommand : TCommand) : TTransition;
+      function GetReachableState(const FromState : TState; const OnCommand : TCommand;
         out Transition : TTransition) : TState; overload;
-      function  HasTransition(const FromState : TState; const OnCommand : TCommand;
+      function HasTransition(const FromState : TState; const OnCommand : TCommand;
         out Transition : TTransition) : Boolean; overload;
 
-      function  GetCurrentState : TState;
-      function  GetPreviousState : TState;
+      function GetCurrentState : TState;
+      function GetPreviousState : TState;
     strict protected
       procedure AfterExecute(const Command : TCommand); virtual;
       procedure BeforeExecute(const Command : TCommand); virtual;
@@ -123,8 +123,8 @@ type
     protected
       class function GetDefaultInitialState : TState; virtual;
 
-      function  CommandToStr(const Command : TCommand) : String; virtual;
-      function  StateToStr(const State : TState) : String; virtual;
+      function CommandToStr(const Command : TCommand) : String; virtual;
+      function StateToStr(const State : TState) : String; virtual;
     public
       constructor Create; overload;
       constructor Create(const InitialState : TState); overload; virtual;
@@ -132,32 +132,32 @@ type
         const CommandComparer : ICommandComparer); overload; virtual;
       destructor Destroy; override;
 
-      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
+      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand
         ) : IFiniteStateMachine; overload;
-      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
         ) : IFiniteStateMachine; overload;
-      function  AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
+      function AddTransition(const FromState, ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
         ) : IFiniteStateMachine; overload;
-      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand
+      function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand
         ) : IFiniteStateMachine; overload;
-      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+      function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateMethod; const OnExit : TOnExitStateMethod = nil
         ) : IFiniteStateMachine; overload;
-      function  AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
+      function AddTransitions(const FromStates : array of TState; const ToState : TState; const OnCommand : TCommand;
         const OnEnter : TOnEnterStateProc; const OnExit : TOnExitStateProc = nil
         ) : IFiniteStateMachine; overload;
-      function  Execute(const Command : TCommand) : IFiniteStateMachine;
-      function  GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
-      function  GetReachableState(const OnCommand : TCommand) : TState; overload;
-      function  HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
-      function  HasTransition(const OnCommand : TCommand) : Boolean; overload;
-      function  RemoveAllTransitions : IFiniteStateMachine;
-      function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
+      function Execute(const Command : TCommand) : IFiniteStateMachine;
+      function GetReachableState(const FromState : TState; const OnCommand : TCommand) : TState; overload;
+      function GetReachableState(const OnCommand : TCommand) : TState; overload;
+      function HasTransition(const FromState : TState; const OnCommand : TCommand) : Boolean; overload;
+      function HasTransition(const OnCommand : TCommand) : Boolean; overload;
+      function RemoveAllTransitions : IFiniteStateMachine;
+      function RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
 
-      property  CurrentState : TState read GetCurrentState;
-      property  PreviousState : TState read GetPreviousState;
+      property CurrentState : TState read GetCurrentState;
+      property PreviousState : TState read GetPreviousState;
   end;
 
   IThreadFiniteStateMachine<TState, TCommand; ErrorClass : Exception, constructor> = interface
@@ -182,8 +182,8 @@ type
       FFiniteStateMachine : IFiniteStateMachine;
       FLock : TObject;
     private
-      procedure InternalLock; inline;
-      procedure InternalUnlock; inline;
+      procedure InternalLock;
+      procedure InternalUnlock;
 
       function  GetCurrentState : TState;
       function  GetPreviousState : TState;
@@ -218,8 +218,8 @@ type
       function  RemoveTransition(const FromState : TState; const OnCommand : TCommand) : IFiniteStateMachine;
       procedure Unlock;
 
-      property  CurrentState : TState read GetCurrentState;
-      property  PreviousState : TState read GetPreviousState;
+      property CurrentState : TState read GetCurrentState;
+      property PreviousState : TState read GetPreviousState;
   end;
 
 implementation

@@ -35,11 +35,11 @@ type
       function  Assigned : Boolean;
       procedure Unassign;
 
-      property  Value : T read GetValue write SetValue;
+      property Value : T read GetValue write SetValue;
 
-      property  OnChange : TOnChange read FOnChange write FOnChange;
-      property  OnChanging : TOnChanging read FOnChanging write FOnChanging;
-      property  OnUnassign : TOnUnassign read FOnUnassign write FOnUnassign;
+      property OnChange : TOnChange read FOnChange write FOnChange;
+      property OnChanging : TOnChanging read FOnChanging write FOnChanging;
+      property OnUnassign : TOnUnassign read FOnUnassign write FOnUnassign;
   end;
 
   TAssignableFileName = TAssignable<TFileName>;
