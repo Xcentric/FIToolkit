@@ -74,6 +74,7 @@ type
       class function ExtractSnippet(const FileName : TFileName; Line, Size : Integer) : String;
       class function FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
       class function FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
+      class function FormatSnippet(const Snippet : String; TargetLine, FirstLine, LastLine : Integer) : String;
       class function MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
         Msg : TFixInsightMessage) : TReportRecord;
   end;
@@ -445,10 +446,15 @@ begin
 end;
 
 class function TWorkflowHelper.ExtractSnippet(const FileName : TFileName; Line, Size : Integer) : String;
+var
+  iFirstLine, iLastLine : Integer;
 begin
   Log.EnterMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, [FileName, Line, Size]);
 
-  Result := ReadSmallTextFile(FileName, Line - Size div 2, Line + Size div 2);
+  iFirstLine := Line - Size div 2;
+  iLastLine  := Line + Size div 2;
+
+  Result := FormatSnippet(ReadSmallTextFile(FileName, iFirstLine, iLastLine), Line, iFirstLine, iLastLine);
 
   Log.LeaveMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, Result.Length);
 end;
@@ -462,6 +468,36 @@ end;
 class function TWorkflowHelper.FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
 begin
   Result := TPath.GetFileName(StateHolder.FConfigData.InputFileName);
+end;
+
+class function TWorkflowHelper.FormatSnippet(const Snippet : String; TargetLine, FirstLine, LastLine : Integer) : String;
+const
+  INT_PREFIX_LENGTH = Length(STR_CSO_TARGET_LINE_NUMBER_PREFIX);
+var
+  iLineNumMaxLen : Integer;
+  arrSnippetLines, arrResult : TArray<String>;
+  i, iLineNum : Integer;
+  sLineNum : String;
+begin
+  iLineNumMaxLen := LastLine.ToString.Length + INT_PREFIX_LENGTH;
+  arrSnippetLines := Snippet.Split([sLineBreak], None);
+  SetLength(arrResult, Length(arrSnippetLines));
+
+  iLineNum := FirstLine;
+  for i := 0 to High(arrSnippetLines) do
+  begin
+    sLineNum := iLineNum.ToString;
+
+    if iLineNum <> TargetLine then
+      sLineNum := sLineNum.PadLeft(iLineNumMaxLen)
+    else
+      sLineNum := STR_CSO_TARGET_LINE_NUMBER_PREFIX + sLineNum.PadLeft(iLineNumMaxLen - INT_PREFIX_LENGTH);
+
+    arrResult[i] := Format(FMT_CSO_LINE_NUMBER, [sLineNum]) + arrSnippetLines[i];
+    Inc(iLineNum);
+  end;
+
+  Result := String.Join(sLineBreak, arrResult);
 end;
 
 class function TWorkflowHelper.MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
