@@ -19,8 +19,8 @@ const
 
   { Config data consts }
 
-  CD_UINT_SNIPPET_SIZE_MAX = 100;
-  CD_UINT_SNIPPET_SIZE_MIN = 001;
+  CD_INT_SNIPPET_SIZE_MIN = 1;
+  CD_INT_SNIPPET_SIZE_MAX = 101;
 
   { Default config values. Do not localize! }
 
@@ -35,8 +35,8 @@ const
   DEF_CD_BOOL_DEDUPLICATE = False;
   DEF_CD_BOOL_MAKE_ARCHIVE = False;
   DEF_CD_INT_NONZERO_EXIT_CODE_MSG_COUNT = 0;
+  DEF_CD_INT_SNIPPET_SIZE = 7;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
-  DEF_CD_UINT_SNIPPET_SIZE = 7;
 
   { FixInsight command line parameters. Do not localize! }
 

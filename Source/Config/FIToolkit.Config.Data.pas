@@ -91,7 +91,7 @@ type
       property OutputDirectory : String read GetOutputDirectory write SetOutputDirectory;
       [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
       property OutputFileName : String read GetOutputFileName write SetOutputFileName;
-      [FIToolkitParam, DefaultSnippetSize(DEF_CD_UINT_SNIPPET_SIZE)]
+      [FIToolkitParam, DefaultSnippetSize(DEF_CD_INT_SNIPPET_SIZE)]
       property SnippetSize : Integer read FSnippetSize write SetSnippetSize;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read GetTempDirectory write SetTempDirectory;
@@ -321,8 +321,8 @@ end;
 
 procedure TConfigData.ValidateSnippetSize(Value : Integer);
 begin
-  if not InRange(Value, CD_UINT_SNIPPET_SIZE_MIN, CD_UINT_SNIPPET_SIZE_MAX) and (Value <> 0) then
-    raise ECDSnippetSizeOutOfRange.CreateFmt([CD_UINT_SNIPPET_SIZE_MIN, CD_UINT_SNIPPET_SIZE_MAX]);
+  if (Value <> 0) and not InRange(Value, CD_INT_SNIPPET_SIZE_MIN, CD_INT_SNIPPET_SIZE_MAX) then
+    raise ECDSnippetSizeOutOfRange.CreateFmt([CD_INT_SNIPPET_SIZE_MIN, CD_INT_SNIPPET_SIZE_MAX]);
 end;
 
 procedure TConfigData.ValidateTempDirectory(const Value : String);
