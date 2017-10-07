@@ -448,10 +448,9 @@ class function TWorkflowHelper.ExtractSnippet(const FileName : TFileName; Line, 
 begin
   Log.EnterMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, [FileName, Line, Size]);
 
-  // TODO: implement {TWorkflowHelper.ExtractSnippet}
-  Result := String.Empty;
+  Result := ReadSmallTextFile(FileName, Line - Size div 2, Line + Size div 2);
 
-  Log.LeaveMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet);
+  Log.LeaveMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, Result.Length);
 end;
 
 class function TWorkflowHelper.FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
@@ -467,8 +466,6 @@ end;
 
 class function TWorkflowHelper.MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
   Msg : TFixInsightMessage) : TReportRecord;
-var
-  sProjectPath : TFileName;
 begin
   Result.Column             := Msg.Column;
   Result.FileName           := Msg.FileName;
@@ -479,18 +476,8 @@ begin
 
   with StateHolder do
     if FConfigData.SnippetSize > 0 then
-    begin
-      case FInputFileType of
-        iftDPR, iftDPK, iftDPROJ:
-          sProjectPath := Project;
-        iftGROUPPROJ:
-          sProjectPath := TPath.Combine(TPath.GetDirectoryName(FConfigData.InputFileName), Project);
-      else
-        Assert(False, 'Unhandled input file type while trying to extract snippet.');
-      end;
-
-      Result.Snippet := ExtractSnippet(TPath.Combine(sProjectPath, Msg.FileName), Msg.Line, FConfigData.SnippetSize);
-    end;
+      Result.Snippet := ExtractSnippet(
+        TPath.Combine(TPath.GetDirectoryName(Project), Msg.FileName), Msg.Line, FConfigData.SnippetSize);
 end;
 
 end.
