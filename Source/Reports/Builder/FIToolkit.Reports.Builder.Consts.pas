@@ -18,6 +18,7 @@ const
   // <HTMLReportTemplate>\<%REPORT_ELEMENT%>\<%REPORT_ELEMENT'S_CHILD_ELEMENT%>\...\<Element>
   STR_RPTXML_ROOT_NODE                 = 'HTMLReportTemplate';
   STR_RPTXML_CSS_NODE                  = 'CSS';
+  STR_RPTXML_JAVASCRIPT_NODE           = 'JavaScript';
   STR_RPTXML_HEADER_NODE               = 'Header';
   STR_RPTXML_TOTAL_SUMMARY_NODE        = 'TotalSummary';
   STR_RPTXML_TOTAL_SUMMARY_ITEM_NODE   = 'TotalSummaryItem';

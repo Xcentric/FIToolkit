@@ -38,6 +38,7 @@ type
   IHTMLReportTemplate = interface (ITextReportTemplate)
     ['{C2CC3425-2FEC-4F41-A122-9FA3F8CC16D5}']
     function GetCSS : String;
+    function GetJavaScript : String;
   end;
 
   THTMLReportTemplate = class abstract (TInterfacedObject, IHTMLReportTemplate)
@@ -45,6 +46,7 @@ type
       FCSS,
       FFooterElement,
       FHeaderElement,
+      FJavaScript,
       FMessageElement,
       FProjectMessagesElement,
       FProjectSectionElement,
@@ -60,6 +62,7 @@ type
       function GetCSS : String;
       function GetFooterElement : String;
       function GetHeaderElement : String;
+      function GetJavaScript : String;
       function GetMessageElement : String;
       function GetProjectMessagesElement : String;
       function GetProjectSectionElement : String;
@@ -253,10 +256,17 @@ begin
     '<title>' + Encode(RSReportTitle) + '</title>' + sLineBreak;
 
   if Supports(FTemplate, IHTMLReportTemplate, HTMLTemplate) then
+  begin
     Result := Result +
       '<style>' + sLineBreak +
       HTMLTemplate.GetCSS + sLineBreak +
       '</style>' + sLineBreak;
+
+    Result := Result +
+      '<script type="text/javascript">' + sLineBreak +
+      HTMLTemplate.GetJavaScript + sLineBreak +
+      '</script>' + sLineBreak;
+  end;
 
   Result := Result + '</head>';
 end;
@@ -309,6 +319,11 @@ begin
   Result := FHeaderElement;
 end;
 
+function THTMLReportTemplate.GetJavaScript : String;
+begin
+  Result := FJavaScript;
+end;
+
 function THTMLReportTemplate.GetMessageElement : String;
 begin
   Result := FMessageElement;
@@ -357,6 +372,10 @@ begin //FI:C101
   FCSS :=
     RootNode
     .ChildNodes[STR_RPTXML_CSS_NODE].Text;
+
+  FJavaScript :=
+    RootNode
+    .ChildNodes[STR_RPTXML_JAVASCRIPT_NODE].Text;
 
   FHeaderElement :=
     RootNode

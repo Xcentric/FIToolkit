@@ -84,6 +84,9 @@ type
           '    <CSS>' +
           '        <![CDATA[{STYLE}]]>' +
           '    </CSS>' +
+          '    <JavaScript>' +
+          '        <![CDATA[{SCRIPT}]]>' +
+          '    </JavaScript>' +
           '    <Header>' +
           '        <Element>' +
           '            <![CDATA[' + STR_HTML_REPORT_TITLE + '|' + STR_HTML_START_TIME + ']]>' +
@@ -142,6 +145,7 @@ type
     procedure TestGetCSS;
     procedure TestGetFooterElement;
     procedure TestGetHeaderElement;
+    procedure TestGetJavaScript;
     procedure TestGetMessageElement;
     procedure TestGetProjectMessagesElement;
     procedure TestGetProjectSectionElement;
@@ -337,6 +341,7 @@ begin
   CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
   CheckTrue(ReportText.Contains(RSReportTitle), 'CheckTrue::Contains(%s)', [RSReportTitle]);
   CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
+  CheckTrue(ReportText.Contains('</script>'), 'CheckTrue::Contains(</script>)');
   CheckTrue(ReportText.Contains(STR_HTML_REPORT_ROOT_ID), 'CheckTrue::Contains(%s)', [STR_HTML_REPORT_ROOT_ID]);
 end;
 
@@ -406,6 +411,9 @@ const
     '<style>' + sLineBreak +
     '{STYLE}' + sLineBreak +
     '</style>' + sLineBreak +
+    '<script type="text/javascript">' + sLineBreak +
+    '{SCRIPT}' + sLineBreak +
+    '</script>' + sLineBreak +
     '</head>' + sLineBreak +
     '<body>' + sLineBreak +
     '<div id="root">' + sLineBreak +
@@ -585,6 +593,15 @@ begin
 
   CheckTrue(ReturnValue.StartsWith(STR_HTML_REPORT_TITLE), 'CheckTrue::StartsWith(%s)', [STR_HTML_REPORT_TITLE]);
   CheckTrue(ReturnValue.EndsWith(STR_HTML_START_TIME), 'CheckTrue::EndsWith(%s)', [STR_HTML_START_TIME]);
+end;
+
+procedure TestTHTMLReportTemplate.TestGetJavaScript;
+var
+  ReturnValue : String;
+begin
+  ReturnValue := FHTMLReportTemplate.GetJavaScript;
+
+  CheckEquals('{SCRIPT}', ReturnValue, 'ReturnValue = {SCRIPT}');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetMessageElement;
