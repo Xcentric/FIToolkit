@@ -35,7 +35,7 @@ const
   DEF_CD_BOOL_DEDUPLICATE = False;
   DEF_CD_BOOL_MAKE_ARCHIVE = False;
   DEF_CD_INT_NONZERO_EXIT_CODE_MSG_COUNT = 0;
-  DEF_CD_INT_SNIPPET_SIZE = 7;
+  DEF_CD_INT_SNIPPET_SIZE = 21;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
 
   { FixInsight command line parameters. Do not localize! }

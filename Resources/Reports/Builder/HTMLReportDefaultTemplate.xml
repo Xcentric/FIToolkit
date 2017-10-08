@@ -183,7 +183,7 @@
     }
 
     .message-snippet {
-        font-size: 10.5pt;
+        font-size: 12pt;
     }
 
     .message-snippet-content {
