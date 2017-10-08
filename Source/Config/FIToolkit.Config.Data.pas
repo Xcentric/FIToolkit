@@ -17,6 +17,7 @@ type
   DefaultNonZeroExitCodeMsgCount = class (TDefaultIntegerValue);    //FI:C104
   DefaultOutputDirectory = class (TDefaultStringValue);             //FI:C104
   DefaultOutputFileName = class (TDefaultStringValue);              //FI:C104
+  DefaultSnippetSize = class (TDefaultIntegerValue);                //FI:C104
   DefaultTempDirectory = class (TDefaultStringValue);               //FI:C104
 
   TConfigData = class sealed
@@ -31,6 +32,7 @@ type
       FNonZeroExitCodeMsgCount : Integer;
       FOutputDirectory : TAssignableString;
       FOutputFileName : TAssignableString;
+      FSnippetSize : Integer;
       FTempDirectory : TAssignableString;
       FValidate : Boolean;
 
@@ -44,6 +46,7 @@ type
       procedure ValidateNonZeroExitCodeMsgCount(Value : Integer);
       procedure ValidateOutputDirectory(const Value : String);
       procedure ValidateOutputFileName(const Value : String);
+      procedure ValidateSnippetSize(Value : Integer);
       procedure ValidateTempDirectory(const Value : String);
 
       function  GetCustomTemplateFileName : TFileName;
@@ -60,6 +63,7 @@ type
       procedure SetNonZeroExitCodeMsgCount(Value : Integer);
       procedure SetOutputDirectory(Value : String);
       procedure SetOutputFileName(const Value : String);
+      procedure SetSnippetSize(Value : Integer);
       procedure SetTempDirectory(Value : String);
     public
       constructor Create;
@@ -87,6 +91,8 @@ type
       property OutputDirectory : String read GetOutputDirectory write SetOutputDirectory;
       [FIToolkitParam, DefaultOutputFileName(DEF_CD_STR_OUTPUT_FILENAME)]
       property OutputFileName : String read GetOutputFileName write SetOutputFileName;
+      [FIToolkitParam, DefaultSnippetSize(DEF_CD_INT_SNIPPET_SIZE)]
+      property SnippetSize : Integer read FSnippetSize write SetSnippetSize;
       [FIToolkitParam, DefaultTempDirectory]
       property TempDirectory : String read GetTempDirectory write SetTempDirectory;
 
@@ -96,7 +102,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.Rtti, System.RegularExpressions,
+  System.IOUtils, System.Rtti, System.RegularExpressions, System.Math,
   FIToolkit.Config.Exceptions, FIToolkit.Config.Defaults, FIToolkit.Commons.Utils;
 
 { TConfigData }
@@ -232,6 +238,14 @@ begin
   end;
 end;
 
+procedure TConfigData.SetSnippetSize(Value : Integer);
+begin
+  if FValidate then
+    ValidateSnippetSize(Value);
+
+  FSnippetSize := Value;
+end;
+
 procedure TConfigData.SetTempDirectory(Value : String);
 begin
   Value := TPath.ExpandIfNotExists(Value);
@@ -303,6 +317,12 @@ procedure TConfigData.ValidateOutputFileName(const Value : String);
 begin
   if not TPath.IsApplicableFileName(Value) then
     raise ECDInvalidOutputFileName.Create;
+end;
+
+procedure TConfigData.ValidateSnippetSize(Value : Integer);
+begin
+  if (Value <> 0) and not InRange(Value, CD_INT_SNIPPET_SIZE_MIN, CD_INT_SNIPPET_SIZE_MAX) then
+    raise ECDSnippetSizeOutOfRange.CreateFmt([CD_INT_SNIPPET_SIZE_MIN, CD_INT_SNIPPET_SIZE_MAX]);
 end;
 
 procedure TConfigData.ValidateTempDirectory(const Value : String);

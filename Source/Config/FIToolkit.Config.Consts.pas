@@ -19,7 +19,8 @@ const
 
   { Config data consts }
 
-  // <none>
+  CD_INT_SNIPPET_SIZE_MIN = 1;
+  CD_INT_SNIPPET_SIZE_MAX = 101;
 
   { Default config values. Do not localize! }
 
@@ -34,6 +35,7 @@ const
   DEF_CD_BOOL_DEDUPLICATE = False;
   DEF_CD_BOOL_MAKE_ARCHIVE = False;
   DEF_CD_INT_NONZERO_EXIT_CODE_MSG_COUNT = 0;
+  DEF_CD_INT_SNIPPET_SIZE = 21;
   DEF_CD_STR_OUTPUT_FILENAME = 'FIToolkitReport.html';
 
   { FixInsight command line parameters. Do not localize! }
@@ -67,6 +69,7 @@ resourcestring
   RSCDInvalidNonZeroExitCodeMsgCount = 'Неверное пороговое число сообщений для ненулевого кода выхода.';
   RSCDInvalidOutputFileName = 'Неверное имя выходного файла.';
   RSCDOutputDirectoryNotFound = 'Выходная директория не найдена.';
+  RSCDSnippetSizeOutOfRange = 'Размер фрагмента кода выходит за пределы диапазона [%d..%d].';
   RSCDTempDirectoryNotFound = 'Директория для временных файлов не найдена.';
 
 implementation

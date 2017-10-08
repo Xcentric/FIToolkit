@@ -182,6 +182,20 @@
         color: transparent;
     }
 
+    .message-snippet {
+        font-size: 12pt;
+    }
+
+    .message-snippet-content {
+        display: none;
+
+        position: fixed;
+        padding: 8rem;
+        overflow-y: scroll;
+
+        background: lightblue;
+    }
+
     /* Footer */
 
     #footer {
@@ -199,6 +213,47 @@
         font-style: italic;
     }]]>
     </CSS>
+    <JavaScript>
+        <![CDATA[
+    function hideSnippet(snippet) {
+        if (snippet)
+            snippet.style.display = "none";
+    }
+
+    function showSnippet(snippet) {
+        if (snippet) {
+            var width = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+            var height = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+                
+            snippet.style.left   = 0.1 * width  + "px";
+            snippet.style.top    = 0.1 * height + "px";
+            snippet.style.width  = 0.7 * width  + "px";
+            snippet.style.height = 0.7 * height + "px";
+
+            snippet.style.display = "block";
+        }
+    }
+
+    var G_currentSnippet;
+    
+    function onSnippetButtonClicked(sender) {
+        var snippet = sender.parentElement.getElementsByClassName("message-snippet-content")[0];
+        var snippetIsHidden = snippet.style.display === "" || snippet.style.display === "none";
+        
+        hideSnippet(G_currentSnippet);
+        G_currentSnippet = null;
+                
+        if (snippetIsHidden === true) {
+            showSnippet(snippet);
+            G_currentSnippet = snippet;
+        }
+    }]]>
+    </JavaScript>
     <Header>
         <Element>
             <![CDATA[
@@ -266,6 +321,10 @@
                 </td>
                 <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
                 <td class="message-message_text">%MESSAGE_TEXT%</td>
+                <td class="message-snippet">
+                    <button onclick="onSnippetButtonClicked(this)">Snippet</button>
+                    <div class="message-snippet-content"><pre>%SNIPPET%</pre></div>
+                </td>
             </tr>]]>
                 </Element>
             </Message>

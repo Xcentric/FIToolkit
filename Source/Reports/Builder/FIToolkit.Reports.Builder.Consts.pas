@@ -18,6 +18,7 @@ const
   // <HTMLReportTemplate>\<%REPORT_ELEMENT%>\<%REPORT_ELEMENT'S_CHILD_ELEMENT%>\...\<Element>
   STR_RPTXML_ROOT_NODE                 = 'HTMLReportTemplate';
   STR_RPTXML_CSS_NODE                  = 'CSS';
+  STR_RPTXML_JAVASCRIPT_NODE           = 'JavaScript';
   STR_RPTXML_HEADER_NODE               = 'Header';
   STR_RPTXML_TOTAL_SUMMARY_NODE        = 'TotalSummary';
   STR_RPTXML_TOTAL_SUMMARY_ITEM_NODE   = 'TotalSummaryItem';
@@ -46,11 +47,16 @@ const
   STR_HTML_PROJECT_SUMMARY_ITEMS        = '{PROJECT_SUMMARY_ITEMS}';
   STR_HTML_PROJECT_TITLE                = '%PROJECT_TITLE%';
   STR_HTML_REPORT_TITLE                 = '%REPORT_TITLE%';
+  STR_HTML_SNIPPET                      = '%SNIPPET%';
   STR_HTML_START_TIME                   = '%START_TIME%';
   STR_HTML_SUMMARY_MESSAGE_COUNT        = '%SUMMARY_MESSAGE_COUNT%';
   STR_HTML_SUMMARY_MESSAGE_TYPE_KEYWORD = '%SUMMARY_MESSAGE_TYPE_KEYWORD%';
   STR_HTML_SUMMARY_MESSAGE_TYPE_NAME    = '%SUMMARY_MESSAGE_TYPE_NAME%';
   STR_HTML_TOTAL_SUMMARY_ITEMS          = '{TOTAL_SUMMARY_ITEMS}';
+
+  // Code snippet output:
+  FMT_CSO_LINE_NUMBER = '{%s}'; // Do not localize!
+  STR_CSO_TARGET_LINE_NUMBER_PREFIX = '→ ';
 
   { Resources. Do not localize! }
 

@@ -31,6 +31,7 @@ type
   ECDInvalidNonZeroExitCodeMsgCount = class (EConfigDataException);
   ECDInvalidOutputFileName = class (EConfigDataException);
   ECDOutputDirectoryNotFound = class (EConfigDataException);
+  ECDSnippetSizeOutOfRange = class (EConfigDataException);
   ECDTempDirectoryNotFound = class (EConfigDataException);
 
 implementation
@@ -53,6 +54,7 @@ initialization
   RegisterExceptionMessage(ECDInvalidNonZeroExitCodeMsgCount, RSCDInvalidNonZeroExitCodeMsgCount);
   RegisterExceptionMessage(ECDInvalidOutputFileName, RSCDInvalidOutputFileName);
   RegisterExceptionMessage(ECDOutputDirectoryNotFound, RSCDOutputDirectoryNotFound);
+  RegisterExceptionMessage(ECDSnippetSizeOutOfRange, RSCDSnippetSizeOutOfRange);
   RegisterExceptionMessage(ECDTempDirectoryNotFound, RSCDTempDirectoryNotFound);
 
 end.

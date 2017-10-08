@@ -10,7 +10,8 @@ type
     FileName,
     MessageText,
     MessageTypeKeyword,
-    MessageTypeName : String;
+    MessageTypeName,
+    Snippet : String;
   end;
 
   TSummaryItem = record
