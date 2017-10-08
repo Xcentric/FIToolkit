@@ -313,7 +313,7 @@ begin
     CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<invalid file name>');
 
     S := ReadSmallTextFile(sFileName, -1, 1);
-    CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<StartLine lt 0>');
+    CheckEquals(ARR_TEXT[0], S, '(S = ARR_TEXT[0])::<StartLine lt 0>');
 
     S := ReadSmallTextFile(sFileName, 1, -1);
     CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<EndLine lt 0>');

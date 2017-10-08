@@ -262,7 +262,7 @@ var
 begin
   Result := String.Empty;
 
-  if TFile.Exists(FileName) and not ((StartLine < 0) or (EndLine < 0) or (StartLine > EndLine)) then
+  if TFile.Exists(FileName) and (StartLine <= EndLine) then
   begin
     L := TStringList.Create;
     try
@@ -279,7 +279,7 @@ begin
         Result := L.Text
       else
       begin
-        iFirstIdx := StartLine - 1;
+        iFirstIdx := Max(StartLine - 1, 0);
         iLastIdx  := Min(EndLine - 1, L.Count - 1);
 
         if iFirstIdx <= iLastIdx then
