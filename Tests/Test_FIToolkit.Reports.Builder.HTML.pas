@@ -75,7 +75,8 @@ type
           STR_HTML_LINE + '|' +
           STR_HTML_COLUMN + '|' +
           STR_HTML_MESSAGE_TYPE_NAME + '|' +
-          STR_HTML_MESSAGE_TEXT;
+          STR_HTML_MESSAGE_TEXT + '|' +
+          STR_HTML_SNIPPET;
         STR_TEMPLATE =
           {$REGION 'XML'}
           '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -83,6 +84,9 @@ type
           '    <CSS>' +
           '        <![CDATA[{STYLE}]]>' +
           '    </CSS>' +
+          '    <JavaScript>' +
+          '        <![CDATA[{SCRIPT}]]>' +
+          '    </JavaScript>' +
           '    <Header>' +
           '        <Element>' +
           '            <![CDATA[' + STR_HTML_REPORT_TITLE + '|' + STR_HTML_START_TIME + ']]>' +
@@ -141,6 +145,7 @@ type
     procedure TestGetCSS;
     procedure TestGetFooterElement;
     procedure TestGetHeaderElement;
+    procedure TestGetJavaScript;
     procedure TestGetMessageElement;
     procedure TestGetProjectMessagesElement;
     procedure TestGetProjectSectionElement;
@@ -336,6 +341,7 @@ begin
   CheckTrue(ReportText.Contains('<title>'), 'CheckTrue::Contains(<title>)');
   CheckTrue(ReportText.Contains(RSReportTitle), 'CheckTrue::Contains(%s)', [RSReportTitle]);
   CheckTrue(ReportText.Contains('<style>'), 'CheckTrue::Contains(<style>)');
+  CheckTrue(ReportText.Contains('</script>'), 'CheckTrue::Contains(</script>)');
   CheckTrue(ReportText.Contains(STR_HTML_REPORT_ROOT_ID), 'CheckTrue::Contains(%s)', [STR_HTML_REPORT_ROOT_ID]);
 end;
 
@@ -393,6 +399,7 @@ const
   STR_FILENAME = 'TestProjectDir\TestFileName.pas';
   STR_LINE     = '666';
   STR_MESSAGE  = 'Test message text.';
+  STR_SNIPPET  = 'Code snippet.';
 
   STR_REFERENCE =
     {$REGION 'HTML'}
@@ -404,6 +411,9 @@ const
     '<style>' + sLineBreak +
     '{STYLE}' + sLineBreak +
     '</style>' + sLineBreak +
+    '<script type="text/javascript">' + sLineBreak +
+    '{SCRIPT}' + sLineBreak +
+    '</script>' + sLineBreak +
     '</head>' + sLineBreak +
     '<body>' + sLineBreak +
     '<div id="root">' + sLineBreak +
@@ -419,11 +429,11 @@ const
     '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
-    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
     '<div>TestProject|' + STR_MSGKEYW_WARNING + '|' + STR_MSGTYPE_WARNING + '|1111' + sLineBreak +
@@ -432,11 +442,11 @@ const
     '' + STR_MSGKEYW_FATAL + '|' + STR_MSGTYPE_FATAL + '|4444' + sLineBreak +
     '' + STR_MSGKEYW_TRIAL + '|' + STR_MSGTYPE_TRIAL + '|5555' + sLineBreak +
     '<table>' + sLineBreak +
-    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '' + sLineBreak +
-    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '' + sLineBreak +
+    '' + STR_MSGKEYW_WARNING + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_WARNING + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_OPTIMIZATION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_OPTIMIZATION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_CODING_CONVENTION + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_CODING_CONVENTION + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_FATAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_FATAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
+    '' + STR_MSGKEYW_TRIAL + '|' + STR_FILENAME + '|' + STR_LINE + '|' + STR_COLUMN + '|' + STR_MSGTYPE_TRIAL + '|' + STR_MESSAGE + '|' + STR_SNIPPET + '' + sLineBreak +
     '</table>' + sLineBreak +
     '</div>' + sLineBreak +
     '%FINISH_TIME%' + sLineBreak +
@@ -453,6 +463,7 @@ begin
   R.Line        := STR_LINE.ToInteger;
   R.FileName    := STR_FILENAME;
   R.MessageText := STR_MESSAGE;
+  R.Snippet     := STR_SNIPPET;
 
   with FHTMLReportBuilder do
   begin
@@ -582,6 +593,15 @@ begin
 
   CheckTrue(ReturnValue.StartsWith(STR_HTML_REPORT_TITLE), 'CheckTrue::StartsWith(%s)', [STR_HTML_REPORT_TITLE]);
   CheckTrue(ReturnValue.EndsWith(STR_HTML_START_TIME), 'CheckTrue::EndsWith(%s)', [STR_HTML_START_TIME]);
+end;
+
+procedure TestTHTMLReportTemplate.TestGetJavaScript;
+var
+  ReturnValue : String;
+begin
+  ReturnValue := FHTMLReportTemplate.GetJavaScript;
+
+  CheckEquals('{SCRIPT}', ReturnValue, 'ReturnValue = {SCRIPT}');
 end;
 
 procedure TestTHTMLReportTemplate.TestGetMessageElement;

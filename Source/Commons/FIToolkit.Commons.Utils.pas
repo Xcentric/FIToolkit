@@ -83,6 +83,7 @@ type
   procedure PrintLn; overload;
   procedure PrintLn(const Arg : Variant); overload;
   procedure PrintLn(const Args : array of const); overload;
+  function  ReadSmallTextFile(const FileName : TFileName; StartLine, EndLine : Integer) : String;
   function  TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;
   function  WaitForFileAccess(const FileName : TFileName; DesiredAccess : TFileAccess;
     CheckingInterval, Timeout : Cardinal) : Boolean;
@@ -90,7 +91,7 @@ type
 implementation
 
 uses
-  System.Classes, System.SysConst, System.Threading, System.Variants, System.Win.Registry, Winapi.Windows,
+  System.Classes, System.Variants, System.Math, System.SysConst, System.Threading, System.Win.Registry, Winapi.Windows,
   FIToolkit.Commons.Consts;
 
 { Internals }
@@ -251,6 +252,56 @@ begin
     S := S + Arg.ToString;
 
   _PrintLn(S);
+end;
+
+function ReadSmallTextFile(const FileName : TFileName; StartLine, EndLine : Integer) : String;
+var
+  L : TStringList;
+  B : TStringBuilder;
+  iFirstIdx, iLastIdx, i : Integer;
+begin
+  Result := String.Empty;
+
+  if TFile.Exists(FileName) and (StartLine <= EndLine) then
+  begin
+    L := TStringList.Create;
+    try
+      try
+        L.LoadFromFile(FileName);
+      except
+        on E: EFileStreamError do
+          Exit;
+        else
+          raise;
+      end;
+
+      if (StartLine = 0) and (EndLine = 0) then
+        Result := L.Text
+      else
+      begin
+        iFirstIdx := Max(StartLine - 1, 0);
+        iLastIdx  := Min(EndLine - 1, L.Count - 1);
+
+        if iFirstIdx <= iLastIdx then
+        begin
+          B := TStringBuilder.Create(L.Capacity);
+          try
+            for i := iFirstIdx to iLastIdx do
+              if i < iLastIdx then
+                B.AppendLine(L[i])
+              else
+                B.Append(L[i]);
+
+            Result := B.ToString;
+          finally
+            B.Free;
+          end;
+        end;
+      end;
+    finally
+      L.Free;
+    end;
+  end;
 end;
 
 function TValueArrayToStringArray(const Vals : array of TValue) : TArray<String>;

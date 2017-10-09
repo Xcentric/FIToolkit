@@ -27,6 +27,7 @@ type
       { Supporting infrastructure }
 
       FDeduplicator : TFixInsightMessages;
+      FInputFileType : TInputFileType;
       FMessages : TDictionary<TFileName, TArray<TFixInsightMessage>>;
       FProjects : TArray<TFileName>;
       FReportFileName : TFileName;
@@ -65,14 +66,17 @@ uses
 
 type
 
-  TWorkflowHelper = class
+  TWorkflowHelper = class (TLoggable)
     private
       class function CalcProjectSummary(StateHolder : TWorkflowStateHolder; const Project : TFileName) : TArray<TSummaryItem>;
       class function CalcSummary(StateHolder : TWorkflowStateHolder; const ProjectFilter : String) : TArray<TSummaryItem>;
       class function CalcTotalSummary(StateHolder : TWorkflowStateHolder) : TArray<TSummaryItem>;
+      class function ExtractSnippet(const FileName : TFileName; Line, Size : Integer) : String;
       class function FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
       class function FormatReportTitle(StateHolder : TWorkflowStateHolder) : String;
-      class function MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+      class function FormatSnippet(const Snippet : String; TargetLine, FirstLine, LastLine : Integer) : String;
+      class function MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
+        Msg : TFixInsightMessage) : TReportRecord;
   end;
 
 { TWorkflowStateHolder }
@@ -130,19 +134,17 @@ begin //FI:C101
   StateMachine
     .AddTransition(asInitial, asProjectsExtracted, acExtractProjects,
       procedure (const PreviousState, CurrentState : TApplicationState; const UsedCommand : TApplicationCommand)
-      var
-        LInputFileType : TInputFileType;
       begin
         Log.EnterSection(RSExtractingProjects);
 
         with StateHolder do
         begin
           FStartTime := Now;
-          LInputFileType := GetInputFileType(FConfigData.InputFileName);
+          FInputFileType := GetInputFileType(FConfigData.InputFileName);
 
-          Log.DebugVal(['LInputFileType = ', TValue.From<TInputFileType>(LInputFileType)]);
+          Log.DebugVal(['StateHolder.FInputFileType = ', TValue.From<TInputFileType>(FInputFileType)]);
 
-          case LInputFileType of
+          case FInputFileType of
             iftDPR, iftDPK:
               begin
                 FProjects := [FConfigData.InputFileName];
@@ -321,7 +323,7 @@ begin //FI:C101
               );
 
               for Msg in FMessages[F] do
-                FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(Msg));
+                FReportBuilder.AppendRecord(TWorkflowHelper.MakeRecord(StateHolder, F, Msg));
 
               FReportBuilder.EndProjectSection;
             end;
@@ -443,6 +445,20 @@ begin
   Result := CalcSummary(StateHolder, String.Empty);
 end;
 
+class function TWorkflowHelper.ExtractSnippet(const FileName : TFileName; Line, Size : Integer) : String;
+var
+  iFirstLine, iLastLine : Integer;
+begin
+  Log.EnterMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, [FileName, Line, Size]);
+
+  iFirstLine := Line - Size div 2;
+  iLastLine  := Line + Size div 2;
+
+  Result := FormatSnippet(ReadSmallTextFile(FileName, iFirstLine, iLastLine), Line, iFirstLine, iLastLine);
+
+  Log.LeaveMethod(TWorkflowHelper, @TWorkflowHelper.ExtractSnippet, Result.Length);
+end;
+
 class function TWorkflowHelper.FormatProjectTitle(StateHolder : TWorkflowStateHolder; const Project : TFileName) : String;
 begin
   Result := String(Project).Replace(
@@ -454,7 +470,38 @@ begin
   Result := TPath.GetFileName(StateHolder.FConfigData.InputFileName);
 end;
 
-class function TWorkflowHelper.MakeRecord(Msg : TFixInsightMessage) : TReportRecord;
+class function TWorkflowHelper.FormatSnippet(const Snippet : String; TargetLine, FirstLine, LastLine : Integer) : String;
+const
+  INT_PREFIX_LENGTH = Length(STR_CSO_TARGET_LINE_NUMBER_PREFIX);
+var
+  iLineNumMaxLen : Integer;
+  arrSnippetLines, arrResult : TArray<String>;
+  i, iLineNum : Integer;
+  sLineNum : String;
+begin
+  iLineNumMaxLen := LastLine.ToString.Length + INT_PREFIX_LENGTH;
+  arrSnippetLines := Snippet.Split([sLineBreak], None);
+  SetLength(arrResult, Length(arrSnippetLines));
+
+  iLineNum := FirstLine;
+  for i := 0 to High(arrSnippetLines) do
+  begin
+    sLineNum := iLineNum.ToString;
+
+    if iLineNum <> TargetLine then
+      sLineNum := sLineNum.PadLeft(iLineNumMaxLen)
+    else
+      sLineNum := STR_CSO_TARGET_LINE_NUMBER_PREFIX + sLineNum.PadLeft(iLineNumMaxLen - INT_PREFIX_LENGTH);
+
+    arrResult[i] := Format(FMT_CSO_LINE_NUMBER, [sLineNum]) + arrSnippetLines[i];
+    Inc(iLineNum);
+  end;
+
+  Result := String.Join(sLineBreak, arrResult);
+end;
+
+class function TWorkflowHelper.MakeRecord(StateHolder : TWorkflowStateHolder; const Project : TFileName;
+  Msg : TFixInsightMessage) : TReportRecord;
 begin
   Result.Column             := Msg.Column;
   Result.FileName           := Msg.FileName;
@@ -462,6 +509,11 @@ begin
   Result.MessageText        := Msg.Text;
   Result.MessageTypeKeyword := ARR_MSGTYPE_TO_MSGKEYWORD_MAPPING[Msg.MsgType];
   Result.MessageTypeName    := ARR_MSGTYPE_TO_MSGNAME_MAPPING[Msg.MsgType];
+
+  with StateHolder do
+    if FConfigData.SnippetSize > 0 then
+      Result.Snippet := ExtractSnippet(
+        TPath.Combine(TPath.GetDirectoryName(Project), Msg.FileName), Msg.Line, FConfigData.SnippetSize);
 end;
 
 end.

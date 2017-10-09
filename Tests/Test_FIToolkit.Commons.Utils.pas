@@ -28,6 +28,7 @@ type
       procedure TestIff;
       procedure TestPressAnyKeyPrompt;
       procedure TestPrintLn;
+      procedure TestReadSmallTextFile;
       procedure TestTValueArrayToStringArray;
       procedure TestWaitForFileAccess;
   end;
@@ -280,6 +281,62 @@ begin
     nil,
     'CheckException::<nil>'
   );
+end;
+
+procedure TestFIToolkitCommonsUtils.TestReadSmallTextFile;
+const
+  ARR_TEXT : array of String = [
+    'line1',
+    'line2',
+    'line3',
+    'line4',
+    'line5',
+    'line6'
+  ];
+  STR_FILENAME = 'temp_file.txt';
+var
+  L : TStringList;
+  S : String;
+  sFileName : TFileName;
+begin
+  L := TStringList.Create;
+  try
+    for S in ARR_TEXT do
+      L.Add(S);
+
+    sFileName := TestDataDir + STR_FILENAME;
+    L.SaveToFile(sFileName);
+
+    { Case #1 - invalid params }
+
+    S := ReadSmallTextFile(STR_NON_EXISTENT_FILE, 0, 0);
+    CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<invalid file name>');
+
+    S := ReadSmallTextFile(sFileName, -1, 1);
+    CheckEquals(ARR_TEXT[0], S, '(S = ARR_TEXT[0])::<StartLine lt 0>');
+
+    S := ReadSmallTextFile(sFileName, 1, -1);
+    CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<EndLine lt 0>');
+
+    S := ReadSmallTextFile(sFileName, 2, 1);
+    CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<StartLine gt EndLine>');
+
+    S := ReadSmallTextFile(sFileName, Length(ARR_TEXT) + 1, Length(ARR_TEXT) + 2);
+    CheckTrue(S.IsEmpty, 'CheckTrue::S.IsEmpty<StartLine gt ARR_TEXT.Length>');
+
+    { Case #2 - read all }
+
+    S := ReadSmallTextFile(sFileName, 0, 0);
+    CheckEquals(L.Text, S, 'S = L.Text');
+
+    { Case #3 - read part }
+
+    S := ReadSmallTextFile(sFileName, 3, 5);
+    CheckEquals(String.Join(sLineBreak, [ARR_TEXT[2], ARR_TEXT[3], ARR_TEXT[4]]), S, 'S = ARR_TEXT[2..4]');
+  finally
+    L.Free;
+    System.SysUtils.DeleteFile(sFileName);
+  end;
 end;
 
 procedure TestFIToolkitCommonsUtils.TestTValueArrayToStringArray;

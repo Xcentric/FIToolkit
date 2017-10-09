@@ -106,6 +106,17 @@ begin
     'CheckException::ECDInputFileNotFound'
   );
 
+  { Check validation - zero message count threshold }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.NonZeroExitCodeMsgCount := 0;
+    end,
+    nil,
+    'CheckException::<nil>'
+  );
+
   { Check validation - empty output directory }
 
   CheckException(
@@ -126,6 +137,17 @@ begin
     end,
     ECDInvalidOutputFileName,
     'CheckException::ECDInvalidOutputFileName'
+  );
+
+  { Check validation - zero snippet size }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.SnippetSize := 0;
+    end,
+    nil,
+    'CheckException::<nil>'
   );
 
   { Check validation - empty temp directory }
@@ -235,6 +257,17 @@ begin
     'CheckException::ECDInvalidOutputFileName'
   );
 
+  { Check validation - invalid snippet size }
+
+  CheckException(
+    procedure
+    begin
+      FConfigData.SnippetSize := -1;
+    end,
+    ECDSnippetSizeOutOfRange,
+    'CheckException::ECDSnippetSizeOutOfRange'
+  );
+
   { Check validation - invalid temp directory }
 
   CheckException(
@@ -266,6 +299,7 @@ begin
         NonZeroExitCodeMsgCount := 1;
         OutputDirectory := ExtractFileDir(ParamStr(0));
         OutputFileName := ExtractFileName(ParamStr(0));
+        SnippetSize := 1;
         TempDirectory := ExtractFileDir(ParamStr(0));
       end;
     end,
