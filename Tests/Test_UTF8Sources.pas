@@ -79,11 +79,14 @@ begin
 end;
 
 procedure TestUTF8Sources.TestFIToolkitSources;
+const
+  ARR_SEARCH_PATTERNS : array of String = ['*.pas', '*.inc'];
 var
-  S : String;
+  sPattern, sFile : String;
 begin
-  for S in TDirectory.GetFiles(GetProjectSourcesDir, '*.pas', TSearchOption.soAllDirectories) do
-    CheckTrue(IsUTF8TextFile(S), 'CheckTrue::<%s>', [S]);
+  for sPattern in ARR_SEARCH_PATTERNS do
+    for sFile in TDirectory.GetFiles(GetProjectSourcesDir, sPattern, TSearchOption.soAllDirectories) do
+      CheckTrue(IsUTF8TextFile(sFile), 'CheckTrue::<%s>', [sFile]);
 end;
 
 procedure TestUTF8Sources.TestFIToolkitTestsSources;

@@ -87,6 +87,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="..\Source\FIToolkit.Consts.pas"/>
+        <DCCReference Include="..\Source\FIToolkit.Localization.pas"/>
         <DCCReference Include="..\Source\FIToolkit.Types.pas"/>
         <DCCReference Include="..\Source\FIToolkit.Utils.pas"/>
         <DCCReference Include="..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas"/>

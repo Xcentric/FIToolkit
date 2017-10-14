@@ -3,7 +3,8 @@
 interface
 
 uses
-  FIToolkit.Logger.Types;
+  FIToolkit.Logger.Types,
+  FIToolkit.Localization;
 
 const
 
@@ -31,20 +32,13 @@ const
 
 resourcestring
 
-  { Plain text output }
-
-  RSPTOMainThreadName = 'MAIN';
-
-  RSPTOMsgTypeDescDebug   = '( DEBUG ) ';
-  RSPTOMsgTypeDescInfo    = '( INFO  ) ';
-  RSPTOMsgTypeDescWarning = '(WARNING) ';
-  RSPTOMsgTypeDescError   = '( ERROR ) ';
-  RSPTOMsgTypeDescFatal   = '( FATAL ) ';
-  RSPTOMsgTypeDescExtreme = '(EXTREME) ';
-
-  RSPTOSectionBeginningPrefix = '   -> ';
-  RSPTOSectionEndingPrefix = '   <- ';
-  RSPTOSectionIndentStr = '  ';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 

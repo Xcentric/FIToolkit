@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  System.IOUtils, System.RegularExpressions, System.Zip, System.Rtti,
+  System.IOUtils, System.RegularExpressions, System.Zip, System.Rtti, System.Math,
   FIToolkit.Exceptions, FIToolkit.Utils, FIToolkit.Consts,
   FIToolkit.Commons.Utils,
   FIToolkit.Reports.Builder.Consts, FIToolkit.Reports.Builder.HTML,
@@ -483,7 +483,7 @@ begin
   arrSnippetLines := Snippet.Split([sLineBreak], None);
   SetLength(arrResult, Length(arrSnippetLines));
 
-  iLineNum := FirstLine;
+  iLineNum := Max(FirstLine, 1);
   for i := 0 to High(arrSnippetLines) do
   begin
     sLineNum := iLineNum.ToString;

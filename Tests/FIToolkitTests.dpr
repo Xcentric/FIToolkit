@@ -23,6 +23,7 @@ uses
   {$ENDIF}
   DUnitTestRunner,
   FIToolkit.Consts in '..\Source\FIToolkit.Consts.pas',
+  FIToolkit.Localization in '..\Source\FIToolkit.Localization.pas',
   FIToolkit.Types in '..\Source\FIToolkit.Types.pas',
   FIToolkit.Utils in '..\Source\FIToolkit.Utils.pas',
   FIToolkit.CommandLine.Consts in '..\Source\CommandLine\FIToolkit.CommandLine.Consts.pas',

@@ -2,6 +2,9 @@
 
 interface
 
+uses
+  FIToolkit.Localization;
+
 const
 
   { XML consts for a project group file format. Do not localize! }
@@ -21,10 +24,13 @@ const
 
 resourcestring
 
-  { Exceptions }
-
-  RSProjectGroupParseError = 'Ошибка при разборе файла группы проектов.';
-  RSProjectParseError = 'Ошибка при разборе файла проекта.';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 
