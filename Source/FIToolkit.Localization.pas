@@ -11,7 +11,7 @@ const
 
   { Current application language }
 
-  LANGUAGE = LANG_RU_RU;
+  LANGUAGE = LANG_EN_US;
 
 implementation
 
