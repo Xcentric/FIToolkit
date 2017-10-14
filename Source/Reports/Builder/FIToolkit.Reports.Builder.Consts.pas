@@ -64,7 +64,18 @@ const
 
 resourcestring
 
-  // Message type names:
+  { Common }
+
+  RSReportTitle = 'FIToolkit Report';
+
+  { Exceptions }
+
+  RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
+  RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
+  RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
+
+  { Message type names }
+
   RSCodingConvention = 'Стиль кода';
   RSFatal = 'Сбой парсера';
   RSOptimization = 'Оптимизация';
@@ -75,18 +86,6 @@ const
 
   ARR_MSGTYPE_TO_MSGNAME_MAPPING : array [TFixInsightMessageType] of String =
     (String.Empty, RSWarning, RSOptimization, RSCodingConvention, RSFatal, RSTrial);
-
-resourcestring
-
-  { Common }
-
-  RSReportTitle = 'FIToolkit Report';
-
-  { Exceptions }
-
-  RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
-  RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
-  RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
 
 implementation
 
