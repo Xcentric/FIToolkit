@@ -2,6 +2,9 @@
 
 interface
 
+uses
+  FIToolkit.Localization;
+
 const
 
   { Common consts }
@@ -17,11 +20,13 @@ const
 
 resourcestring
 
-  { Exceptions }
-
-  RSCreateProcessError = 'Не удалось создать процесс.';
-  RSNonZeroExitCode = 'Запущенный процесс завершился с кодом %d. Командная строка: %s';
-  RSSomeTasksFailed = 'Одна или более задач по обработке проектов завершились неудачей.';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 

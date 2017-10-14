@@ -2,6 +2,9 @@
 
 interface
 
+uses
+  FIToolkit.Localization;
+
 const
 
   { Common consts }
@@ -16,14 +19,13 @@ const
 
 resourcestring
 
-  { Common strings }
-
-  RSPressAnyKey = 'Нажмите любую клавишу для продолжения...';
-
-  { Exceptions }
-
-  RSDefaultErrMsg = 'Непредвиденная ошибка.';
-  RSStateMachineError = 'Ошибка в работе машины состояний.';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 

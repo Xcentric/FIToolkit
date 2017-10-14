@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Reports.Parser.Types;
+  FIToolkit.Reports.Parser.Types,
+  FIToolkit.Localization;
 
 const
 
@@ -64,23 +65,13 @@ const
 
 resourcestring
 
-  { Common }
-
-  RSReportTitle = 'FIToolkit Report';
-
-  { Exceptions }
-
-  RSInvalidReportTemplate = 'Неверный шаблон отчёта.';
-  RSReportTemplateLoadError = 'Ошибка загрузки шаблона отчёта.';
-  RSReportTemplateParseError = 'Ошибка разбора шаблона отчёта.';
-
-  { Message type names }
-
-  RSCodingConvention = 'Стиль кода';
-  RSFatal = 'Сбой парсера';
-  RSOptimization = 'Оптимизация';
-  RSTrial = 'Пробная версия';
-  RSWarning = 'Предупреждение';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 const
 

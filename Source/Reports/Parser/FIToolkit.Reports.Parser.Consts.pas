@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils,
-  FIToolkit.Reports.Parser.Types;
+  FIToolkit.Reports.Parser.Types,
+  FIToolkit.Localization;
 
 const
 
@@ -38,9 +39,13 @@ const
 
 resourcestring
 
-  { Exceptions }
-
-  RSFixInsightXMLParseError = 'Ошибка при разборе файла отчёта FixInsight.';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 
