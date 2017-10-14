@@ -148,6 +148,26 @@
         <DCCReference Include="Runner\FIToolkit.Runner.Consts.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Exceptions.pas"/>
         <DCCReference Include="Runner\FIToolkit.Runner.Tasks.pas"/>
+        <None Include="CommandLine\Locales\en-US.inc"/>
+        <None Include="CommandLine\Locales\ru-RU.inc"/>
+        <None Include="Commons\FiniteStateMachine\Locales\en-US.inc"/>
+        <None Include="Commons\FiniteStateMachine\Locales\ru-RU.inc"/>
+        <None Include="Commons\Locales\en-US.inc"/>
+        <None Include="Commons\Locales\ru-RU.inc"/>
+        <None Include="Config\Locales\en-US.inc"/>
+        <None Include="Config\Locales\ru-RU.inc"/>
+        <None Include="Locales\en-US.inc"/>
+        <None Include="Locales\ru-RU.inc"/>
+        <None Include="Logger\Locales\en-US.inc"/>
+        <None Include="Logger\Locales\ru-RU.inc"/>
+        <None Include="ProjectGroupParser\Locales\en-US.inc"/>
+        <None Include="ProjectGroupParser\Locales\ru-RU.inc"/>
+        <None Include="Reports\Builder\Locales\en-US.inc"/>
+        <None Include="Reports\Builder\Locales\ru-RU.inc"/>
+        <None Include="Reports\Parser\Locales\en-US.inc"/>
+        <None Include="Reports\Parser\Locales\ru-RU.inc"/>
+        <None Include="Runner\Locales\en-US.inc"/>
+        <None Include="Runner\Locales\ru-RU.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
