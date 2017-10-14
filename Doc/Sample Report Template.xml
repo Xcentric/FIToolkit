@@ -7,41 +7,305 @@
     <!-- CSS placed inside <style>..</style> tag -->
     <CSS>
         <![CDATA[
+    html {
+        font-size: 10px;
+    }
 
-    /* Place your CSS here */
+    body {
+        font-size: medium;
+    }
 
-    ]]>
+    #root {
+        margin: 2rem;
+    }
+
+    /* Header */
+
+    #header {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        color: indigo;
+        background-color: lavender;
+    }
+
+    #header-report_title {
+        margin-bottom: 0.5rem;
+
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    #header-start_time {
+        margin-top: 0.5rem;
+
+        text-align: center;
+        font-style: italic;
+    }
+
+    /* TotalSummary && ProjectSummary */
+
+    .summary_item-arrow {
+        padding-left: 2em;
+        padding-right: 2em;
+
+        color: lightslategrey;
+    }
+
+    .summary_item-Warning-desc {
+        color: darkorange;
+    }
+
+    .summary_item-Warning-count {
+        color: darkorange;
+        font-weight: bolder;
+    }
+
+    .summary_item-Optimization-desc {
+        color: forestgreen;
+    }
+
+    .summary_item-Optimization-count {
+        color: forestgreen;
+        font-weight: bolder;
+    }
+
+    .summary_item-CodingConvention-desc {
+        color: dodgerblue;
+    }
+
+    .summary_item-CodingConvention-count {
+        color: dodgerblue;
+        font-weight: bolder;
+    }
+
+    .summary_item-Trial-desc {
+        color: slategrey;
+        font-size: 0.75em;
+    }
+
+    .summary_item-Trial-count {
+        color: slategrey;
+        font-size: 0.75em;
+        text-align: center;
+    }
+
+    /* TotalSummary */
+
+    #total_summary {
+        margin: 2rem auto 2rem auto;
+
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 1.5em;
+    }
+
+    #total_summary .summary_item-arrow {
+        font-size: 1.5em;
+    }
+
+    /* ProjectSection */
+
+    .project_section {
+        margin-top: 4rem;
+        margin-bottom: 4rem;
+
+        background-color: #f8f8f8;
+    }
+
+    .project_section-project_title {
+        padding: 1rem 1rem 1rem 1rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.25em;
+
+        background-color: cornsilk;
+    }
+
+    .project_section-project_summary {
+        margin: 1rem 1rem 1rem 2rem;
+
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 1.125em;
+    }
+
+    /* ProjectMessages */
+
+    .project_section-project_messages {
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+
+        font-family: Consolas, monospace;
+        font-size: 0.875em;
+    }
+
+    .project_section-project_messages td {
+        padding: 0.5rem 1rem 0.5rem 1rem;
+
+        border-top: thin solid lightgrey;
+        border-bottom: thin solid lightgrey;
+    }
+
+    .message-message_text {
+        width: 100%;
+    }
+
+    .message-file_pos {
+        color: slategrey;
+    }
+
+    .message-file_pos-line {
+        color: black;
+    }
+
+    .message-file_pos-column {
+        font-size: 0.75em;
+    }
+
+    .message-message_type_name-Warning {
+        color: darkorange;
+    }
+
+    .message-message_type_name-Optimization {
+        color: forestgreen;
+    }
+
+    .message-message_type_name-CodingConvention {
+        color: dodgerblue;
+    }
+
+    .message-message_type_name-Trial {
+        color: slategrey;
+    }
+
+    .message-Trial .message-message_text {
+        font-style: italic;
+
+        color: transparent;
+    }
+
+    .message-snippet {
+        font-size: 12pt;
+    }
+
+    .message-snippet-button {
+        color: black;
+    }
+
+    .message-snippet-content {
+        display: none;
+
+        position: fixed;
+        overflow-y: scroll;
+    }
+
+    /* Footer */
+
+    #footer {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        color: indigo;
+        background-color: lavender;
+    }
+
+    #footer-finish_time {
+        text-align: center;
+        font-style: italic;
+    }
+
+/* vs2015.min.css */
+.hljs{display:block;overflow-x:auto;padding:0.5em;background:#1E1E1E;color:#DCDCDC}.hljs-keyword,.hljs-literal,.hljs-symbol,.hljs-name{color:#569CD6}.hljs-link{color:#569CD6;text-decoration:underline}.hljs-built_in,.hljs-type{color:#4EC9B0}.hljs-number,.hljs-class{color:#B8D7A3}.hljs-string,.hljs-meta-string{color:#D69D85}.hljs-regexp,.hljs-template-tag{color:#9A5334}.hljs-subst,.hljs-function,.hljs-title,.hljs-params,.hljs-formula{color:#DCDCDC}.hljs-comment,.hljs-quote{color:#57A64A;font-style:italic}.hljs-doctag{color:#608B4E}.hljs-meta,.hljs-meta-keyword,.hljs-tag{color:#9B9B9B}.hljs-variable,.hljs-template-variable{color:#BD63C5}.hljs-attr,.hljs-attribute,.hljs-builtin-name{color:#9CDCFE}.hljs-section{color:gold}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}.hljs-bullet,.hljs-selector-tag,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr,.hljs-selector-pseudo{color:#D7BA7D}.hljs-addition{background-color:#144212;display:inline-block;width:100%}.hljs-deletion{background-color:#600;display:inline-block;width:100%}]]>
     </CSS>
+    <!-- JavaScript placed inside <script>..</script> tag -->
+    <JavaScript>
+        <![CDATA[
+/*! highlight.pack.js v9.12.0 | BSD3 License | git.io/hljslicense */
+!function(e){var n="object"==typeof window&&window||"object"==typeof self&&self;"undefined"!=typeof exports?e(exports):n&&(n.hljs=e({}),"function"==typeof define&&define.amd&&define([],function(){return n.hljs}))}(function(e){function n(e){return e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function t(e){return e.nodeName.toLowerCase()}function r(e,n){var t=e&&e.exec(n);return t&&0===t.index}function a(e){return k.test(e)}function i(e){var n,t,r,i,o=e.className+" ";if(o+=e.parentNode?e.parentNode.className:"",t=B.exec(o))return w(t[1])?t[1]:"no-highlight";for(o=o.split(/\s+/),n=0,r=o.length;r>n;n++)if(i=o[n],a(i)||w(i))return i}function o(e){var n,t={},r=Array.prototype.slice.call(arguments,1);for(n in e)t[n]=e[n];return r.forEach(function(e){for(n in e)t[n]=e[n]}),t}function u(e){var n=[];return function r(e,a){for(var i=e.firstChild;i;i=i.nextSibling)3===i.nodeType?a+=i.nodeValue.length:1===i.nodeType&&(n.push({event:"start",offset:a,node:i}),a=r(i,a),t(i).match(/br|hr|img|input/)||n.push({event:"stop",offset:a,node:i}));return a}(e,0),n}function c(e,r,a){function i(){return e.length&&r.length?e[0].offset!==r[0].offset?e[0].offset<r[0].offset?e:r:"start"===r[0].event?e:r:e.length?e:r}function o(e){function r(e){return" "+e.nodeName+'="'+n(e.value).replace('"',"&quot;")+'"'}s+="<"+t(e)+E.map.call(e.attributes,r).join("")+">"}function u(e){s+="</"+t(e)+">"}function c(e){("start"===e.event?o:u)(e.node)}for(var l=0,s="",f=[];e.length||r.length;){var g=i();if(s+=n(a.substring(l,g[0].offset)),l=g[0].offset,g===e){f.reverse().forEach(u);do c(g.splice(0,1)[0]),g=i();while(g===e&&g.length&&g[0].offset===l);f.reverse().forEach(o)}else"start"===g[0].event?f.push(g[0].node):f.pop(),c(g.splice(0,1)[0])}return s+n(a.substr(l))}function l(e){return e.v&&!e.cached_variants&&(e.cached_variants=e.v.map(function(n){return o(e,{v:null},n)})),e.cached_variants||e.eW&&[o(e)]||[e]}function s(e){function n(e){return e&&e.source||e}function t(t,r){return new RegExp(n(t),"m"+(e.cI?"i":"")+(r?"g":""))}function r(a,i){if(!a.compiled){if(a.compiled=!0,a.k=a.k||a.bK,a.k){var o={},u=function(n,t){e.cI&&(t=t.toLowerCase()),t.split(" ").forEach(function(e){var t=e.split("|");o[t[0]]=[n,t[1]?Number(t[1]):1]})};"string"==typeof a.k?u("keyword",a.k):x(a.k).forEach(function(e){u(e,a.k[e])}),a.k=o}a.lR=t(a.l||/\w+/,!0),i&&(a.bK&&(a.b="\\b("+a.bK.split(" ").join("|")+")\\b"),a.b||(a.b=/\B|\b/),a.bR=t(a.b),a.e||a.eW||(a.e=/\B|\b/),a.e&&(a.eR=t(a.e)),a.tE=n(a.e)||"",a.eW&&i.tE&&(a.tE+=(a.e?"|":"")+i.tE)),a.i&&(a.iR=t(a.i)),null==a.r&&(a.r=1),a.c||(a.c=[]),a.c=Array.prototype.concat.apply([],a.c.map(function(e){return l("self"===e?a:e)})),a.c.forEach(function(e){r(e,a)}),a.starts&&r(a.starts,i);var c=a.c.map(function(e){return e.bK?"\\.?("+e.b+")\\.?":e.b}).concat([a.tE,a.i]).map(n).filter(Boolean);a.t=c.length?t(c.join("|"),!0):{exec:function(){return null}}}}r(e)}function f(e,t,a,i){function o(e,n){var t,a;for(t=0,a=n.c.length;a>t;t++)if(r(n.c[t].bR,e))return n.c[t]}function u(e,n){if(r(e.eR,n)){for(;e.endsParent&&e.parent;)e=e.parent;return e}return e.eW?u(e.parent,n):void 0}function c(e,n){return!a&&r(n.iR,e)}function l(e,n){var t=N.cI?n[0].toLowerCase():n[0];return e.k.hasOwnProperty(t)&&e.k[t]}function p(e,n,t,r){var a=r?"":I.classPrefix,i='<span class="'+a,o=t?"":C;return i+=e+'">',i+n+o}function h(){var e,t,r,a;if(!E.k)return n(k);for(a="",t=0,E.lR.lastIndex=0,r=E.lR.exec(k);r;)a+=n(k.substring(t,r.index)),e=l(E,r),e?(B+=e[1],a+=p(e[0],n(r[0]))):a+=n(r[0]),t=E.lR.lastIndex,r=E.lR.exec(k);return a+n(k.substr(t))}function d(){var e="string"==typeof E.sL;if(e&&!y[E.sL])return n(k);var t=e?f(E.sL,k,!0,x[E.sL]):g(k,E.sL.length?E.sL:void 0);return E.r>0&&(B+=t.r),e&&(x[E.sL]=t.top),p(t.language,t.value,!1,!0)}function b(){L+=null!=E.sL?d():h(),k=""}function v(e){L+=e.cN?p(e.cN,"",!0):"",E=Object.create(e,{parent:{value:E}})}function m(e,n){if(k+=e,null==n)return b(),0;var t=o(n,E);if(t)return t.skip?k+=n:(t.eB&&(k+=n),b(),t.rB||t.eB||(k=n)),v(t,n),t.rB?0:n.length;var r=u(E,n);if(r){var a=E;a.skip?k+=n:(a.rE||a.eE||(k+=n),b(),a.eE&&(k=n));do E.cN&&(L+=C),E.skip||(B+=E.r),E=E.parent;while(E!==r.parent);return r.starts&&v(r.starts,""),a.rE?0:n.length}if(c(n,E))throw new Error('Illegal lexeme "'+n+'" for mode "'+(E.cN||"<unnamed>")+'"');return k+=n,n.length||1}var N=w(e);if(!N)throw new Error('Unknown language: "'+e+'"');s(N);var R,E=i||N,x={},L="";for(R=E;R!==N;R=R.parent)R.cN&&(L=p(R.cN,"",!0)+L);var k="",B=0;try{for(var M,j,O=0;;){if(E.t.lastIndex=O,M=E.t.exec(t),!M)break;j=m(t.substring(O,M.index),M[0]),O=M.index+j}for(m(t.substr(O)),R=E;R.parent;R=R.parent)R.cN&&(L+=C);return{r:B,value:L,language:e,top:E}}catch(T){if(T.message&&-1!==T.message.indexOf("Illegal"))return{r:0,value:n(t)};throw T}}function g(e,t){t=t||I.languages||x(y);var r={r:0,value:n(e)},a=r;return t.filter(w).forEach(function(n){var t=f(n,e,!1);t.language=n,t.r>a.r&&(a=t),t.r>r.r&&(a=r,r=t)}),a.language&&(r.second_best=a),r}function p(e){return I.tabReplace||I.useBR?e.replace(M,function(e,n){return I.useBR&&"\n"===e?"<br>":I.tabReplace?n.replace(/\t/g,I.tabReplace):""}):e}function h(e,n,t){var r=n?L[n]:t,a=[e.trim()];return e.match(/\bhljs\b/)||a.push("hljs"),-1===e.indexOf(r)&&a.push(r),a.join(" ").trim()}function d(e){var n,t,r,o,l,s=i(e);a(s)||(I.useBR?(n=document.createElementNS("http://www.w3.org/1999/xhtml","div"),n.innerHTML=e.innerHTML.replace(/\n/g,"").replace(/<br[ \/]*>/g,"\n")):n=e,l=n.textContent,r=s?f(s,l,!0):g(l),t=u(n),t.length&&(o=document.createElementNS("http://www.w3.org/1999/xhtml","div"),o.innerHTML=r.value,r.value=c(t,u(o),l)),r.value=p(r.value),e.innerHTML=r.value,e.className=h(e.className,s,r.language),e.result={language:r.language,re:r.r},r.second_best&&(e.second_best={language:r.second_best.language,re:r.second_best.r}))}function b(e){I=o(I,e)}function v(){if(!v.called){v.called=!0;var e=document.querySelectorAll("pre code");E.forEach.call(e,d)}}function m(){addEventListener("DOMContentLoaded",v,!1),addEventListener("load",v,!1)}function N(n,t){var r=y[n]=t(e);r.aliases&&r.aliases.forEach(function(e){L[e]=n})}function R(){return x(y)}function w(e){return e=(e||"").toLowerCase(),y[e]||y[L[e]]}var E=[],x=Object.keys,y={},L={},k=/^(no-?highlight|plain|text)$/i,B=/\blang(?:uage)?-([\w-]+)\b/i,M=/((^(<[^>]+>|\t|)+|(?:\n)))/gm,C="</span>",I={classPrefix:"hljs-",tabReplace:null,useBR:!1,languages:void 0};return e.highlight=f,e.highlightAuto=g,e.fixMarkup=p,e.highlightBlock=d,e.configure=b,e.initHighlighting=v,e.initHighlightingOnLoad=m,e.registerLanguage=N,e.listLanguages=R,e.getLanguage=w,e.inherit=o,e.IR="[a-zA-Z]\\w*",e.UIR="[a-zA-Z_]\\w*",e.NR="\\b\\d+(\\.\\d+)?",e.CNR="(-?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)",e.BNR="\\b(0b[01]+)",e.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~",e.BE={b:"\\\\[\\s\\S]",r:0},e.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[e.BE]},e.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[e.BE]},e.PWM={b:/\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\b/},e.C=function(n,t,r){var a=e.inherit({cN:"comment",b:n,e:t,c:[]},r||{});return a.c.push(e.PWM),a.c.push({cN:"doctag",b:"(?:TODO|FIXME|NOTE|BUG|XXX):",r:0}),a},e.CLCM=e.C("//","$"),e.CBCM=e.C("/\\*","\\*/"),e.HCM=e.C("#","$"),e.NM={cN:"number",b:e.NR,r:0},e.CNM={cN:"number",b:e.CNR,r:0},e.BNM={cN:"number",b:e.BNR,r:0},e.CSSNM={cN:"number",b:e.NR+"(%|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc|px|deg|grad|rad|turn|s|ms|Hz|kHz|dpi|dpcm|dppx)?",r:0},e.RM={cN:"regexp",b:/\//,e:/\/[gimuy]*/,i:/\n/,c:[e.BE,{b:/\[/,e:/\]/,r:0,c:[e.BE]}]},e.TM={cN:"title",b:e.IR,r:0},e.UTM={cN:"title",b:e.UIR,r:0},e.METHOD_GUARD={b:"\\.\\s*"+e.UIR,r:0},e});hljs.registerLanguage("delphi",function(e){var r="exports register file shl array record property for mod while set ally label uses raise not stored class safecall var interface or private static exit index inherited to else stdcall override shr asm far resourcestring finalization packed virtual out and protected library do xorwrite goto near function end div overload object unit begin string on inline repeat until destructor write message program with read initialization except default nil if case cdecl in downto threadvar of try pascal const external constructor type public then implementation finally published procedure absolute reintroduce operator as is abstract alias assembler bitpacked break continue cppdecl cvar enumerator experimental platform deprecated unimplemented dynamic export far16 forward generic helper implements interrupt iochecks local name nodefault noreturn nostackframe oldfpccall otherwise saveregisters softfloat specialize strict unaligned varargs ",t=[e.CLCM,e.C(/\{/,/\}/,{r:0}),e.C(/\(\*/,/\*\)/,{r:10})],a={cN:"meta",v:[{b:/\{\$/,e:/\}/},{b:/\(\*\$/,e:/\*\)/}]},c={cN:"string",b:/'/,e:/'/,c:[{b:/''/}]},i={cN:"string",b:/(#\d+)+/},o={b:e.IR+"\\s*=\\s*class\\s*\\(",rB:!0,c:[e.TM]},n={cN:"function",bK:"function constructor destructor procedure",e:/[:;]/,k:"function constructor|10 destructor|10 procedure|10",c:[e.TM,{cN:"params",b:/\(/,e:/\)/,k:r,c:[c,i,a].concat(t)},a].concat(t)};return{aliases:["dpr","dfm","pas","pascal","freepascal","lazarus","lpr","lfm"],cI:!0,k:r,i:/"|\$[G-Zg-z]|\/\*|<\/|\|/,c:[c,i,e.NM,o,n,a].concat(t)}});
+
+    function getSnippetButton(snippet) {
+        return snippet.parentElement.getElementsByClassName("message-snippet-button")[0];
+    }
+
+    function hideSnippet(snippet) {
+        if (snippet) {
+            snippet.style.display = "none";
+            getSnippetButton(snippet).style.color = "black";
+        }
+    }
+
+    function showSnippet(snippet) {
+        if (snippet) {
+            var width = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+            var height = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+                
+            snippet.style.left   = 0.1 * width  + "px";
+            snippet.style.top    = 0.1 * height + "px";
+            snippet.style.width  = 0.7 * width  + "px";
+            snippet.style.height = 0.7 * height + "px";
+
+            snippet.style.display = "block";
+            hljs.highlightBlock(snippet);
+            getSnippetButton(snippet).style.color = "blue";
+        }
+    }
+
+    var G_currentSnippet;
+    
+    function onSnippetButtonClicked(sender) {
+        var snippet = sender.parentElement.getElementsByClassName("message-snippet-content")[0];
+        var snippetIsHidden = snippet.style.display === "" || snippet.style.display === "none";
+        
+        hideSnippet(G_currentSnippet);
+        G_currentSnippet = null;
+                
+        if (snippetIsHidden === true) {
+            showSnippet(snippet);
+            G_currentSnippet = snippet;
+        }
+    }]]>
+    </JavaScript>
     <!-- Report header element -->
     <Header>
         <Element>
             <![CDATA[
     <div id="header">
-        <div id="header-report_title">Report title: %REPORT_TITLE%</div>
-        <div id="header-start_time">Start time info: %START_TIME%</div>
+        <div id="header-report_title">Static code analysis for "%REPORT_TITLE%"</div>
+        <div id="header-start_time">(report started at %START_TIME%)</div>
     </div>]]>
         </Element>
     </Header>
     <!-- Total summary info element -->
     <TotalSummary>
+        <!-- Block of total summary items -->
         <Element>
             <![CDATA[
     <table id="total_summary">
-        <!-- Block of total summary info -->
 {TOTAL_SUMMARY_ITEMS}
     </table>]]>
         </Element>
-        <!-- Element which represents a single item of total summary info -->
+        <!-- Element which represents a single item of the total summary info -->
         <TotalSummaryItem>
+            <!--
+                %SUMMARY_MESSAGE_TYPE_KEYWORD% is a keyword applicable for usage in "class" attribute of HTML tags.
+                %SUMMARY_MESSAGE_TYPE_NAME% is a localized description of message type.
+                %SUMMARY_MESSAGE_COUNT% is a macro for message counter.
+            -->
             <Element>
                 <![CDATA[
-        <!--
-            %SUMMARY_MESSAGE_TYPE_KEYWORD% is a keyword applicable for usage in "class" attribute of HTML tags.
-            %SUMMARY_MESSAGE_TYPE_NAME% is a localized description of message type.
-            %SUMMARY_MESSAGE_COUNT% is a macro for message counter.
-        -->
         <tr class="summary_item">
             <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
+            <td class="summary_item-arrow">→</td>
             <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-count">%SUMMARY_MESSAGE_COUNT%</td>
         </tr>]]>
             </Element>
@@ -49,29 +313,29 @@
     </TotalSummary>
     <!-- A single project section element -->
     <ProjectSection>
+        <!-- Block of a project section content -->
         <Element>
             <![CDATA[
     <div class="project_section">
-        <div class="project_section-project_title">Project title: %PROJECT_TITLE%</div>
-        <!-- Block of a project section content -->
+        <div class="project_section-project_title">%PROJECT_TITLE%</div>
 {PROJECT_SUMMARY}</div>]]>
         </Element>
         <!-- Project summary info element -->
         <ProjectSummary>
+            <!-- Block of a project summary items -->
             <Element>
                 <![CDATA[
         <table class="project_section-project_summary">
-            <!-- Block of a project summary info -->
 {PROJECT_SUMMARY_ITEMS}
         </table>]]>
             </Element>
-            <!-- Element which represents a single item of project summary info -->
+            <!-- Element which represents a single item of the project summary info -->
             <ProjectSummaryItem>
+                <!--
+                    %SUMMARY_MESSAGE_TYPE_KEYWORD%, %SUMMARY_MESSAGE_TYPE_NAME%, %SUMMARY_MESSAGE_COUNT% - same as in total summary.
+                -->
                 <Element>
                     <![CDATA[
-            <!--
-                %SUMMARY_MESSAGE_TYPE_KEYWORD%, %SUMMARY_MESSAGE_TYPE_NAME%, %SUMMARY_MESSAGE_COUNT% - same as above.
-            -->
             <tr class="summary_item">
                 <td class="summary_item-%SUMMARY_MESSAGE_TYPE_KEYWORD%-desc">%SUMMARY_MESSAGE_TYPE_NAME%</td>
                 <td class="summary_item-arrow">→</td>
@@ -82,23 +346,35 @@
         </ProjectSummary>
         <!-- Element which contains all messages for a particular project -->
         <ProjectMessages>
+            <!-- All project messages goes here -->
             <Element>
                 <![CDATA[
-        <table class="project_section-project_messages"><!-- All project messages here --></table>]]>
+        <table class="project_section-project_messages"></table>]]>
             </Element>
             <!-- Element which represents a single message -->
             <Message>
+                <!--
+                    %MESSAGE_TYPE_KEYWORD% is like %SUMMARY_MESSAGE_TYPE_KEYWORD% above.
+                    %MESSAGE_TYPE_NAME% is like %SUMMARY_MESSAGE_TYPE_NAME% above.
+
+                    %FILE_NAME% - contains path to the file where current message occured.
+                    %LINE% & %COLUMN% - position in the %FILE_NAME% where current message occured.
+                    %MESSAGE_TEXT% - contains full text of current message.
+                    %SNIPPET% - contains a code snippet extracted from the %FILE_NAME% at %LINE%.
+                -->
                 <Element>
                     <![CDATA[
-            <!--
-                %MESSAGE_TYPE_KEYWORD% is like %SUMMARY_MESSAGE_TYPE_KEYWORD% above.
-                %MESSAGE_TYPE_NAME% is like %SUMMARY_MESSAGE_TYPE_NAME% above.
-            -->
             <tr class="message-%MESSAGE_TYPE_KEYWORD%">
-                <td class="message-file_name">Problem project's file: %FILE_NAME%</td>
-                <td class="message-file_pos">Position at that file: %LINE%,%COLUMN%</td>
-                <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%</td>
-                <td class="message-message_text">Code inspection description: %MESSAGE_TEXT%</td>
+                <td class="message-file_name">%FILE_NAME%</td>
+                <td class="message-file_pos">
+                  (<span class="message-file_pos-line">%LINE%</span><span class="message-file_pos-column">:%COLUMN%</span>)
+                </td>
+                <td class="message-message_type_name-%MESSAGE_TYPE_KEYWORD%">%MESSAGE_TYPE_NAME%:</td>
+                <td class="message-message_text">%MESSAGE_TEXT%</td>
+                <td class="message-snippet">
+                    <button class="message-snippet-button" onclick="onSnippetButtonClicked(this)">Snippet</button>
+                    <div class="message-snippet-content"><pre><code class="delphi">%SNIPPET%</code></pre></div>
+                </td>
             </tr>]]>
                 </Element>
             </Message>
@@ -109,7 +385,7 @@
         <Element>
             <![CDATA[
     <div id="footer">
-        <div id="footer-finish_time">Finish time info: %FINISH_TIME%</div>
+        <div id="footer-finish_time">(report finished at %FINISH_TIME%)</div>
     </div>]]>
         </Element>
     </Footer>
