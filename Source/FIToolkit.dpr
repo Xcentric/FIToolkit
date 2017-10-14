@@ -13,6 +13,7 @@ uses
   FIToolkit.Consts in 'FIToolkit.Consts.pas',
   FIToolkit.Exceptions in 'FIToolkit.Exceptions.pas',
   FIToolkit.ExecutionStates in 'FIToolkit.ExecutionStates.pas',
+  FIToolkit.Localization in 'FIToolkit.Localization.pas',
   FIToolkit.Main in 'FIToolkit.Main.pas',
   FIToolkit.Types in 'FIToolkit.Types.pas',
   FIToolkit.Utils in 'FIToolkit.Utils.pas',

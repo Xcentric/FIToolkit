@@ -2,12 +2,18 @@
 
 interface
 
+uses
+  FIToolkit.Localization;
+
 resourcestring
 
-  { Exceptions }
-
-  RSExecutionInProgress = 'Невозможно выполнить переход во время выполнения перехода.';
-  RSTransitionNotFound = 'Отсутствует переход из состояния "%s" по команде "%s".';
+  {$IF LANGUAGE = LANG_EN_US}
+    {$INCLUDE 'Locales\en-US.inc'}
+  {$ELSEIF LANGUAGE = LANG_RU_RU}
+    {$INCLUDE 'Locales\ru-RU.inc'}
+  {$ELSE}
+    {$MESSAGE FATAL 'No language defined!'}
+  {$IFEND}
 
 implementation
 
