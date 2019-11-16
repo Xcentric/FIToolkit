@@ -1449,9 +1449,11 @@ var
   arrText : TArray<String>;
   i : Integer;
 begin
-  arrText := Text.Split([sLineBreak], None);
+  arrText := Text.Split([sLineBreak], TStringSplitOptions.None);
+  {$IF CompilerVersion < 33.0}  // RSP-11302
   if Text.EndsWith(sLineBreak) then
     arrText := arrText + [String.Empty];
+  {$ENDIF}
 
   with AcquireBuilder(Length(Text) + Length(PaddingStr) * LeftPadding * Max(Length(arrText), 1)) do
     try

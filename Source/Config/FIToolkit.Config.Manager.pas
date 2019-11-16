@@ -215,7 +215,7 @@ begin //FI:C101
           else
           if Prop.PropertyType.Handle.TypeData.DynArrElType^.IsString then
           begin
-            arrS := sArray.Split([GetConfigPropArrayDelimiter(Prop)], ExcludeEmpty);
+            arrS := sArray.Split([GetConfigPropArrayDelimiter(Prop)], TStringSplitOptions.ExcludeEmpty);
 
             SetLength(arrV, Length(arrS));
             for i := 0 to High(arrV) do

@@ -480,7 +480,11 @@ var
   sLineNum : String;
 begin
   iLineNumMaxLen := LastLine.ToString.Length + INT_PREFIX_LENGTH;
-  arrSnippetLines := Snippet.Split([sLineBreak], None);
+  arrSnippetLines := Snippet.Split([sLineBreak], TStringSplitOptions.None);
+  {$IF CompilerVersion < 33.0}  // RSP-11302
+  if Snippet.EndsWith(sLineBreak) then
+    arrSnippetLines := arrSnippetLines + [String.Empty];
+  {$ENDIF}
   SetLength(arrResult, Length(arrSnippetLines));
 
   iLineNum := Max(FirstLine, 1);
