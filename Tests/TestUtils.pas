@@ -267,7 +267,8 @@ var
   arrTokens : TArray<String>;
 begin
   iLevels := 0;
-  arrTokens := String(STR_PROJECT_GROUP_DIR_RELATIVE_PATH).Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
+  arrTokens := String(STR_PROJECT_GROUP_DIR_RELATIVE_PATH)
+    .Split([TPath.DirectorySeparatorChar], TStringSplitOptions.ExcludeEmpty);
 
   for i := High(arrTokens) downto 0 do
     if arrTokens[i] = '..' then
@@ -275,7 +276,7 @@ begin
     else
       Break;
 
-  arrTokens := TestDataDir.Split([TPath.DirectorySeparatorChar], ExcludeEmpty);
+  arrTokens := TestDataDir.Split([TPath.DirectorySeparatorChar], TStringSplitOptions.ExcludeEmpty);
   Result := String
     .Join(TPath.DirectorySeparatorChar, arrTokens, 0, Length(arrTokens) - iLevels) + TPath.DirectorySeparatorChar;
 end;

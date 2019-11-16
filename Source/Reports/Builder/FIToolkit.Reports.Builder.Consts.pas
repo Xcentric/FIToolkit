@@ -71,7 +71,7 @@ resourcestring
     {$INCLUDE 'Locales\ru-RU.inc'}
   {$ELSE}
     {$MESSAGE FATAL 'No language defined!'}
-  {$IFEND}
+  {$ENDIF}
 
 const
 
