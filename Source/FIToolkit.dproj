@@ -56,8 +56,8 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>1</VerInfo_MajorVer>
         <VerInfo_MinorVer>0</VerInfo_MinorVer>
-        <VerInfo_Release>1</VerInfo_Release>
-        <VerInfo_Keys>CompanyName=;FileDescription=A set of tools for TMS Software® FixInsight™;FileVersion=1.0.1.0;InternalName=;LegalCopyright=© 2017 Xcentric &lt;true.xcentric@gmail.com&gt;;LegalTrademarks=;OriginalFilename=FIToolkit.exe;ProductName=FIToolkit;ProductVersion=1.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=;FileDescription=A set of tools for TMS Software® FixInsight™;FileVersion=1.0.2.0;InternalName=;LegalCopyright=© 2017 Xcentric &lt;true.xcentric@gmail.com&gt;;LegalTrademarks=;OriginalFilename=FIToolkit.exe;ProductName=FIToolkit;ProductVersion=1.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
